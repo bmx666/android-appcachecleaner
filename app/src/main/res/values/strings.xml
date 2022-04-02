@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string translatable="false" name="app_name">AppCacheCleaner</string>
+    <string translatable="false" name="service_name">AppCacheCleanerService</string>
+    <string translatable="false" name="text_enable_accessibility">Allow an application to use Accessibility</string>
+    <string translatable="false" name="text_enable_accessibility_permission">App does not have rights to use Accessibility</string>
+    <string translatable="false" name="text_clean_cache_left">left apps</string>
+    <string translatable="false" name="text_clean_cache_finish">Clean cache was finished\nAccessibility can be disabled</string>
+    <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted\nAccessibility can be disabled</string>
+    <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
+    <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
+    <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
+
+    <string name="clear_cache_btn_text">Clear cache</string>
+    <string name="storage_settings_for_app" >Storage &amp; cache</string>
+</resources>

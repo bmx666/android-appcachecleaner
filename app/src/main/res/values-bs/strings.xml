@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="clear_cache_btn_text" msgid="8597272828928143723">"Obriši keš memoriju"</string>
+    <string name="storage_settings_for_app" msgid="229425418984637483">"Pohrana i keš memorija"</string>
+</resources>
