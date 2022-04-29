@@ -6,6 +6,14 @@ plugins {
 android {
     compileSdk 32
 
+    signingConfigs {
+        config {
+            keyAlias 'AppCacheCleaner'
+            keyPassword 'AppCacheCleaner'
+            storeFile file('AppCacheCleaner.jks')
+            storePassword 'AppCacheCleaner'
+        }
+    }
     defaultConfig {
         applicationId "com.example.appcachecleaner"
         minSdk 23
@@ -20,6 +28,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     compileOptions {
