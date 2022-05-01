@@ -46,6 +46,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_clean_system_cache"/>
+        <Button
+            android:id="@+id/btnCleanAllAppCache"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_clean_all_cache"/>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

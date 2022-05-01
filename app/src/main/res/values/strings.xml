@@ -8,6 +8,7 @@
     <string translatable="false" name="text_clean_cache_finish">Clean cache was finished\nAccessibility can be disabled</string>
     <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted\nAccessibility can be disabled</string>
     <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
+    <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
     <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
 

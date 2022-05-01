@@ -34,6 +34,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.btnOpenAccessibility.isEnabled = false
             binding.btnCleanUserAppCache.isEnabled = false
             binding.btnCleanSystemAppCache.isEnabled = false
+            binding.btnCleanAllAppCache.isEnabled = false
 
             CoroutineScope(IO).launch {
                 startCleanCache(getListInstalledUserApps())
@@ -44,8 +45,21 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.btnOpenAccessibility.isEnabled = false
             binding.btnCleanUserAppCache.isEnabled = false
             binding.btnCleanSystemAppCache.isEnabled = false
+            binding.btnCleanAllAppCache.isEnabled = false
             CoroutineScope(IO).launch {
                 startCleanCache(getListInstalledSystemApps())
+            }
+        }
+
+        binding.btnCleanAllAppCache.setOnClickListener {
+            binding.btnOpenAccessibility.isEnabled = false
+            binding.btnCleanUserAppCache.isEnabled = false
+            binding.btnCleanSystemAppCache.isEnabled = false
+            binding.btnCleanAllAppCache.isEnabled = false
+            CoroutineScope(IO).launch {
+                startCleanCache(
+                    getListInstalledUserApps() +
+                    getListInstalledSystemApps())
             }
         }
 
@@ -71,9 +85,11 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.textView.text = getText(R.string.text_enable_accessibility)
             binding.btnCleanUserAppCache.isEnabled = false
             binding.btnCleanSystemAppCache.isEnabled = false
+            binding.btnCleanAllAppCache.isEnabled = false
         } else {
             binding.btnCleanUserAppCache.isEnabled = true
             binding.btnCleanSystemAppCache.isEnabled = true
+            binding.btnCleanAllAppCache.isEnabled = true
         }
     }
 
@@ -105,6 +121,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.btnOpenAccessibility.isEnabled = true
             binding.btnCleanUserAppCache.isEnabled = true
             binding.btnCleanSystemAppCache.isEnabled = true
+            binding.btnCleanAllAppCache.isEnabled = true
         }
     }
 
