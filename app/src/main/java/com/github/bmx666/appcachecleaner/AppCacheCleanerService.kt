@@ -40,9 +40,12 @@ class AppCacheCleanerService : AccessibilityService() {
             if (found != null) return found
         }
 
+        val resId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            R.string.storage_settings_for_app else R.string.storage_label
+
         return if (
             nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-            && compareText(nodeInfo, getText(R.string.storage_settings_for_app))
+            && compareText(nodeInfo, getText(resId))
         ) nodeInfo.parent?.parent else null
     }
 

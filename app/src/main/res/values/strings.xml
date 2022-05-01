@@ -14,4 +14,5 @@
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
+    <string name="storage_label" >Storage</string>
 </resources>
