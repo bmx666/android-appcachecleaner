@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.ConditionVariable
 import android.provider.Settings
+import android.text.TextUtils.SimpleStringSplitter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
@@ -17,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+
 
 class AppCacheCleanerActivity : AppCompatActivity() {
 
@@ -128,15 +130,35 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     // method to check is the user has permitted the accessibility permission
     // if not then prompt user to the system's Settings activity
     private fun checkAccessibilityPermission(): Boolean {
-        var accessEnabled = 0
         try {
-            accessEnabled =
-                Settings.Secure.getInt(this.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED)
+            val accessibilityEnabled =
+                Settings.Secure.getInt(
+                    this.contentResolver,
+                    Settings.Secure.ACCESSIBILITY_ENABLED)
+
+            if (accessibilityEnabled != 1) return false
+
+            val accessibilityServiceName = packageName + "/" +
+                    AppCacheCleanerService::class.java.name
+
+            val enabledServices =
+                Settings.Secure.getString(
+                    this.contentResolver,
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+
+            val stringColonSplitter = SimpleStringSplitter(':')
+            stringColonSplitter.setString(enabledServices)
+            while (stringColonSplitter.hasNext()) {
+                if (accessibilityServiceName.contentEquals(stringColonSplitter.next()))
+                    return true
+            }
+
+            return false
         } catch (e: Settings.SettingNotFoundException) {
             e.printStackTrace()
         }
 
-        return accessEnabled != 0
+        return false
     }
 
     private fun getListInstalledUserApps(): List<PackageInfo> {
