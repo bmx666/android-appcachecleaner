@@ -3,7 +3,6 @@ package com.github.bmx666.appcachecleaner
 import android.accessibilityservice.AccessibilityButtonController
 import android.accessibilityservice.AccessibilityButtonController.AccessibilityButtonCallback
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -77,13 +76,11 @@ class AppCacheCleanerService : AccessibilityService() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun initButton() {
         mAccessibilityButtonController = accessibilityButtonController
-        mIsAccessibilityButtonAvailable = true
-            //mAccessibilityButtonController?.isAccessibilityButtonAvailable ?: false
 
-        if (!mIsAccessibilityButtonAvailable) return
-
-        serviceInfo = serviceInfo.apply {
-            flags = flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
+        // Accessibility Button is available on Android 30 and early
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            if (mAccessibilityButtonController?.isAccessibilityButtonAvailable != true)
+                return
         }
 
         mAccessibilityButtonCallback =
