@@ -1,4 +1,4 @@
-package com.example.appcachecleaner
+package com.github.bmx666.appcachecleaner
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.os.ConditionVariable
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.appcachecleaner.databinding.ActivityMainBinding
+import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay

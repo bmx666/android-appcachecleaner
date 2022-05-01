@@ -1,4 +1,4 @@
-package com.example.appcachecleaner
+package com.github.bmx666.appcachecleaner
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.appcachecleaner
+package com.github.bmx666.appcachecleaner
 
 import android.accessibilityservice.AccessibilityButtonController
 import android.accessibilityservice.AccessibilityButtonController.AccessibilityButtonCallback

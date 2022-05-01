@@ -15,7 +15,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.example.appcachecleaner"
+        applicationId "com.github.bmx666.appcachecleaner"
         minSdk 23
         targetSdk 32
         versionCode 1
