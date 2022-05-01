@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.ConditionVariable
 import android.provider.Settings
@@ -66,15 +67,13 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.btnOpenAccessibility.setOnClickListener {
-            // if not construct intent to request permission
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            // request permission via start activity for result
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }
 
         if (checkAccessibilityPermission())
-            binding.textView.text = ""
+            binding.textView.text = intent.getCharSequenceExtra("displayText")
     }
 
     override fun onResume() {
@@ -117,13 +116,22 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         cleanCacheFinished.set(true)
 
         runOnUiThread {
-            binding.textView.text = if (cleanCacheInterrupt.get())
-                    getText(R.string.text_clean_cache_interrupt)
-                    else getText(R.string.text_clean_cache_finish)
+            val displayText = if (cleanCacheInterrupt.get())
+                getText(R.string.text_clean_cache_interrupt)
+                else getText(R.string.text_clean_cache_finish)
+            binding.textView.text = displayText
             binding.btnOpenAccessibility.isEnabled = true
             binding.btnCleanUserAppCache.isEnabled = true
             binding.btnCleanSystemAppCache.isEnabled = true
             binding.btnCleanAllAppCache.isEnabled = true
+
+            // return back to Main Activity, sometimes not possible press Back from Settings
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                val intent = this.intent
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra("displayText", displayText)
+                startActivity(intent)
+            }
         }
     }
 
@@ -192,6 +200,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private fun startApplicationDetailsActivity(packageName: String) {
         try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.data = Uri.parse("package:$packageName")
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
