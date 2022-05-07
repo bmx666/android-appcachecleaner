@@ -3,11 +3,16 @@ package com.github.bmx666.appcachecleaner
 import android.accessibilityservice.AccessibilityButtonController
 import android.accessibilityservice.AccessibilityButtonController.AccessibilityButtonCallback
 import android.accessibilityservice.AccessibilityService
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 class AppCacheCleanerService : AccessibilityService() {
 
@@ -60,24 +65,36 @@ class AppCacheCleanerService : AccessibilityService() {
         return null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mAccessibilityButtonCallback?.let {
-                mAccessibilityButtonController?.unregisterAccessibilityButtonCallback(it)
-            }
+    private val mLocalReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) unregisterButton()
+            disableSelf()
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+            LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mLocalReceiver, IntentFilter("disableSelf"))
+    }
+
+    override fun onDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            unregisterButton()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
+        super.onDestroy()
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            initButton()
+            registerButton()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun initButton() {
+    private fun registerButton() {
         mAccessibilityButtonController = accessibilityButtonController
 
         // Accessibility Button is available on Android 30 and early
@@ -108,6 +125,13 @@ class AppCacheCleanerService : AccessibilityService() {
 
         mAccessibilityButtonCallback?.also {
             mAccessibilityButtonController?.registerAccessibilityButtonCallback(it)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun unregisterButton() {
+        mAccessibilityButtonCallback?.let {
+            mAccessibilityButtonController?.unregisterAccessibilityButtonCallback(it)
         }
     }
 

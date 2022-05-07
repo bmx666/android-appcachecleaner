@@ -11,6 +11,7 @@
     <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>
     <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
     <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
+    <string name="btn_close_app">Выйти из приложения</string>
     <string name="description_apps_all_check">Отметить все приложения</string>
     <string name="description_apps_all_uncheck">Снять выделение со всех приложений</string>
 

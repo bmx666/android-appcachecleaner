@@ -14,6 +14,7 @@ import android.text.TextUtils.SimpleStringSplitter
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import kotlinx.coroutines.CoroutineScope
@@ -52,6 +53,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.btnCleanAllAppCache.setOnClickListener {
             pkgInfoListFragment = getListInstalledAllApps()
             showPackageFragment()
+        }
+
+        binding.btnCloseApp.setOnClickListener {
+            finish()
         }
 
         binding.fabCleanCache.setOnClickListener {
@@ -118,6 +123,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         if (checkAccessibilityPermission())
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this)
+            .sendBroadcast(Intent("disableSelf"))
+        super.onDestroy()
     }
 
     override fun onResume() {

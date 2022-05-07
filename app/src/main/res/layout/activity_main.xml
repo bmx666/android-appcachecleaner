@@ -97,6 +97,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_clean_all_cache" />
+
+        <Button
+            android:id="@+id/btnCloseApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_close_app" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
