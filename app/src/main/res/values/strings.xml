@@ -11,6 +11,8 @@
     <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
     <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
+    <string translatable="false" name="description_apps_all_check">Check all apps</string>
+    <string translatable="false" name="description_apps_all_uncheck">Uncheck all apps</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
