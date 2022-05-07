@@ -11,9 +11,14 @@
 
 1. Run app
 2. Open **Accessibility Settings**
-3. Enable Accessibility support for AppCacheCleaner
-4. Come back to app
-5. Click to clean **User App Cache** OR **System App Cache**
-6. Press **Accessibility button** to interrupt process OR wait until it will be finished
-7. Open **Accessibility Settings**
-8. Disable Accessibility support for AppCacheCleaner
+3. Enable Accessibility support for **AppCacheCleaner**
+4. Return back to AppCacheCleaner app
+5. Click **User Apps Cache**, **System Apps Cache** OR **All Apps Cache**
+6. Check required apps (use floating button to check/uncheck all apps)
+7. Press **Clean Cache** floating button
+8. Press **Accessibility button** to interrupt process OR wait until process will be finished
+9. Press **Close App** OR clean app from task manager to disable Accessibility
+
+## NOTE
+
+All checked apps will be saved into permanent list after clicking **Clean Cache** and they will show up as checked next time.
