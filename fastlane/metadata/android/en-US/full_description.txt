@@ -1,14 +1,17 @@
-<p>Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.</p>
-<p><i>AndroidCacheCleaner</i> can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service. <i>AndroidCacheCleaner</i> saves the last checked apps to show them next time only.</p>
-<b><br><b>How to use</b></p><ol>
-<li>Run the app</li>
-<li>Open Accessibility Settings</li>
-<li>Enable Accessibility support for AppCacheCleaner</li>
-<li>Return back to AppCacheCleaner app</li>
-<li>Click User Apps Cache, System Apps Cache OR All Apps Cache</li>
-<li>Check required apps (use floating button to check/uncheck all apps)</li>
-<li>Press Clean Cache floating button</li>
-<li>Press Accessibility button to interrupt process OR wait until process will be finished</li>
-<li>Press Close App OR clean app from task manager to disable Accessibility</li>
-</ol>
-<p><b>Note:</b> All checked apps will be saved into permanent list after clicking Clean Cache and they will show up as checked next time.</p>
+Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.
+
+<i>AndroidCacheCleaner</i> can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service. <i>AndroidCacheCleaner</i> saves the last checked apps to show them next time only.
+
+<br><b>How to use</b>
+
+* Run the app
+* Open Accessibility Settings
+* Enable Accessibility support for AppCacheCleaner
+* Return back to AppCacheCleaner app
+* Click User Apps Cache, System Apps Cache OR All Apps Cache
+* Check required apps (use floating button to check/uncheck all apps)
+* Press Clean Cache floating button
+* Press Accessibility button to interrupt process OR wait until process will be finished
+* Press Close App OR clean app from task manager to disable Accessibility
+
+<b>Note:</b> All checked apps will be saved into permanent list after clicking Clean Cache and they will show up as checked next time.
