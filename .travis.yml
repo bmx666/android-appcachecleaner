@@ -28,17 +28,14 @@ before_script:
 script:
   - "./gradlew clean build -PdisablePreDex --stacktrace"
 
-after_success:
-  - sh set_tags.sh
-
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
-    secure: OJDVviVzT4Mk43j7Y6hk6oLeuoM2AfEPM/HTkb8Z1rHNtDhO4P/czeyRxExcp+7fNBSM9aCVj8XIEUX5lKYpW9PZgz1gO6GeZUkyI6HVismtqayFj+EUlw/awhL75P7dlJBoQF+8XG9UYlccZAIdBSsCz3gEqP+hfwYCjUsiR6QiopKiDnK7qBxYZBp1AjgZJxsB3kCF/xYIm1QuIZGrgu50CEQI0o9Pm6YW7HpRQCpuBdKzTU9ui4389Kgru8Vt//QZg9Dcrawe4W2PiXqKOJ3oKQ4Em5L1p5H8l1mVyXXBDD4OlBP1xT3goGse4Ykg+iAM8azuzPuzhptET5snOBfG5slLolNFs/ce3X7WILwjKsgIGuyuX0d0o/vvVLvp3DnWJTJCPq0CIyVT1oMTTTX/BRzK0/d/uIXzR4zfmYqyRai3aA9NuzIdapIoMGEc/+PDRDGW5gyqZWySpKSFmAeCEHl7JvISPqsjeu7O60zgKmcYiug7jCQSrGdHC7l5CwxIu3mRxlElM2SgAMeQ+TbEVoip84rQw2XO2ywlMublWKC91P21wK+AAeZ/gCUZkwFg9qdOHdJoXlaYWUHkYaLIMNoszeBaNrn5LXPItsjNZJzVYwr+IFstBeUrKTv6/ghe58WYnVMhRMVIfnavCb5wXO46uu/TqK1c96d8dL4=
+    secure: shBd2EKDlOq4oOpot0JF62xMufEdHDxqajqn5jkJP1fas3V1nI1TxpBWAi04xXaS+wSh4xNdzpF2Cf6SMy3SN/zCEt+XWEUz9KN5u3SDG6jC050otgmuFOtTmlEEw2LNexNFyKMtFdGZ6Kllm2+PkiCqF/3jLRkgXmhUxuN/2jV3KnLVbg1Pc3iWrnVceJUtimXUgAYR4JC35VZf/BJchiZse9kbB4Dxm+LiFKpEI24a2VpvG4kyyV5UfBh+4FZYi0I2ndGqRD9iQMnHeLFRbYu2zV82V851R6VVmfdU9bMffUEJGAbC0TFCrnSIp8BxfWgIvHKl1S6GoiN7IqMl0LNfs7yozZwuitOOcGaIuPovFNbxhhcLxvmHauSxcqhu+XzDD7OG1zELfHxodX58YqE/HTkm7Kq4C8W5+/Yj9wyR+3GKrxqxTEMbCF6wrR7AvM1NBV1hS9mS2nChceGZPJZKQJB9h92YbIk3PPZEJ8/NLL9xZk1xIs2xvXNRN3qJ7XFWl9R6XLhHWla7WqhobgW4RBkAi+FgaxSFTLYPO07oYwZ/z04UImKG6iYq++MRLqHrVFXVjv4H6J/0TZHWyy4UC8Zhs43QiC56QGLbJber01xlgK5oHzFE7vPWmH5DPwrT8auwpn/csYFzEpVLuIJfpcedDZ+jsINhhbWrujU=
   file: app/build/outputs/apk/release/app-release.apk
   on:
-    branch: main
+    tags: true
     repo: bmx666/android-appcachecleaner
 
 before_cache:
