@@ -1,0 +1,1 @@
+bereinige den Cache aller Apps auf einen Schlag

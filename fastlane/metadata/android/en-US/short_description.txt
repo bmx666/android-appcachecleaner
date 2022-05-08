@@ -1,0 +1,1 @@
+clean all app caches at once
