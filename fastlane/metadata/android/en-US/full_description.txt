@@ -1,0 +1,5 @@
+Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.
+
+<b>AndroidCacheCleaner</b> can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service.
+
+<b>AndroidCacheCleaner</b> saves the last checked apps to show them next time only.

@@ -5,7 +5,7 @@
 |Android 11 and early|Android 12 and later|
 |-----------------|-------------------|
 |accessibility button in navbar|floating accessibility button|
-|![Android 11 and early](screenshot/android_11.png?raw=true "Android 11 and early")|![Android 12 and later](screenshot/android_12.png?raw=true "Android 12 and later")|
+|![Android 11 and early](fastlane/metadata/android/en-US/images/phoneScreenshots/android_11.png?raw=true "Android 11 and early")|![Android 12 and later](fastlane/metadata/android/en-US/images/phoneScreenshots/android_12.png?raw=true "Android 12 and later")|
 
 ## How to use
 
@@ -22,3 +22,7 @@
 ## NOTE
 
 All checked apps will be saved into permanent list after clicking **Clean Cache** and they will show up as checked next time.
+
+## Icon copyright
+
+Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [Flaticon](https://www.flaticon.com/)

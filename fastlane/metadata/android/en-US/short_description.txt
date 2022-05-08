@@ -1,0 +1,1 @@
+Clean cache of installed user and system apps using Accessibility
