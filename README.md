@@ -1,5 +1,13 @@
 # Android Cache Cleaner
 
+## Description
+
+Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.
+
+**AndroidCacheCleaner** can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service.
+
+**AndroidCacheCleaner** saves the last checked apps to show them next time only.
+
 ## screenshots
 
 |Android 11 and early|Android 12 and later|
@@ -18,10 +26,6 @@
 7. Press **Clean Cache** floating button
 8. Press **Accessibility button** to interrupt process OR wait until process will be finished
 9. Press **Close App** OR clean app from task manager to disable Accessibility
-
-## NOTE
-
-All checked apps will be saved into permanent list after clicking **Clean Cache** and they will show up as checked next time.
 
 ## Icon copyright
 
