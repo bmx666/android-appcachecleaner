@@ -14,6 +14,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
+
 class AppCacheCleanerService : AccessibilityService() {
 
     private var mAccessibilityButtonController: AccessibilityButtonController? = null
@@ -75,8 +76,8 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
-            LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mLocalReceiver, IntentFilter("disableSelf"))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(mLocalReceiver, IntentFilter("disableSelf"))
     }
 
     override fun onDestroy() {
@@ -88,9 +89,8 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             registerButton()
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
