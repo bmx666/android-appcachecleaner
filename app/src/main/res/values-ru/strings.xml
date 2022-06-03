@@ -7,7 +7,7 @@
     <string name="text_clean_cache_left">осталось приложений</string>
     <string name="text_clean_cache_finish">Очистка кэша завершена\nСпец. возможности можно отключить</string>
     <string name="text_clean_cache_interrupt">Очистка кэша была прервана\nСпец. возможности можно отключить</string>
-    <string name="btn_open_accessibility">Открыть насткойки Спец. возможностей</string>
+    <string name="btn_open_accessibility">Открыть настройки Спец. возможностей</string>
     <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>
     <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
     <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
