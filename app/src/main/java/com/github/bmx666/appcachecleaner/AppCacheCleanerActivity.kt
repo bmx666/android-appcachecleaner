@@ -23,8 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
+
 
 class AppCacheCleanerActivity : AppCompatActivity() {
 
