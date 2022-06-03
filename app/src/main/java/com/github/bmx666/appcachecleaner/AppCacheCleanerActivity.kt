@@ -1,6 +1,10 @@
 package com.github.bmx666.appcachecleaner
 
+import android.app.AppOpsManager
+import android.app.usage.StorageStats
+import android.app.usage.StorageStatsManager
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
@@ -9,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.ConditionVariable
+import android.os.storage.StorageManager
 import android.provider.Settings
 import android.text.TextUtils.SimpleStringSplitter
 import android.view.View
@@ -112,7 +117,13 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         binding.btnOpenAccessibility.setOnClickListener {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            startActivity(intent)
+        }
+
+        binding.btnOpenUsageStats.setOnClickListener {
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             startActivity(intent)
         }
 
@@ -120,7 +131,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             getSharedPreferences(SETTINGS_CHECKED_PACKAGE_LIST_TAG, MODE_PRIVATE)
                         .getStringSet(SETTINGS_CHECKED_PACKAGE_TAG, HashSet()) ?: HashSet())
 
-        if (checkAccessibilityPermission())
+        if (checkAccessibilityPermission() and checkUsageStatsPermission())
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
     }
 
@@ -135,17 +146,25 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         if (!cleanCacheFinished.get()) return
 
-        if (!checkAccessibilityPermission()) {
+        val hasAccessibilityPermission = checkAccessibilityPermission()
+        val hasUsageStatsPermission = checkUsageStatsPermission()
+        val hasAllPermissions = hasAccessibilityPermission and hasUsageStatsPermission
+
+        if (!hasAccessibilityPermission) {
             Toast.makeText(this, getText(R.string.text_enable_accessibility_permission), Toast.LENGTH_SHORT).show()
             binding.textView.text = getText(R.string.text_enable_accessibility)
-            binding.btnCleanUserAppCache.isEnabled = false
-            binding.btnCleanSystemAppCache.isEnabled = false
-            binding.btnCleanAllAppCache.isEnabled = false
+        } else if (!hasUsageStatsPermission) {
+            Toast.makeText(this, getText(R.string.text_enable_usage_stats_permission), Toast.LENGTH_SHORT).show()
+            binding.textView.text = getText(R.string.text_enable_usage_stats)
         } else {
-            binding.btnCleanUserAppCache.isEnabled = true
-            binding.btnCleanSystemAppCache.isEnabled = true
-            binding.btnCleanAllAppCache.isEnabled = true
+            binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
         }
+
+        binding.btnOpenAccessibility.isEnabled = !hasAccessibilityPermission
+        binding.btnOpenUsageStats.isEnabled = !hasUsageStatsPermission
+        binding.btnCleanUserAppCache.isEnabled = hasAllPermissions
+        binding.btnCleanSystemAppCache.isEnabled = hasAllPermissions
+        binding.btnCleanAllAppCache.isEnabled = hasAllPermissions
     }
 
     override fun onBackPressed() {
@@ -156,7 +175,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             supportFragmentManager.beginTransaction().remove(fragment).commitNow()
 
-            binding.btnOpenAccessibility.isEnabled = true
             binding.btnCleanUserAppCache.isEnabled = true
             binding.btnCleanSystemAppCache.isEnabled = true
             binding.btnCleanAllAppCache.isEnabled = true
@@ -195,7 +213,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 else getText(R.string.text_clean_cache_finish)
             binding.textView.text = displayText
 
-            binding.btnOpenAccessibility.isEnabled = true
             binding.btnCleanUserAppCache.isEnabled = true
             binding.btnCleanSystemAppCache.isEnabled = true
             binding.btnCleanAllAppCache.isEnabled = true
@@ -244,6 +261,25 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         return false
     }
 
+    private fun checkUsageStatsPermission(): Boolean {
+        try {
+            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+            val appOpsManager = getSystemService(APP_OPS_SERVICE) as AppOpsManager
+            val mode = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    applicationInfo.uid, applicationInfo.packageName)
+            else
+                appOpsManager.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    applicationInfo.uid, applicationInfo.packageName)
+
+            return mode == AppOpsManager.MODE_ALLOWED
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return false
+    }
+
     private fun getListInstalledUserApps(): ArrayList<PackageInfo> {
         return getListInstalledApps(systemOnly = false, userOnly = true)
     }
@@ -275,7 +311,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private fun startApplicationDetailsActivity(packageName: String) {
         try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             intent.data = Uri.parse("package:$packageName")
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
@@ -298,14 +334,30 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             val label = localizedLabel
                 ?: pkgInfo.applicationInfo.nonLocalizedLabel?.toString()
                 ?: pkgInfo.packageName
+
+            var stats: StorageStats? = null
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try {
+                    val storageStatsManager: StorageStatsManager =
+                        getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+                    stats = storageStatsManager.queryStatsForPackage(
+                        StorageManager.UUID_DEFAULT, pkgInfo.packageName,
+                        android.os.Process.myUserHandle()
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
             PlaceholderContent.addItem(pkgInfo, label,
-                checkedPkgList.contains(pkgInfo.packageName))
+                checkedPkgList.contains(pkgInfo.packageName), stats)
         }
+
         PlaceholderContent.sort()
     }
 
     private fun showPackageFragment() {
-        binding.btnOpenAccessibility.isEnabled = false
         binding.btnCleanUserAppCache.isEnabled = false
         binding.btnCleanSystemAppCache.isEnabled = false
         binding.btnCleanAllAppCache.isEnabled = false

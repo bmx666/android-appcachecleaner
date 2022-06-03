@@ -4,16 +4,20 @@
     <string translatable="false" name="service_name">AppCacheCleanerService</string>
     <string translatable="false" name="text_enable_accessibility">Allow an application to use Accessibility</string>
     <string translatable="false" name="text_enable_accessibility_permission">App does not have rights to use Accessibility</string>
+    <string translatable="false" name="text_enable_usage_stats">Allow an application to access Usage Stats</string>
+    <string translatable="false" name="text_enable_usage_stats_permission">App does not have rights to access Usage Stats</string>
     <string translatable="false" name="text_clean_cache_left">left apps</string>
     <string translatable="false" name="text_clean_cache_finish">Clean cache was finished\nAccessibility can be disabled</string>
     <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted\nAccessibility can be disabled</string>
     <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
+    <string translatable="false" name="btn_open_usage_stats">Open Usage Stats Settings</string>
     <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
     <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
     <string translatable="false" name="btn_close_app">Close app</string>
     <string translatable="false" name="description_apps_all_check">Check all apps</string>
     <string translatable="false" name="description_apps_all_uncheck">Uncheck all apps</string>
+    <string translatable="false" name="text_cache_size_fmt">Cache: %1$s</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>

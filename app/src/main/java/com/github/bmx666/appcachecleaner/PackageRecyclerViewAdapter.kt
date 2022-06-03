@@ -1,7 +1,10 @@
 package com.github.bmx666.appcachecleaner
 
+import android.os.Build
+import android.text.format.Formatter
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
@@ -35,6 +38,14 @@ class PackageRecyclerViewAdapter(
         holder.packageLabelView.setOnCheckedChangeListener { _, checked ->
             item.checked = checked
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && item.stats != null) {
+            val ctx = holder.cacheSizeView.context
+            holder.cacheSizeView.text = ctx.getString(R.string.text_cache_size_fmt,
+                Formatter.formatShortFileSize(ctx, item.stats.cacheBytes))
+        } else {
+            holder.cacheSizeView.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int = values.size
@@ -44,6 +55,7 @@ class PackageRecyclerViewAdapter(
     {
         val packageLabelView: CheckBox = binding.packageLabel
         val packageNameView: TextView = binding.packageName
+        val cacheSizeView: TextView = binding.cacheSize
 
         override fun toString(): String {
             return super.toString() + " '" + packageNameView.text + "'"

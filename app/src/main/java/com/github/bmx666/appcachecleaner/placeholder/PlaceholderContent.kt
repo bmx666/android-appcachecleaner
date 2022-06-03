@@ -1,6 +1,9 @@
 package com.github.bmx666.appcachecleaner.placeholder
 
+import android.app.usage.StorageStats
 import android.content.pm.PackageInfo
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.util.ArrayList
 
 object PlaceholderContent {
@@ -8,15 +11,29 @@ object PlaceholderContent {
     val ITEMS: MutableList<PlaceholderPackage> = ArrayList()
 
     fun sort() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            sortByCacheSize()
+        else
+            sortByLabel()
+    }
+
+    private fun sortByLabel() {
         ITEMS.sortWith(compareBy<PlaceholderPackage> { !it.checked }.thenBy { it.label })
     }
 
-    fun addItem(pkgInfo: PackageInfo, label: String, checked: Boolean) {
-        ITEMS.add(PlaceholderPackage(pkgInfo, pkgInfo.packageName, label, checked))
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun sortByCacheSize() {
+        ITEMS.sortWith(compareBy<PlaceholderPackage> { !it.checked }
+            .thenByDescending { it.stats?.cacheBytes ?: 0 }.thenBy { it.label })
+    }
+
+    fun addItem(pkgInfo: PackageInfo, label: String, checked: Boolean, stats: StorageStats?) {
+        ITEMS.add(PlaceholderPackage(pkgInfo, pkgInfo.packageName, label, checked, stats))
     }
 
     data class PlaceholderPackage(val pkgInfo: PackageInfo, val name: String,
-                                  val label: String, var checked: Boolean) {
+                                  val label: String, var checked: Boolean,
+                                  val stats: StorageStats?) {
         override fun toString(): String = name
     }
 }

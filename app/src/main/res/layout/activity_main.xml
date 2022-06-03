@@ -81,6 +81,12 @@
             android:text="@string/btn_open_accessibility" />
 
         <Button
+            android:id="@+id/btnOpenUsageStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_open_usage_stats" />
+
+        <Button
             android:id="@+id/btnCleanUserAppCache"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

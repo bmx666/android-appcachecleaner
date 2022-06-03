@@ -4,16 +4,20 @@
     <string name="service_name">AppCacheCleanerService</string>
     <string name="text_enable_accessibility">Разрешите приложению использовать Спец. возможности</string>
     <string name="text_enable_accessibility_permission">У приложения нет прав использовать Спец. возможности</string>
+    <string name="text_enable_usage_stats">Разрешите доступ к Данным об Использовании</string>
+    <string name="text_enable_usage_stats_permission">У приложения нет доступа к Данным об Использовании</string>
     <string name="text_clean_cache_left">осталось приложений</string>
     <string name="text_clean_cache_finish">Очистка кэша завершена\nСпец. возможности можно отключить</string>
     <string name="text_clean_cache_interrupt">Очистка кэша была прервана\nСпец. возможности можно отключить</string>
     <string name="btn_open_accessibility">Открыть настройки Спец. возможностей</string>
+    <string name="btn_open_usage_stats">Открыть настройки Данные об Использ.</string>
     <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>
     <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
     <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
     <string name="btn_close_app">Выйти из приложения</string>
     <string name="description_apps_all_check">Отметить все приложения</string>
     <string name="description_apps_all_uncheck">Снять выделение со всех приложений</string>
+    <string name="text_cache_size_fmt">Кэш: %1$s</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>
