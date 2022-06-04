@@ -335,26 +335,30 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 ?: pkgInfo.applicationInfo.nonLocalizedLabel?.toString()
                 ?: pkgInfo.packageName
 
-            var stats: StorageStats? = null
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                try {
-                    val storageStatsManager: StorageStatsManager =
-                        getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
-                    stats = storageStatsManager.queryStatsForPackage(
-                        StorageManager.UUID_DEFAULT, pkgInfo.packageName,
-                        android.os.Process.myUserHandle()
-                    )
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+            val stats = getStorageStats(pkgInfo.packageName)
 
             PlaceholderContent.addItem(pkgInfo, label,
                 checkedPkgList.contains(pkgInfo.packageName), stats)
         }
 
         PlaceholderContent.sort()
+    }
+
+    private fun getStorageStats(packageName: String): StorageStats? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null
+
+        try {
+            val storageStatsManager =
+                getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+            return storageStatsManager.queryStatsForPackage(
+                StorageManager.UUID_DEFAULT, packageName,
+                android.os.Process.myUserHandle()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return null
     }
 
     private fun showPackageFragment() {
