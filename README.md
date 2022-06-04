@@ -21,11 +21,14 @@ Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps
 2. Open **Accessibility Settings**
 3. Enable Accessibility support for **AppCacheCleaner**
 4. Return back to AppCacheCleaner app
-5. Click **User Apps Cache**, **System Apps Cache** OR **All Apps Cache**
-6. Check required apps (use floating button to check/uncheck all apps)
-7. Press **Clean Cache** floating button
-8. Press **Accessibility button** to interrupt process OR wait until process will be finished
-9. Press **Close App** OR clean app from task manager to disable Accessibility
+5. Open **Usage Stats Settings**
+6. Enable Usage Stats support for **AppCacheCleaner**
+7. Return back to AppCacheCleaner app
+8. Click **User Apps Cache**, **System Apps Cache** OR **All Apps Cache**
+9. Check required apps (use floating button to check/uncheck all apps)
+10. Press **Clean Cache** floating button
+11. Press **Accessibility button** to interrupt process OR wait until process will be finished
+12. Press **Close App** OR clean app from task manager to disable Accessibility
 
 ## Icon copyright
 
