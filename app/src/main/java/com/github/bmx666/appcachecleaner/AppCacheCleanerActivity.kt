@@ -218,7 +218,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.btnCleanAllAppCache.isEnabled = true
 
             // return back to Main Activity, sometimes not possible press Back from Settings
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            if (pkgList.isNotEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 val intent = this.intent
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.putExtra(ARG_DISPLAY_TEXT, displayText)
