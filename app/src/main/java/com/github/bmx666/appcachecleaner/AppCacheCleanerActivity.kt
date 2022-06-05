@@ -166,6 +166,22 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if (loadingPkgList.get()) {
+            loadingPkgList.set(false)
+
+            binding.fragmentContainerView.visibility = View.GONE
+            binding.layoutFab.visibility = View.GONE
+            binding.layoutProgress.visibility = View.GONE
+
+            binding.btnCleanUserAppCache.isEnabled = true
+            binding.btnCleanSystemAppCache.isEnabled = true
+            binding.btnCleanAllAppCache.isEnabled = true
+
+            binding.layoutButton.visibility = View.VISIBLE
+
+            return
+        }
+
         supportFragmentManager.findFragmentByTag(FRAGMENT_PACKAGE_LIST_TAG)?.let { fragment ->
 
             binding.fragmentContainerView.visibility = View.GONE
@@ -323,6 +339,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private fun addPackageToPlaceholderContent() {
         PlaceholderContent.ITEMS.clear()
         pkgInfoListFragment.forEach { pkgInfo ->
+
+            if (!loadingPkgList.get()) return
+
             var localizedLabel: String? = null
             packageManager?.let { pm ->
                 try {
@@ -363,6 +382,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     FRAGMENT_PACKAGE_LIST_TAG
                 )
                 .commitNow()
+
+            loadingPkgList.set(false)
         }
     }
 
@@ -396,6 +417,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.progressBarPackageList.max = pkgInfoListFragment.size
         binding.layoutProgress.visibility = View.VISIBLE
 
+        loadingPkgList.set(true)
+
         CoroutineScope(IO).launch {
             addPackageToPlaceholderContent()
         }
@@ -410,6 +433,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         const val SETTINGS_CHECKED_PACKAGE_LIST_TAG = "package-list"
         const val SETTINGS_CHECKED_PACKAGE_TAG = "checked"
 
+        val loadingPkgList = AtomicBoolean(false)
         val cleanAppCacheFinished = AtomicBoolean(false)
         val cleanCacheFinished = AtomicBoolean(true)
         val cleanCacheInterrupt = AtomicBoolean(false)
