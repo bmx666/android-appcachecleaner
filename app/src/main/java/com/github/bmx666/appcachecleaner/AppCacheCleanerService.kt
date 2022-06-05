@@ -143,7 +143,8 @@ class AppCacheCleanerService : AccessibilityService() {
         }
     }
 
-    private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo) {
+    private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
+        if (nodeInfo == null) return
         Log.v(TAG, ">".repeat(level) + " " + nodeInfo.className
                 + ":" + nodeInfo.text+ ":" + nodeInfo.viewIdResourceName)
         for (i in 0 until nodeInfo.childCount)
