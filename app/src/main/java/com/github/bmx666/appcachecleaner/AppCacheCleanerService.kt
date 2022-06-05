@@ -26,6 +26,10 @@ class AppCacheCleanerService : AccessibilityService() {
         return nodeInfo.text?.toString()?.lowercase().contentEquals(text.toString().lowercase())
     }
 
+    private fun performClick(nodeInfo: AccessibilityNodeInfo?) {
+        findClickable(nodeInfo)?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+    }
+
     private fun findClickable(nodeInfo: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
         return when {
             nodeInfo == null -> null
@@ -44,7 +48,7 @@ class AppCacheCleanerService : AccessibilityService() {
         return if (
             nodeInfo.viewIdResourceName?.startsWith("com.android.settings:id/button") == true
             && compareText(nodeInfo, getText(R.string.clear_cache_btn_text))
-        ) findClickable(nodeInfo) else null
+        ) nodeInfo else null
     }
 
     private fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
@@ -60,7 +64,7 @@ class AppCacheCleanerService : AccessibilityService() {
         return if (
             nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
             && compareText(nodeInfo, getText(resId))
-        ) findClickable(nodeInfo) else null
+        ) nodeInfo else null
     }
 
     private fun findBackButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
@@ -152,7 +156,7 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun goBack(nodeInfo: AccessibilityNodeInfo) {
-        findBackButton(nodeInfo)?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        performClick(findBackButton(nodeInfo))
         AppCacheCleanerActivity.cleanAppCacheFinished.set(true)
     }
 
@@ -176,7 +180,7 @@ class AppCacheCleanerService : AccessibilityService() {
             if (storageAndCacheMenu != null) {
                 if (storageAndCacheMenu.isEnabled) {
                     //Log.v(TAG, "found and click storage & cache")
-                    storageAndCacheMenu.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    performClick(storageAndCacheMenu)
                 } else {
                     goBack(nodeInfo)
                     // notify main app go to another app
@@ -185,7 +189,7 @@ class AppCacheCleanerService : AccessibilityService() {
             } else if (clearCacheButton != null) {
                 if (clearCacheButton.isEnabled) {
                     //Log.v(TAG, "found and click clean cache button")
-                    clearCacheButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    performClick(clearCacheButton)
                 }
                 goBack(nodeInfo)
             } else {
