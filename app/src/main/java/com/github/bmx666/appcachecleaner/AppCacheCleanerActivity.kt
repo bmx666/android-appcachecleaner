@@ -327,12 +327,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         pkgInfoListFragment.forEach { pkgInfo ->
             var localizedLabel: String? = null
             packageManager?.let { pm ->
-                val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
-                val resId = pkgInfo.applicationInfo.labelRes
-                if (resId != 0)
-                    try {
+                try {
+                    val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
+                    val resId = pkgInfo.applicationInfo.labelRes
+                    if (resId != 0)
                         localizedLabel = res.getString(resId)
-                    } catch (e: PackageManager.NameNotFoundException) {}
+                } catch (e: PackageManager.NameNotFoundException) {}
             }
             val label = localizedLabel
                 ?: pkgInfo.applicationInfo.nonLocalizedLabel?.toString()
