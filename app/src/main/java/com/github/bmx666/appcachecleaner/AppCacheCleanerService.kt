@@ -26,6 +26,14 @@ class AppCacheCleanerService : AccessibilityService() {
         return nodeInfo.text?.toString()?.lowercase().contentEquals(text.toString().lowercase())
     }
 
+    private fun findClickable(nodeInfo: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
+        return when {
+            nodeInfo == null -> null
+            nodeInfo.isClickable -> nodeInfo
+            else -> findClickable(nodeInfo.parent)
+        }
+    }
+
     private fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         for (i in 0 until nodeInfo.childCount) {
             if (nodeInfo.getChild(i) == null) continue
@@ -36,7 +44,7 @@ class AppCacheCleanerService : AccessibilityService() {
         return if (
             nodeInfo.viewIdResourceName?.startsWith("com.android.settings:id/button") == true
             && compareText(nodeInfo, getText(R.string.clear_cache_btn_text))
-        ) nodeInfo else null
+        ) findClickable(nodeInfo) else null
     }
 
     private fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
@@ -52,7 +60,7 @@ class AppCacheCleanerService : AccessibilityService() {
         return if (
             nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
             && compareText(nodeInfo, getText(resId))
-        ) nodeInfo.parent?.parent else null
+        ) findClickable(nodeInfo) else null
     }
 
     private fun findBackButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
