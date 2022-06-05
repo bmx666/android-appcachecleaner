@@ -1,0 +1,10 @@
+* update screenshots
+* fix skip go back if package list was empty
+* fix find clickable parent node
+* fix bring back to main activity on Android O and early
+* improve cache cleaning process
+* fix logic of finding button "Clear cache"
+* improve to find back button view in ActionBar
+* fix get label from installed app
+* show progress of package list on slow phones
+* fix interrupt progress of package list on back press
