@@ -39,11 +39,12 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        for (i in 0 until nodeInfo.childCount) {
-            if (nodeInfo.getChild(i) == null) continue
-            val found = findClearCacheButton(nodeInfo.getChild(i))
-            if (found != null) return found
-        }
+        for (i in 0 until nodeInfo.childCount)
+            nodeInfo.getChild(i)?.let { childNode ->
+                findClearCacheButton(childNode)?.let { foundNode ->
+                    return foundNode
+                }
+            }
 
         return if (
             nodeInfo.viewIdResourceName?.startsWith("com.android.settings:id/button") == true
@@ -52,11 +53,12 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        for (i in 0 until nodeInfo.childCount) {
-            if (nodeInfo.getChild(i) == null) continue
-            val found = findStorageAndCacheMenu(nodeInfo.getChild(i))
-            if (found != null) return found
-        }
+        for (i in 0 until nodeInfo.childCount)
+            nodeInfo.getChild(i)?.let { childNode ->
+                findStorageAndCacheMenu(childNode)?.let { foundNode ->
+                    return foundNode
+                }
+            }
 
         val resId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             R.string.storage_settings_for_app else R.string.storage_label
