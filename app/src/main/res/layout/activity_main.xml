@@ -60,6 +60,35 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_anchor="@+id/layoutButton"
+        app:layout_anchorGravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBarPackageList"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:max="100"
+            android:minWidth="200dp"
+            android:minHeight="50dp"
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/textProgressPackageList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/layoutButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

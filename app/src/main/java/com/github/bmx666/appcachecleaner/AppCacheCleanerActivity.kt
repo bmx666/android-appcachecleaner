@@ -10,9 +10,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.ConditionVariable
+import android.os.*
 import android.os.storage.StorageManager
 import android.provider.Settings
 import android.text.TextUtils.SimpleStringSplitter
@@ -342,9 +340,30 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             PlaceholderContent.addItem(pkgInfo, label,
                 checkedPkgList.contains(pkgInfo.packageName), stats)
+
+            runOnUiThread {
+                binding.progressBarPackageList.incrementProgressBy(1)
+                binding.textProgressPackageList.text = String.format(Locale.getDefault(),
+                    "%d / %d", PlaceholderContent.ITEMS.size,
+                    pkgInfoListFragment.size)
+            }
         }
 
         PlaceholderContent.sort()
+
+        runOnUiThread {
+            binding.layoutProgress.visibility = View.GONE
+            binding.fragmentContainerView.visibility = View.VISIBLE
+            binding.layoutFab.visibility = View.VISIBLE
+
+            supportFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_container_view,
+                    PackageListFragment.newInstance(),
+                    FRAGMENT_PACKAGE_LIST_TAG
+                )
+                .commitNow()
+        }
     }
 
     private fun getStorageStats(packageName: String): StorageStats? {
@@ -370,16 +389,16 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.btnCleanAllAppCache.isEnabled = false
 
         binding.layoutButton.visibility = View.GONE
-        binding.fragmentContainerView.visibility = View.VISIBLE
-        binding.layoutFab.visibility = View.VISIBLE
 
-        addPackageToPlaceholderContent()
+        binding.textProgressPackageList.text = String.format(Locale.getDefault(),
+            "%d / %d", 0, pkgInfoListFragment.size)
+        binding.progressBarPackageList.progress = 0
+        binding.progressBarPackageList.max = pkgInfoListFragment.size
+        binding.layoutProgress.visibility = View.VISIBLE
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view,
-                PackageListFragment.newInstance(),
-                FRAGMENT_PACKAGE_LIST_TAG)
-            .commitNow()
+        CoroutineScope(IO).launch {
+            addPackageToPlaceholderContent()
+        }
     }
 
     companion object {
