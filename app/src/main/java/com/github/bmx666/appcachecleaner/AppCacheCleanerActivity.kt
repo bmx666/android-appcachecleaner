@@ -220,6 +220,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             // return back to Main Activity, sometimes not possible press Back from Settings
             if (pkgList.isNotEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 val intent = this.intent
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.putExtra(ARG_DISPLAY_TEXT, displayText)
                 startActivity(intent)
