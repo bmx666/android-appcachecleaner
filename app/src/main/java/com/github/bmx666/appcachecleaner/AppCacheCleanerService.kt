@@ -176,9 +176,18 @@ class AppCacheCleanerService : AccessibilityService() {
             // notify main app go to another app
             AppCacheCleanerActivity.waitAccessibility.open()
         } else {
-            val storageAndCacheMenu = findStorageAndCacheMenu(nodeInfo)
-            val clearCacheButton = findClearCacheButton(nodeInfo)
 
+            val clearCacheButton = findClearCacheButton(nodeInfo)
+            if (clearCacheButton != null) {
+                if (clearCacheButton.isEnabled) {
+                    //Log.v(TAG, "found and click clean cache button")
+                    performClick(clearCacheButton)
+                }
+                goBack(nodeInfo)
+                return
+            }
+
+            val storageAndCacheMenu = findStorageAndCacheMenu(nodeInfo)
             if (storageAndCacheMenu != null) {
                 if (storageAndCacheMenu.isEnabled) {
                     //Log.v(TAG, "found and click storage & cache")
@@ -188,17 +197,12 @@ class AppCacheCleanerService : AccessibilityService() {
                     // notify main app go to another app
                     AppCacheCleanerActivity.waitAccessibility.open()
                 }
-            } else if (clearCacheButton != null) {
-                if (clearCacheButton.isEnabled) {
-                    //Log.v(TAG, "found and click clean cache button")
-                    performClick(clearCacheButton)
-                }
-                goBack(nodeInfo)
-            } else {
-                goBack(nodeInfo)
-                // notify main app go to another app
-                AppCacheCleanerActivity.waitAccessibility.open()
+                return
             }
+
+            goBack(nodeInfo)
+            // notify main app go to another app
+            AppCacheCleanerActivity.waitAccessibility.open()
         }
     }
 
