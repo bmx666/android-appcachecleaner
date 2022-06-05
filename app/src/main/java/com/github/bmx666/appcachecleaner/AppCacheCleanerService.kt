@@ -38,6 +38,23 @@ class AppCacheCleanerService : AccessibilityService() {
         }
     }
 
+    private fun findNestedChildByClassName(nodeInfo: AccessibilityNodeInfo,
+                                           classNames: Array<String>): AccessibilityNodeInfo? {
+        for (i in 0 until nodeInfo.childCount)
+            nodeInfo.getChild(i)?.let { childNode ->
+                findNestedChildByClassName(childNode, classNames)?.let { foundNode ->
+                    return foundNode
+                }
+            }
+
+        classNames.forEach { className ->
+            if (nodeInfo.className?.contentEquals(className) == true)
+                return nodeInfo
+        }
+
+        return null
+    }
+
     private fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         for (i in 0 until nodeInfo.childCount)
             nodeInfo.getChild(i)?.let { childNode ->
@@ -71,13 +88,17 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private fun findBackButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         val actionBar = nodeInfo.findAccessibilityNodeInfosByViewId(
-            "com.android.settings:id/action_bar").firstOrNull() ?: return null
+            "com.android.settings:id/action_bar").firstOrNull()
+            ?: nodeInfo.findAccessibilityNodeInfosByViewId(
+                "android:id/action_bar").firstOrNull()
+            ?: return null
 
-        for (i in 0 until actionBar.childCount) {
-            if (actionBar.getChild(i)?.className?.contentEquals("android.widget.ImageButton") == true)
-                return actionBar.getChild(i)
-        }
-        return null
+        // WORKAROUND: on some smartphones ActionBar Back button has ID "up"
+        actionBar.findAccessibilityNodeInfosByViewId(
+            "android:id/up").firstOrNull()?.let { return it }
+
+        return findNestedChildByClassName(actionBar,
+            arrayOf("android.widget.ImageButton", "android.widget.ImageView"))
     }
 
     private val mLocalReceiver = object : BroadcastReceiver() {
