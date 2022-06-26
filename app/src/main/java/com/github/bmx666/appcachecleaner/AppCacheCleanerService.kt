@@ -32,7 +32,7 @@ class AppCacheCleanerService : AccessibilityService() {
         }
 
         return nodeInfo.takeIf {
-            nodeInfo.viewIdResourceName?.startsWith("com.android.settings:id/button") == true
+            nodeInfo.viewIdResourceName?.matches("com.android.settings:id/.*button.*".toRegex()) == true
                     && nodeInfo.lowercaseCompareText(textClearCacheButton)
         }
     }
