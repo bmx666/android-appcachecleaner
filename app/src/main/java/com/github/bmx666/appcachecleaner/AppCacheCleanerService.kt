@@ -7,12 +7,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.util.findNestedChildByClassName
+import com.github.bmx666.appcachecleaner.util.getAllChild
+import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
+import com.github.bmx666.appcachecleaner.util.performClick
 
 
 class AppCacheCleanerService : AccessibilityService() {
@@ -21,69 +26,26 @@ class AppCacheCleanerService : AccessibilityService() {
     private var mAccessibilityButtonCallback: AccessibilityButtonCallback? = null
     private var mIsAccessibilityButtonAvailable: Boolean = false
 
-    private fun compareText(nodeInfo: AccessibilityNodeInfo, text: CharSequence): Boolean {
-        //Log.v(TAG, "search string $text")
-        return nodeInfo.text?.toString()?.lowercase().contentEquals(text.toString().lowercase())
-    }
-
-    private fun performClick(nodeInfo: AccessibilityNodeInfo?) {
-        findClickable(nodeInfo)?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-    }
-
-    private fun findClickable(nodeInfo: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
-        return when {
-            nodeInfo == null -> null
-            nodeInfo.isClickable -> nodeInfo
-            else -> findClickable(nodeInfo.parent)
-        }
-    }
-
-    private fun findNestedChildByClassName(nodeInfo: AccessibilityNodeInfo,
-                                           classNames: Array<String>): AccessibilityNodeInfo? {
-        for (i in 0 until nodeInfo.childCount)
-            nodeInfo.getChild(i)?.let { childNode ->
-                findNestedChildByClassName(childNode, classNames)?.let { foundNode ->
-                    return foundNode
-                }
-            }
-
-        classNames.forEach { className ->
-            if (nodeInfo.className?.contentEquals(className) == true)
-                return nodeInfo
-        }
-
-        return null
-    }
-
     private fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        for (i in 0 until nodeInfo.childCount)
-            nodeInfo.getChild(i)?.let { childNode ->
-                findClearCacheButton(childNode)?.let { foundNode ->
-                    return foundNode
-                }
-            }
+        nodeInfo.getAllChild().forEach { childNode ->
+            findClearCacheButton(childNode)?.let { return it }
+        }
 
-        return if (
+        return nodeInfo.takeIf {
             nodeInfo.viewIdResourceName?.startsWith("com.android.settings:id/button") == true
-            && compareText(nodeInfo, getText(R.string.clear_cache_btn_text))
-        ) nodeInfo else null
+                    && nodeInfo.lowercaseCompareText(textClearCacheButton)
+        }
     }
 
     private fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        for (i in 0 until nodeInfo.childCount)
-            nodeInfo.getChild(i)?.let { childNode ->
-                findStorageAndCacheMenu(childNode)?.let { foundNode ->
-                    return foundNode
-                }
-            }
+        nodeInfo.getAllChild().forEach { childNode ->
+            findStorageAndCacheMenu(childNode)?.let { return it }
+        }
 
-        val resId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            R.string.storage_settings_for_app else R.string.storage_label
-
-        return if (
+        return nodeInfo.takeIf {
             nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-            && compareText(nodeInfo, getText(resId))
-        ) nodeInfo else null
+                    && nodeInfo.lowercaseCompareText(textStorageAndCacheMenu)
+        }
     }
 
     private fun findBackButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
@@ -97,7 +59,7 @@ class AppCacheCleanerService : AccessibilityService() {
         actionBar.findAccessibilityNodeInfosByViewId(
             "android:id/up").firstOrNull()?.let { return it }
 
-        return findNestedChildByClassName(actionBar,
+        return actionBar.findNestedChildByClassName(
             arrayOf("android.widget.ImageButton", "android.widget.ImageView"))
     }
 
@@ -111,8 +73,24 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
+        updateLocaleText()
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(mLocalReceiver, IntentFilter("disableSelf"))
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateLocaleText()
+    }
+
+    private fun updateLocaleText() {
+        textClearCacheButton = getText(R.string.clear_cache_btn_text)
+
+        textStorageAndCacheMenu =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                getText(R.string.storage_settings_for_app)
+            else
+                getText(R.string.storage_label)
     }
 
     override fun onDestroy() {
@@ -174,12 +152,13 @@ class AppCacheCleanerService : AccessibilityService() {
         if (nodeInfo == null) return
         Log.v(TAG, ">".repeat(level) + " " + nodeInfo.className
                 + ":" + nodeInfo.text+ ":" + nodeInfo.viewIdResourceName)
-        for (i in 0 until nodeInfo.childCount)
-            showTree(level + 1, nodeInfo.getChild(i))
+        nodeInfo.getAllChild().forEach { childNode ->
+            showTree(level + 1, childNode)
+        }
     }
 
     private fun goBack(nodeInfo: AccessibilityNodeInfo) {
-        performClick(findBackButton(nodeInfo))
+        findBackButton(nodeInfo)?.performClick()
         AppCacheCleanerActivity.cleanAppCacheFinished.set(true)
     }
 
@@ -198,21 +177,19 @@ class AppCacheCleanerService : AccessibilityService() {
             AppCacheCleanerActivity.waitAccessibility.open()
         } else {
 
-            val clearCacheButton = findClearCacheButton(nodeInfo)
-            if (clearCacheButton != null) {
+            findClearCacheButton(nodeInfo)?.let { clearCacheButton ->
                 if (clearCacheButton.isEnabled) {
                     //Log.v(TAG, "found and click clean cache button")
-                    performClick(clearCacheButton)
+                    clearCacheButton.performClick()
                 }
                 goBack(nodeInfo)
                 return
             }
 
-            val storageAndCacheMenu = findStorageAndCacheMenu(nodeInfo)
-            if (storageAndCacheMenu != null) {
+            findStorageAndCacheMenu(nodeInfo)?.let { storageAndCacheMenu ->
                 if (storageAndCacheMenu.isEnabled) {
                     //Log.v(TAG, "found and click storage & cache")
-                    performClick(storageAndCacheMenu)
+                    storageAndCacheMenu.performClick()
                 } else {
                     goBack(nodeInfo)
                     // notify main app go to another app
@@ -231,5 +208,8 @@ class AppCacheCleanerService : AccessibilityService() {
 
     companion object {
         private val TAG = AppCacheCleanerService::class.java.simpleName
+
+        private lateinit var textClearCacheButton: CharSequence
+        private lateinit var textStorageAndCacheMenu: CharSequence
     }
 }
