@@ -8,15 +8,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.log.TimberFileTree
 import com.github.bmx666.appcachecleaner.util.findNestedChildByClassName
 import com.github.bmx666.appcachecleaner.util.getAllChild
 import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
 import com.github.bmx666.appcachecleaner.util.performClick
+import timber.log.Timber
+import java.io.File
 
 
 class AppCacheCleanerService : AccessibilityService() {
@@ -81,6 +83,8 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG)
+            createLogFile()
         updateLocaleText(null, null)
         val intentFilter = IntentFilter()
         intentFilter.addAction("disableSelf")
@@ -101,6 +105,8 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     override fun onDestroy() {
+        if (BuildConfig.DEBUG)
+            deleteLogFile()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             unregisterButton()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
@@ -127,7 +133,7 @@ class AppCacheCleanerService : AccessibilityService() {
             object : AccessibilityButtonCallback() {
                 override fun onClicked(controller: AccessibilityButtonController) {
                     if (AppCacheCleanerActivity.cleanCacheFinished.get()) return
-                    Log.d(TAG, "Accessibility button pressed!")
+                    Timber.d("Accessibility button pressed!")
                     AppCacheCleanerActivity.cleanCacheInterrupt.set(true)
                     AppCacheCleanerActivity.waitAccessibility.open()
                 }
@@ -137,7 +143,7 @@ class AppCacheCleanerService : AccessibilityService() {
                     available: Boolean
                 ) {
                     if (controller == mAccessibilityButtonController) {
-                        Log.d(TAG, "Accessibility button available = $available")
+                        Timber.d("Accessibility button available = $available")
                         mIsAccessibilityButtonAvailable = available
                     }
                 }
@@ -157,7 +163,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
         if (nodeInfo == null) return
-        Log.v(TAG, ">".repeat(level) + " " + nodeInfo.className
+        Timber.d(">".repeat(level) + " " + nodeInfo.className
                 + ":" + nodeInfo.text+ ":" + nodeInfo.viewIdResourceName)
         nodeInfo.getAllChild().forEach { childNode ->
             showTree(level + 1, childNode)
@@ -166,11 +172,11 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private fun goBack(nodeInfo: AccessibilityNodeInfo) {
         findBackButton(nodeInfo)?.let { backButton ->
-            // Log.d(TAG, "found back button")
+            Timber.d("found back button")
             when (backButton.performClick()) {
-                true -> {} // Log.d(TAG, "perform action click on back button")
-                false -> Log.e(TAG, "no perform action click on back button")
-                else -> Log.e(TAG, "not found clickable view for back button")
+                true  -> Timber.d("perform action click on back button")
+                false -> Timber.e("no perform action click on back button")
+                else  -> Timber.e("not found clickable view for back button")
             }
         }
         AppCacheCleanerActivity.cleanAppCacheFinished.set(true)
@@ -183,7 +189,12 @@ class AppCacheCleanerService : AccessibilityService() {
             return
 
         val nodeInfo = event.source ?: return
-        // showTree(0, nodeInfo)
+
+        if (BuildConfig.DEBUG) {
+            Timber.d("===>>> TREE BEGIN <<<===")
+            showTree(0, nodeInfo)
+            Timber.d("===>>> TREE END <<<===")
+        }
 
         if (AppCacheCleanerActivity.cleanAppCacheFinished.get()) {
             goBack(nodeInfo)
@@ -192,13 +203,13 @@ class AppCacheCleanerService : AccessibilityService() {
         } else {
 
             findClearCacheButton(nodeInfo)?.let { clearCacheButton ->
-                // Log.d(TAG, "found clean cache button")
+                Timber.d("found clean cache button")
                 if (clearCacheButton.isEnabled) {
-                    // Log.d(TAG, "clean cache button is enabled")
+                    Timber.d("clean cache button is enabled")
                     when (clearCacheButton.performClick()) {
-                        true -> {} // Log.d(TAG, "perform action click on clean cache button")
-                        false -> Log.e(TAG, "no perform action click on clean cache button")
-                        else -> Log.e(TAG, "not found clickable view for clean cache button")
+                        true  -> Timber.d("perform action click on clean cache button")
+                        false -> Timber.e("no perform action click on clean cache button")
+                        else  -> Timber.e("not found clickable view for clean cache button")
                     }
                 }
                 goBack(nodeInfo)
@@ -206,13 +217,13 @@ class AppCacheCleanerService : AccessibilityService() {
             }
 
             findStorageAndCacheMenu(nodeInfo)?.let { storageAndCacheMenu ->
-                // Log.d(TAG, "found storage & cache button")
+                Timber.d("found storage & cache button")
                 if (storageAndCacheMenu.isEnabled) {
-                    // Log.d(TAG, "storage & cache button is enabled")
+                    Timber.d("storage & cache button is enabled")
                     when (storageAndCacheMenu.performClick()) {
-                        true -> {} // Log.d(TAG, "perform action click on storage & cache button")
-                        false -> Log.e(TAG, "no perform action click on storage & cache button")
-                        else -> Log.e(TAG, "not found clickable view for storage & cache button")
+                        true  -> Timber.d("perform action click on storage & cache button")
+                        false -> Timber.e("no perform action click on storage & cache button")
+                        else  -> Timber.e("not found clickable view for storage & cache button")
                     }
                 } else {
                     goBack(nodeInfo)
@@ -229,6 +240,18 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     override fun onInterrupt() {}
+
+    private fun createLogFile() {
+        val logFile = File(cacheDir.absolutePath + "/log.txt")
+        // force clean previous log
+        logFile.writeText("")
+        Timber.plant(TimberFileTree(logFile))
+    }
+
+    private fun deleteLogFile() {
+        val logFile = File(cacheDir.absolutePath + "/log.txt")
+        logFile.delete()
+    }
 
     companion object {
         private val TAG = AppCacheCleanerService::class.java.simpleName
