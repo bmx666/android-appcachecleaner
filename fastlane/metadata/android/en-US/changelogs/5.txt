@@ -1,0 +1,1 @@
+* improve to find button "Clear Cache"
