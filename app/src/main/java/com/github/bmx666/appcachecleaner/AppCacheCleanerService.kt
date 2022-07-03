@@ -33,7 +33,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
         return nodeInfo.takeIf {
             nodeInfo.viewIdResourceName?.matches("com.android.settings:id/.*button.*".toRegex()) == true
-                    && nodeInfo.lowercaseCompareText(textClearCacheButton)
+                    && arrayTextClearCacheButton.any { text -> nodeInfo.lowercaseCompareText(text) }
         }
     }
 
@@ -44,7 +44,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
         return nodeInfo.takeIf {
             nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-                    && nodeInfo.lowercaseCompareText(textStorageAndCacheMenu)
+                    && arrayTextStorageAndCacheMenu.any { text -> nodeInfo.lowercaseCompareText(text) }
         }
     }
 
@@ -84,13 +84,14 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun updateLocaleText() {
-        textClearCacheButton = getText(R.string.clear_cache_btn_text)
+        arrayTextClearCacheButton = arrayOf(
+            getText(R.string.clear_cache_btn_text),
+        )
 
-        textStorageAndCacheMenu =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                getText(R.string.storage_settings_for_app)
-            else
-                getText(R.string.storage_label)
+        arrayTextStorageAndCacheMenu = arrayOf(
+            getText(R.string.storage_settings_for_app),
+            getText(R.string.storage_label),
+        )
     }
 
     override fun onDestroy() {
@@ -226,7 +227,7 @@ class AppCacheCleanerService : AccessibilityService() {
     companion object {
         private val TAG = AppCacheCleanerService::class.java.simpleName
 
-        private lateinit var textClearCacheButton: CharSequence
-        private lateinit var textStorageAndCacheMenu: CharSequence
+        private lateinit var arrayTextClearCacheButton: Array<CharSequence>
+        private lateinit var arrayTextStorageAndCacheMenu: Array<CharSequence>
     }
 }
