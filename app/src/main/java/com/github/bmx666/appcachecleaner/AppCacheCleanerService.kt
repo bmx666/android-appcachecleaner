@@ -158,7 +158,14 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun goBack(nodeInfo: AccessibilityNodeInfo) {
-        findBackButton(nodeInfo)?.performClick()
+        findBackButton(nodeInfo)?.let { backButton ->
+            // Log.d(TAG, "found back button")
+            when (backButton.performClick()) {
+                true -> {} // Log.d(TAG, "perform action click on back button")
+                false -> Log.e(TAG, "no perform action click on back button")
+                else -> Log.e(TAG, "not found clickable view for back button")
+            }
+        }
         AppCacheCleanerActivity.cleanAppCacheFinished.set(true)
     }
 
@@ -178,18 +185,28 @@ class AppCacheCleanerService : AccessibilityService() {
         } else {
 
             findClearCacheButton(nodeInfo)?.let { clearCacheButton ->
+                // Log.d(TAG, "found clean cache button")
                 if (clearCacheButton.isEnabled) {
-                    //Log.v(TAG, "found and click clean cache button")
-                    clearCacheButton.performClick()
+                    // Log.d(TAG, "clean cache button is enabled")
+                    when (clearCacheButton.performClick()) {
+                        true -> {} // Log.d(TAG, "perform action click on clean cache button")
+                        false -> Log.e(TAG, "no perform action click on clean cache button")
+                        else -> Log.e(TAG, "not found clickable view for clean cache button")
+                    }
                 }
                 goBack(nodeInfo)
                 return
             }
 
             findStorageAndCacheMenu(nodeInfo)?.let { storageAndCacheMenu ->
+                // Log.d(TAG, "found storage & cache button")
                 if (storageAndCacheMenu.isEnabled) {
-                    //Log.v(TAG, "found and click storage & cache")
-                    storageAndCacheMenu.performClick()
+                    // Log.d(TAG, "storage & cache button is enabled")
+                    when (storageAndCacheMenu.performClick()) {
+                        true -> {} // Log.d(TAG, "perform action click on storage & cache button")
+                        false -> Log.e(TAG, "no perform action click on storage & cache button")
+                        else -> Log.e(TAG, "not found clickable view for storage & cache button")
+                    }
                 } else {
                     goBack(nodeInfo)
                     // notify main app go to another app

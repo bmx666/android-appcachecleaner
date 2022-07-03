@@ -31,8 +31,8 @@ fun AccessibilityNodeInfo.findClickable(): AccessibilityNodeInfo? {
     }
 }
 
-fun AccessibilityNodeInfo.performClick() {
-    this.findClickable()?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+fun AccessibilityNodeInfo.performClick(): Boolean? {
+    return this.findClickable()?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
 }
 
 fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo> {
