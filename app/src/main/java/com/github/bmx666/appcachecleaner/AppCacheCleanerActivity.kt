@@ -66,6 +66,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.fabCleanCache.setOnClickListener {
+            addExtraSearchText(resources.configuration.locales.get(0))
+
             binding.fragmentContainerView.visibility = View.GONE
             binding.layoutFab.visibility = View.GONE
             binding.layoutButton.visibility = View.VISIBLE
@@ -194,8 +196,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 }
                 .create()
             dialogForStorageText.show()
-
-            addExtraSearchText(resources.configuration.locales.get(0))
         }
 
         checkedPkgList.addAll(
@@ -204,8 +204,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         if (checkAccessibilityPermission() and checkUsageStatsPermission())
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
-
-        addExtraSearchText(resources.configuration.locales.get(0))
     }
 
     override fun onDestroy() {
