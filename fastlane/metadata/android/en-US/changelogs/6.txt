@@ -1,0 +1,2 @@
+* improve search text for clickable view
+* add extra search text for customized Settings UI
