@@ -15,9 +15,15 @@
     <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
     <string translatable="false" name="btn_close_app">Close app</string>
+    <string translatable="false" name="btn_add_extra_search_text">Add extra search text</string>
     <string translatable="false" name="description_apps_all_check">Check all apps</string>
     <string translatable="false" name="description_apps_all_uncheck">Uncheck all apps</string>
     <string translatable="false" name="text_cache_size_fmt">Cache: %1$s</string>
+
+    <string translatable="false" name="dialog_extra_search_text_title">Add extra search text</string>
+    <string translatable="false" name="dialog_extra_search_text_message">%1$s (%2$s)\ninstead of \"%3$s\"</string>
+    <string translatable="false" name="dialog_extra_search_text_btn_ok">OK</string>
+    <string translatable="false" name="dialog_extra_search_text_btn_remove">Remove</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>

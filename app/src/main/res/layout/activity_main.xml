@@ -138,6 +138,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_close_app" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+        <Button
+            android:id="@+id/btnAddExtraSearchText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_add_extra_search_text" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

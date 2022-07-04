@@ -15,9 +15,15 @@
     <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
     <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
     <string name="btn_close_app">Выйти из приложения</string>
+    <string name="btn_add_extra_search_text">Добавить доп. текст для поиска</string>
     <string name="description_apps_all_check">Отметить все приложения</string>
     <string name="description_apps_all_uncheck">Снять выделение со всех приложений</string>
     <string name="text_cache_size_fmt">Кэш: %1$s</string>
+
+    <string name="dialog_extra_search_text_title">Добавить доп. текст для поиска</string>
+    <string name="dialog_extra_search_text_message">%1$s (%2$s)\nвместо \"%3$s\"</string>
+    <string name="dialog_extra_search_text_btn_ok">OK</string>
+    <string name="dialog_extra_search_text_btn_remove">Удалить</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>

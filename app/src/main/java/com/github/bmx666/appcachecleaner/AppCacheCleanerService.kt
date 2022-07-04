@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -65,33 +64,40 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private val mLocalReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) unregisterButton()
-            disableSelf()
+            when (intent?.action) {
+                "disableSelf" -> {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) unregisterButton()
+                    disableSelf()
+                }
+                "addExtraSearchText" -> {
+                    updateLocaleText(
+                        intent.getStringExtra("clear_cache"),
+                        intent.getStringExtra("storage"))
+                }
+            }
         }
     }
 
     override fun onCreate() {
         super.onCreate()
-        updateLocaleText()
+        updateLocaleText(null, null)
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("disableSelf")
+        intentFilter.addAction("addExtraSearchText")
         LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mLocalReceiver, IntentFilter("disableSelf"))
+            .registerReceiver(mLocalReceiver, intentFilter)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        updateLocaleText()
-    }
+    private fun updateLocaleText(clearCacheText: CharSequence?, storageText: CharSequence?) {
+        arrayTextClearCacheButton.clear()
+        clearCacheText?.let { arrayTextClearCacheButton.add(it) }
+        arrayTextClearCacheButton.add(getText(R.string.clear_cache_btn_text))
 
-    private fun updateLocaleText() {
-        arrayTextClearCacheButton = arrayOf(
-            getText(R.string.clear_cache_btn_text),
-        )
-
-        arrayTextStorageAndCacheMenu = arrayOf(
-            getText(R.string.storage_settings_for_app),
-            getText(R.string.storage_label),
-        )
+        arrayTextStorageAndCacheMenu.clear()
+        storageText?.let { arrayTextStorageAndCacheMenu.add(it) }
+        arrayTextStorageAndCacheMenu.add(getText(R.string.storage_settings_for_app))
+        arrayTextStorageAndCacheMenu.add(getText(R.string.storage_label))
     }
 
     override fun onDestroy() {
@@ -227,7 +233,7 @@ class AppCacheCleanerService : AccessibilityService() {
     companion object {
         private val TAG = AppCacheCleanerService::class.java.simpleName
 
-        private lateinit var arrayTextClearCacheButton: Array<CharSequence>
-        private lateinit var arrayTextStorageAndCacheMenu: Array<CharSequence>
+        private var arrayTextClearCacheButton = ArrayList<CharSequence>()
+        private var arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
     }
 }
