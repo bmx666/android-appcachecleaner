@@ -220,12 +220,16 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         val hasAccessibilityPermission = checkAccessibilityPermission(this)
         val hasUsageStatsPermission = checkUsageStatsPermission(this)
-        val hasAllPermissions = hasAccessibilityPermission and hasUsageStatsPermission
+        // Usage stats permission is allow get cache size of apps only for Android 8 and later
+        val ignoreUsageStatsPermission = (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+
+        val hasAllPermissions = hasAccessibilityPermission and
+                (hasUsageStatsPermission or ignoreUsageStatsPermission)
 
         if (!hasAccessibilityPermission) {
             Toast.makeText(this, getText(R.string.text_enable_accessibility_permission), Toast.LENGTH_SHORT).show()
             binding.textView.text = getText(R.string.text_enable_accessibility)
-        } else if (!hasUsageStatsPermission) {
+        } else if (!hasUsageStatsPermission and !ignoreUsageStatsPermission) {
             Toast.makeText(this, getText(R.string.text_enable_usage_stats_permission), Toast.LENGTH_SHORT).show()
             binding.textView.text = getText(R.string.text_enable_usage_stats)
         } else {
@@ -237,6 +241,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.btnCleanUserAppCache.isEnabled = hasAllPermissions
         binding.btnCleanSystemAppCache.isEnabled = hasAllPermissions
         binding.btnCleanAllAppCache.isEnabled = hasAllPermissions
+
+        if (ignoreUsageStatsPermission)
+            binding.btnOpenUsageStats.visibility = View.GONE
     }
 
     override fun onBackPressed() {
