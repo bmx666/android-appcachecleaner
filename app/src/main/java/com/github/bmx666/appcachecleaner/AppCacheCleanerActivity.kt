@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -371,8 +372,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             if (!loadingPkgList.get()) return
 
             var localizedLabel: String? = null
+            var icon: Drawable? = null
             packageManager?.let { pm ->
                 try {
+                    icon = pm.getApplicationIcon(pkgInfo.packageName)
                     val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
                     val resId = pkgInfo.applicationInfo.labelRes
                     if (resId != 0)
@@ -385,7 +388,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             val stats = getStorageStats(pkgInfo.packageName)
 
-            PlaceholderContent.addItem(pkgInfo, label,
+            PlaceholderContent.addItem(pkgInfo, label, icon,
                 checkedPkgList.contains(pkgInfo.packageName), stats)
 
             runOnUiThread {

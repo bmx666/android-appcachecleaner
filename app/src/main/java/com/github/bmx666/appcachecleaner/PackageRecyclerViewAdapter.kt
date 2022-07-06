@@ -1,14 +1,13 @@
 package com.github.bmx666.appcachecleaner
 
+import android.graphics.Color
 import android.os.Build
 import android.text.format.Formatter
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent.PlaceholderPackage
 import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
@@ -31,6 +30,7 @@ class PackageRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
+        holder.packageIconView.setImageDrawable(item.icon)
         holder.packageNameView.text = item.name
         holder.packageLabelView.text = item.label
         holder.packageLabelView.setOnCheckedChangeListener(null)
@@ -53,6 +53,7 @@ class PackageRecyclerViewAdapter(
     inner class ViewHolder(binding: FragmentPackageBinding) :
         RecyclerView.ViewHolder(binding.root)
     {
+        val packageIconView: ImageView = binding.packageIcon
         val packageLabelView: CheckBox = binding.packageLabel
         val packageNameView: TextView = binding.packageName
         val cacheSizeView: TextView = binding.cacheSize
