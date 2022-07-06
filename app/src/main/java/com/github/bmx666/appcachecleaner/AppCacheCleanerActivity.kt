@@ -1,7 +1,6 @@
 package com.github.bmx666.appcachecleaner
 
 import android.app.AlertDialog
-import android.app.AppOpsManager
 import android.app.usage.StorageStats
 import android.app.usage.StorageStatsManager
 import android.content.ActivityNotFoundException
@@ -16,7 +15,6 @@ import android.os.Bundle
 import android.os.ConditionVariable
 import android.os.storage.StorageManager
 import android.provider.Settings
-import android.text.TextUtils.SimpleStringSplitter
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -24,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAccessibilityPermission
+import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAllRequiredPermissions
+import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkUsageStatsPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
@@ -202,7 +203,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             getSharedPreferences(SETTINGS_CHECKED_PACKAGE_LIST_TAG, MODE_PRIVATE)
                         .getStringSet(SETTINGS_CHECKED_PACKAGE_TAG, HashSet()) ?: HashSet())
 
-        if (checkAccessibilityPermission() and checkUsageStatsPermission())
+        if (checkAllRequiredPermissions(this))
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
     }
 
@@ -217,8 +218,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         if (!cleanCacheFinished.get()) return
 
-        val hasAccessibilityPermission = checkAccessibilityPermission()
-        val hasUsageStatsPermission = checkUsageStatsPermission()
+        val hasAccessibilityPermission = checkAccessibilityPermission(this)
+        val hasUsageStatsPermission = checkUsageStatsPermission(this)
         val hasAllPermissions = hasAccessibilityPermission and hasUsageStatsPermission
 
         if (!hasAccessibilityPermission) {
@@ -313,59 +314,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-    }
-
-    // method to check is the user has permitted the accessibility permission
-    // if not then prompt user to the system's Settings activity
-    private fun checkAccessibilityPermission(): Boolean {
-        try {
-            val accessibilityEnabled =
-                Settings.Secure.getInt(
-                    this.contentResolver,
-                    Settings.Secure.ACCESSIBILITY_ENABLED)
-
-            if (accessibilityEnabled != 1) return false
-
-            val accessibilityServiceName = packageName + "/" +
-                    AppCacheCleanerService::class.java.name
-
-            val enabledServices =
-                Settings.Secure.getString(
-                    this.contentResolver,
-                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-
-            val stringColonSplitter = SimpleStringSplitter(':')
-            stringColonSplitter.setString(enabledServices)
-            while (stringColonSplitter.hasNext()) {
-                if (accessibilityServiceName.contentEquals(stringColonSplitter.next()))
-                    return true
-            }
-
-            return false
-        } catch (e: Settings.SettingNotFoundException) {
-            e.printStackTrace()
-        }
-
-        return false
-    }
-
-    private fun checkUsageStatsPermission(): Boolean {
-        try {
-            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
-            val appOpsManager = getSystemService(APP_OPS_SERVICE) as AppOpsManager
-            val mode = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-                appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                    applicationInfo.uid, applicationInfo.packageName)
-            else
-                appOpsManager.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                    applicationInfo.uid, applicationInfo.packageName)
-
-            return mode == AppOpsManager.MODE_ALLOWED
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-
-        return false
     }
 
     private fun getListInstalledUserApps(): ArrayList<PackageInfo> {
