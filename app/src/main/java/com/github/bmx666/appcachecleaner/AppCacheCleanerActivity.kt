@@ -21,6 +21,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAccessibilityPermission
@@ -77,10 +79,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             PlaceholderContent.ITEMS.filter { it.checked }.forEach { checkedPkgList.add(it.name) }
             PlaceholderContent.ITEMS.filter { !it.checked }.forEach { checkedPkgList.remove(it.name) }
 
-            getSharedPreferences(SETTINGS_CHECKED_PACKAGE_LIST_TAG, MODE_PRIVATE)
-                .edit()
-                .putStringSet(SETTINGS_CHECKED_PACKAGE_TAG, checkedPkgList)
-                .apply()
+            SharedPreferencesManager.PackageList.saveChecked(this, checkedPkgList)
 
             CoroutineScope(IO).launch {
                 startCleanCache(PlaceholderContent.ITEMS.filter { it.checked }.map { it.name })
@@ -135,10 +134,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         binding.btnAddExtraSearchText.setOnClickListener {
             val locale = resources.configuration.locales.get(0)
-            val sharedPref = getSharedPreferences("ExtraSearchText", MODE_PRIVATE)
 
             val inputEditTextClearCache = EditText(this)
-            val clearCacheText = sharedPref.getString("$locale,clear_cache", null)
+            val clearCacheText = SharedPreferencesManager
+                .ExtraSearchText.getClearCache(this, locale)
             if (clearCacheText?.isNotEmpty() == true)
                 inputEditTextClearCache.setText(clearCacheText)
             else
@@ -151,22 +150,19 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                             getText(R.string.clear_cache_btn_text)))
                 .setView(inputEditTextClearCache)
                 .setPositiveButton("OK") { _, _ ->
-                    if (inputEditTextClearCache.text.isNullOrEmpty()) return@setPositiveButton
-
-                    val sharedPrefEdit = getSharedPreferences("ExtraSearchText", MODE_PRIVATE).edit()
-                    sharedPrefEdit.putString("$locale,clear_cache", inputEditTextClearCache.text.toString())
-                    sharedPrefEdit.apply()
+                    SharedPreferencesManager.ExtraSearchText.saveClearCache(
+                        this, locale, inputEditTextClearCache.text)
                 }
                 .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
-                    val sharedPrefEdit = getSharedPreferences("ExtraSearchText", MODE_PRIVATE).edit()
-                    sharedPrefEdit.remove("$locale,clear_cache")
-                    sharedPrefEdit.apply()
+                    SharedPreferencesManager.ExtraSearchText.removeClearCache(
+                        this, locale)
                 }
                 .create()
             dialogForClearCacheText.show()
 
             val inputEditTextStorage = EditText(this)
-            val storageText = sharedPref.getString("$locale,storage", null)
+            val storageText = SharedPreferencesManager
+                .ExtraSearchText.getStorage(this, locale)
             if (storageText?.isNotEmpty() == true)
                 inputEditTextStorage.setText(storageText)
             else
@@ -185,24 +181,18 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                         getText(R.string.storage_label)))
                 .setView(inputEditTextStorage)
                 .setPositiveButton("OK") { _, _ ->
-                    if (inputEditTextStorage.text.isNullOrEmpty()) return@setPositiveButton
-
-                    val sharedPrefEdit = getSharedPreferences("ExtraSearchText", MODE_PRIVATE).edit()
-                    sharedPrefEdit.putString("$locale,storage", inputEditTextStorage.text.toString())
-                    sharedPrefEdit.apply()
+                    SharedPreferencesManager.ExtraSearchText.saveStorage(
+                        this, locale, inputEditTextStorage.text)
                 }
                 .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
-                    val sharedPrefEdit = getSharedPreferences("ExtraSearchText", MODE_PRIVATE).edit()
-                    sharedPrefEdit.remove("$locale,storage")
-                    sharedPrefEdit.apply()
+                    SharedPreferencesManager.ExtraSearchText.removeStorage(
+                        this, locale)
                 }
                 .create()
             dialogForStorageText.show()
         }
 
-        checkedPkgList.addAll(
-            getSharedPreferences(SETTINGS_CHECKED_PACKAGE_LIST_TAG, MODE_PRIVATE)
-                        .getStringSet(SETTINGS_CHECKED_PACKAGE_TAG, HashSet()) ?: HashSet())
+        checkedPkgList.addAll(SharedPreferencesManager.PackageList.getChecked(this))
 
         if (checkAllRequiredPermissions(this))
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
@@ -210,7 +200,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this)
-            .sendBroadcast(Intent("disableSelf"))
+            .sendBroadcast(Intent(Constant.Intent.DisableSelf.ACTION))
         super.onDestroy()
     }
 
@@ -456,17 +446,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun addExtraSearchText(locale: Locale) {
-        val intent = Intent("addExtraSearchText")
+        val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
 
-        val sharedPref = getSharedPreferences("ExtraSearchText", MODE_PRIVATE)
-
-        val clearCacheText = sharedPref.getString("$locale,clear_cache", null)
+        val clearCacheText = SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)
         if (clearCacheText?.isNotEmpty() == true)
-            intent.putExtra("clear_cache", clearCacheText)
+            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE, clearCacheText)
 
-        val storageText = sharedPref.getString("$locale,storage", null)
+        val storageText = SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)
         if (storageText?.isNotEmpty() == true)
-            intent.putExtra("storage", storageText)
+            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE, storageText)
 
         intent.extras?.let {
             LocalBroadcastManager.getInstance(this)
@@ -479,9 +467,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         const val ARG_DISPLAY_TEXT = "display-text"
 
         const val FRAGMENT_PACKAGE_LIST_TAG = "package-list"
-
-        const val SETTINGS_CHECKED_PACKAGE_LIST_TAG = "package-list"
-        const val SETTINGS_CHECKED_PACKAGE_TAG = "checked"
 
         val loadingPkgList = AtomicBoolean(false)
         val cleanAppCacheFinished = AtomicBoolean(false)

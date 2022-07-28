@@ -12,6 +12,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.TimberFileTree
 import com.github.bmx666.appcachecleaner.util.findNestedChildByClassName
 import com.github.bmx666.appcachecleaner.util.getAllChild
@@ -67,15 +68,15 @@ class AppCacheCleanerService : AccessibilityService() {
     private val mLocalReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                "disableSelf" -> {
+                Constant.Intent.DisableSelf.ACTION -> {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) unregisterButton()
                     disableSelf()
                 }
-                "addExtraSearchText" -> {
+                Constant.Intent.ExtraSearchText.ACTION -> {
                     updateLocaleText(
-                        intent.getStringExtra("clear_cache"),
-                        intent.getStringExtra("storage"))
+                        intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE),
+                        intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE))
                 }
             }
         }
@@ -87,8 +88,8 @@ class AppCacheCleanerService : AccessibilityService() {
             createLogFile()
         updateLocaleText(null, null)
         val intentFilter = IntentFilter()
-        intentFilter.addAction("disableSelf")
-        intentFilter.addAction("addExtraSearchText")
+        intentFilter.addAction(Constant.Intent.DisableSelf.ACTION)
+        intentFilter.addAction(Constant.Intent.ExtraSearchText.ACTION)
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(mLocalReceiver, intentFilter)
     }
