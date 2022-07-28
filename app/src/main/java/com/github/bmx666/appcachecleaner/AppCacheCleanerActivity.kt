@@ -337,23 +337,37 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun addPackageToPlaceholderContent() {
-        PlaceholderContent.ITEMS.clear()
+        val locale = resources.configuration.locales.get(0)
+        PlaceholderContent.reset()
+
+        var progressApps = 0
+        val totalApps = pkgInfoListFragment.size
+
         pkgInfoListFragment.forEach { pkgInfo ->
 
             if (!loadingPkgList.get()) return
 
-            val icon = PackageManagerHelper.getApplicationIcon(this, pkgInfo)
-            val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
             val stats = PackageManagerHelper.getStorageStats(this, pkgInfo)
 
-            PlaceholderContent.addItem(pkgInfo, label, icon,
-                checkedPkgList.contains(pkgInfo.packageName), stats)
+            if (PlaceholderContent.contains(pkgInfo)) {
+                PlaceholderContent.updateStats(pkgInfo, stats)
+                if (!PlaceholderContent.isSameLabelLocale(pkgInfo, locale)) {
+                    val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                    PlaceholderContent.updateLabel(pkgInfo, label, locale)
+                }
+            } else {
+                val icon = PackageManagerHelper.getApplicationIcon(this, pkgInfo)
+                val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                val checked = checkedPkgList.contains(pkgInfo.packageName)
+                PlaceholderContent.addItem(pkgInfo, label, locale, icon, checked, stats)
+            }
+
+            progressApps += 1
 
             runOnUiThread {
                 binding.progressBarPackageList.incrementProgressBy(1)
                 binding.textProgressPackageList.text = String.format(Locale.getDefault(),
-                    "%d / %d", PlaceholderContent.ITEMS.size,
-                    pkgInfoListFragment.size)
+                    "%d / %d", progressApps, totalApps)
             }
         }
 

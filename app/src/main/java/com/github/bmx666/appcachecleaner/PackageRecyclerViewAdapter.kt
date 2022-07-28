@@ -42,7 +42,7 @@ class PackageRecyclerViewAdapter(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && item.stats != null) {
             val ctx = holder.cacheSizeView.context
             holder.cacheSizeView.text = ctx.getString(R.string.text_cache_size_fmt,
-                Formatter.formatShortFileSize(ctx, item.stats.cacheBytes))
+                Formatter.formatShortFileSize(ctx, item.stats!!.cacheBytes))
         } else {
             holder.cacheSizeView.visibility = View.GONE
         }
