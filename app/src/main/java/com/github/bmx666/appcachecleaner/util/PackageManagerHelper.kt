@@ -1,0 +1,80 @@
+package com.github.bmx666.appcachecleaner.util
+
+import android.app.usage.StorageStats
+import android.app.usage.StorageStatsManager
+import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.storage.StorageManager
+
+
+class PackageManagerHelper {
+
+    companion object {
+
+        @JvmStatic
+        fun getInstalledApps(context: Context,
+                             systemNotUpdated: Boolean,
+                             systemUpdated: Boolean,
+                             userOnly: Boolean): ArrayList<PackageInfo> {
+            val list = context.packageManager.getInstalledPackages(0)
+            val pkgInfoList = ArrayList<PackageInfo>()
+            for (i in list.indices) {
+                val packageInfo = list[i]
+                val flags = packageInfo!!.applicationInfo.flags
+                val isSystemApp = (flags and ApplicationInfo.FLAG_SYSTEM) != 0
+                val isUpdatedSystemApp = (flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
+                val addPkg = (systemNotUpdated && (isSystemApp and !isUpdatedSystemApp)) or
+                        (systemUpdated && (isSystemApp and isUpdatedSystemApp)) or
+                        (userOnly && (!isSystemApp and !isUpdatedSystemApp))
+                if (addPkg)
+                    pkgInfoList.add(packageInfo)
+            }
+
+            return pkgInfoList
+        }
+
+        @JvmStatic
+        fun getApplicationIcon(context: Context, pkgInfo: PackageInfo): Drawable? {
+            return context.packageManager.getApplicationIcon(pkgInfo.packageName)
+        }
+
+        @JvmStatic
+        fun getApplicationLabel(context: Context, pkgInfo: PackageInfo): String {
+            var localizedLabel: String? = null
+            context.packageManager?.let { pm ->
+                try {
+                    val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
+                    val resId = pkgInfo.applicationInfo.labelRes
+                    if (resId != 0)
+                        localizedLabel = res.getString(resId)
+                } catch (e: PackageManager.NameNotFoundException) {}
+            }
+
+            return localizedLabel
+                ?: pkgInfo.applicationInfo.nonLocalizedLabel?.toString()
+                ?: pkgInfo.packageName
+        }
+
+        @JvmStatic
+        fun getStorageStats(context: Context, pkgInfo: PackageInfo): StorageStats? {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null
+
+            try {
+                val storageStatsManager =
+                    context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+                return storageStatsManager.queryStatsForPackage(
+                    StorageManager.UUID_DEFAULT, pkgInfo.packageName,
+                    android.os.Process.myUserHandle()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            return null
+        }
+    }
+}

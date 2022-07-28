@@ -1,20 +1,13 @@
 package com.github.bmx666.appcachecleaner
 
 import android.app.AlertDialog
-import android.app.usage.StorageStats
-import android.app.usage.StorageStatsManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.ConditionVariable
-import android.os.storage.StorageManager
 import android.provider.Settings
 import android.view.View
 import android.widget.EditText
@@ -25,6 +18,7 @@ import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAccessibilityPermission
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAllRequiredPermissions
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkUsageStatsPermission
@@ -51,17 +45,32 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.btnCleanUserAppCache.setOnClickListener {
-            pkgInfoListFragment = getListInstalledUserApps()
+            pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
+                context = this,
+                systemNotUpdated = false,
+                systemUpdated = true,
+                userOnly = true,
+            )
             showPackageFragment()
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
-            pkgInfoListFragment = getListInstalledSystemApps()
+            pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
+                context = this,
+                systemNotUpdated = true,
+                systemUpdated = false,
+                userOnly = false,
+            )
             showPackageFragment()
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
-            pkgInfoListFragment = getListInstalledAllApps()
+            pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
+                context = this,
+                systemNotUpdated = true,
+                systemUpdated = true,
+                userOnly = true,
+            )
             showPackageFragment()
         }
 
@@ -314,34 +323,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
     }
 
-    private fun getListInstalledUserApps(): ArrayList<PackageInfo> {
-        return getListInstalledApps(systemOnly = false, userOnly = true)
-    }
-
-    private fun getListInstalledSystemApps(): ArrayList<PackageInfo> {
-        return getListInstalledApps(systemOnly = true, userOnly = false)
-    }
-
-    private fun getListInstalledAllApps(): ArrayList<PackageInfo> {
-        return getListInstalledApps(systemOnly = true, userOnly = true)
-    }
-
-    private fun getListInstalledApps(systemOnly: Boolean, userOnly: Boolean): ArrayList<PackageInfo> {
-        val list = packageManager.getInstalledPackages(0)
-        val pkgInfoList = ArrayList<PackageInfo>()
-        for (i in list.indices) {
-            val packageInfo = list[i]
-            val flags = packageInfo!!.applicationInfo.flags
-            val isSystemApp = (flags and ApplicationInfo.FLAG_SYSTEM) != 0
-            val isUpdatedSystemApp = (flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
-            val addPkg = (systemOnly && (isSystemApp and !isUpdatedSystemApp)) or
-                            (userOnly && (!isSystemApp or isUpdatedSystemApp))
-            if (addPkg)
-                pkgInfoList.add(packageInfo)
-        }
-        return pkgInfoList
-    }
-
     private fun startApplicationDetailsActivity(packageName: String) {
         try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -361,22 +342,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             if (!loadingPkgList.get()) return
 
-            var localizedLabel: String? = null
-            var icon: Drawable? = null
-            packageManager?.let { pm ->
-                try {
-                    icon = pm.getApplicationIcon(pkgInfo.packageName)
-                    val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
-                    val resId = pkgInfo.applicationInfo.labelRes
-                    if (resId != 0)
-                        localizedLabel = res.getString(resId)
-                } catch (e: PackageManager.NameNotFoundException) {}
-            }
-            val label = localizedLabel
-                ?: pkgInfo.applicationInfo.nonLocalizedLabel?.toString()
-                ?: pkgInfo.packageName
-
-            val stats = getStorageStats(pkgInfo.packageName)
+            val icon = PackageManagerHelper.getApplicationIcon(this, pkgInfo)
+            val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+            val stats = PackageManagerHelper.getStorageStats(this, pkgInfo)
 
             PlaceholderContent.addItem(pkgInfo, label, icon,
                 checkedPkgList.contains(pkgInfo.packageName), stats)
@@ -406,23 +374,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             loadingPkgList.set(false)
         }
-    }
-
-    private fun getStorageStats(packageName: String): StorageStats? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null
-
-        try {
-            val storageStatsManager =
-                getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
-            return storageStatsManager.queryStatsForPackage(
-                StorageManager.UUID_DEFAULT, packageName,
-                android.os.Process.myUserHandle()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return null
     }
 
     private fun showPackageFragment() {
