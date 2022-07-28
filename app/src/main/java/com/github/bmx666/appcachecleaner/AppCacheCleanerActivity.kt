@@ -448,13 +448,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private fun addExtraSearchText(locale: Locale) {
         val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
 
-        val clearCacheText = SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)
-        if (clearCacheText?.isNotEmpty() == true)
-            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE, clearCacheText)
+        SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)?.let { value ->
+            if (value.isNotEmpty())
+                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE, value)
+        }
 
-        val storageText = SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)
-        if (storageText?.isNotEmpty() == true)
-            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE, storageText)
+        SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)?.let { value ->
+            if (value.isNotEmpty())
+                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE, value)
+        }
 
         intent.extras?.let {
             LocalBroadcastManager.getInstance(this)
@@ -473,6 +475,5 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         val cleanCacheFinished = AtomicBoolean(true)
         val cleanCacheInterrupt = AtomicBoolean(false)
         val waitAccessibility = ConditionVariable()
-        private val TAG = AppCacheCleanerActivity::class.java.simpleName
     }
 }

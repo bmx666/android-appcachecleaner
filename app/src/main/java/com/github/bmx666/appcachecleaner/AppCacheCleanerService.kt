@@ -255,8 +255,6 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     companion object {
-        private val TAG = AppCacheCleanerService::class.java.simpleName
-
         private var arrayTextClearCacheButton = ArrayList<CharSequence>()
         private var arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
     }
