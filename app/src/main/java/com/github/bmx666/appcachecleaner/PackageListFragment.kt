@@ -21,7 +21,7 @@ class PackageListFragment : Fragment() {
         if (view is RecyclerView) {
             with(view) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = PackageRecyclerViewAdapter(PlaceholderContent.DISPLAYED_ITEMS)
+                adapter = PackageRecyclerViewAdapter(PlaceholderContent.getItems())
             }
         }
         return view

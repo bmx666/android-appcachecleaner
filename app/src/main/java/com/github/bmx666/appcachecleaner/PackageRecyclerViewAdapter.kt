@@ -1,16 +1,17 @@
 package com.github.bmx666.appcachecleaner
 
-import android.graphics.Color
 import android.os.Build
 import android.text.format.Formatter
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-
-import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent.PlaceholderPackage
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
+import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent.PlaceholderPackage
 
 class PackageRecyclerViewAdapter(
     private val values: List<PlaceholderPackage>
@@ -30,6 +31,11 @@ class PackageRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
+        if (item.ignore) {
+            holder.packageLayout.visibility = View.GONE
+            return
+        }
+        holder.packageLayout.visibility = View.VISIBLE
         holder.packageIconView.setImageDrawable(item.icon)
         holder.packageNameView.text = item.name
         holder.packageLabelView.text = item.label
@@ -48,11 +54,12 @@ class PackageRecyclerViewAdapter(
         }
     }
 
-    override fun getItemCount(): Int = values.size
+    override fun getItemCount(): Int = values.filter { !it.ignore }.size
 
     inner class ViewHolder(binding: FragmentPackageBinding) :
         RecyclerView.ViewHolder(binding.root)
     {
+        val packageLayout: LinearLayout = binding.packageLayout
         val packageIconView: ImageView = binding.packageIcon
         val packageLabelView: CheckBox = binding.packageLabel
         val packageNameView: TextView = binding.packageName

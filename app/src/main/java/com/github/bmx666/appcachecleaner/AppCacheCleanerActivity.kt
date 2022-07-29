@@ -85,40 +85,36 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.layoutFab.visibility = View.GONE
             binding.layoutButton.visibility = View.VISIBLE
 
-            PlaceholderContent.ITEMS.filter { it.checked }.forEach { checkedPkgList.add(it.name) }
-            PlaceholderContent.ITEMS.filter { !it.checked }.forEach { checkedPkgList.remove(it.name) }
+            PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
+            PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
 
             SharedPreferencesManager.PackageList.saveChecked(this, checkedPkgList)
 
             CoroutineScope(IO).launch {
-                startCleanCache(PlaceholderContent.ITEMS.filter { it.checked }.map { it.name })
+                startCleanCache(PlaceholderContent.getVisibleCheckedPackageList())
             }
         }
 
         binding.fabCheckAllApps.tag = "uncheck"
         binding.fabCheckAllApps.setOnClickListener {
 
-            if (PlaceholderContent.ITEMS.all { it.checked })
+            if (PlaceholderContent.isAllCheckedVisible())
                 binding.fabCheckAllApps.tag = "uncheck"
-            else if (PlaceholderContent.ITEMS.none { it.checked })
+            else if (PlaceholderContent.isAllUncheckedVisible())
                 binding.fabCheckAllApps.tag = "check"
 
             if (binding.fabCheckAllApps.tag.equals("uncheck")) {
                 binding.fabCheckAllApps.tag = "check"
                 binding.fabCheckAllApps.contentDescription = getString(R.string.description_apps_all_check)
-                PlaceholderContent.ITEMS.forEach { it.checked = false }
+                PlaceholderContent.uncheckAllVisible()
             } else {
                 binding.fabCheckAllApps.tag = "uncheck"
                 binding.fabCheckAllApps.contentDescription = getString(R.string.description_apps_all_uncheck)
-                PlaceholderContent.ITEMS.forEach { it.checked = true }
+                PlaceholderContent.checkAllVisible()
             }
 
-            PlaceholderContent.ITEMS.forEach {
-                if (it.checked)
-                    checkedPkgList.add(it.name)
-                else
-                    checkedPkgList.remove(it.name)
-            }
+            PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
+            PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
 
             PlaceholderContent.sort()
 

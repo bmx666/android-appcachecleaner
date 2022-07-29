@@ -9,15 +9,17 @@ import java.util.*
 
 object PlaceholderContent {
 
-    val ITEMS: MutableList<PlaceholderPackage> = ArrayList()
-    val DISPLAYED_ITEMS: MutableList<PlaceholderPackage> = ArrayList()
+    private val ITEMS: MutableList<PlaceholderPackage> = ArrayList()
+
+    fun getItems(): MutableList<PlaceholderPackage> {
+        return ITEMS
+    }
 
     fun contains(pkgInfo: PackageInfo): Boolean {
         return ITEMS.any { it.name == pkgInfo.packageName }
     }
 
     fun reset() {
-        DISPLAYED_ITEMS.clear()
         ITEMS.forEach{ it.ignore = true }
     }
 
@@ -26,17 +28,20 @@ object PlaceholderContent {
             sortByCacheSize()
         else
             sortByLabel()
-        DISPLAYED_ITEMS.addAll(ITEMS.filter { !it.ignore })
     }
 
     private fun sortByLabel() {
-        ITEMS.sortWith(compareBy<PlaceholderPackage> { !it.checked }.thenBy { it.label })
+        ITEMS.sortWith(compareBy<PlaceholderPackage> { it.ignore }
+            .thenBy{ !it.checked }
+            .thenBy { it.label })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun sortByCacheSize() {
-        ITEMS.sortWith(compareBy<PlaceholderPackage> { !it.checked }
-            .thenByDescending { it.stats?.cacheBytes ?: 0 }.thenBy { it.label })
+        ITEMS.sortWith(compareBy<PlaceholderPackage> { it.ignore }
+            .thenBy{ !it.checked }
+            .thenByDescending { it.stats?.cacheBytes ?: 0 }
+            .thenBy { it.label })
     }
 
     fun addItem(pkgInfo: PackageInfo, label: String, locale: Locale, icon: Drawable?,
@@ -70,6 +75,36 @@ object PlaceholderContent {
         ITEMS.find { it.name == pkgInfo.packageName }?.let {
             it.label = label; it.locale = locale; it.ignore = false
         }
+    }
+
+    fun getVisibleCheckedPackageList(): List<String> {
+        return ITEMS
+            .filter { !it.ignore }
+            .filter { it.checked }
+            .map { it.name }
+    }
+
+    fun getVisibleUncheckedPackageList(): List<String> {
+        return ITEMS
+            .filter { !it.ignore }
+            .filter { !it.checked }
+            .map { it.name }
+    }
+
+    fun isAllCheckedVisible(): Boolean {
+        return ITEMS.all { !it.ignore and it.checked }
+    }
+
+    fun isAllUncheckedVisible(): Boolean {
+        return ITEMS.none { !it.ignore and it.checked }
+    }
+
+    fun checkAllVisible() {
+        ITEMS.forEach { if (!it.ignore) it.checked = true }
+    }
+
+    fun uncheckAllVisible() {
+        ITEMS.forEach { if (!it.ignore) it.checked = false }
     }
 
     data class PlaceholderPackage(val pkgInfo: PackageInfo, val name: String,
