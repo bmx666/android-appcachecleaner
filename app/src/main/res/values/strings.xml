@@ -25,6 +25,9 @@
     <string translatable="false" name="dialog_extra_search_text_btn_ok">OK</string>
     <string translatable="false" name="dialog_extra_search_text_btn_remove">Remove</string>
 
+    <string translatable="false" name="menu_help">Help</string>
+    <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>
+
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
     <string name="storage_label" >Storage</string>

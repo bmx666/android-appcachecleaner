@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/help"
+        android:icon="@drawable/ic_baseline_help_24"
+        android:title="@string/menu_help"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title="@string/menu_extra_search_text_title">
+        <menu>
+            <item
+                android:id="@+id/add_extra_search_text_storage"
+                android:title="@string/storage_settings_for_app" />
+            <item
+                android:id="@+id/add_extra_search_text_clear_cache"
+                android:title="@string/clear_cache_btn_text" />
+        </menu>
+    </item>
+</menu>

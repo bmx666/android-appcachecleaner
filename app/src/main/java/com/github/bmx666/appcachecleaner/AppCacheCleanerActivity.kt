@@ -9,6 +9,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.ConditionVariable
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -137,70 +140,33 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.btnAddExtraSearchText.setOnClickListener {
-            val locale = resources.configuration.locales.get(0)
-
-            val inputEditTextClearCache = EditText(this)
-            val clearCacheText = SharedPreferencesManager
-                .ExtraSearchText.getClearCache(this, locale)
-            if (clearCacheText?.isNotEmpty() == true)
-                inputEditTextClearCache.setText(clearCacheText)
-            else
-                inputEditTextClearCache.hint = getText(R.string.clear_cache_btn_text)
-
-            val dialogForClearCacheText = AlertDialog.Builder(this)
-                .setTitle(getText(R.string.dialog_extra_search_text_title))
-                .setMessage(getString(R.string.dialog_extra_search_text_message,
-                            locale.displayLanguage, locale.displayCountry,
-                            getText(R.string.clear_cache_btn_text)))
-                .setView(inputEditTextClearCache)
-                .setPositiveButton("OK") { _, _ ->
-                    SharedPreferencesManager.ExtraSearchText.saveClearCache(
-                        this, locale, inputEditTextClearCache.text)
-                }
-                .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
-                    SharedPreferencesManager.ExtraSearchText.removeClearCache(
-                        this, locale)
-                }
-                .create()
-            dialogForClearCacheText.show()
-
-            val inputEditTextStorage = EditText(this)
-            val storageText = SharedPreferencesManager
-                .ExtraSearchText.getStorage(this, locale)
-            if (storageText?.isNotEmpty() == true)
-                inputEditTextStorage.setText(storageText)
-            else
-                inputEditTextStorage.hint =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                        getText(R.string.storage_settings_for_app)
-                    else
-                        getText(R.string.storage_label)
-            val dialogForStorageText = AlertDialog.Builder(this)
-                .setTitle(getText(R.string.dialog_extra_search_text_title))
-                .setMessage(getString(R.string.dialog_extra_search_text_message,
-                    locale.displayLanguage, locale.displayCountry,
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                        getText(R.string.storage_settings_for_app)
-                    else
-                        getText(R.string.storage_label)))
-                .setView(inputEditTextStorage)
-                .setPositiveButton("OK") { _, _ ->
-                    SharedPreferencesManager.ExtraSearchText.saveStorage(
-                        this, locale, inputEditTextStorage.text)
-                }
-                .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
-                    SharedPreferencesManager.ExtraSearchText.removeStorage(
-                        this, locale)
-                }
-                .create()
-            dialogForStorageText.show()
-        }
-
         checkedPkgList.addAll(SharedPreferencesManager.PackageList.getChecked(this))
 
         if (checkAllRequiredPermissions(this))
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.app_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.add_extra_search_text_storage -> {
+                showExtraSearchTextDialogForStorage()
+                true
+            }
+            R.id.add_extra_search_text_clear_cache -> {
+                showExtraSearchTextDialogForClearCache()
+                true
+            }
+            R.id.help -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onDestroy() {
@@ -423,6 +389,71 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(intent)
         }
+    }
+
+    private fun showExtraSearchTextDialogForStorage() {
+        val locale = resources.configuration.locales.get(0)
+
+        val inputEditText = EditText(this)
+
+        val text = SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)
+        if (text?.isNotEmpty() == true)
+            inputEditText.setText(text)
+        else
+            inputEditText.hint =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    getText(R.string.storage_settings_for_app)
+                else
+                    getText(R.string.storage_label)
+
+        AlertDialog.Builder(this)
+            .setTitle(getText(R.string.dialog_extra_search_text_title))
+            .setMessage(getString(R.string.dialog_extra_search_text_message,
+                locale.displayLanguage, locale.displayCountry,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    getText(R.string.storage_settings_for_app)
+                else
+                    getText(R.string.storage_label)))
+            .setView(inputEditText)
+            .setPositiveButton("OK") { _, _ ->
+                SharedPreferencesManager.ExtraSearchText.saveStorage(
+                    this, locale, inputEditText.text)
+            }
+            .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
+                SharedPreferencesManager.ExtraSearchText.removeStorage(
+                    this, locale)
+            }
+            .create()
+            .show()
+    }
+
+    private fun showExtraSearchTextDialogForClearCache() {
+        val locale = resources.configuration.locales.get(0)
+
+        val inputEditText = EditText(this)
+
+        val text = SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)
+        if (text?.isNotEmpty() == true)
+            inputEditText.setText(text)
+        else
+            inputEditText.hint = getText(R.string.clear_cache_btn_text)
+
+        AlertDialog.Builder(this)
+            .setTitle(getText(R.string.dialog_extra_search_text_title))
+            .setMessage(getString(R.string.dialog_extra_search_text_message,
+                locale.displayLanguage, locale.displayCountry,
+                getText(R.string.clear_cache_btn_text)))
+            .setView(inputEditText)
+            .setPositiveButton("OK") { _, _ ->
+                SharedPreferencesManager.ExtraSearchText.saveClearCache(
+                    this, locale, inputEditText.text)
+            }
+            .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
+                SharedPreferencesManager.ExtraSearchText.removeClearCache(
+                    this, locale)
+            }
+            .create()
+            .show()
     }
 
     companion object {
