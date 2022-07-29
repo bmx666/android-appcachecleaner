@@ -7,8 +7,8 @@
     <string translatable="false" name="text_enable_usage_stats">Allow an application to access Usage Stats</string>
     <string translatable="false" name="text_enable_usage_stats_permission">App does not have rights to access Usage Stats</string>
     <string translatable="false" name="text_clean_cache_left">left apps</string>
-    <string translatable="false" name="text_clean_cache_finish">Clean cache was finished\nAccessibility can be disabled</string>
-    <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted\nAccessibility can be disabled</string>
+    <string translatable="false" name="text_clean_cache_finish">Clean cache was finished</string>
+    <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted</string>
     <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
     <string translatable="false" name="btn_open_usage_stats">Open Usage Stats Settings</string>
     <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>

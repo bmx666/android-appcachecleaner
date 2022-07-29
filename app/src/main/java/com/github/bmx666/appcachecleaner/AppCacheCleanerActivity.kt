@@ -14,7 +14,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
@@ -48,6 +47,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.btnCleanUserAppCache.setOnClickListener {
+            if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
+
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = false,
@@ -58,6 +59,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
+            if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
+
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = true,
@@ -68,6 +71,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
+            if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
+
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = true,
@@ -128,18 +133,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 .commitNow()
         }
 
-        binding.btnOpenAccessibility.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            startActivity(intent)
-        }
-
-        binding.btnOpenUsageStats.setOnClickListener {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            startActivity(intent)
-        }
-
         checkedPkgList.addAll(SharedPreferencesManager.PackageList.getChecked(this))
 
         if (checkAllRequiredPermissions(this))
@@ -173,39 +166,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this)
             .sendBroadcast(Intent(Constant.Intent.DisableSelf.ACTION))
         super.onDestroy()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (!cleanCacheFinished.get()) return
-
-        val hasAccessibilityPermission = checkAccessibilityPermission(this)
-        val hasUsageStatsPermission = checkUsageStatsPermission(this)
-        // Usage stats permission is allow get cache size of apps only for Android 8 and later
-        val ignoreUsageStatsPermission = (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-
-        val hasAllPermissions = hasAccessibilityPermission and
-                (hasUsageStatsPermission or ignoreUsageStatsPermission)
-
-        if (!hasAccessibilityPermission) {
-            Toast.makeText(this, getText(R.string.text_enable_accessibility_permission), Toast.LENGTH_SHORT).show()
-            binding.textView.text = getText(R.string.text_enable_accessibility)
-        } else if (!hasUsageStatsPermission and !ignoreUsageStatsPermission) {
-            Toast.makeText(this, getText(R.string.text_enable_usage_stats_permission), Toast.LENGTH_SHORT).show()
-            binding.textView.text = getText(R.string.text_enable_usage_stats)
-        } else {
-            binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
-        }
-
-        binding.btnOpenAccessibility.isEnabled = !hasAccessibilityPermission
-        binding.btnOpenUsageStats.isEnabled = !hasUsageStatsPermission
-        binding.btnCleanUserAppCache.isEnabled = hasAllPermissions
-        binding.btnCleanSystemAppCache.isEnabled = hasAllPermissions
-        binding.btnCleanAllAppCache.isEnabled = hasAllPermissions
-
-        if (ignoreUsageStatsPermission)
-            binding.btnOpenUsageStats.visibility = View.GONE
     }
 
     override fun onBackPressed() {
@@ -454,6 +414,44 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             }
             .create()
             .show()
+    }
+
+    private fun checkAndDisplayPermissionDialogs(): Boolean {
+        val hasAccessibilityPermission = checkAccessibilityPermission(this)
+
+        if (!hasAccessibilityPermission) {
+            AlertDialog.Builder(this)
+                .setTitle(getText(R.string.text_enable_accessibility_permission))
+                .setMessage(getString(R.string.text_enable_accessibility))
+                .setPositiveButton("OK") { _, _ ->
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                    startActivity(intent)
+                }
+                .create()
+                .show()
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            return checkAccessibilityPermission(this)
+
+        val hasUsageStatsPermission = checkUsageStatsPermission(this)
+
+        // Usage stats permission is allow get cache size of apps only for Android 8 and later
+        if (!hasUsageStatsPermission) {
+            AlertDialog.Builder(this)
+                .setTitle(getText(R.string.text_enable_usage_stats_permission))
+                .setMessage(getString(R.string.text_enable_usage_stats))
+                .setPositiveButton("OK") { _, _ ->
+                    val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                    startActivity(intent)
+                }
+                .create()
+                .show()
+        }
+
+        return checkAccessibilityPermission(this) && checkUsageStatsPermission(this)
     }
 
     companion object {

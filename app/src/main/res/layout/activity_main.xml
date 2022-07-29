@@ -101,19 +101,11 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_enable_accessibility" />
+            android:text="" />
 
-        <Button
-            android:id="@+id/btnOpenAccessibility"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_open_accessibility" />
-
-        <Button
-            android:id="@+id/btnOpenUsageStats"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_open_usage_stats" />
+            android:layout_height="10dp"/>
 
         <Button
             android:id="@+id/btnCleanUserAppCache"
@@ -132,6 +124,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_clean_all_cache" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
 
         <Button
             android:id="@+id/btnCloseApp"
