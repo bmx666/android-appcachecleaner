@@ -1,0 +1,4 @@
+* remove permission buttons, use permission dialog instead
+* remove "add extra search text" button
+* add menu to add extra search text for storage and clear cache
+* cache icon and label of installed apps on first scan
