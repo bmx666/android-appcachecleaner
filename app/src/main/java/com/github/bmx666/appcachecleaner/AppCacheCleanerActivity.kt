@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
@@ -45,6 +46,44 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+
+        onBackPressedDispatcher.addCallback(
+            this, // lifecycle owner
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (loadingPkgList.get()) {
+                        loadingPkgList.set(false)
+
+                        binding.fragmentContainerView.visibility = View.GONE
+                        binding.layoutFab.visibility = View.GONE
+                        binding.layoutProgress.visibility = View.GONE
+
+                        binding.btnCleanUserAppCache.isEnabled = true
+                        binding.btnCleanSystemAppCache.isEnabled = true
+                        binding.btnCleanAllAppCache.isEnabled = true
+
+                        binding.layoutButton.visibility = View.VISIBLE
+
+                        return
+                    }
+
+                    supportFragmentManager.findFragmentByTag(FRAGMENT_PACKAGE_LIST_TAG)?.let { fragment ->
+
+                        binding.fragmentContainerView.visibility = View.GONE
+                        binding.layoutFab.visibility = View.GONE
+
+                        supportFragmentManager.beginTransaction().remove(fragment).commitNow()
+
+                        binding.btnCleanUserAppCache.isEnabled = true
+                        binding.btnCleanSystemAppCache.isEnabled = true
+                        binding.btnCleanAllAppCache.isEnabled = true
+
+                        binding.layoutButton.visibility = View.VISIBLE
+
+                        return
+                    }
+                }
+            })
 
         binding.btnCleanUserAppCache.setOnClickListener {
             if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
@@ -166,41 +205,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this)
             .sendBroadcast(Intent(Constant.Intent.DisableSelf.ACTION))
         super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        if (loadingPkgList.get()) {
-            loadingPkgList.set(false)
-
-            binding.fragmentContainerView.visibility = View.GONE
-            binding.layoutFab.visibility = View.GONE
-            binding.layoutProgress.visibility = View.GONE
-
-            binding.btnCleanUserAppCache.isEnabled = true
-            binding.btnCleanSystemAppCache.isEnabled = true
-            binding.btnCleanAllAppCache.isEnabled = true
-
-            binding.layoutButton.visibility = View.VISIBLE
-
-            return
-        }
-
-        supportFragmentManager.findFragmentByTag(FRAGMENT_PACKAGE_LIST_TAG)?.let { fragment ->
-
-            binding.fragmentContainerView.visibility = View.GONE
-            binding.layoutFab.visibility = View.GONE
-
-            supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-
-            binding.btnCleanUserAppCache.isEnabled = true
-            binding.btnCleanSystemAppCache.isEnabled = true
-            binding.btnCleanAllAppCache.isEnabled = true
-
-            binding.layoutButton.visibility = View.VISIBLE
-
-            return
-        }
-        super.onBackPressed()
     }
 
     private suspend fun startCleanCache() {
