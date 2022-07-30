@@ -1,0 +1,3 @@
+* clear cache of itself in the end to avoid issues
+* fix get current locale for Android M and early
+* fix display menu text in dark mode
