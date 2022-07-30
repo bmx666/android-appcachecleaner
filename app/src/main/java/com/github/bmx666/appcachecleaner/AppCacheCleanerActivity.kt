@@ -53,33 +53,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 override fun handleOnBackPressed() {
                     if (loadingPkgList.get()) {
                         loadingPkgList.set(false)
-
-                        binding.fragmentContainerView.visibility = View.GONE
-                        binding.layoutFab.visibility = View.GONE
-                        binding.layoutProgress.visibility = View.GONE
-
-                        binding.btnCleanUserAppCache.isEnabled = true
-                        binding.btnCleanSystemAppCache.isEnabled = true
-                        binding.btnCleanAllAppCache.isEnabled = true
-
-                        binding.layoutButton.visibility = View.VISIBLE
-
+                        hideFragmentViews()
+                        showCleanButtons()
                         return
                     }
 
                     supportFragmentManager.findFragmentByTag(FRAGMENT_PACKAGE_LIST_TAG)?.let { fragment ->
-
-                        binding.fragmentContainerView.visibility = View.GONE
-                        binding.layoutFab.visibility = View.GONE
-
+                        hideFragmentViews()
                         supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-
-                        binding.btnCleanUserAppCache.isEnabled = true
-                        binding.btnCleanSystemAppCache.isEnabled = true
-                        binding.btnCleanAllAppCache.isEnabled = true
-
-                        binding.layoutButton.visibility = View.VISIBLE
-
+                        showCleanButtons()
                         return
                     }
                 }
@@ -474,6 +456,19 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 resources.configuration.locales.get(0)
             else
                 resources.configuration.locale
+    }
+
+    private fun hideFragmentViews() {
+        binding.fragmentContainerView.visibility = View.GONE
+        binding.layoutFab.visibility = View.GONE
+        binding.layoutProgress.visibility = View.GONE
+    }
+
+    private fun showCleanButtons() {
+        binding.btnCleanUserAppCache.isEnabled = true
+        binding.btnCleanSystemAppCache.isEnabled = true
+        binding.btnCleanAllAppCache.isEnabled = true
+        binding.layoutButton.visibility = View.VISIBLE
     }
 
     companion object {
