@@ -87,7 +87,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.fabCleanCache.setOnClickListener {
-            addExtraSearchText(resources.configuration.locales.get(0))
+            addExtraSearchText()
 
             binding.fragmentContainerView.visibility = View.GONE
             binding.layoutFab.visibility = View.GONE
@@ -259,7 +259,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun addPackageToPlaceholderContent() {
-        val locale = resources.configuration.locales.get(0)
+        val locale = getCurrentLocale()
+
         PlaceholderContent.reset()
 
         var progressApps = 0
@@ -332,7 +333,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
     }
 
-    private fun addExtraSearchText(locale: Locale) {
+    private fun addExtraSearchText() {
+        val locale = getCurrentLocale()
+
         val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
 
         SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)?.let { value ->
@@ -352,7 +355,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun showExtraSearchTextDialogForStorage() {
-        val locale = resources.configuration.locales.get(0)
+        val locale = getCurrentLocale()
 
         val inputEditText = EditText(this)
 
@@ -388,7 +391,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun showExtraSearchTextDialogForClearCache() {
-        val locale = resources.configuration.locales.get(0)
+        val locale = getCurrentLocale()
 
         val inputEditText = EditText(this)
 
@@ -452,6 +455,13 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         return checkAccessibilityPermission(this) && checkUsageStatsPermission(this)
+    }
+
+    private fun getCurrentLocale(): Locale {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                resources.configuration.locales.get(0)
+            else
+                resources.configuration.locale
     }
 
     companion object {
