@@ -17,18 +17,15 @@ Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps
 
 ## How to use
 
-1. Run app
-2. Open **Accessibility Settings**
-3. Enable Accessibility support for **AppCacheCleaner**
-4. Return back to AppCacheCleaner app
-5. Open **Usage Stats Settings**
-6. Enable Usage Stats support for **AppCacheCleaner**
-7. Return back to AppCacheCleaner app
-8. Click **User Apps Cache**, **System Apps Cache** OR **All Apps Cache**
-9. Check required apps (use floating button to check/uncheck all apps)
-10. Press **Clean Cache** floating button
-11. Press **Accessibility button** to interrupt process OR wait until process will be finished
-12. Press **Close App** OR clean app from task manager to disable Accessibility
+1. Click clean cache of **User Apps**, **System Apps** OR **All Apps**
+2. Enable Usage Stats support for **AppCacheCleaner** if it is required
+3. Enable Accessibility support for **AppCacheCleaner** if it is required
+4. Check required apps in list (use floating button to check/uncheck all apps)
+5. Press **Clean Cache** floating button to run cache clean process
+6. Press **Accessibility button** to interrupt process OR wait until process will be finished
+7. Press **Close App** OR clean app from task manager to disable Accessibility
+
+NOTE: Starting with Android 11 it is not possible to dynamically add and hide the **accessibility button** and the accessibility service must be started with it. After closing **AppCacheCleaner**, the accessibility service will be automatically destroyed. That is why every run **AppCacheCleaner** need to re-enable access to Accessibility.
 
 ## Customized Settings UI
 
@@ -39,9 +36,8 @@ Many companies are supplied Customized Android UI, including Settings. It can ca
 3. Go to "Storage" menu
 4. Write down text for "Clear Cache" button
 5. Open app with specific locale (change on required locale in Settings and go back into app)
-6. Click **Add Extra Search Text**
-7. Type user custom search text for "Storage" menu" and press "OK", or "REMOVE" otherwise
-8. Type user custom search text for "Clear cache" button" and press "OK", or "REMOVE" otherwise
+6. Open menu in the top right corner and select **Add Extra Search Text** / **Storage** and enter custom search text for "Storage" menu" and press "OK", or "REMOVE" otherwise
+7. Open menu in the top right corner and select **Add Extra Search Text** / **Clear cache** and enter custom search text for "Clear cache" button" and press "OK", or "REMOVE" otherwise
 
 ## Icon copyright
 
