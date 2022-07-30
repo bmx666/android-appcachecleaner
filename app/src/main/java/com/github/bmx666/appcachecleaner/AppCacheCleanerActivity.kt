@@ -99,7 +99,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             SharedPreferencesManager.PackageList.saveChecked(this, checkedPkgList)
 
             CoroutineScope(IO).launch {
-                startCleanCache(PlaceholderContent.getVisibleCheckedPackageList())
+                startCleanCache()
             }
         }
 
@@ -203,9 +203,17 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    private suspend fun startCleanCache(pkgList: List<String>) {
+    private suspend fun startCleanCache() {
+        val pkgList = PlaceholderContent.getVisibleCheckedPackageList().toMutableList()
+
         cleanCacheInterrupt.set(false)
         cleanCacheFinished.set(false)
+
+        // clear cache of app in the end to avoid issues
+        if (pkgList.contains(packageName)) {
+            pkgList.remove(packageName)
+            pkgList.add(packageName)
+        }
 
         for (i in pkgList.indices) {
             startApplicationDetailsActivity(pkgList[i])
