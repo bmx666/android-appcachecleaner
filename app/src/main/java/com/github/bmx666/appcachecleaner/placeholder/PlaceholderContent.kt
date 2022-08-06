@@ -2,7 +2,6 @@ package com.github.bmx666.appcachecleaner.placeholder
 
 import android.app.usage.StorageStats
 import android.content.pm.PackageInfo
-import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.util.*
@@ -44,7 +43,7 @@ object PlaceholderContent {
             .thenBy { it.label })
     }
 
-    fun addItem(pkgInfo: PackageInfo, label: String, locale: Locale, icon: Drawable?,
+    fun addItem(pkgInfo: PackageInfo, label: String, locale: Locale,
                 checked: Boolean, stats: StorageStats?) {
         ITEMS.add(
             PlaceholderPackage(
@@ -52,7 +51,6 @@ object PlaceholderContent {
                 name = pkgInfo.packageName,
                 label = label,
                 locale = locale,
-                icon = icon,
                 stats = stats,
                 checked = checked,
                 ignore = false))
@@ -109,7 +107,7 @@ object PlaceholderContent {
 
     data class PlaceholderPackage(val pkgInfo: PackageInfo, val name: String,
                                   var label: String, var locale: Locale,
-                                  val icon: Drawable?, var stats: StorageStats?,
+                                  var stats: StorageStats?,
                                   var checked: Boolean, var ignore: Boolean) {
         override fun toString(): String = name
     }

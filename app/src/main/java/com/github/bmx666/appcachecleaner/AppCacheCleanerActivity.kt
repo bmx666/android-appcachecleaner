@@ -273,10 +273,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     PlaceholderContent.updateLabel(pkgInfo, label, locale)
                 }
             } else {
-                val icon = PackageManagerHelper.getApplicationIcon(this, pkgInfo)
                 val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
                 val checked = checkedPkgList.contains(pkgInfo.packageName)
-                PlaceholderContent.addItem(pkgInfo, label, locale, icon, checked, stats)
+                PlaceholderContent.addItem(pkgInfo, label, locale, checked, stats)
             }
 
             progressApps += 1

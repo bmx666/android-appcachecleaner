@@ -10,8 +10,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent.PlaceholderPackage
+import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 
 class PackageRecyclerViewAdapter(
     private val values: List<PlaceholderPackage>
@@ -36,7 +38,6 @@ class PackageRecyclerViewAdapter(
             return
         }
         holder.packageLayout.visibility = View.VISIBLE
-        holder.packageIconView.setImageDrawable(item.icon)
         holder.packageNameView.text = item.name
         holder.packageLabelView.text = item.label
         holder.packageLabelView.setOnCheckedChangeListener(null)
@@ -44,6 +45,10 @@ class PackageRecyclerViewAdapter(
         holder.packageLabelView.setOnCheckedChangeListener { _, checked ->
             item.checked = checked
         }
+
+        Glide.with(holder.packageIconView.context)
+            .load(PackageManagerHelper.getApplicationIcon(holder.packageIconView.context, item.pkgInfo))
+            .into(holder.packageIconView)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && item.stats != null) {
             val ctx = holder.cacheSizeView.context
