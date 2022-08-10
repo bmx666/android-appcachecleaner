@@ -1,13 +1,11 @@
 package com.github.bmx666.appcachecleaner
 
 import android.app.AlertDialog
-import android.content.ActivityNotFoundException
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.ConditionVariable
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuInflater
@@ -27,7 +25,6 @@ import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkA
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkUsageStatsPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -39,8 +36,29 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private val checkedPkgList: HashSet<String> = HashSet()
     private var pkgInfoListFragment: ArrayList<PackageInfo> = ArrayList()
 
+    private val mLocalReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                Constant.Intent.CleanCacheAppInfo.ACTION -> {
+                    startApplicationDetailsActivity(intent.getStringExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME))
+                }
+                Constant.Intent.CleanCacheFinish.ACTION -> {
+                    cleanCacheFinish(
+                        intent.getBooleanExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
+                            false))
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(Constant.Intent.CleanCacheFinish.ACTION)
+        intentFilter.addAction(Constant.Intent.CleanCacheAppInfo.ACTION)
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(mLocalReceiver, intentFilter)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -108,20 +126,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.fabCleanCache.setOnClickListener {
-            addExtraSearchText()
-
-            binding.fragmentContainerView.visibility = View.GONE
-            binding.layoutFab.visibility = View.GONE
-            binding.layoutButton.visibility = View.VISIBLE
-
-            PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
-            PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
-
-            SharedPreferencesManager.PackageList.saveChecked(this, checkedPkgList)
-
-            CoroutineScope(IO).launch {
-                startCleanCache()
-            }
+            startCleanCache()
         }
 
         binding.fabCheckAllApps.tag = "uncheck"
@@ -186,14 +191,22 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this)
             .sendBroadcast(Intent(Constant.Intent.DisableSelf.ACTION))
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
         super.onDestroy()
     }
 
-    private suspend fun startCleanCache() {
+    private fun startCleanCache() {
         val pkgList = PlaceholderContent.getVisibleCheckedPackageList().toMutableList()
 
-        cleanCacheInterrupt.set(false)
-        cleanCacheFinished.set(false)
+        addExtraSearchText()
+
+        binding.fragmentContainerView.visibility = View.GONE
+        binding.layoutFab.visibility = View.GONE
+        binding.layoutButton.visibility = View.VISIBLE
+
+        // ignore empty list and show main screen
+        if (pkgList.isEmpty())
+            return
 
         // clear cache of app in the end to avoid issues
         if (pkgList.contains(packageName)) {
@@ -201,55 +214,42 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             pkgList.add(packageName)
         }
 
-        for (i in pkgList.indices) {
-            startApplicationDetailsActivity(pkgList[i])
-            cleanAppCacheFinished.set(false)
-            runOnUiThread {
-                binding.textView.text = String.format(Locale.getDefault(),
-                    "%d / %d %s", i, pkgList.size,
-                    getText(R.string.text_clean_cache_left))
-            }
-            delay(500L)
-            waitAccessibility.block(5000L)
-            delay(500L)
+        val intent = Intent(Constant.Intent.ClearCache.ACTION)
+        intent.putStringArrayListExtra(
+            Constant.Intent.ClearCache.NAME_PACKAGE_LIST,
+            pkgList as ArrayList<String>)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
-            // user interrupt process
-            if (cleanCacheInterrupt.get()) break
+        CoroutineScope(IO).launch {
+            PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
+            PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
+
+            SharedPreferencesManager.PackageList.saveChecked(this@AppCacheCleanerActivity, checkedPkgList)
         }
-        cleanCacheFinished.set(true)
+    }
+
+    private fun cleanCacheFinish(cleanCacheInterrupted: Boolean) {
+        val displayText = if (cleanCacheInterrupted)
+            getText(R.string.text_clean_cache_interrupt)
+        else getText(R.string.text_clean_cache_finish)
 
         runOnUiThread {
-            val displayText = if (cleanCacheInterrupt.get())
-                getText(R.string.text_clean_cache_interrupt)
-                else getText(R.string.text_clean_cache_finish)
             binding.textView.text = displayText
 
             binding.btnCleanUserAppCache.isEnabled = true
             binding.btnCleanSystemAppCache.isEnabled = true
             binding.btnCleanAllAppCache.isEnabled = true
-
-            // return back to Main Activity, sometimes not possible press Back from Settings
-            if (pkgList.isNotEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                val intent = this.intent
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.putExtra(ARG_DISPLAY_TEXT, displayText)
-                startActivity(intent)
-            }
         }
-    }
 
-    private fun startApplicationDetailsActivity(packageName: String) {
-        try {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-            intent.data = Uri.parse("package:$packageName")
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
-        }
+        // return back to Main Activity, sometimes not possible press Back from Settings
+        val intent = this.intent
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+        intent.putExtra(ARG_DISPLAY_TEXT, displayText)
+        startActivity(intent)
     }
 
     private fun addPackageToPlaceholderContent() {
@@ -450,6 +450,21 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         return checkAccessibilityPermission(this) && checkUsageStatsPermission(this)
     }
 
+    fun startApplicationDetailsActivity(packageName: String?) {
+        // everything is possible...
+        if (packageName == null || packageName.trim().isEmpty()) return
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+            intent.data = Uri.parse("package:$packageName")
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+
     private fun getCurrentLocale(): Locale {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                 resources.configuration.locales.get(0)
@@ -471,15 +486,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     companion object {
-
         const val ARG_DISPLAY_TEXT = "display-text"
-
         const val FRAGMENT_PACKAGE_LIST_TAG = "package-list"
 
         val loadingPkgList = AtomicBoolean(false)
-        val cleanAppCacheFinished = AtomicBoolean(false)
-        val cleanCacheFinished = AtomicBoolean(true)
-        val cleanCacheInterrupt = AtomicBoolean(false)
-        val waitAccessibility = ConditionVariable()
     }
 }

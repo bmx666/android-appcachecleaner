@@ -15,5 +15,26 @@ class Constant {
                 const val ACTION = "DisableSelf"
             }
         }
+
+        class ClearCache {
+            companion object {
+                const val ACTION = "ClearCache"
+                const val NAME_PACKAGE_LIST = "package_list"
+            }
+        }
+
+        class CleanCacheAppInfo {
+            companion object {
+                const val ACTION = "CleanCacheAppInfo"
+                const val NAME_PACKAGE_NAME = "package_name"
+            }
+        }
+
+        class CleanCacheFinish {
+            companion object {
+                const val ACTION = "CleanCacheFinish"
+                const val NAME_INTERRUPTED = "interrupted"
+            }
+        }
     }
 }

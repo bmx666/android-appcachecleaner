@@ -9,15 +9,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.TimberFileTree
-import com.github.bmx666.appcachecleaner.util.findNestedChildByClassName
-import com.github.bmx666.appcachecleaner.util.getAllChild
-import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
-import com.github.bmx666.appcachecleaner.util.performClick
+import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
@@ -27,43 +26,6 @@ class AppCacheCleanerService : AccessibilityService() {
     private var mAccessibilityButtonController: AccessibilityButtonController? = null
     private var mAccessibilityButtonCallback: AccessibilityButtonCallback? = null
     private var mIsAccessibilityButtonAvailable: Boolean = false
-
-    private fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        nodeInfo.getAllChild().forEach { childNode ->
-            childNode?.let { findClearCacheButton(it)?.let { node -> return node } }
-        }
-
-        return nodeInfo.takeIf {
-            nodeInfo.viewIdResourceName?.matches("com.android.settings:id/.*button.*".toRegex()) == true
-                    && arrayTextClearCacheButton.any { text -> nodeInfo.lowercaseCompareText(text) }
-        }
-    }
-
-    private fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        nodeInfo.getAllChild().forEach { childNode ->
-            childNode?.let { findStorageAndCacheMenu(it)?.let { node -> return node } }
-        }
-
-        return nodeInfo.takeIf {
-            nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-                    && arrayTextStorageAndCacheMenu.any { text -> nodeInfo.lowercaseCompareText(text) }
-        }
-    }
-
-    private fun findBackButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        val actionBar = nodeInfo.findAccessibilityNodeInfosByViewId(
-            "com.android.settings:id/action_bar").firstOrNull()
-            ?: nodeInfo.findAccessibilityNodeInfosByViewId(
-                "android:id/action_bar").firstOrNull()
-            ?: return null
-
-        // WORKAROUND: on some smartphones ActionBar Back button has ID "up"
-        actionBar.findAccessibilityNodeInfosByViewId(
-            "android:id/up").firstOrNull()?.let { return it }
-
-        return actionBar.findNestedChildByClassName(
-            arrayOf("android.widget.ImageButton", "android.widget.ImageView"))
-    }
 
     private val mLocalReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -78,6 +40,12 @@ class AppCacheCleanerService : AccessibilityService() {
                         intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE),
                         intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE))
                 }
+                Constant.Intent.ClearCache.ACTION -> {
+                    CoroutineScope(IO).launch {
+                        clearCache(
+                            intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)!!)
+                    }
+                }
             }
         }
     }
@@ -90,19 +58,22 @@ class AppCacheCleanerService : AccessibilityService() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(Constant.Intent.DisableSelf.ACTION)
         intentFilter.addAction(Constant.Intent.ExtraSearchText.ACTION)
+        intentFilter.addAction(Constant.Intent.ClearCache.ACTION)
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(mLocalReceiver, intentFilter)
     }
 
     private fun updateLocaleText(clearCacheText: CharSequence?, storageText: CharSequence?) {
-        arrayTextClearCacheButton.clear()
+        val arrayTextClearCacheButton = ArrayList<CharSequence>()
         clearCacheText?.let { arrayTextClearCacheButton.add(it) }
         arrayTextClearCacheButton.add(getText(R.string.clear_cache_btn_text))
+        accessibilityClearCacheManager.setArrayTextClearCacheButton(arrayTextClearCacheButton)
 
-        arrayTextStorageAndCacheMenu.clear()
+        val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
         storageText?.let { arrayTextStorageAndCacheMenu.add(it) }
         arrayTextStorageAndCacheMenu.add(getText(R.string.storage_settings_for_app))
         arrayTextStorageAndCacheMenu.add(getText(R.string.storage_label))
+        accessibilityClearCacheManager.setArrayTextStorageAndCacheMenu(arrayTextStorageAndCacheMenu)
     }
 
     override fun onDestroy() {
@@ -133,10 +104,7 @@ class AppCacheCleanerService : AccessibilityService() {
         mAccessibilityButtonCallback =
             object : AccessibilityButtonCallback() {
                 override fun onClicked(controller: AccessibilityButtonController) {
-                    if (AppCacheCleanerActivity.cleanCacheFinished.get()) return
-                    Timber.d("Accessibility button pressed!")
-                    AppCacheCleanerActivity.cleanCacheInterrupt.set(true)
-                    AppCacheCleanerActivity.waitAccessibility.open()
+                    accessibilityClearCacheManager.clickAccessibilityButton()
                 }
 
                 override fun onAvailabilityChanged(
@@ -162,82 +130,11 @@ class AppCacheCleanerService : AccessibilityService() {
         }
     }
 
-    private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
-        if (nodeInfo == null) return
-        Timber.d(">".repeat(level) + " " + nodeInfo.className
-                + ":" + nodeInfo.text+ ":" + nodeInfo.viewIdResourceName)
-        nodeInfo.getAllChild().forEach { childNode ->
-            showTree(level + 1, childNode)
-        }
-    }
-
-    private fun goBack(nodeInfo: AccessibilityNodeInfo) {
-        findBackButton(nodeInfo)?.let { backButton ->
-            Timber.d("found back button")
-            when (backButton.performClick()) {
-                true  -> Timber.d("perform action click on back button")
-                false -> Timber.e("no perform action click on back button")
-                else  -> Timber.e("not found clickable view for back button")
-            }
-        }
-        AppCacheCleanerActivity.cleanAppCacheFinished.set(true)
-    }
-
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (AppCacheCleanerActivity.cleanCacheFinished.get()) return
-
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
             return
 
-        val nodeInfo = event.source ?: return
-
-        if (BuildConfig.DEBUG) {
-            Timber.d("===>>> TREE BEGIN <<<===")
-            showTree(0, nodeInfo)
-            Timber.d("===>>> TREE END <<<===")
-        }
-
-        if (AppCacheCleanerActivity.cleanAppCacheFinished.get()) {
-            goBack(nodeInfo)
-            // notify main app go to another app
-            AppCacheCleanerActivity.waitAccessibility.open()
-        } else {
-
-            findClearCacheButton(nodeInfo)?.let { clearCacheButton ->
-                Timber.d("found clean cache button")
-                if (clearCacheButton.isEnabled) {
-                    Timber.d("clean cache button is enabled")
-                    when (clearCacheButton.performClick()) {
-                        true  -> Timber.d("perform action click on clean cache button")
-                        false -> Timber.e("no perform action click on clean cache button")
-                        else  -> Timber.e("not found clickable view for clean cache button")
-                    }
-                }
-                goBack(nodeInfo)
-                return
-            }
-
-            findStorageAndCacheMenu(nodeInfo)?.let { storageAndCacheMenu ->
-                Timber.d("found storage & cache button")
-                if (storageAndCacheMenu.isEnabled) {
-                    Timber.d("storage & cache button is enabled")
-                    when (storageAndCacheMenu.performClick()) {
-                        true  -> Timber.d("perform action click on storage & cache button")
-                        false -> Timber.e("no perform action click on storage & cache button")
-                        else  -> Timber.e("not found clickable view for storage & cache button")
-                    }
-                } else {
-                    goBack(nodeInfo)
-                    // notify main app go to another app
-                    AppCacheCleanerActivity.waitAccessibility.open()
-                }
-                return
-            }
-
-            goBack(nodeInfo)
-            // notify main app go to another app
-            AppCacheCleanerActivity.waitAccessibility.open()
-        }
+        accessibilityClearCacheManager.checkEvent(event)
     }
 
     override fun onInterrupt() {}
@@ -254,8 +151,20 @@ class AppCacheCleanerService : AccessibilityService() {
         logFile.delete()
     }
 
+    private fun openAppInfo(pkgName: String) {
+        val intent = Intent(Constant.Intent.CleanCacheAppInfo.ACTION)
+        intent.putExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME, pkgName)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private suspend fun clearCache(pkgList: ArrayList<String>) {
+        val interrupted = accessibilityClearCacheManager.clearCacheApp(pkgList, this::openAppInfo)
+        val intent = Intent(Constant.Intent.CleanCacheFinish.ACTION)
+        intent.putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
     companion object {
-        private var arrayTextClearCacheButton = ArrayList<CharSequence>()
-        private var arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
+        private val accessibilityClearCacheManager = AccessibilityClearCacheManager()
     }
 }
