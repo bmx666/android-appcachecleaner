@@ -1,0 +1,6 @@
+* fix bug related to not yet drawn elements
+* show app icon dynamically in list
+* add flexible delay to wait for the UI drawing process
+* improve cache clean
+* fix skip system app that does not support AppInfo
+* interrupt clean process if something goes wrong with UI
