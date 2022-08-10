@@ -13,7 +13,7 @@ fun AccessibilityNodeInfo.lowercaseCompareText(text: String?): Boolean {
 fun AccessibilityNodeInfo.findNestedChildByClassName(classNames: Array<String>): AccessibilityNodeInfo? {
 
     this.getAllChild().forEach { childNode ->
-        childNode.findNestedChildByClassName(classNames)?.let { return it }
+        childNode?.findNestedChildByClassName(classNames)?.let { return it }
     }
 
     classNames.forEach { className ->
@@ -35,9 +35,9 @@ fun AccessibilityNodeInfo.performClick(): Boolean? {
     return this.findClickable()?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
 }
 
-fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo> {
+fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo?> {
 
-    return object : Iterator<AccessibilityNodeInfo> {
+    return object : Iterator<AccessibilityNodeInfo?> {
 
         val childCount = this@getAllChild.childCount
         var currentIdx = 0
@@ -46,7 +46,7 @@ fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo> {
             return childCount > 0 && currentIdx < childCount
         }
 
-        override fun next(): AccessibilityNodeInfo {
+        override fun next(): AccessibilityNodeInfo? {
             return this@getAllChild.getChild(currentIdx++)
         }
     }

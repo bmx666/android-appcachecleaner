@@ -30,7 +30,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         nodeInfo.getAllChild().forEach { childNode ->
-            findClearCacheButton(childNode)?.let { return it }
+            childNode?.let { findClearCacheButton(it)?.let { node -> return node } }
         }
 
         return nodeInfo.takeIf {
@@ -41,7 +41,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         nodeInfo.getAllChild().forEach { childNode ->
-            findStorageAndCacheMenu(childNode)?.let { return it }
+            childNode?.let { findStorageAndCacheMenu(it)?.let { node -> return node } }
         }
 
         return nodeInfo.takeIf {
