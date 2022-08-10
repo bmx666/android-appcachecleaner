@@ -205,8 +205,13 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.layoutButton.visibility = View.VISIBLE
 
         // ignore empty list and show main screen
-        if (pkgList.isEmpty())
+        if (pkgList.isEmpty()) {
+            binding.textView.text = ""
+            binding.btnCleanUserAppCache.isEnabled = true
+            binding.btnCleanSystemAppCache.isEnabled = true
+            binding.btnCleanAllAppCache.isEnabled = true
             return
+        }
 
         // clear cache of app in the end to avoid issues
         if (pkgList.contains(packageName)) {
