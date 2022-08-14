@@ -1,0 +1,2 @@
+* display user-friendly app and service name
+* display cleaned up cache size
