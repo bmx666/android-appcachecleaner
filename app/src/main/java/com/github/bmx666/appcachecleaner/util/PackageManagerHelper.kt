@@ -76,5 +76,20 @@ class PackageManagerHelper {
 
             return null
         }
+
+        @JvmStatic
+        fun getCacheSizeDiff(old: StorageStats?, new: StorageStats?): Long {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return 0
+            if (old == null || new == null) return 0
+
+            try {
+                return if (new.cacheBytes >= old.cacheBytes) 0
+                    else old.cacheBytes - new.cacheBytes
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            return 0
+        }
     }
 }

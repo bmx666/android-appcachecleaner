@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.format.Formatter.formatFileSize
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -234,9 +235,20 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun cleanCacheFinish(cleanCacheInterrupted: Boolean) {
-        val displayText = if (cleanCacheInterrupted)
-            getText(R.string.text_clean_cache_interrupt)
-        else getText(R.string.text_clean_cache_finish)
+
+        val cleanCacheBytes =
+            PlaceholderContent.getItems().filter { it.checked }.sumOf {
+                PackageManagerHelper.getCacheSizeDiff(it.stats,
+                    PackageManagerHelper.getStorageStats(this, it.pkgInfo))
+            }
+
+        val displayText =
+            if (cleanCacheInterrupted)
+                getString(R.string.text_clean_cache_interrupt,
+                    formatFileSize(this, cleanCacheBytes))
+            else
+                getString(R.string.text_clean_cache_finish,
+                    formatFileSize(this, cleanCacheBytes))
 
         runOnUiThread {
             binding.textView.text = displayText
