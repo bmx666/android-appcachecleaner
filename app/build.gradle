@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace 'com.github.bmx666.appcachecleaner'
+
     compileSdk 33
 
     signingConfigs {
