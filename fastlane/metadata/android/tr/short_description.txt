@@ -1,1 +1,1 @@
-Erişebilirlik kullanarak yüklenen kullanıcı ve sistem uygulamalarının önbelleğini temizleyin.
+Erişilebilirlik ile yüklü kullanıcı, sistem uyg.larının önbelleğini temizleyin
