@@ -1,1 +1,1 @@
-Limpie la caché de las aplicaciones instaladas del Usuario y Sistema usando Accesibilidad
+Limpie la caché de las aplicaciones del Usuario y Sistema usando Accesibilidad
