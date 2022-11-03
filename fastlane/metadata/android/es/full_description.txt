@@ -1,0 +1,5 @@
+Desde Android 6 (Marshmallow) ya no es posible borrar la caché de todas las aplicaciones al mismo tiempo y Google ha movido este permiso solo a las aplicaciones del sistema. Quedando una forma posible: abrir manualmente la información de la aplicación, encontrar el menú "Almacenamiento" específico y luego presionar el botón "Limpiar caché".
+
+<b>AndroidCacheCleaner</b> puede solicitar todas las aplicaciones del sistema y del usuario instaladas y reemplaza todas las acciones manuales relacionadas con la limpieza de la caché mediante un servicio de Accesibilidad.
+
+<b>AndroidCacheCleaner</b> guarda las últimas aplicaciones marcadas para mostrarlas solo la próxima vez.

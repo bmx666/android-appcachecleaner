@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Limpiador de Caché</string>
+    <string name="service_name">Limpiador de Caché</string>
+    <string name="text_enable_accessibility">Permitir que una aplicación use Accesibilidad</string>
+    <string name="text_enable_accessibility_permission">La aplicación no tiene permisos para usar Accesibilidad</string>
+    <string name="text_enable_usage_stats">Permitir que una aplicación acceda a las estadísticas de uso</string>
+    <string name="text_enable_usage_stats_permission">La aplicación no tiene permisos para acceder a las estadísticas de uso</string>
+    <string name="text_clean_cache_left">Aplicaciones restantes</string>
+    <string name="text_clean_cache_finish">La limpieza de caché finalizó\nSe limpió %1$s</string>
+    <string name="text_clean_cache_interrupt">Se interrumpió la limpieza de caché\nSe limpió %1$s</string>
+    <string name="btn_open_accessibility">Abrir configuración de accesibilidad</string>
+    <string name="btn_open_usage_stats">Abrir configuración de estadísticas de uso</string>
+    <string name="btn_clean_all_cache">Limpiar caché de todas las aplicaciones</string>
+    <string name="btn_clean_system_cache">Limpiar caché de aplicaciones del sistema</string>
+    <string name="btn_clean_user_cache">Limpiar caché de aplicaciones de usuario</string>
+    <string name="btn_close_app">Cerrar la aplicación</string>
+    <string name="btn_add_extra_search_text">Agregar texto de búsqueda extra</string>
+    <string name="description_apps_all_check">Marcar todas las aplicaciones</string>
+    <string name="description_apps_all_uncheck">Desmarque todas las aplicaciones</string>
+    <string name="text_cache_size_fmt">Caché: %1$s</string>
+
+    <string name="dialog_extra_search_text_title">Agregar texto de búsqueda extra</string>
+    <string name="dialog_extra_search_text_message">%1$s (%2$s)\nen lugar de \"%3$s\"</string>
+    <string name="dialog_extra_search_text_btn_ok">Listo</string>
+    <string name="dialog_extra_search_text_btn_remove">Quitar</string>
+
+    <string name="menu_help">Ayuda</string>
+    <string name="menu_extra_search_text_title">Texto de búsqueda extra para:</string>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Borrar caché"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Almacenamiento y caché"</string>
     <string name="storage_label" msgid="2522307545547515733">"Almacenamiento"</string>
