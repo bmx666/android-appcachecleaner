@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.util
 
+import android.Manifest
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -8,6 +9,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.github.bmx666.appcachecleaner.AppCacheCleanerService
+import com.github.bmx666.appcachecleaner.BuildConfig
 
 class PermissionChecker {
 
@@ -71,10 +73,20 @@ class PermissionChecker {
         }
 
         @JvmStatic
+        fun checkWriteExternalStoragePermission(context: Context): Boolean {
+            return context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED
+        }
+
+        @JvmStatic
         fun checkAllRequiredPermissions(context: Context): Boolean {
             var result = checkAccessibilityPermission(context)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 result = result and checkUsageStatsPermission(context)
+            if (BuildConfig.DEBUG) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                    result = result and checkWriteExternalStoragePermission(context)
+            }
             return result
         }
     }
