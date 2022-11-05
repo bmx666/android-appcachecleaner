@@ -445,26 +445,25 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 .show()
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            return checkAccessibilityPermission(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val hasUsageStatsPermission = checkUsageStatsPermission(this)
 
-        val hasUsageStatsPermission = checkUsageStatsPermission(this)
-
-        // Usage stats permission is allow get cache size of apps only for Android 8 and later
-        if (!hasUsageStatsPermission) {
-            AlertDialog.Builder(this)
-                .setTitle(getText(R.string.text_enable_usage_stats_permission))
-                .setMessage(getString(R.string.text_enable_usage_stats))
-                .setPositiveButton("OK") { _, _ ->
-                    val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    startActivity(intent)
-                }
-                .create()
-                .show()
+            // Usage stats permission is allow get cache size of apps only for Android 8 and later
+            if (!hasUsageStatsPermission) {
+                AlertDialog.Builder(this)
+                    .setTitle(getText(R.string.text_enable_usage_stats_permission))
+                    .setMessage(getString(R.string.text_enable_usage_stats))
+                    .setPositiveButton("OK") { _, _ ->
+                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                        startActivity(intent)
+                    }
+                    .create()
+                    .show()
+            }
         }
 
-        return checkAccessibilityPermission(this) && checkUsageStatsPermission(this)
+        return checkAllRequiredPermissions(this)
     }
 
     fun startApplicationDetailsActivity(packageName: String?) {
