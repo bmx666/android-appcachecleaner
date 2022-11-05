@@ -1,11 +1,14 @@
 package com.github.bmx666.appcachecleaner
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.FileUtils.copy
 import android.provider.Settings
 import android.text.format.Formatter.formatFileSize
 import android.view.Menu
@@ -14,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
@@ -24,9 +28,11 @@ import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAccessibilityPermission
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAllRequiredPermissions
 import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkUsageStatsPermission
+import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkWriteExternalStoragePermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -47,6 +53,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     cleanCacheFinish(
                         intent.getBooleanExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
                             false))
+                    if (BuildConfig.DEBUG)
+                        saveLogFile()
                 }
             }
         }
@@ -463,6 +471,24 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             }
         }
 
+        if (BuildConfig.DEBUG) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                val hasWriteExternalStoragePermission = checkWriteExternalStoragePermission(this)
+
+                if (!hasWriteExternalStoragePermission) {
+                    AlertDialog.Builder(this)
+                        .setTitle(getText(R.string.debug_text_enable_write_external_storage_permission))
+                        .setPositiveButton("OK") { _, _ ->
+                            if (checkWriteExternalStoragePermission(this@AppCacheCleanerActivity))
+                                return@setPositiveButton
+                            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        }
+                        .create()
+                        .show()
+                }
+            }
+        }
+
         return checkAllRequiredPermissions(this)
     }
 
@@ -479,6 +505,47 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) return@registerForActivityResult
+        startApplicationDetailsActivity(this.packageName)
+    }
+
+    private val requestSaveLogFileLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+
+        activityResult.data?.data?.let { uri ->
+            contentResolver.openOutputStream(uri)?.let { outputStream ->
+                try {
+                    val inputStream = File(cacheDir.absolutePath + "/log.txt").inputStream()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        copy(inputStream, outputStream)
+                    } else {
+                        val buffer = ByteArray(8192)
+                        var t: Int
+                        while (inputStream.read(buffer).also { t = it } != -1)
+                            outputStream.write(buffer, 0, t)
+                    }
+                    outputStream.flush()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun saveLogFile() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TITLE, "appcachecleaner-log.txt")
+        }
+        requestSaveLogFileLauncher.launch(intent)
     }
 
     private fun getCurrentLocale(): Locale {

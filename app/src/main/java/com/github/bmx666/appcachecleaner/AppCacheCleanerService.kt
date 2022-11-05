@@ -52,8 +52,10 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
-        if (BuildConfig.DEBUG)
-            createLogFile()
+        if (BuildConfig.DEBUG) {
+            cleanLogFile()
+            Timber.plant(TimberFileTree(getLogFile()))
+        }
         updateLocaleText(null, null)
         val intentFilter = IntentFilter()
         intentFilter.addAction(Constant.Intent.DisableSelf.ACTION)
@@ -139,16 +141,17 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onInterrupt() {}
 
-    private fun createLogFile() {
-        val logFile = File(cacheDir.absolutePath + "/log.txt")
+    private fun getLogFile(): File {
+        return File(cacheDir.absolutePath + "/log.txt")
+    }
+
+    private fun cleanLogFile() {
         // force clean previous log
-        logFile.writeText("")
-        Timber.plant(TimberFileTree(logFile))
+        getLogFile().writeText("")
     }
 
     private fun deleteLogFile() {
-        val logFile = File(cacheDir.absolutePath + "/log.txt")
-        logFile.delete()
+        getLogFile().delete()
     }
 
     private fun openAppInfo(pkgName: String) {
@@ -158,6 +161,8 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private suspend fun clearCache(pkgList: ArrayList<String>) {
+        if (BuildConfig.DEBUG)
+            cleanLogFile()
         val interrupted = accessibilityClearCacheManager.clearCacheApp(pkgList, this::openAppInfo)
         val intent = Intent(Constant.Intent.CleanCacheFinish.ACTION)
         intent.putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
