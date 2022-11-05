@@ -72,8 +72,10 @@ class PermissionChecker {
 
         @JvmStatic
         fun checkAllRequiredPermissions(context: Context): Boolean {
-            return checkAccessibilityPermission(context) and
-                    checkUsageStatsPermission(context)
+            var result = checkAccessibilityPermission(context)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                result = result and checkUsageStatsPermission(context)
+            return result
         }
     }
 }
