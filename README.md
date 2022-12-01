@@ -8,6 +8,12 @@ Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps
 
 **AndroidCacheCleaner** saves the last checked apps to show them next time only.
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.github.bmx666.appcachecleaner/)
+
+or get the APK from the [Releases Section](https://github.com/bmx666/android-appcachecleaner/releases/latest).
+
 ## screenshots
 
 |Android 11 and early|Android 12 and later|
