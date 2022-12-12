@@ -324,7 +324,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun showPackageFragment() {
-        binding.layoutButton.visibility = View.GONE
+        hideCleanButtons()
 
         binding.textProgressPackageList.text = String.format(Locale.getDefault(),
             "%d / %d", 0, pkgInfoListFragment.size)
@@ -551,6 +551,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
     private fun showCleanButtons() {
         binding.layoutButton.visibility = View.VISIBLE
+    }
+
+    private fun hideCleanButtons() {
+        binding.layoutButton.visibility = View.GONE
     }
 
     companion object {
