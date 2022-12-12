@@ -209,16 +209,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         addExtraSearchText()
 
-        binding.fragmentContainerView.visibility = View.GONE
-        binding.layoutFab.visibility = View.GONE
-        binding.layoutButton.visibility = View.VISIBLE
+        hideFragmentViews()
+        showCleanButtons()
 
         // ignore empty list and show main screen
         if (pkgList.isEmpty()) {
             binding.textView.text = ""
-            binding.btnCleanUserAppCache.isEnabled = true
-            binding.btnCleanSystemAppCache.isEnabled = true
-            binding.btnCleanAllAppCache.isEnabled = true
             return
         }
 
@@ -260,10 +256,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         runOnUiThread {
             binding.textView.text = displayText
-
-            binding.btnCleanUserAppCache.isEnabled = true
-            binding.btnCleanSystemAppCache.isEnabled = true
-            binding.btnCleanAllAppCache.isEnabled = true
         }
 
         // return back to Main Activity, sometimes not possible press Back from Settings
@@ -332,10 +324,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun showPackageFragment() {
-        binding.btnCleanUserAppCache.isEnabled = false
-        binding.btnCleanSystemAppCache.isEnabled = false
-        binding.btnCleanAllAppCache.isEnabled = false
-
         binding.layoutButton.visibility = View.GONE
 
         binding.textProgressPackageList.text = String.format(Locale.getDefault(),
@@ -562,9 +550,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun showCleanButtons() {
-        binding.btnCleanUserAppCache.isEnabled = true
-        binding.btnCleanSystemAppCache.isEnabled = true
-        binding.btnCleanAllAppCache.isEnabled = true
         binding.layoutButton.visibility = View.VISIBLE
     }
 
