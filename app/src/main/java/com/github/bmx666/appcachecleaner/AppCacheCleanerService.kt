@@ -12,13 +12,11 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.const.Constant
-import com.github.bmx666.appcachecleaner.log.TimberFileTree
+import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.io.File
 
 
 class AppCacheCleanerService : AccessibilityService() {
@@ -26,6 +24,8 @@ class AppCacheCleanerService : AccessibilityService() {
     private var mAccessibilityButtonController: AccessibilityButtonController? = null
     private var mAccessibilityButtonCallback: AccessibilityButtonCallback? = null
     private var mIsAccessibilityButtonAvailable: Boolean = false
+
+    private val logger = Logger()
 
     private val mLocalReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -52,10 +52,8 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
-        if (BuildConfig.DEBUG) {
-            cleanLogFile()
-            Timber.plant(TimberFileTree(getLogFile()))
-        }
+        if (BuildConfig.DEBUG)
+            logger.onCreate(cacheDir)
         updateLocaleText(null, null)
         val intentFilter = IntentFilter()
         intentFilter.addAction(Constant.Intent.DisableSelf.ACTION)
@@ -80,7 +78,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onDestroy() {
         if (BuildConfig.DEBUG)
-            deleteLogFile()
+            logger.onDestroy()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             unregisterButton()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
@@ -114,7 +112,7 @@ class AppCacheCleanerService : AccessibilityService() {
                     available: Boolean
                 ) {
                     if (controller == mAccessibilityButtonController) {
-                        Timber.d("Accessibility button available = $available")
+                        Logger.d("Accessibility button available = $available")
                         mIsAccessibilityButtonAvailable = available
                     }
                 }
@@ -141,19 +139,6 @@ class AppCacheCleanerService : AccessibilityService() {
 
     override fun onInterrupt() {}
 
-    private fun getLogFile(): File {
-        return File(cacheDir.absolutePath + "/log.txt")
-    }
-
-    private fun cleanLogFile() {
-        // force clean previous log
-        getLogFile().writeText("")
-    }
-
-    private fun deleteLogFile() {
-        getLogFile().delete()
-    }
-
     private fun openAppInfo(pkgName: String) {
         val intent = Intent(Constant.Intent.CleanCacheAppInfo.ACTION)
         intent.putExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME, pkgName)
@@ -162,7 +147,7 @@ class AppCacheCleanerService : AccessibilityService() {
 
     private suspend fun clearCache(pkgList: ArrayList<String>) {
         if (BuildConfig.DEBUG)
-            cleanLogFile()
+            logger.onClearCache()
         val interrupted = accessibilityClearCacheManager.clearCacheApp(pkgList, this::openAppInfo)
         val intent = Intent(Constant.Intent.CleanCacheFinish.ACTION)
         intent.putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)

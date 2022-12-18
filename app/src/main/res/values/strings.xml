@@ -32,5 +32,7 @@
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
     <string name="storage_label" >Storage</string>
 
+    <string translatable="false" name="debug_app_name">Cache Cleaner Debug</string>
+    <string translatable="false" name="debug_service_name">Cache Cleaner Debug</string>
     <string translatable="false" name="debug_text_enable_write_external_storage_permission">App does not have rights to write on external storage</string>
 </resources>
