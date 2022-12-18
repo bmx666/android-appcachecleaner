@@ -221,7 +221,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         // clear cache of app in the end to avoid issues
         if (pkgList.contains(packageName)) {
             pkgList.remove(packageName)
-            pkgList.add(packageName)
+            // cache dir is using for log file in debug version
+            // clean cache dir in release only
+            if (!BuildConfig.DEBUG)
+                pkgList.add(packageName)
         }
 
         val intent = Intent(Constant.Intent.ClearCache.ACTION)

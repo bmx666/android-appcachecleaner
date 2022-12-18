@@ -3,11 +3,11 @@ package com.github.bmx666.appcachecleaner.util
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
+import com.github.bmx666.appcachecleaner.log.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.reflect.KFunction1
 
 
@@ -25,7 +25,7 @@ class AccessibilityClearCacheManager {
 
     private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
         if (nodeInfo == null) return
-        Timber.d(">".repeat(level) + " " + nodeInfo.className
+        Logger.d(">".repeat(level) + " " + nodeInfo.className
                 + ":" + nodeInfo.text+ ":" + nodeInfo.viewIdResourceName)
         nodeInfo.getAllChild().forEach { childNode ->
             showTree(level + 1, childNode)
@@ -77,18 +77,18 @@ class AccessibilityClearCacheManager {
     private suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,
                                        debugText: String): Boolean?
     {
-        Timber.d("found $debugText")
+        Logger.d("found $debugText")
         if (nodeInfo.isEnabled) {
-            Timber.d("$debugText is enabled")
+            Logger.d("$debugText is enabled")
 
             var result: Boolean?
             var tries: Long = 0
             do {
                 result = nodeInfo.performClick()
                 when (result) {
-                    true -> Timber.d("perform action click on $debugText")
-                    false -> Timber.e("no perform action click on $debugText")
-                    else -> Timber.e("not found clickable view for $debugText")
+                    true -> Logger.d("perform action click on $debugText")
+                    false -> Logger.e("no perform action click on $debugText")
+                    else -> Logger.e("not found clickable view for $debugText")
                 }
 
                 if (result == true)
@@ -118,9 +118,9 @@ class AccessibilityClearCacheManager {
         val nodeInfo = event.source!!
 
         if (BuildConfig.DEBUG) {
-            Timber.d("===>>> TREE BEGIN <<<===")
+            Logger.d("===>>> TREE BEGIN <<<===")
             showTree(0, nodeInfo)
-            Timber.d("===>>> TREE END <<<===")
+            Logger.d("===>>> TREE END <<<===")
         }
 
         nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
@@ -155,7 +155,7 @@ class AccessibilityClearCacheManager {
 
     fun clickAccessibilityButton() {
         if (stateMachine.isDone()) return
-        Timber.d("Accessibility button pressed!")
+        Logger.d("Accessibility button was pressed!")
         stateMachine.setInterrupted()
     }
 

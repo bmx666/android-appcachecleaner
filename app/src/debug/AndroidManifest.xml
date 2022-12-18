@@ -5,4 +5,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"/>
 
+    <application
+        android:label="@string/debug_app_name"
+        tools:replace="android:label">
+        <service
+            android:name=".AppCacheCleanerService"
+            android:label="@string/debug_service_name"
+            tools:replace="android:label"/>
+    </application>
 </manifest>
