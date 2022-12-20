@@ -14,6 +14,9 @@ Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps
 
 or get the APK from the [Releases Section](https://github.com/bmx666/android-appcachecleaner/releases/latest).
 
+## Warning ⚠️
+Since Android 13 Accessibility APIs is restricted, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
+
 ## screenshots
 
 |Android 11 and early|Android 12 and later|
