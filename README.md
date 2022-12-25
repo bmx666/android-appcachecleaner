@@ -38,13 +38,13 @@ NOTE: Since Android 11 it is not possible to dynamically add and hide the **acce
 
 ## Customized Settings UI
 
-Many companies are supplied Customized Android UI, including Settings. It can cause issue becuase app is looking specific text and if doesn't match then app doens't do anything.
+Many companies or Android ROMs add or change default Android UI, including Settings. This can cause an issue because the **Cache Cleaner** app is looking for specific text and if it doesn't match, the app does nothing. Please follow the steps below to resolve this issue:
 
 1. Select any app and go to "App Info"
 2. Write down text for "Storage" menu
 3. Go to "Storage" menu
 4. Write down text for "Clear Cache" button
-5. Open app with specific locale (change on required locale in Settings and go back into app)
+5. Open **Cache Cleaner** app with specific locale (change on required locale in Settings and go back into **Cache Cleaner** app)
 6. Open menu in the top right corner and select **Add Extra Search Text** / **Storage** and enter custom search text for "Storage" menu" and press "OK", or "REMOVE" otherwise
 7. Open menu in the top right corner and select **Add Extra Search Text** / **Clear cache** and enter custom search text for "Clear cache" button" and press "OK", or "REMOVE" otherwise
 
