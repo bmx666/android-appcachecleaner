@@ -1,12 +1,12 @@
-# Android Cache Cleaner
+# Cache Cleaner
 
 ## Description
 
 Since Android 6 (Marshmallow) is not possible anymore to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.
 
-**AndroidCacheCleaner** can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service.
+**Cache Cleaner** app can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service.
 
-**AndroidCacheCleaner** saves the last checked apps to show them next time only.
+**Cache Cleaner** app saves the last checked apps to show them next time only.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
@@ -27,14 +27,14 @@ Since Android 13 Accessibility APIs is restricted, the solution can be found [he
 ## How to use
 
 1. Click clean cache of **User Apps**, **System Apps** OR **All Apps**
-2. Enable Usage Stats support for **AppCacheCleaner** if it is required
-3. Enable Accessibility support for **AppCacheCleaner** if it is required
+2. Enable Usage Stats support for **Cache Cleaner** app if it is required
+3. Enable Accessibility support for **Cache Cleaner** app if it is required
 4. Check required apps in list (use floating button to check/uncheck all apps)
 5. Press **Clean Cache** floating button to run cache clean process
 6. Press **Accessibility button** to interrupt process OR wait until process will be finished
-7. Press **Close App** OR clean app from task manager to disable Accessibility
+7. Press **Close App** OR remove **Cache Cleaner** app from task manager to disable Accessibility APIs
 
-NOTE: Starting with Android 11 it is not possible to dynamically add and hide the **accessibility button** and the accessibility service must be started with it. After closing **AppCacheCleaner**, the accessibility service will be automatically destroyed. That is why every run **AppCacheCleaner** need to re-enable access to Accessibility.
+NOTE: Since Android 11 it is not possible to dynamically add and hide the **accessibility button** and the accessibility service must be started with it. The accessibility service will be automatically destroyed when closing **Cache Cleaner** app to hide the **accessibility button**. This is why Accessibility APIs access needs to be re-enabled each time.
 
 ## Customized Settings UI
 
