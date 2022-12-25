@@ -25,8 +25,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize"
-        android:name="com.github.bmx666.appcachecleaner.PackageListFragment" />
+        android:paddingTop="?attr/actionBarSize" />
 
     <LinearLayout
         android:id="@+id/layoutFab"
