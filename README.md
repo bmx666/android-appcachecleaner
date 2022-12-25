@@ -50,4 +50,4 @@ Many companies are supplied Customized Android UI, including Settings. It can ca
 
 ## Icon copyright
 
-Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [Flaticon](https://www.flaticon.com/)
+**Broom** [icon](https://www.flaticon.com/free-icon/broom_2954888) created by [Smashicons](https://www.flaticon.com/authors/smashicons) - [Flaticon](https://www.flaticon.com/)
