@@ -85,7 +85,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                         return
                     }
 
-                    supportFragmentManager.findFragmentByTag(FRAGMENT_PACKAGE_LIST_TAG)?.let { fragment ->
+                    supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)?.let { fragment ->
                         hideFragmentViews()
                         supportFragmentManager.beginTransaction().remove(fragment).commitNow()
                         showCleanButtons()
@@ -164,7 +164,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view,
                     PackageListFragment.newInstance(),
-                    FRAGMENT_PACKAGE_LIST_TAG)
+                    FRAGMENT_CONTAINER_VIEW_TAG)
                 .commitNow()
         }
 
@@ -191,6 +191,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 true
             }
             R.id.help -> {
+                showHelp()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -318,7 +319,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 .replace(
                     R.id.fragment_container_view,
                     PackageListFragment.newInstance(),
-                    FRAGMENT_PACKAGE_LIST_TAG
+                    FRAGMENT_CONTAINER_VIEW_TAG
                 )
                 .commitNow()
 
@@ -560,9 +561,20 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.layoutButton.visibility = View.GONE
     }
 
+    private fun showHelp() {
+        hideFragmentViews()
+        hideCleanButtons()
+        binding.fragmentContainerView.visibility = View.VISIBLE
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container_view,
+                HelpFragment.newInstance(),
+                FRAGMENT_CONTAINER_VIEW_TAG)
+            .commitNow()
+    }
+
     companion object {
         const val ARG_DISPLAY_TEXT = "display-text"
-        const val FRAGMENT_PACKAGE_LIST_TAG = "package-list"
+        const val FRAGMENT_CONTAINER_VIEW_TAG = "fragment-container-view-tag"
 
         val loadingPkgList = AtomicBoolean(false)
     }

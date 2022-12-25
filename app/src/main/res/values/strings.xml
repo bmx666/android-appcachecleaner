@@ -28,6 +28,115 @@
     <string translatable="false" name="menu_help">Help</string>
     <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>
 
+    <string translatable="false" name="help_about"><![CDATA[
+        <h2>About app</h2>
+        <br/>
+        Since Android 6 (Marshmallow) it is no longer possible to clear cache of all apps at same
+        time and Google has moved this permission to system apps only. There is only one possible
+        way left - open manually info about application and find specific
+        <b>&quot;Storage&quot;</b> menu and then press
+        <b>&quot;Clean cache&quot;</b> button.
+        <br/><br/>
+        <b>Cache Cleaner</b> app can request all installed user and system apps and it
+        replaces all manual actions related to clean cache using Accessibility service.
+    ]]></string>
+
+    <string translatable="false" name="help_android13_accessibility_permission"><![CDATA[
+        <br/>
+        <h2>Warning ⚠️</h2>
+        <br/>
+        Since Android 13 Accessibility APIs is restricted for 3rd party apps.
+        Please follow the steps below to enable Accessibility for <b>Cache Cleaner</b> app.
+        <br/><br/>
+        <h3>Allow restricted settings</h3>
+        <br/>
+        When you enable restricted settings, you allow apps to get access to sensitive info that
+        could put your personal data at risk. We don’t recommend that you allow restricted settings
+        unless you trust the app developer.
+        <br/><br/>
+        Some legitimate apps might ask you to enable restricted settings. For example, an app that’s
+        designed to support people with disabilities might ask you to turn on accessibility settings.
+        With access to accessibility settings, the app can read content on your screen and interact
+        with apps on your behalf.
+        <br/><br/>
+        1. Click <b>Open App Settings</b> button below
+        <br/>
+        2. Tap menu <b>More</b> <b>⋮</b> (top right corner)
+        <br/>
+        3. Tap <b>Allow restricted settings</b>
+        <br/>
+        4. Follow the on-screen instructions
+        <br/><br/>
+        <b>Source</b> - https://support.google.com/android/answer/12623953
+    ]]></string>
+
+    <string translatable="false" name="help_how_to_use"><![CDATA[
+        <br/>
+        <h2>How to use</h2>
+        <br/>
+        1. Click button clean cache of <b>User Apps</b>, <b>System Apps</b> OR <b>All Apps</b>
+        <br/>
+        2. Enable Usage Stats support for <b>Cache Cleaner</b> app if it is required
+        <br/>
+        3. Enable Accessibility support for <b>Cache Cleaner</b> app if it is required
+        <br/>
+        4. Check required apps in list (use floating button to check/uncheck all apps)
+        <br/>
+        5. Press <b>Clean Cache floating button</b> to run cache clean process
+        <br/>
+        6. Press <b>Accessibility button</b> to interrupt process OR wait until process will be finished
+        <br/>
+        7. Press <b>Close App</b> OR remove <b>Cache Cleaner</b> app from task manager to disable Accessibility
+        <br/>
+        <br/>
+        <b>NOTE:</b> Since Android 11 it is not possible to dynamically add and hide
+        the <b>accessibility button</b> and the accessibility service must be started with it.
+        The accessibility service will be automatically destroyed when closing <b>Cache Cleaner</b> app
+        to hide the <b>accessibility button</b>.
+        This is why Accessibility APIs access needs to be re-enabled each time.
+    ]]></string>
+
+    <string translatable="false" name="help_customized_settings_ui"><![CDATA[
+        <br/>
+        <h2>Customized Settings UI</h2>
+        <br/>
+        Many companies or Android ROMs add or change default Android UI, including Settings.
+        This can cause an issue because the <b>Cache Cleaner</b> app is looking for specific text
+        and if it does not match, the app does nothing.
+        Please follow the steps below to resolve this issue:
+        <br/>
+        <br/>
+        1. Select any app and go to <b>&quot;App Info&quot;</b>
+        <br/>
+        2. Write down text for <b>&quot;Storage&quot;</b> menu
+        <br/>
+        3. Go to <b>&quot;Storage&quot;</b> menu
+        <br/>
+        4. Write down text for <b>&quot;Clear Cache&quot;</b> button
+        <br/>
+        5. Open <b>Cache Cleaner</b> app with specific locale (change on required locale in Settings
+        and go back into <b>Cache Cleaner</b> app)
+        <br/>
+        6. Open menu in the top right corner and select <b>Add Extra Search Text</b> / <b>Storage</b>
+        and enter custom search text for <b>&quot;Storage&quot; menu&quot;</b> and
+        press <b>&quot;OK&quot;</b>, or <b>&quot;REMOVE&quot;</b> otherwise
+        <br/>
+        7. Open menu in the top right corner and select <b>Add Extra Search Text</b> / <b>Clear cache</b>
+        and enter custom search text for <b>&quot;Clear Cache&quot; button&quot;</b> and
+        press <b>&quot;OK&quot;</b>, or <b>&quot;REMOVE&quot;</b> otherwise
+    ]]></string>
+
+    <string translatable="false" name="help_icon_copyright"><![CDATA[
+        <br/>
+        <h2>Icon copyright</h2>
+        <br/>
+        Broom icon created by Smashicons - Flaticon
+        <br/><br/>
+        <b>Source</b> - https://www.flaticon.com/free-icon/broom_2954888
+    ]]></string>
+
+    <string translatable="false" name="help_open_app_settings">Open App Settings</string>
+
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
     <string name="storage_label" >Storage</string>

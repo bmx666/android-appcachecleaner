@@ -4,7 +4,6 @@
     <item android:id="@+id/help"
         android:icon="@drawable/ic_baseline_help_24"
         android:title="@string/menu_help"
-        android:visible="false"
         app:showAsAction="ifRoom"/>
     <item
         android:title="@string/menu_extra_search_text_title">
