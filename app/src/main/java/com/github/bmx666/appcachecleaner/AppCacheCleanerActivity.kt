@@ -435,7 +435,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         if (!hasAccessibilityPermission) {
             AlertDialog.Builder(this)
                 .setTitle(getText(R.string.text_enable_accessibility_permission))
-                .setMessage(getString(R.string.text_enable_accessibility))
+                .setMessage(getString(R.string.text_enable_accessibility)
+                    .plus(System.getProperty("line.separator"))
+                    .plus(getString(R.string.text_enable_accessibility_explanation)))
                 .setPositiveButton("OK") { _, _ ->
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
@@ -450,9 +452,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             // Usage stats permission is allow get cache size of apps only for Android 8 and later
             if (!hasUsageStatsPermission) {
+
                 AlertDialog.Builder(this)
                     .setTitle(getText(R.string.text_enable_usage_stats_permission))
-                    .setMessage(getString(R.string.text_enable_usage_stats))
+                    .setMessage(getString(R.string.text_enable_usage_stats)
+                        .plus(System.getProperty("line.separator"))
+                        .plus(getString(R.string.text_enable_usage_stats_explanation)))
                     .setPositiveButton("OK") { _, _ ->
                         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
