@@ -33,6 +33,7 @@ class PermissionChecker {
                     Settings.Secure.getString(
                         context.contentResolver,
                         Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+                    ?: return false
 
                 val stringColonSplitter = TextUtils.SimpleStringSplitter(':')
                 stringColonSplitter.setString(enabledServices)
