@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.FileUtils.copy
 import android.provider.Settings
 import android.text.format.Formatter.formatFileSize
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -379,6 +380,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 else
                     getText(R.string.storage_label)
 
+        // Touch target size
+        // https://support.google.com/accessibility/android/answer/7101858
+        inputEditText.minHeight =
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                48f,
+                resources.displayMetrics)
+            .toInt()
+
         AlertDialog.Builder(this)
             .setTitle(getText(R.string.dialog_extra_search_text_title))
             .setMessage(getString(R.string.dialog_extra_search_text_message,
@@ -410,6 +420,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             inputEditText.setText(text)
         else
             inputEditText.hint = getText(R.string.clear_cache_btn_text)
+
+        // Touch target size
+        // https://support.google.com/accessibility/android/answer/7101858
+        inputEditText.minHeight =
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                48f,
+                resources.displayMetrics)
+            .toInt()
 
         AlertDialog.Builder(this)
             .setTitle(getText(R.string.dialog_extra_search_text_title))
