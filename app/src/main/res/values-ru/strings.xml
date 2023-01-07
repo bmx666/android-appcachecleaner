@@ -27,10 +27,10 @@
     <string name="dialog_extra_search_text_btn_ok">OK</string>
     <string name="dialog_extra_search_text_btn_remove">Удалить</string>
 
-    <string translatable="false" name="menu_help">Помощь</string>
-    <string translatable="false" name="menu_extra_search_text_title">Доп. текст для поиска:</string>
+    <string name="menu_help">Помощь</string>
+    <string name="menu_extra_search_text_title">Доп. текст для поиска:</string>
 
-    <string translatable="false" name="help_about"><![CDATA[
+    <string name="help_about"><![CDATA[
         <h2>О приложении</h2>
         <br/>
         Начиная с Андроид 6 (Marshmallow) невозможно очистить кэш всех приложения сразу, так как
@@ -43,7 +43,7 @@
         Специальных возможностей.
     ]]></string>
 
-    <string translatable="false" name="help_android13_accessibility_permission"><![CDATA[
+    <string name="help_android13_accessibility_permission"><![CDATA[
         <br/>
         <h2>Внимание ⚠️</h2>
         <br/>
@@ -73,7 +73,7 @@
         <b>Источник</b> - https://support.google.com/android/answer/12623953
     ]]></string>
 
-    <string translatable="false" name="help_how_to_use"><![CDATA[
+    <string name="help_how_to_use"><![CDATA[
         <br/>
         <h2>Как пользоваться приложением</h2>
         <br/>
@@ -103,7 +103,7 @@
         Поэтому каждый раз, при запуске приложения, необходимо разрешать Спец. возможности.
     ]]></string>
 
-    <string translatable="false" name="help_customized_settings_ui"><![CDATA[
+    <string name="help_customized_settings_ui"><![CDATA[
         <br/>
         <h2>Измененный интерфейс Настроек</h2>
         <br/>
@@ -135,7 +135,7 @@
         удалить альтернативный текст
     ]]></string>
 
-    <string translatable="false" name="help_icon_copyright"><![CDATA[
+    <string name="help_icon_copyright"><![CDATA[
         <br/>
         <h2>Авторское право на иконку</h2>
         <br/>
@@ -144,7 +144,7 @@
         <b>Источник</b> - https://www.flaticon.com/free-icon/broom_2954888
     ]]></string>
 
-    <string translatable="false" name="help_open_app_settings">Открыть настройки приложения</string>
+    <string name="help_open_app_settings">Открыть настройки приложения</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>
