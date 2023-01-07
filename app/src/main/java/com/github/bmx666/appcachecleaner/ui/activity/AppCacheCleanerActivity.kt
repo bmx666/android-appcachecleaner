@@ -25,6 +25,7 @@ import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.ui.dialog.ExtraSearchTextDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
@@ -382,93 +383,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
     private fun showExtraSearchTextDialogForStorage() {
         val locale = getCurrentLocale()
-
-        val inputEditText = EditText(this)
-
-        val text = SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)
-        if (text?.isNotEmpty() == true)
-            inputEditText.setText(text)
-        else
-            inputEditText.hint =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    getText(R.string.storage_settings_for_app)
-                else
-                    getText(R.string.storage_label)
-
-        // Touch target size
-        // https://support.google.com/accessibility/android/answer/7101858
-        inputEditText.minHeight =
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                48f,
-                resources.displayMetrics
-            )
-            .toInt()
-
-        AlertDialog.Builder(this)
-            .setTitle(getText(R.string.dialog_extra_search_text_title))
-            .setMessage(getString(
-                R.string.dialog_extra_search_text_message,
-                locale.displayLanguage, locale.displayCountry,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    getText(R.string.storage_settings_for_app)
-                else
-                    getText(R.string.storage_label)))
-            .setView(inputEditText)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SharedPreferencesManager.ExtraSearchText.saveStorage(
-                    this, locale, inputEditText.text
-                )
-            }
-            .setNegativeButton(R.string.dialog_extra_search_text_btn_remove) { _, _ ->
-                SharedPreferencesManager.ExtraSearchText.removeStorage(
-                    this, locale
-                )
-            }
-            .create()
-            .show()
+        ExtraSearchTextDialogBuilder.buildStorageDialog(this, locale)
     }
 
     private fun showExtraSearchTextDialogForClearCache() {
         val locale = getCurrentLocale()
-
-        val inputEditText = EditText(this)
-
-        val text = SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)
-        if (text?.isNotEmpty() == true)
-            inputEditText.setText(text)
-        else
-            inputEditText.hint = getText(R.string.clear_cache_btn_text)
-
-        // Touch target size
-        // https://support.google.com/accessibility/android/answer/7101858
-        inputEditText.minHeight =
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                48f,
-                resources.displayMetrics
-            )
-            .toInt()
-
-        AlertDialog.Builder(this)
-            .setTitle(getText(R.string.dialog_extra_search_text_title))
-            .setMessage(getString(
-                R.string.dialog_extra_search_text_message,
-                locale.displayLanguage, locale.displayCountry,
-                getText(R.string.clear_cache_btn_text)))
-            .setView(inputEditText)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                SharedPreferencesManager.ExtraSearchText.saveClearCache(
-                    this, locale, inputEditText.text
-                )
-            }
-            .setNegativeButton(R.string.dialog_extra_search_text_btn_remove) { _, _ ->
-                SharedPreferencesManager.ExtraSearchText.removeClearCache(
-                    this, locale
-                )
-            }
-            .create()
-            .show()
+        ExtraSearchTextDialogBuilder.buildClearCacheDialog(this, locale)
     }
 
     private fun checkAndShowPermissionDialogs(): Boolean {
