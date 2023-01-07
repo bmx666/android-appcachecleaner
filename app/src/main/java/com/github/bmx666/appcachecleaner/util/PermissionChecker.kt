@@ -8,7 +8,7 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
-import com.github.bmx666.appcachecleaner.AppCacheCleanerService
+import com.github.bmx666.appcachecleaner.service.AppCacheCleanerService
 import com.github.bmx666.appcachecleaner.BuildConfig
 
 class PermissionChecker {

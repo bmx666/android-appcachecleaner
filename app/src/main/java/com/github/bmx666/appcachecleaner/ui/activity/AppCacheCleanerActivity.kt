@@ -1,16 +1,15 @@
-package com.github.bmx666.appcachecleaner
+package com.github.bmx666.appcachecleaner.ui.activity
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.FileUtils.copy
+import android.os.FileUtils
 import android.provider.Settings
-import android.text.format.Formatter.formatFileSize
+import android.text.format.Formatter
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
@@ -21,22 +20,22 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.BuildConfig
+import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
+import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
-import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAccessibilityPermission
-import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkAllRequiredPermissions
-import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkUsageStatsPermission
-import com.github.bmx666.appcachecleaner.util.PermissionChecker.Companion.checkWriteExternalStoragePermission
+import com.github.bmx666.appcachecleaner.util.PermissionChecker
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 class AppCacheCleanerActivity : AppCompatActivity() {
 
@@ -52,7 +51,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 }
                 Constant.Intent.CleanCacheFinish.ACTION -> {
                     cleanCacheFinish(
-                        intent.getBooleanExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
+                        intent.getBooleanExtra(
+                            Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
                             false))
                     if (BuildConfig.DEBUG)
                         saveLogFile()
@@ -163,7 +163,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             PlaceholderContent.sort()
 
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container_view,
+                .replace(
+                    R.id.fragment_container_view,
                     PackageListFragment.newInstance(),
                     FRAGMENT_CONTAINER_VIEW_TAG)
                 .commitNow()
@@ -171,7 +172,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         checkedPkgList.addAll(SharedPreferencesManager.PackageList.getChecked(this))
 
-        if (checkAllRequiredPermissions(this))
+        if (PermissionChecker.checkAllRequiredPermissions(this))
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
     }
 
@@ -232,14 +233,18 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         val intent = Intent(Constant.Intent.ClearCache.ACTION)
         intent.putStringArrayListExtra(
             Constant.Intent.ClearCache.NAME_PACKAGE_LIST,
-            pkgList as ArrayList<String>)
+            pkgList as ArrayList<String>
+        )
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
-        CoroutineScope(IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
             PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
 
-            SharedPreferencesManager.PackageList.saveChecked(this@AppCacheCleanerActivity, checkedPkgList)
+            SharedPreferencesManager.PackageList.saveChecked(
+                this@AppCacheCleanerActivity,
+                checkedPkgList
+            )
         }
     }
 
@@ -247,17 +252,23 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         val cleanCacheBytes =
             PlaceholderContent.getItems().filter { it.checked }.sumOf {
-                PackageManagerHelper.getCacheSizeDiff(it.stats,
-                    PackageManagerHelper.getStorageStats(this, it.pkgInfo))
+                PackageManagerHelper.getCacheSizeDiff(
+                    it.stats,
+                    PackageManagerHelper.getStorageStats(this, it.pkgInfo)
+                )
             }
 
         val displayText =
             if (cleanCacheInterrupted)
-                getString(R.string.text_clean_cache_interrupt,
-                    formatFileSize(this, cleanCacheBytes))
+                getString(
+                    R.string.text_clean_cache_interrupt,
+                    Formatter.formatFileSize(this, cleanCacheBytes)
+                )
             else
-                getString(R.string.text_clean_cache_finish,
-                    formatFileSize(this, cleanCacheBytes))
+                getString(
+                    R.string.text_clean_cache_finish,
+                    Formatter.formatFileSize(this, cleanCacheBytes)
+                )
 
         runOnUiThread {
             binding.textView.text = displayText
@@ -304,7 +315,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             runOnUiThread {
                 binding.progressBarPackageList.incrementProgressBy(1)
-                binding.textProgressPackageList.text = String.format(Locale.getDefault(),
+                binding.textProgressPackageList.text = String.format(
+                    Locale.getDefault(),
                     "%d / %d", progressApps, totalApps)
             }
         }
@@ -331,7 +343,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private fun showPackageFragment() {
         hideCleanButtons()
 
-        binding.textProgressPackageList.text = String.format(Locale.getDefault(),
+        binding.textProgressPackageList.text = String.format(
+            Locale.getDefault(),
             "%d / %d", 0, pkgInfoListFragment.size)
         binding.progressBarPackageList.progress = 0
         binding.progressBarPackageList.max = pkgInfoListFragment.size
@@ -339,7 +352,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         loadingPkgList.set(true)
 
-        CoroutineScope(IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             addPackageToPlaceholderContent()
         }
     }
@@ -386,12 +399,14 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 48f,
-                resources.displayMetrics)
+                resources.displayMetrics
+            )
             .toInt()
 
         AlertDialog.Builder(this)
             .setTitle(getText(R.string.dialog_extra_search_text_title))
-            .setMessage(getString(R.string.dialog_extra_search_text_message,
+            .setMessage(getString(
+                R.string.dialog_extra_search_text_message,
                 locale.displayLanguage, locale.displayCountry,
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                     getText(R.string.storage_settings_for_app)
@@ -400,11 +415,13 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             .setView(inputEditText)
             .setPositiveButton("OK") { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.saveStorage(
-                    this, locale, inputEditText.text)
+                    this, locale, inputEditText.text
+                )
             }
             .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.removeStorage(
-                    this, locale)
+                    this, locale
+                )
             }
             .create()
             .show()
@@ -427,29 +444,33 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 48f,
-                resources.displayMetrics)
+                resources.displayMetrics
+            )
             .toInt()
 
         AlertDialog.Builder(this)
             .setTitle(getText(R.string.dialog_extra_search_text_title))
-            .setMessage(getString(R.string.dialog_extra_search_text_message,
+            .setMessage(getString(
+                R.string.dialog_extra_search_text_message,
                 locale.displayLanguage, locale.displayCountry,
                 getText(R.string.clear_cache_btn_text)))
             .setView(inputEditText)
             .setPositiveButton("OK") { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.saveClearCache(
-                    this, locale, inputEditText.text)
+                    this, locale, inputEditText.text
+                )
             }
             .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.removeClearCache(
-                    this, locale)
+                    this, locale
+                )
             }
             .create()
             .show()
     }
 
     private fun checkAndDisplayPermissionDialogs(): Boolean {
-        val hasAccessibilityPermission = checkAccessibilityPermission(this)
+        val hasAccessibilityPermission = PermissionChecker.checkAccessibilityPermission(this)
 
         if (!hasAccessibilityPermission) {
             AlertDialog.Builder(this)
@@ -467,7 +488,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val hasUsageStatsPermission = checkUsageStatsPermission(this)
+            val hasUsageStatsPermission = PermissionChecker.checkUsageStatsPermission(this)
 
             // Usage stats permission is allow get cache size of apps only for Android 8 and later
             if (!hasUsageStatsPermission) {
@@ -489,13 +510,14 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         if (BuildConfig.DEBUG) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                val hasWriteExternalStoragePermission = checkWriteExternalStoragePermission(this)
+                val hasWriteExternalStoragePermission =
+                    PermissionChecker.checkWriteExternalStoragePermission(this)
 
                 if (!hasWriteExternalStoragePermission) {
                     AlertDialog.Builder(this)
                         .setTitle(getText(R.string.debug_text_enable_write_external_storage_permission))
                         .setPositiveButton("OK") { _, _ ->
-                            if (checkWriteExternalStoragePermission(this@AppCacheCleanerActivity))
+                            if (PermissionChecker.checkWriteExternalStoragePermission(this@AppCacheCleanerActivity))
                                 return@setPositiveButton
                             requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         }
@@ -505,7 +527,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             }
         }
 
-        return checkAllRequiredPermissions(this)
+        return PermissionChecker.checkAllRequiredPermissions(this)
     }
 
     fun startApplicationDetailsActivity(packageName: String?) {
@@ -533,14 +555,14 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     private val requestSaveLogFileLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
-        if (activityResult.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        if (activityResult.resultCode != RESULT_OK) return@registerForActivityResult
 
         activityResult.data?.data?.let { uri ->
             contentResolver.openOutputStream(uri)?.let { outputStream ->
                 try {
                     val inputStream = File(cacheDir.absolutePath + "/log.txt").inputStream()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        copy(inputStream, outputStream)
+                        FileUtils.copy(inputStream, outputStream)
                     } else {
                         val buffer = ByteArray(8192)
                         var t: Int
@@ -590,7 +612,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         hideCleanButtons()
         binding.fragmentContainerView.visibility = View.VISIBLE
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view,
+            .replace(
+                R.id.fragment_container_view,
                 HelpFragment.newInstance(),
                 FRAGMENT_CONTAINER_VIEW_TAG)
             .commitNow()

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCacheCleaner">
         <activity
-            android:name=".AppCacheCleanerActivity"
+            android:name=".ui.activity.AppCacheCleanerActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCacheCleaner.NoActionBar">
             <intent-filter>
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".AppCacheCleanerService"
+        <service android:name=".service.AppCacheCleanerService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/service_name"
             android:exported="false">

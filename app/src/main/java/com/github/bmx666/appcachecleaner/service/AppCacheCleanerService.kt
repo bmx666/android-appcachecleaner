@@ -1,7 +1,6 @@
-package com.github.bmx666.appcachecleaner
+package com.github.bmx666.appcachecleaner.service
 
 import android.accessibilityservice.AccessibilityButtonController
-import android.accessibilityservice.AccessibilityButtonController.AccessibilityButtonCallback
 import android.accessibilityservice.AccessibilityService
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,18 +10,19 @@ import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.BuildConfig
+import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class AppCacheCleanerService : AccessibilityService() {
 
     private var mAccessibilityButtonController: AccessibilityButtonController? = null
-    private var mAccessibilityButtonCallback: AccessibilityButtonCallback? = null
+    private var mAccessibilityButtonCallback: AccessibilityButtonController.AccessibilityButtonCallback? = null
     private var mIsAccessibilityButtonAvailable: Boolean = false
 
     private val logger = Logger()
@@ -41,7 +41,7 @@ class AppCacheCleanerService : AccessibilityService() {
                         intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE))
                 }
                 Constant.Intent.ClearCache.ACTION -> {
-                    CoroutineScope(IO).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         clearCache(
                             intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)!!)
                     }
@@ -102,7 +102,7 @@ class AppCacheCleanerService : AccessibilityService() {
         }
 
         mAccessibilityButtonCallback =
-            object : AccessibilityButtonCallback() {
+            object : AccessibilityButtonController.AccessibilityButtonCallback() {
                 override fun onClicked(controller: AccessibilityButtonController) {
                     accessibilityClearCacheManager.clickAccessibilityButton()
                 }
