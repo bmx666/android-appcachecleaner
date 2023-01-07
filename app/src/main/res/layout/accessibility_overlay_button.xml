@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:contentDescription="@string/description_accessibility_overlay_button_interrupt"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:minWidth="48dp"
+    android:src="@mipmap/ic_launcher"
+    android:background="@color/ic_launcher_background"
+    />

@@ -129,10 +129,10 @@
             android:layout_height="10dp"/>
 
         <Button
-            android:id="@+id/btnCloseApp"
+            android:id="@+id/btnStartStopService"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_close_app" />
+            android:text="@string/btn_start_accessibility_service" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

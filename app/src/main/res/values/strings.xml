@@ -16,7 +16,8 @@
     <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
     <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
-    <string translatable="false" name="btn_close_app">Close app</string>
+    <string translatable="false" name="btn_start_accessibility_service">Start Accessibility service</string>
+    <string translatable="false" name="btn_stop_accessibility_service">Stop Accessibility service</string>
     <string translatable="false" name="btn_add_extra_search_text">Add extra search text</string>
     <string translatable="false" name="description_apps_all_check">Check all apps</string>
     <string translatable="false" name="description_apps_all_uncheck">Uncheck all apps</string>
@@ -86,16 +87,9 @@
         <br/>
         5. Press <b>Clean Cache floating button</b> to run cache clean process
         <br/>
-        6. Press <b>Accessibility button</b> to interrupt process OR wait until process will be finished
+        6. Press <b>Accessibility overlay button</b> to interrupt process OR wait until process will be finished
         <br/>
-        7. Press <b>Close App</b> OR remove <b>Cache Cleaner</b> app from task manager to disable Accessibility
-        <br/>
-        <br/>
-        <b>NOTE:</b> Since Android 11 it is not possible to dynamically add and hide
-        the <b>accessibility button</b> and the accessibility service must be started with it.
-        The accessibility service will be automatically destroyed when closing <b>Cache Cleaner</b> app
-        to hide the <b>accessibility button</b>.
-        This is why Accessibility APIs access needs to be re-enabled each time.
+        7. <i>(optional)</i> Press <b>Stop Accessibility service</b> to disable Accessibility service
     ]]></string>
 
     <string translatable="false" name="help_customized_settings_ui"><![CDATA[
@@ -138,6 +132,8 @@
     ]]></string>
 
     <string translatable="false" name="help_open_app_settings">Open App Settings</string>
+
+    <string translatable="false" name="description_accessibility_overlay_button_interrupt">Interrupt cache cleaning process</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>

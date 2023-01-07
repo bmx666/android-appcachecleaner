@@ -1,6 +1,5 @@
 package com.github.bmx666.appcachecleaner.ui.activity
 
-import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageInfo
 import android.net.Uri
@@ -9,12 +8,10 @@ import android.os.Bundle
 import android.os.FileUtils
 import android.provider.Settings
 import android.text.format.Formatter
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -48,15 +45,24 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 Constant.Intent.CleanCacheAppInfo.ACTION -> {
-                    startApplicationDetailsActivity(intent.getStringExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME))
+                    startApplicationDetailsActivity(
+                        intent.getStringExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME)
+                    )
                 }
                 Constant.Intent.CleanCacheFinish.ACTION -> {
                     cleanCacheFinish(
                         intent.getBooleanExtra(
                             Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
-                            false))
+                            false
+                        )
+                    )
                     if (BuildConfig.DEBUG)
                         saveLogFile()
+                }
+                Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
+                    runOnUiThread {
+                        updateStartStopServiceButton()
+                    }
                 }
             }
         }
@@ -68,6 +74,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(Constant.Intent.CleanCacheFinish.ACTION)
         intentFilter.addAction(Constant.Intent.CleanCacheAppInfo.ACTION)
+        intentFilter.addAction(Constant.Intent.StopAccessibilityServiceFeedback.ACTION)
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(mLocalReceiver, intentFilter)
 
@@ -83,16 +90,17 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     if (loadingPkgList.get()) {
                         loadingPkgList.set(false)
                         hideFragmentViews()
-                        showCleanButtons()
+                        showButtons()
                         return
                     }
 
-                    supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)?.let { fragment ->
-                        hideFragmentViews()
-                        supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-                        showCleanButtons()
-                        return
-                    }
+                    supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                        ?.let { fragment ->
+                            hideFragmentViews()
+                            supportFragmentManager.beginTransaction().remove(fragment).commitNow()
+                            showButtons()
+                            return
+                        }
                 }
             })
 
@@ -132,8 +140,11 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             showPackageFragment()
         }
 
-        binding.btnCloseApp.setOnClickListener {
-            finish()
+        binding.btnStartStopService.setOnClickListener {
+            if (PermissionChecker.checkAccessibilityPermission(this))
+                disableAccessibilityService()
+            else
+                PermissionDialogBuilder.buildAccessibilityPermissionDialog(this)
         }
 
         binding.fabCleanCache.setOnClickListener {
@@ -150,16 +161,19 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
             if (binding.fabCheckAllApps.tag.equals("uncheck")) {
                 binding.fabCheckAllApps.tag = "check"
-                binding.fabCheckAllApps.contentDescription = getString(R.string.description_apps_all_check)
+                binding.fabCheckAllApps.contentDescription =
+                    getString(R.string.description_apps_all_check)
                 PlaceholderContent.uncheckAllVisible()
             } else {
                 binding.fabCheckAllApps.tag = "uncheck"
-                binding.fabCheckAllApps.contentDescription = getString(R.string.description_apps_all_uncheck)
+                binding.fabCheckAllApps.contentDescription =
+                    getString(R.string.description_apps_all_uncheck)
                 PlaceholderContent.checkAllVisible()
             }
 
             PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
-            PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
+            PlaceholderContent.getVisibleUncheckedPackageList()
+                .forEach { checkedPkgList.remove(it) }
 
             PlaceholderContent.sort()
 
@@ -167,7 +181,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 .replace(
                     R.id.fragment_container_view,
                     PackageListFragment.newInstance(),
-                    FRAGMENT_CONTAINER_VIEW_TAG)
+                    FRAGMENT_CONTAINER_VIEW_TAG
+                )
                 .commitNow()
         }
 
@@ -177,6 +192,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
         else
             checkAndShowPermissionDialogs()
+
+        updateStartStopServiceButton()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -203,9 +220,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateStartStopServiceButton()
+    }
+
     override fun onDestroy() {
-        LocalBroadcastManager.getInstance(this)
-            .sendBroadcast(Intent(Constant.Intent.DisableSelf.ACTION))
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
         super.onDestroy()
     }
@@ -216,7 +236,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         addExtraSearchText()
 
         hideFragmentViews()
-        showCleanButtons()
+        showButtons()
 
         // ignore empty list and show main screen
         if (pkgList.isEmpty()) {
@@ -242,7 +262,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
-            PlaceholderContent.getVisibleUncheckedPackageList().forEach { checkedPkgList.remove(it) }
+            PlaceholderContent.getVisibleUncheckedPackageList()
+                .forEach { checkedPkgList.remove(it) }
 
             SharedPreferencesManager.PackageList.saveChecked(
                 this@AppCacheCleanerActivity,
@@ -275,6 +296,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         runOnUiThread {
             binding.textView.text = displayText
+            updateStartStopServiceButton()
         }
 
         // return back to Main Activity, sometimes not possible press Back from Settings
@@ -320,7 +342,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 binding.progressBarPackageList.incrementProgressBy(1)
                 binding.textProgressPackageList.text = String.format(
                     Locale.getDefault(),
-                    "%d / %d", progressApps, totalApps)
+                    "%d / %d", progressApps, totalApps
+                )
             }
         }
 
@@ -348,7 +371,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
-            "%d / %d", 0, pkgInfoListFragment.size)
+            "%d / %d", 0, pkgInfoListFragment.size
+        )
         binding.progressBarPackageList.progress = 0
         binding.progressBarPackageList.max = pkgInfoListFragment.size
         binding.layoutProgress.visibility = View.VISIBLE
@@ -413,8 +437,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     PermissionChecker.checkWriteExternalStoragePermission(this)
 
                 if (!hasWriteExternalStoragePermission) {
-                    PermissionDialogBuilder.buildWriteExternalStoragePermissionDialog(this,
-                        requestPermissionLauncher)
+                    PermissionDialogBuilder.buildWriteExternalStoragePermissionDialog(
+                        this,
+                        requestPermissionLauncher
+                    )
                     return false
                 }
             }
@@ -481,9 +507,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
     private fun getCurrentLocale(): Locale {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                resources.configuration.locales.get(0)
-            else
-                resources.configuration.locale
+            resources.configuration.locales.get(0)
+        else
+            resources.configuration.locale
     }
 
     private fun hideFragmentViews() {
@@ -492,7 +518,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         binding.layoutProgress.visibility = View.GONE
     }
 
-    private fun showCleanButtons() {
+    private fun showButtons() {
         binding.layoutButton.visibility = View.VISIBLE
     }
 
@@ -508,8 +534,28 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             .replace(
                 R.id.fragment_container_view,
                 HelpFragment.newInstance(),
-                FRAGMENT_CONTAINER_VIEW_TAG)
+                FRAGMENT_CONTAINER_VIEW_TAG
+            )
             .commitNow()
+    }
+
+    private fun updateStartStopServiceButton() {
+        if (PermissionChecker.checkAccessibilityPermission(this))
+            binding.btnStartStopService.setText(R.string.btn_stop_accessibility_service)
+        else
+            binding.btnStartStopService.setText(R.string.btn_start_accessibility_service)
+    }
+
+    private fun disableAccessibilityService() {
+        LocalBroadcastManager.getInstance(this)
+            .sendBroadcast(Intent(Constant.Intent.StopAccessibilityService.ACTION))
+
+        // Android 6 doesn't have methods to disable Accessibility service
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            startActivity(intent)
+        }
     }
 
     companion object {
