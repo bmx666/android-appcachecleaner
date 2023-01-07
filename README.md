@@ -15,14 +15,13 @@ Since Android 6 (Marshmallow) it is no longer possible to clear cache of all app
 or get the APK from the [Releases Section](https://github.com/bmx666/android-appcachecleaner/releases/latest).
 
 ## Warning ⚠️
-Since Android 13 Accessibility APIs is restricted, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
+Since Android 13 Accessibility APIs is restricted for 3rd party apps, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
 
 ## screenshots
 
-|Android 11 and early|Android 12 and later|
-|-----------------|-------------------|
-|accessibility button in navbar|floating accessibility button|
-|![Android 11 and early](fastlane/metadata/android/en-US/images/phoneScreenshots/android_11.png?raw=true "Android 11 and early")|![Android 12 and later](fastlane/metadata/android/en-US/images/phoneScreenshots/android_12.png?raw=true "Android 12 and later")|
+|Main Screen|Package list|Cache cleaning process|
+|-----------------|-------------------|-------------------|
+|![Main Screen](fastlane/metadata/android/en-US/images/phoneScreenshots/main_screen.png?raw=true "Main Screen")|![Package list](fastlane/metadata/android/en-US/images/phoneScreenshots/package_list.png?raw=true "Package list")|![Cache cleaning process](fastlane/metadata/android/en-US/images/phoneScreenshots/cache_cleaning_process.png?raw=true "Cache cleaning process")|
 
 ## How to use
 
@@ -31,10 +30,8 @@ Since Android 13 Accessibility APIs is restricted, the solution can be found [he
 3. Enable Accessibility support for **Cache Cleaner** app if it is required
 4. Check required apps in list (use floating button to check/uncheck all apps)
 5. Press **Clean Cache** floating button to run cache clean process
-6. Press **Accessibility button** to interrupt process OR wait until process will be finished
-7. Press **Close App** OR remove **Cache Cleaner** app from task manager to disable Accessibility APIs
-
-NOTE: Since Android 11 it is not possible to dynamically add and hide the **accessibility button** and the accessibility service must be started with it. The accessibility service will be automatically destroyed when closing **Cache Cleaner** app to hide the **accessibility button**. This is why Accessibility APIs access needs to be re-enabled each time.
+6. Press **Accessibility overlay button** to interrupt process OR wait until process will be finished
+7. _(optional)_ Press **Stop Accessibility service** to disable Accessibility service
 
 ## Customized Settings UI
 
