@@ -9,7 +9,7 @@
         android:label="@string/debug_app_name"
         tools:replace="android:label">
         <service
-            android:name=".AppCacheCleanerService"
+            android:name=".service.AppCacheCleanerService"
             android:label="@string/debug_service_name"
             tools:replace="android:label"/>
     </application>
