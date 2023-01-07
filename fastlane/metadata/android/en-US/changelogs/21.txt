@@ -1,0 +1,3 @@
+* use overlay button instead of Accessibility button
+* keep Accessibility service alive
+* stop Accessibility service manually from app
