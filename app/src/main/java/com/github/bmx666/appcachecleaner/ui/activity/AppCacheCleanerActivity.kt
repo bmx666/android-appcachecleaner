@@ -1,6 +1,5 @@
 package com.github.bmx666.appcachecleaner.ui.activity
 
-import android.Manifest
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageInfo
@@ -26,6 +25,7 @@ import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
@@ -96,7 +96,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             })
 
         binding.btnCleanUserAppCache.setOnClickListener {
-            if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
+            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
@@ -108,7 +108,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
-            if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
+            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
@@ -120,7 +120,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
-            if (!checkAndDisplayPermissionDialogs()) return@setOnClickListener
+            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
@@ -174,6 +174,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         if (PermissionChecker.checkAllRequiredPermissions(this))
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
+        else
+            checkAndShowPermissionDialogs()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -413,12 +415,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 else
                     getText(R.string.storage_label)))
             .setView(inputEditText)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(android.R.string.ok) { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.saveStorage(
                     this, locale, inputEditText.text
                 )
             }
-            .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
+            .setNegativeButton(R.string.dialog_extra_search_text_btn_remove) { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.removeStorage(
                     this, locale
                 )
@@ -455,12 +457,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 locale.displayLanguage, locale.displayCountry,
                 getText(R.string.clear_cache_btn_text)))
             .setView(inputEditText)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(android.R.string.ok) { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.saveClearCache(
                     this, locale, inputEditText.text
                 )
             }
-            .setNegativeButton(getText(R.string.dialog_extra_search_text_btn_remove)) { _, _ ->
+            .setNegativeButton(R.string.dialog_extra_search_text_btn_remove) { _, _ ->
                 SharedPreferencesManager.ExtraSearchText.removeClearCache(
                     this, locale
                 )
@@ -469,42 +471,19 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun checkAndDisplayPermissionDialogs(): Boolean {
+    private fun checkAndShowPermissionDialogs(): Boolean {
         val hasAccessibilityPermission = PermissionChecker.checkAccessibilityPermission(this)
-
         if (!hasAccessibilityPermission) {
-            AlertDialog.Builder(this)
-                .setTitle(getText(R.string.text_enable_accessibility_permission))
-                .setMessage(getString(R.string.text_enable_accessibility)
-                    .plus(System.getProperty("line.separator"))
-                    .plus(getString(R.string.text_enable_accessibility_explanation)))
-                .setPositiveButton("OK") { _, _ ->
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    startActivity(intent)
-                }
-                .create()
-                .show()
+            PermissionDialogBuilder.buildAccessibilityPermissionDialog(this)
+            return false
         }
 
+        // Usage stats permission is allow get cache size of apps only for Android 8 and later
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val hasUsageStatsPermission = PermissionChecker.checkUsageStatsPermission(this)
-
-            // Usage stats permission is allow get cache size of apps only for Android 8 and later
             if (!hasUsageStatsPermission) {
-
-                AlertDialog.Builder(this)
-                    .setTitle(getText(R.string.text_enable_usage_stats_permission))
-                    .setMessage(getString(R.string.text_enable_usage_stats)
-                        .plus(System.getProperty("line.separator"))
-                        .plus(getString(R.string.text_enable_usage_stats_explanation)))
-                    .setPositiveButton("OK") { _, _ ->
-                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                        startActivity(intent)
-                    }
-                    .create()
-                    .show()
+                PermissionDialogBuilder.buildUsageStatsPermissionDialog(this)
+                return false
             }
         }
 
@@ -514,15 +493,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     PermissionChecker.checkWriteExternalStoragePermission(this)
 
                 if (!hasWriteExternalStoragePermission) {
-                    AlertDialog.Builder(this)
-                        .setTitle(getText(R.string.debug_text_enable_write_external_storage_permission))
-                        .setPositiveButton("OK") { _, _ ->
-                            if (PermissionChecker.checkWriteExternalStoragePermission(this@AppCacheCleanerActivity))
-                                return@setPositiveButton
-                            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        }
-                        .create()
-                        .show()
+                    PermissionDialogBuilder.buildWriteExternalStoragePermissionDialog(this,
+                        requestPermissionLauncher)
+                    return false
                 }
             }
         }
