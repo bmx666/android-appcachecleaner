@@ -10,9 +10,15 @@ class Constant {
             }
         }
 
-        class DisableSelf {
+        class StopAccessibilityService {
             companion object {
-                const val ACTION = "DisableSelf"
+                const val ACTION = "StopAccessibilityService"
+            }
+        }
+
+        class StopAccessibilityServiceFeedback {
+            companion object {
+                const val ACTION = "StopAccessibilityServiceFeedback"
             }
         }
 

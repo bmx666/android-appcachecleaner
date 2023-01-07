@@ -153,9 +153,8 @@ class AccessibilityClearCacheManager {
         stateMachine.setFinishCleanApp()
     }
 
-    fun clickAccessibilityButton() {
+    fun interrupt() {
         if (stateMachine.isDone()) return
-        Logger.d("Accessibility button was pressed!")
         stateMachine.setInterrupted()
     }
 
