@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- 2014 Material Design color palettes -->
+    <!-- https://m2.material.io/design/color/the-color-system.html -->
+    <color name="purple50">#F3E5F5</color>
+    <color name="purple50_100">#E1BEE7</color>
+    <color name="purple50_200">#CE93D8</color>
+    <color name="purple50_300">#BA68C8</color>
+    <color name="purple50_400">#AB47BC</color>
+    <color name="purple50_500">#9C27B0</color>
+    <color name="purple50_600">#8E24AA</color>
+    <color name="purple50_700">#7B1FA2</color>
+    <color name="purple50_800">#6A1B9A</color>
+    <color name="purple50_900">#4A148C</color>
+    <color name="purple50_A100">#EA80FC</color>
+    <color name="purple50_A200">#E040FB</color>
+    <color name="purple50_A400">#D500F9</color>
+    <color name="purple50_A700">#AA00FF</color>
+
+    <color name="teal50">#E0F2F1</color>
+    <color name="teal50_100">#B2DFDB</color>
+    <color name="teal50_200">#80CBC4</color>
+    <color name="teal50_300">#4DB6AC</color>
+    <color name="teal50_400">#26A69A</color>
+    <color name="teal50_500">#009688</color>
+    <color name="teal50_600">#00897B</color>
+    <color name="teal50_700">#00796B</color>
+    <color name="teal50_800">#00695C</color>
+    <color name="teal50_900">#004D40</color>
+    <color name="teal50_A100">#A7FFEB</color>
+    <color name="teal50_A200">#64FFDA</color>
+    <color name="teal50_A400">#1DE9B6</color>
+    <color name="teal50_A700">#00BFA5</color>
 </resources>
