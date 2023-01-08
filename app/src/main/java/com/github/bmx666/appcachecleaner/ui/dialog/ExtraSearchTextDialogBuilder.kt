@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.util.TypedValue
 import android.widget.EditText
+import androidx.appcompat.view.ContextThemeWrapper
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import java.util.*
@@ -40,7 +41,7 @@ class ExtraSearchTextDialogBuilder {
             inputEditText.minHeight = getMinTouchTargetSize(context)
             inputEditText.minWidth = getMinTouchTargetSize(context)
 
-            AlertDialog.Builder(context)
+            AlertDialogBuilder(context)
                 .setTitle(context.getText(R.string.dialog_extra_search_text_title))
                 .setMessage(context.getString(
                     R.string.dialog_extra_search_text_message,
@@ -77,7 +78,7 @@ class ExtraSearchTextDialogBuilder {
             inputEditText.minHeight = getMinTouchTargetSize(context)
             inputEditText.minWidth = getMinTouchTargetSize(context)
 
-            AlertDialog.Builder(context)
+            AlertDialogBuilder(context)
                 .setTitle(context.getText(R.string.dialog_extra_search_text_title))
                 .setMessage(context.getString(
                     R.string.dialog_extra_search_text_message,
