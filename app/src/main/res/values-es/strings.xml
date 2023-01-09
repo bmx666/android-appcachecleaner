@@ -14,6 +14,7 @@
     <string name="btn_clean_all_cache">Limpiar caché de todas las aplicaciones</string>
     <string name="btn_clean_system_cache">Limpiar caché de aplicaciones del sistema</string>
     <string name="btn_clean_user_cache">Limpiar caché de aplicaciones de usuario</string>
+    <string name="btn_close_app">Cerrar la aplicación</string>
     <string name="btn_start_accessibility_service">Iniciar servicio de Accesibilidad</string>
     <string name="btn_stop_accessibility_service">Detener servicio de Accesibilidad</string>
     <string name="btn_add_extra_search_text">Agregar texto de búsqueda extra</string>

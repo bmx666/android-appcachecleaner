@@ -133,6 +133,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_start_accessibility_service" />
+
+        <Button
+            android:id="@+id/btnCloseApp"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_close_app" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

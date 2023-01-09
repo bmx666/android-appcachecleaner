@@ -16,6 +16,7 @@
     <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>
     <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
     <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
+    <string name="btn_close_app">Выйти из приложения</string>
     <string name="btn_start_accessibility_service">Запустить сервис Спец. возможностей</string>
     <string name="btn_stop_accessibility_service">Остановить сервис Спец. возможностей</string>
     <string name="btn_add_extra_search_text">Добавить доп. текст для поиска</string>
