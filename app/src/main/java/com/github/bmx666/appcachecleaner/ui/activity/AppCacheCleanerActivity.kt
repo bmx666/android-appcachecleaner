@@ -147,6 +147,12 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 PermissionDialogBuilder.buildAccessibilityPermissionDialog(this)
         }
 
+        binding.btnCloseApp.setOnClickListener {
+            if (PermissionChecker.checkAccessibilityPermission(this))
+                disableAccessibilityService()
+            finish()
+        }
+
         binding.fabCleanCache.setOnClickListener {
             startCleanCache()
         }
