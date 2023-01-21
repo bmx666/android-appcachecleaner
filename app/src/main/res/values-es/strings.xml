@@ -33,4 +33,6 @@
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Borrar caché"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Almacenamiento y caché"</string>
     <string name="storage_label" msgid="2522307545547515733">"Almacenamiento"</string>
+    <string name="allow" msgid="3763244945363657722">"Permitir"</string>
+    <string name="deny" msgid="7326117222944479942">"Denegar"</string>
 </resources>

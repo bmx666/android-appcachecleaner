@@ -3,4 +3,6 @@
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"કૅશ મેમરી સાફ કરો"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"સ્ટોરેજ અને કૅશ મેમરી"</string>
     <string name="storage_label" msgid="2522307545547515733">"સ્ટોરેજ"</string>
+    <string name="allow" msgid="3763244945363657722">"મંજૂરી આપો"</string>
+    <string name="deny" msgid="7326117222944479942">"નકારો"</string>
 </resources>
