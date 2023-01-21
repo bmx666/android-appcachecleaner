@@ -2,12 +2,52 @@
 <resources>
     <string translatable="false" name="app_name">Cache Cleaner</string>
     <string translatable="false" name="service_name">Cache Cleaner</string>
-    <string translatable="false" name="text_enable_accessibility">Allow an application to use Accessibility.</string>
-    <string translatable="false" name="text_enable_accessibility_explanation">This permission is needed to find \"Storage\" menu, \"Clear cache\" button and do perform click. For more information about Accessibility, see the help menu.</string>
-    <string translatable="false" name="text_enable_accessibility_permission">App does not have rights to use Accessibility</string>
-    <string translatable="false" name="text_enable_usage_stats">Allow an application to access Usage Stats.</string>
-    <string translatable="false" name="text_enable_usage_stats_explanation">This permission is needed to get the cache size of installed applications.</string>
-    <string translatable="false" name="text_enable_usage_stats_permission">App does not have rights to access Usage Stats</string>
+    <string translatable="false" name="text_agree">Agree</string>
+    <string translatable="false" name="text_enable_accessibility_title">Enable Accessibility Service</string>
+    <string translatable="false" name="text_enable_accessibility_message">
+        To functional properly, <b>Cache Cleaner</b> needs your permission.
+        Go to Settings to allow permission for <b>Accessibility</b>.
+        \n\n
+        1. Go to <b>Accessibility</b> in Settings.
+        \n
+        2. Find <b>Cache Cleaner</b> and tap on it.
+        \n
+        3. Grant permission.
+        \n\n
+        <u><b>Accessibility services declaration:</b></u>
+        \n
+        - This application requires the Accessibility Services API to implement its core functions, such as performing clicks, swipes and other core functions.
+        \n
+        - The Accessibility permission is required for Android 6 and above.
+        \n
+        - This application does not collect and/or share personal or sensitive data using the Accessibility capabilities.
+    </string>
+    <string translatable="false" name="text_accessibility_description">
+        "Cache Cleaner" requires the Accessibility Services API to implement its core functions, such as performing clicks, swipes and other core functions.
+        "Cache Cleaner" does not collect and/or share personal or sensitive data using the Accessibility capabilities.
+    </string>
+    <string translatable="false" name="text_enable_usage_stats_title">Enable Usage Stats</string>
+    <string translatable="false" name="text_enable_usage_stats_message">
+        To functional properly, <b>Cache Cleaner</b> needs your permission. Go to Settings to allow permission for Usage Stats.
+        \n\n
+        1. Go to <b>Apps</b> in Settings.
+        \n
+        2. Find <b>Special app access</b> and tap on it.
+        \n
+        3. Find <b>Usage access</b> and tap on it.
+        \n
+        4. Find <b>Cache Cleaner</b> and tap on it.
+        \n
+        5. Grant permission.
+        \n\n
+        <u><b>Usage stats declaration:</b></u>
+        \n
+        - This application requires the Usage stats to implement its core function, such as get cache size of installed applications.
+        \n
+        - The Usage stats permission is required for Android 8 and above.
+        \n
+        - This application does not collect and/or share personal or sensitive data using the Usage stats.
+    </string>
     <string translatable="false" name="text_clean_cache_left">left apps</string>
     <string translatable="false" name="text_clean_cache_finish">Clean cache was finished\nCleaned up %1$s</string>
     <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted\nCleaned up %1$s</string>

@@ -2,10 +2,6 @@
 <resources>
     <string name="app_name">Limpiador de Caché</string>
     <string name="service_name">Limpiador de Caché</string>
-    <string name="text_enable_accessibility">Permitir que una aplicación use Accesibilidad</string>
-    <string name="text_enable_accessibility_permission">La aplicación no tiene permisos para usar Accesibilidad</string>
-    <string name="text_enable_usage_stats">Permitir que una aplicación acceda a las estadísticas de uso</string>
-    <string name="text_enable_usage_stats_permission">La aplicación no tiene permisos para acceder a las estadísticas de uso</string>
     <string name="text_clean_cache_left">Aplicaciones restantes</string>
     <string name="text_clean_cache_finish">La limpieza de caché finalizó\nSe limpió %1$s</string>
     <string name="text_clean_cache_interrupt">Se interrumpió la limpieza de caché\nSe limpió %1$s</string>
