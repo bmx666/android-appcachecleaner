@@ -19,6 +19,9 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.github.bmx666.appcachecleaner", appContext.packageName)
+        if (BuildConfig.DEBUG)
+            assertEquals("com.github.bmx666.appcachecleaner.debug", appContext.packageName)
+        else
+            assertEquals("com.github.bmx666.appcachecleaner", appContext.packageName)
     }
 }
