@@ -1,0 +1,3 @@
+* update permission dialog for the Accessibility
+* update permission dialog for the Usage Stats
+* remove unused translated strings for spanish and turkish
