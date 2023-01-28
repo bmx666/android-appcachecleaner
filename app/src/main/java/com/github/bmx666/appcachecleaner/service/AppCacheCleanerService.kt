@@ -38,8 +38,8 @@ class AppCacheCleanerService : AccessibilityService() {
                 }
                 Constant.Intent.ExtraSearchText.ACTION -> {
                     updateLocaleText(
-                        intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE),
-                        intent.getStringExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE)
+                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST),
+                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST)
                     )
                 }
                 Constant.Intent.ClearCache.ACTION -> {
@@ -75,18 +75,18 @@ class AppCacheCleanerService : AccessibilityService() {
         }
     }
 
-    private fun updateLocaleText(clearCacheText: CharSequence?, storageText: CharSequence?) {
+    private fun updateLocaleText(clearCacheTextList: Array<String>?, storageTextList: Array<String>?) {
         accessibilityClearCacheManager.apply {
             setArrayTextClearCacheButton(
                 ArrayList<CharSequence>().apply {
-                    clearCacheText?.let { add(it) }
+                    clearCacheTextList?.forEach { add(it) }
                     add(getText(R.string.clear_cache_btn_text))
                 }
             )
 
             setArrayTextStorageAndCacheMenu(
                 ArrayList<CharSequence>().apply {
-                    storageText?.let { add(it) }
+                    storageTextList?.forEach { add(it) }
                     add(getText(R.string.storage_settings_for_app))
                     add(getText(R.string.storage_label))
                 }

@@ -399,20 +399,63 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
     }
 
-    private fun addExtraSearchText() {
+    private fun addExtraSearchTextForClearCache(): Array<String> {
         val locale = getCurrentLocale()
 
-        val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
+        val list = ArrayList<String>()
 
         SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)?.let { value ->
             if (value.isNotEmpty())
-                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE, value)
+                list.add(value)
         }
+
+        arrayListOf(
+            "clear_cache_btn_text",
+        ).forEach { resourceName ->
+            PackageManagerHelper.getApplicationResourceString(
+                this,"com.android.settings", resourceName)?.let { value ->
+                if (value.isNotEmpty())
+                    list.add(value)
+            }
+        }
+
+        return list.toTypedArray()
+    }
+
+    private fun addExtraSearchTextForStorage(): Array<String> {
+        val locale = getCurrentLocale()
+
+        val list = ArrayList<String>()
 
         SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)?.let { value ->
             if (value.isNotEmpty())
-                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE, value)
+                list.add(value)
         }
+
+        arrayListOf(
+            "storage_settings_for_app",
+            "storage_label",
+        ).forEach { resourceName ->
+            PackageManagerHelper.getApplicationResourceString(
+                this,"com.android.settings", resourceName)?.let { value ->
+                if (value.isNotEmpty())
+                    list.add(value)
+            }
+        }
+
+        return list.toTypedArray()
+    }
+
+    private fun addExtraSearchText() {
+        val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
+
+        val clearCacheList = addExtraSearchTextForClearCache()
+        if (clearCacheList.isNotEmpty())
+            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST, clearCacheList)
+
+        val storageList = addExtraSearchTextForStorage()
+        if (storageList.isNotEmpty())
+            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST, storageList)
 
         intent.extras?.let {
             LocalBroadcastManager.getInstance(this)
