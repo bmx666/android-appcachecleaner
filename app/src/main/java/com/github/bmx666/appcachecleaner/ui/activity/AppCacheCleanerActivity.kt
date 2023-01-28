@@ -71,12 +71,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(Constant.Intent.CleanCacheFinish.ACTION)
-        intentFilter.addAction(Constant.Intent.CleanCacheAppInfo.ACTION)
-        intentFilter.addAction(Constant.Intent.StopAccessibilityServiceFeedback.ACTION)
         LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mLocalReceiver, intentFilter)
+            .registerReceiver(
+                mLocalReceiver,
+                IntentFilter().apply {
+                    addAction(Constant.Intent.CleanCacheFinish.ACTION)
+                    addAction(Constant.Intent.CleanCacheAppInfo.ACTION)
+                    addAction(Constant.Intent.StopAccessibilityServiceFeedback.ACTION)
+                }
+            )
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -244,27 +247,31 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         hideFragmentViews()
         showButtons()
 
-        // ignore empty list and show main screen
-        if (pkgList.isEmpty()) {
-            binding.textView.text = ""
-            return
+        pkgList.apply {
+            // ignore empty list and show main screen
+            if (isEmpty()) {
+                binding.textView.text = ""
+                return
+            }
+
+            // clear cache of app in the end to avoid issues
+            if (contains(packageName)) {
+                remove(packageName)
+                // cache dir is using for log file in debug version
+                // clean cache dir in release only
+                if (!BuildConfig.DEBUG)
+                    add(packageName)
+            }
         }
 
-        // clear cache of app in the end to avoid issues
-        if (pkgList.contains(packageName)) {
-            pkgList.remove(packageName)
-            // cache dir is using for log file in debug version
-            // clean cache dir in release only
-            if (!BuildConfig.DEBUG)
-                pkgList.add(packageName)
-        }
-
-        val intent = Intent(Constant.Intent.ClearCache.ACTION)
-        intent.putStringArrayListExtra(
-            Constant.Intent.ClearCache.NAME_PACKAGE_LIST,
-            pkgList as ArrayList<String>
+        LocalBroadcastManager.getInstance(this).sendBroadcast(
+            Intent(Constant.Intent.ClearCache.ACTION).apply {
+                putStringArrayListExtra(
+                    Constant.Intent.ClearCache.NAME_PACKAGE_LIST,
+                    pkgList as ArrayList<String>
+                )
+            }
         )
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
         CoroutineScope(Dispatchers.IO).launch {
             PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
@@ -306,14 +313,16 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
 
         // return back to Main Activity, sometimes not possible press Back from Settings
-        val intent = this.intent
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-        intent.putExtra(ARG_DISPLAY_TEXT, displayText)
-        startActivity(intent)
+        startActivity(
+            this.intent.apply {
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                putExtra(ARG_DISPLAY_TEXT, displayText)
+            }
+        )
     }
 
     private fun addPackageToPlaceholderContent() {
@@ -459,12 +468,14 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         // everything is possible...
         if (packageName == null || packageName.trim().isEmpty()) return
         try {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-            intent.data = Uri.parse("package:$packageName")
-            startActivity(intent)
+            startActivity(
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                    data = Uri.parse("package:$packageName")
+                }
+            )
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
