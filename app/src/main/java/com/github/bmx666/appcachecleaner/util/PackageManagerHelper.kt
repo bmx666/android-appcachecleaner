@@ -43,6 +43,21 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
+        fun getApplicationResourceString(context: Context, pkgName: String,
+                                         resourceName: String): String? {
+            context.packageManager?.let { pm ->
+                try {
+                    val res = pm.getResourcesForApplication(pkgName)
+                    val resId = res.getIdentifier(resourceName,"string", pkgName)
+                    if (resId != 0)
+                        return res.getString(resId)
+                } catch (e: PackageManager.NameNotFoundException) {}
+            }
+
+            return null
+        }
+
+        @JvmStatic
         fun getApplicationLabel(context: Context, pkgInfo: PackageInfo): String {
             var localizedLabel: String? = null
             context.packageManager?.let { pm ->
