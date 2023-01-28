@@ -26,16 +26,15 @@ class AccessibilityOverlay(
     }
 
     fun show() {
-        val params = WindowManager.LayoutParams()
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT
-        params.width = WindowManager.LayoutParams.WRAP_CONTENT
-        params.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-        params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-        params.flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                else
+        val params = WindowManager.LayoutParams().apply {
+            height = WindowManager.LayoutParams.WRAP_CONTENT
+            width = WindowManager.LayoutParams.WRAP_CONTENT
+            gravity = Gravity.CENTER_VERTICAL or Gravity.END
+            type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        }
 
         getWindowManager().addView(button, params)
     }
