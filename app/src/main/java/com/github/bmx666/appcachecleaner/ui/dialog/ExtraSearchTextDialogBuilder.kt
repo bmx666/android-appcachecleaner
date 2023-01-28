@@ -26,20 +26,22 @@ class ExtraSearchTextDialogBuilder {
 
         @JvmStatic
         fun buildStorageDialog(context: Context, locale: Locale) {
-            val inputEditText = EditText(context)
+            val inputEditText = EditText(context).apply {
+                val text = SharedPreferencesManager.ExtraSearchText.getStorage(context, locale)
+                if (text?.isNotEmpty() == true)
+                    setText(text)
+                else {
+                    val resId = when {
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                            R.string.storage_settings_for_app
+                        else -> R.string.storage_label
+                    }
+                    hint = context.getText(resId)
+                }
 
-            val text = SharedPreferencesManager.ExtraSearchText.getStorage(context, locale)
-            if (text?.isNotEmpty() == true)
-                inputEditText.setText(text)
-            else
-                inputEditText.hint =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                        context.getText(R.string.storage_settings_for_app)
-                    else
-                        context.getText(R.string.storage_label)
-
-            inputEditText.minHeight = getMinTouchTargetSize(context)
-            inputEditText.minWidth = getMinTouchTargetSize(context)
+                minHeight = getMinTouchTargetSize(context)
+                minWidth = getMinTouchTargetSize(context)
+            }
 
             AlertDialogBuilder(context)
                 .setTitle(context.getText(R.string.dialog_extra_search_text_title))
@@ -67,16 +69,16 @@ class ExtraSearchTextDialogBuilder {
 
         @JvmStatic
         fun buildClearCacheDialog(context: Context, locale: Locale) {
-            val inputEditText = EditText(context)
+            val inputEditText = EditText(context).apply {
+                val text = SharedPreferencesManager.ExtraSearchText.getClearCache(context, locale)
+                if (text?.isNotEmpty() == true)
+                    setText(text)
+                else
+                    hint = context.getText(R.string.clear_cache_btn_text)
 
-            val text = SharedPreferencesManager.ExtraSearchText.getClearCache(context, locale)
-            if (text?.isNotEmpty() == true)
-                inputEditText.setText(text)
-            else
-                inputEditText.hint = context.getText(R.string.clear_cache_btn_text)
-
-            inputEditText.minHeight = getMinTouchTargetSize(context)
-            inputEditText.minWidth = getMinTouchTargetSize(context)
+                minHeight = getMinTouchTargetSize(context)
+                minWidth = getMinTouchTargetSize(context)
+            }
 
             AlertDialogBuilder(context)
                 .setTitle(context.getText(R.string.dialog_extra_search_text_title))

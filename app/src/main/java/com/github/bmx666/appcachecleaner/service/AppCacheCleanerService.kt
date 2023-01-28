@@ -60,12 +60,15 @@ class AppCacheCleanerService : AccessibilityService() {
 
         updateLocaleText(null, null)
 
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(Constant.Intent.StopAccessibilityService.ACTION)
-        intentFilter.addAction(Constant.Intent.ExtraSearchText.ACTION)
-        intentFilter.addAction(Constant.Intent.ClearCache.ACTION)
         LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mLocalReceiver, intentFilter)
+            .registerReceiver(
+                mLocalReceiver,
+                IntentFilter().apply {
+                    addAction(Constant.Intent.StopAccessibilityService.ACTION)
+                    addAction(Constant.Intent.ExtraSearchText.ACTION)
+                    addAction(Constant.Intent.ClearCache.ACTION)
+                }
+            )
 
         accessibilityOverlay = AccessibilityOverlay(this) {
             accessibilityClearCacheManager.interrupt()
@@ -73,16 +76,22 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun updateLocaleText(clearCacheText: CharSequence?, storageText: CharSequence?) {
-        val arrayTextClearCacheButton = ArrayList<CharSequence>()
-        clearCacheText?.let { arrayTextClearCacheButton.add(it) }
-        arrayTextClearCacheButton.add(getText(R.string.clear_cache_btn_text))
-        accessibilityClearCacheManager.setArrayTextClearCacheButton(arrayTextClearCacheButton)
+        accessibilityClearCacheManager.apply {
+            setArrayTextClearCacheButton(
+                ArrayList<CharSequence>().apply {
+                    clearCacheText?.let { add(it) }
+                    add(getText(R.string.clear_cache_btn_text))
+                }
+            )
 
-        val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
-        storageText?.let { arrayTextStorageAndCacheMenu.add(it) }
-        arrayTextStorageAndCacheMenu.add(getText(R.string.storage_settings_for_app))
-        arrayTextStorageAndCacheMenu.add(getText(R.string.storage_label))
-        accessibilityClearCacheManager.setArrayTextStorageAndCacheMenu(arrayTextStorageAndCacheMenu)
+            setArrayTextStorageAndCacheMenu(
+                ArrayList<CharSequence>().apply {
+                    storageText?.let { add(it) }
+                    add(getText(R.string.storage_settings_for_app))
+                    add(getText(R.string.storage_label))
+                }
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -101,9 +110,11 @@ class AppCacheCleanerService : AccessibilityService() {
     }
 
     private fun openAppInfo(pkgName: String) {
-        val intent = Intent(Constant.Intent.CleanCacheAppInfo.ACTION)
-        intent.putExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME, pkgName)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(
+            Intent(Constant.Intent.CleanCacheAppInfo.ACTION).apply {
+                putExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME, pkgName)
+            }
+        )
     }
 
     private suspend fun clearCache(pkgList: ArrayList<String>) {
@@ -115,9 +126,11 @@ class AppCacheCleanerService : AccessibilityService() {
         }
 
         val interrupted = accessibilityClearCacheManager.clearCacheApp(pkgList, this::openAppInfo)
-        val intent = Intent(Constant.Intent.CleanCacheFinish.ACTION)
-        intent.putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(
+            Intent(Constant.Intent.CleanCacheFinish.ACTION).apply {
+                putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
+            }
+        )
 
         Handler(Looper.getMainLooper()).post {
             accessibilityOverlay.hide()

@@ -38,12 +38,14 @@ class HelpFragment: Fragment() {
             binding.btnHelpOpenAppSettings.setOnClickListener {
                 context?.packageName.let { packageName ->
                     try {
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                        intent.data = Uri.parse("package:$packageName")
-                        startActivity(intent)
+                        startActivity(
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                                addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                                data = Uri.parse("package:$packageName")
+                            }
+                        )
                     } catch (e: ActivityNotFoundException) {
                         e.printStackTrace()
                     }
