@@ -181,6 +181,13 @@
 
     <string name="description_accessibility_overlay_button_interrupt">Прервать процесс очистки кеша</string>
 
+    <!-- Preference -->
+    <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
+    <string name="prefs_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
+    <string translatable="false" name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>
+    <string name="prefs_show_button_close_app">Выйти из приложения</string>
+    <string translatable="false" name="prefs_summary_show_button_close_app">Для некоторых смартфонов вам необходимо вручную остановить службу специальных возможностей и закрыть приложение</string>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>
     <string name="storage_label" msgid="2522307545547515733">"Хранилище"</string>

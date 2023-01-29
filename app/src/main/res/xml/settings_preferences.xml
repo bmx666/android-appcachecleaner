@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/btn_add_extra_search_text">
+
+        <EditTextPreference
+            app:key="clear_cache"
+            app:title="@string/clear_cache_btn_text" />
+
+        <EditTextPreference
+            app:key="storage"
+            app:title="@string/storage_settings_for_app" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/prefs_show_extra_buttons">
+
+        <SwitchPreferenceCompat
+            app:key="show_button_start_stop_service"
+            app:title="@string/prefs_show_button_start_stop_service"
+            app:summary="@string/prefs_summary_show_button_start_stop_service"/>
+
+        <SwitchPreferenceCompat
+            app:key="show_button_close_app"
+            app:title="@string/prefs_show_button_close_app"
+            app:summary="@string/prefs_summary_show_button_close_app" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
