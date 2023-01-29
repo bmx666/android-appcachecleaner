@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/teal50_A200</item>
     </style>
 
     <style name="Theme.AppCacheCleaner.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
