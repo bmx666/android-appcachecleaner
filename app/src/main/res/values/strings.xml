@@ -69,7 +69,6 @@
     <string translatable="false" name="dialog_extra_search_text_btn_ok">OK</string>
     <string translatable="false" name="dialog_extra_search_text_btn_remove">Remove</string>
 
-    <string translatable="false" name="menu_help">Help</string>
     <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>
 
     <string translatable="false" name="help_about"><![CDATA[
@@ -181,6 +180,8 @@
     <string name="storage_label" >Storage</string>
     <string name="allow">Allow</string>
     <string name="deny">Deny</string>
+    <string name="menu_item_settings">Settings</string>
+    <string name="menu_item_help">Help</string>
 
     <string translatable="false" name="debug_app_name">Cache Cleaner Debug</string>
     <string translatable="false" name="debug_service_name">Cache Cleaner Debug</string>

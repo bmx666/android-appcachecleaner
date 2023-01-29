@@ -5,4 +5,6 @@
     <string name="storage_label" msgid="2522307545547515733">"Сховішча"</string>
     <string name="allow" msgid="3763244945363657722">"Дазволіць"</string>
     <string name="deny" msgid="7326117222944479942">"Адмовіць"</string>
+    <string name="menu_item_settings" msgid="1413723516369078665">"Налады"</string>
+    <string name="menu_item_help" msgid="4570953476186849841">"Даведка"</string>
 </resources>

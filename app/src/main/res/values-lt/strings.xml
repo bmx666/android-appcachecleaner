@@ -5,4 +5,6 @@
     <string name="storage_label" msgid="2522307545547515733">"Saugykla"</string>
     <string name="allow" msgid="3763244945363657722">"Leisti"</string>
     <string name="deny" msgid="7326117222944479942">"Atmesti"</string>
+    <string name="menu_item_settings" msgid="1413723516369078665">"Nustatymai"</string>
+    <string name="menu_item_help" msgid="4570953476186849841">"Pagalba"</string>
 </resources>

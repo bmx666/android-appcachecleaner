@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/help"
         android:icon="@drawable/ic_baseline_help_24"
-        android:title="@string/menu_help"
+        android:title="@string/menu_item_help"
         app:showAsAction="ifRoom"/>
     <item
         android:title="@string/menu_extra_search_text_title">
