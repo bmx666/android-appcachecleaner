@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
@@ -22,10 +23,12 @@ import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
-import com.github.bmx666.appcachecleaner.ui.dialog.ExtraSearchTextDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
+import com.github.bmx666.appcachecleaner.ui.fragment.SettingsFragment
+import com.github.bmx666.appcachecleaner.util.ExtraSearchTextHelper
+import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker
 import kotlinx.coroutines.CoroutineScope
@@ -93,15 +96,16 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     if (loadingPkgList.get()) {
                         loadingPkgList.set(false)
                         hideFragmentViews()
-                        showButtons()
+                        showMainViews()
                         return
                     }
 
                     supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                         ?.let { fragment ->
+                            restoreActionBar()
                             hideFragmentViews()
                             supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-                            showButtons()
+                            showMainViews()
                             return
                         }
                 }
@@ -201,8 +205,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
         else
             checkAndShowPermissionDialogs()
-
-        updateStartStopServiceButton()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -213,16 +215,16 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.add_extra_search_text_storage -> {
-                showExtraSearchTextDialogForStorage()
-                true
-            }
-            R.id.add_extra_search_text_clear_cache -> {
-                showExtraSearchTextDialogForClearCache()
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
             R.id.help -> {
                 showHelp()
+                true
+            }
+            R.id.settings -> {
+                showSettings()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -231,6 +233,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        updateExtraButtonsVisibility()
         updateStartStopServiceButton()
     }
 
@@ -245,7 +248,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         addExtraSearchText()
 
         hideFragmentViews()
-        showButtons()
+        showMainViews()
 
         pkgList.apply {
             // ignore empty list and show main screen
@@ -326,7 +329,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun addPackageToPlaceholderContent() {
-        val locale = getCurrentLocale()
+        val locale = LocaleHelper.getCurrentLocale(this)
 
         PlaceholderContent.reset()
 
@@ -382,7 +385,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun showPackageFragment() {
-        hideCleanButtons()
+        hideMainViews()
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -399,78 +402,22 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         }
     }
 
-    private fun addExtraSearchTextForClearCache(): Array<String> {
-        val locale = getCurrentLocale()
-
-        val list = ArrayList<String>()
-
-        SharedPreferencesManager.ExtraSearchText.getClearCache(this, locale)?.let { value ->
-            if (value.isNotEmpty())
-                list.add(value)
-        }
-
-        arrayListOf(
-            "clear_cache_btn_text",
-        ).forEach { resourceName ->
-            PackageManagerHelper.getApplicationResourceString(
-                this,"com.android.settings", resourceName)?.let { value ->
-                if (value.isNotEmpty())
-                    list.add(value)
-            }
-        }
-
-        return list.toTypedArray()
-    }
-
-    private fun addExtraSearchTextForStorage(): Array<String> {
-        val locale = getCurrentLocale()
-
-        val list = ArrayList<String>()
-
-        SharedPreferencesManager.ExtraSearchText.getStorage(this, locale)?.let { value ->
-            if (value.isNotEmpty())
-                list.add(value)
-        }
-
-        arrayListOf(
-            "storage_settings_for_app",
-            "storage_label",
-        ).forEach { resourceName ->
-            PackageManagerHelper.getApplicationResourceString(
-                this,"com.android.settings", resourceName)?.let { value ->
-                if (value.isNotEmpty())
-                    list.add(value)
-            }
-        }
-
-        return list.toTypedArray()
-    }
-
     private fun addExtraSearchText() {
         val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
 
-        val clearCacheList = addExtraSearchTextForClearCache()
-        if (clearCacheList.isNotEmpty())
-            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST, clearCacheList)
+        ExtraSearchTextHelper.getTextForClearCache(this).let { list ->
+            if (list.isNotEmpty())
+                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST, list)
+        }
 
-        val storageList = addExtraSearchTextForStorage()
-        if (storageList.isNotEmpty())
-            intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST, storageList)
+        ExtraSearchTextHelper.getTextForStorage(this).let { list ->
+            if (list.isNotEmpty())
+                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST, list)
+        }
 
         intent.extras?.let {
-            LocalBroadcastManager.getInstance(this)
-                .sendBroadcast(intent)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
-    }
-
-    private fun showExtraSearchTextDialogForStorage() {
-        val locale = getCurrentLocale()
-        ExtraSearchTextDialogBuilder.buildStorageDialog(this, locale)
-    }
-
-    private fun showExtraSearchTextDialogForClearCache() {
-        val locale = getCurrentLocale()
-        ExtraSearchTextDialogBuilder.buildClearCacheDialog(this, locale)
     }
 
     private fun checkAndShowPermissionDialogs(): Boolean {
@@ -565,30 +512,36 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         requestSaveLogFileLauncher.launch(intent)
     }
 
-    private fun getCurrentLocale(): Locale {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            resources.configuration.locales.get(0)
-        else
-            resources.configuration.locale
-    }
-
     private fun hideFragmentViews() {
+        restoreActionBar()
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
         binding.layoutProgress.visibility = View.GONE
     }
 
-    private fun showButtons() {
+    private fun showMainViews() {
         binding.layoutButton.visibility = View.VISIBLE
+        updateExtraButtonsVisibility()
+        updateStartStopServiceButton()
     }
 
-    private fun hideCleanButtons() {
+    private fun hideMainViews() {
         binding.layoutButton.visibility = View.GONE
+    }
+
+    private fun updateActionBar(@StringRes title: Int) {
+        supportActionBar?.setTitle(title)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun restoreActionBar() {
+        supportActionBar?.setTitle(R.string.app_name)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
     private fun showHelp() {
         hideFragmentViews()
-        hideCleanButtons()
+        hideMainViews()
         binding.fragmentContainerView.visibility = View.VISIBLE
         supportFragmentManager.beginTransaction()
             .replace(
@@ -597,6 +550,35 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 FRAGMENT_CONTAINER_VIEW_TAG
             )
             .commitNow()
+        updateActionBar(R.string.menu_item_help)
+    }
+
+    private fun showSettings() {
+        hideFragmentViews()
+        hideMainViews()
+        binding.fragmentContainerView.visibility = View.VISIBLE
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container_view,
+                SettingsFragment.newInstance(),
+                FRAGMENT_CONTAINER_VIEW_TAG
+            )
+            .commitNow()
+        updateActionBar(R.string.menu_item_settings)
+    }
+
+    private fun updateExtraButtonsVisibility() {
+        binding.btnStartStopService.visibility =
+            when (SharedPreferencesManager.ExtraButtons.getShowStartStopService(this)) {
+                true -> View.VISIBLE
+                else -> View.GONE
+            }
+
+        binding.btnCloseApp.visibility =
+            when (SharedPreferencesManager.ExtraButtons.getShowCloseApp(this)) {
+                true -> View.VISIBLE
+                else -> View.GONE
+            }
     }
 
     private fun updateStartStopServiceButton() {

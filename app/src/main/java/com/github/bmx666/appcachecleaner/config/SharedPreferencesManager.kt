@@ -3,6 +3,7 @@ package com.github.bmx666.appcachecleaner.config
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import java.util.*
 
 class SharedPreferencesManager {
@@ -94,6 +95,32 @@ class SharedPreferencesManager {
             fun getChecked(context: Context): Set<String> {
                 return getCheckedPackagesListSharedPref(context)
                     .getStringSet(KEY_CHECKED, HashSet()) ?: HashSet()
+            }
+        }
+    }
+
+    class ExtraButtons {
+
+        companion object {
+
+            private const val KEY_CLOSE_APP = "show_button_close_app"
+            private const val KEY_START_STOP_SERVICE = "show_button_start_stop_service"
+
+            @JvmStatic
+            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+                return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            fun getShowStartStopService(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(KEY_START_STOP_SERVICE, false)
+            }
+
+            @JvmStatic
+            fun getShowCloseApp(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(KEY_CLOSE_APP, false)
             }
         }
     }

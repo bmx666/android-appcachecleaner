@@ -175,6 +175,13 @@
 
     <string translatable="false" name="description_accessibility_overlay_button_interrupt">Interrupt cache cleaning process</string>
 
+    <!-- Preference -->
+    <string translatable="false" name="prefs_show_extra_buttons">Show extra buttons</string>
+    <string translatable="false" name="prefs_show_button_start_stop_service">Start/Stop Accessibility service</string>
+    <string translatable="false" name="prefs_summary_show_button_start_stop_service">For some smartphones, you need to manually start or stop the accessibility service</string>
+    <string translatable="false" name="prefs_show_button_close_app">Close app</string>
+    <string translatable="false" name="prefs_summary_show_button_close_app">For some smartphones, you need to manually stop the accessibility service and close the app</string>
+
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
     <string name="storage_label" >Storage</string>
