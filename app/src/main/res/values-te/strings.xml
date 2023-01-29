@@ -5,4 +5,6 @@
     <string name="storage_label" msgid="2522307545547515733">"స్టోరేజ్"</string>
     <string name="allow" msgid="3763244945363657722">"అనుమతించండి"</string>
     <string name="deny" msgid="7326117222944479942">"తిరస్కరించండి"</string>
+    <string name="menu_item_settings" msgid="1413723516369078665">"సెట్టింగ్‌లు"</string>
+    <string name="menu_item_help" msgid="4570953476186849841">"సహాయం"</string>
 </resources>
