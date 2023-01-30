@@ -153,13 +153,17 @@
         5. Open <b>Cache Cleaner</b> app with specific locale (change on required locale in Settings
         and go back into <b>Cache Cleaner</b> app)
         <br/>
-        6. Open menu in the top right corner and select <b>Add Extra Search Text</b> / <b>Storage</b>
-        and enter custom search text for <b>&quot;Storage&quot; menu&quot;</b> and
-        press <b>&quot;OK&quot;</b>, or <b>&quot;REMOVE&quot;</b> otherwise
+        6. Open <b>Settings</b> menu in the top right corner and find section <b>Add Extra Search Text</b>
         <br/>
-        7. Open menu in the top right corner and select <b>Add Extra Search Text</b> / <b>Clear cache</b>
-        and enter custom search text for <b>&quot;Clear Cache&quot; button&quot;</b> and
-        press <b>&quot;OK&quot;</b>, or <b>&quot;REMOVE&quot;</b> otherwise
+        7. Tap on <b>Clear Cache</b>, enter the custom search text for <b>&quot;Clear Cache&quot; button&quot;</b>
+        in input field and press <b>&quot;OK&quot;</b> to save it. To remove custom search text
+        for <b>&quot;Clear Cache&quot; button&quot;</b> just erase a whole text in input field and press
+        <b>&quot;OK&quot;</b>
+        <br/>
+        8. Tap on <b>Storage</b>, enter the custom search text for <b>&quot;Storage&quot; menu&quot;</b>
+        in input field and press <b>&quot;OK&quot;</b> to save it. To remove custom search text
+        for <b>&quot;Storage&quot; menu&quot;</b> just erase a whole text in input field and press
+        <b>&quot;OK&quot;</b>
     ]]></string>
 
     <string translatable="false" name="help_icon_copyright"><![CDATA[
