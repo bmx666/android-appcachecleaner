@@ -1,0 +1,1 @@
+* update help for Customized Settings UI
