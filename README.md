@@ -45,8 +45,9 @@ Many companies or Android ROMs add or change default Android UI, including Setti
 3. Go to "Storage" menu
 4. Write down text for "Clear Cache" button
 5. Open **Cache Cleaner** app with specific locale (change on required locale in Settings and go back into **Cache Cleaner** app)
-6. Open menu in the top right corner and select **Add Extra Search Text** / **Storage** and enter custom search text for "Storage" menu" and press "OK", or "REMOVE" otherwise
-7. Open menu in the top right corner and select **Add Extra Search Text** / **Clear cache** and enter custom search text for "Clear cache" button" and press "OK", or "REMOVE" otherwise
+6. Open **Settings** menu in the top right corner and find section **Add Extra Search Text**
+7. Tap on **Clear Cache**, enter the custom search text for "Clear Cache" button" in input field and press "OK" to save it. To remove custom search text for "Clear Cache" button" just erase a whole text in input field and press "OK"
+8. Tap on **Storage**, enter the custom search text for "Storage" menu" in input field and press "OK" to save it. To remove custom search text for "Storage" menu" just erase a whole text in input field and press "OK"
 
 ## Icon copyright
 
