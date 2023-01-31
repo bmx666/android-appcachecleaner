@@ -94,7 +94,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (loadingPkgList.get()) {
-                        loadingPkgList.set(false)
                         hideFragmentViews()
                         showMainViews()
                         return
@@ -196,7 +195,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     PackageListFragment.newInstance(),
                     FRAGMENT_CONTAINER_VIEW_TAG
                 )
-                .commitNow()
+                .commitNowAllowingStateLoss()
         }
 
         checkedPkgList.addAll(SharedPreferencesManager.PackageList.getChecked(this))
@@ -365,8 +364,10 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             }
         }
 
+        if (!loadingPkgList.get()) return
         PlaceholderContent.sort()
 
+        if (!loadingPkgList.get()) return
         runOnUiThread {
             binding.layoutProgress.visibility = View.GONE
             binding.fragmentContainerView.visibility = View.VISIBLE
@@ -378,14 +379,15 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                     PackageListFragment.newInstance(),
                     FRAGMENT_CONTAINER_VIEW_TAG
                 )
-                .commitNow()
-
-            loadingPkgList.set(false)
+                .commitNowAllowingStateLoss()
         }
+        loadingPkgList.set(false)
     }
 
     private fun showPackageFragment() {
+        hideFragmentViews()
         hideMainViews()
+        updateActionBar(R.string.clear_cache_btn_text)
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -513,6 +515,9 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun hideFragmentViews() {
+        // interrupt to load package list
+        loadingPkgList.set(false)
+
         restoreActionBar()
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
