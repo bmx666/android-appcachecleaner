@@ -1,0 +1,2 @@
+* fix critical bug related to fragment transitions
+* fix small warnings
