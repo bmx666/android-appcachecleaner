@@ -62,9 +62,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation ("com.github.bumptech.glide:glide:4.11.0") {
-        exclude group: "com.android.support"
-    }
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
     implementation 'com.google.android.material:material:1.8.0'
 
     debugImplementation 'com.jakewharton.timber:timber:5.0.1'
