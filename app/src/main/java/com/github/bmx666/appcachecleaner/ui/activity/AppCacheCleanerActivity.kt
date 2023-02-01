@@ -44,7 +44,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private lateinit var binding: ActivityMainBinding
-    private val checkedPkgList: HashSet<String> = HashSet()
     private var pkgInfoListFragment: ArrayList<PackageInfo> = ArrayList()
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
@@ -144,11 +143,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 }
             }
 
-            PlaceholderContent.getVisibleCheckedPackageList()
-                .forEach { checkedPkgList.add(it) }
-            PlaceholderContent.getVisibleUncheckedPackageList()
-                .forEach { checkedPkgList.remove(it) }
-
             PlaceholderContent.sort()
 
             supportFragmentManager.beginTransaction()
@@ -224,17 +218,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
-            PlaceholderContent.getVisibleUncheckedPackageList()
-                .forEach { checkedPkgList.remove(it) }
-
-            SharedPreferencesManager.PackageList.saveChecked(
-                this@AppCacheCleanerActivity,
-                checkedPkgList
-            )
-        }
     }
 
     private fun addPackageToPlaceholderContent() {
@@ -259,8 +242,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 }
             } else {
                 val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                val checked = checkedPkgList.contains(pkgInfo.packageName)
-                PlaceholderContent.addItem(pkgInfo, label, locale, checked, stats)
+                PlaceholderContent.addItem(pkgInfo, label, locale, stats)
             }
 
             progressApps += 1
@@ -276,6 +258,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         if (!loadingPkgList.get()) return
         PlaceholderContent.sort()
+        PlaceholderContent.uncheckAllVisible()
 
         if (!loadingPkgList.get()) return
         runOnUiThread {
@@ -311,8 +294,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         loadingPkgList.set(true)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val pkgList = SharedPreferencesManager.PackageList.getChecked(this@AppCacheCleanerActivity)
-            checkedPkgList.addAll(pkgList)
             addPackageToPlaceholderContent()
         }
     }
