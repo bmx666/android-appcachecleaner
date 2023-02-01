@@ -44,7 +44,7 @@ object PlaceholderContent {
     }
 
     fun addItem(pkgInfo: PackageInfo, label: String, locale: Locale,
-                checked: Boolean, stats: StorageStats?) {
+                stats: StorageStats?) {
         ITEMS.add(
             PlaceholderPackage(
                 pkgInfo = pkgInfo,
@@ -52,7 +52,7 @@ object PlaceholderContent {
                 label = label,
                 locale = locale,
                 stats = stats,
-                checked = checked,
+                checked = false,
                 ignore = false))
     }
 
