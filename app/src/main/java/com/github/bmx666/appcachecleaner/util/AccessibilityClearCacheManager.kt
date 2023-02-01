@@ -32,7 +32,9 @@ class AccessibilityClearCacheManager {
         }
     }
 
-    suspend fun clearCacheApp(pkgList: ArrayList<String>, openAppInfo: KFunction1<String, Unit>): Boolean {
+    fun clearCacheApp(pkgList: ArrayList<String>,
+                      openAppInfo: KFunction1<String, Unit>,
+                      finish: KFunction1<Boolean, Unit>) {
 
         stateMachine.init()
 
@@ -71,7 +73,7 @@ class AccessibilityClearCacheManager {
         val interrupted = stateMachine.isInterrupted()
         stateMachine.init()
 
-        return interrupted
+        finish(interrupted)
     }
 
     private suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,

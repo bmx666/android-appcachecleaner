@@ -8,7 +8,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
-import java.util.Locale
+import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

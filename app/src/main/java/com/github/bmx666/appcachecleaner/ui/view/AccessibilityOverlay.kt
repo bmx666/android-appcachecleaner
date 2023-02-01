@@ -2,7 +2,6 @@ package com.github.bmx666.appcachecleaner.ui.view
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
-import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
