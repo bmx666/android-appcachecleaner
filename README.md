@@ -6,8 +6,6 @@ Since Android 6 (Marshmallow) it is no longer possible to clear cache of all app
 
 **Cache Cleaner** app can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service.
 
-**Cache Cleaner** app saves the last checked apps to show them next time only.
-
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=com.github.bmx666.appcachecleaner)
