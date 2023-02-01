@@ -1,81 +1,67 @@
 package com.github.bmx666.appcachecleaner.service
 
 import android.accessibilityservice.AccessibilityService
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
-import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
+import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
+import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerServiceHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AppCacheCleanerService : AccessibilityService() {
+class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
+
+    companion object {
+        private val accessibilityClearCacheManager = AccessibilityClearCacheManager()
+    }
 
     private val logger = Logger()
 
     private lateinit var accessibilityOverlay: AccessibilityOverlay
-
-    private val mLocalReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                Constant.Intent.StopAccessibilityService.ACTION -> {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
-                    // send back to Activity - service was stopped
-                    LocalBroadcastManager.getInstance(this@AppCacheCleanerService)
-                        .sendBroadcast(Intent(Constant.Intent.StopAccessibilityServiceFeedback.ACTION))
-                    disableSelf()
-                }
-                Constant.Intent.ExtraSearchText.ACTION -> {
-                    updateLocaleText(
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST),
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST)
-                    )
-                }
-                Constant.Intent.ClearCache.ACTION -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        clearCache(
-                            intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)!!
-                        )
-                    }
-                }
-            }
-        }
-    }
+    private lateinit var localBroadcastManager: LocalBroadcastManagerServiceHelper
 
     override fun onCreate() {
         super.onCreate()
+
         if (BuildConfig.DEBUG)
             logger.onCreate(cacheDir)
 
-        updateLocaleText(null, null)
-
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(
-                mLocalReceiver,
-                IntentFilter().apply {
-                    addAction(Constant.Intent.StopAccessibilityService.ACTION)
-                    addAction(Constant.Intent.ExtraSearchText.ACTION)
-                    addAction(Constant.Intent.ClearCache.ACTION)
-                }
-            )
+        localBroadcastManager = LocalBroadcastManagerServiceHelper(this, this)
 
         accessibilityOverlay = AccessibilityOverlay(this) {
             accessibilityClearCacheManager.interrupt()
         }
     }
 
-    private fun updateLocaleText(clearCacheTextList: Array<String>?, storageTextList: Array<String>?) {
+    override fun onDestroy() {
+        if (BuildConfig.DEBUG)
+            logger.onDestroy()
+
+        localBroadcastManager.onDestroy()
+
+        super.onDestroy()
+    }
+
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
+            accessibilityClearCacheManager.checkEvent(event)
+    }
+
+    override fun onInterrupt() {
+    }
+
+    override fun onStopAccessibilityService() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+        disableSelf()
+    }
+
+    override fun onExtraSearchText(clearCacheTextList: Array<String>?,
+                                   storageTextList: Array<String>?) {
         accessibilityClearCacheManager.apply {
             setArrayTextClearCacheButton(
                 ArrayList<CharSequence>().apply {
@@ -94,50 +80,22 @@ class AppCacheCleanerService : AccessibilityService() {
         }
     }
 
-    override fun onDestroy() {
-        if (BuildConfig.DEBUG)
-            logger.onDestroy()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
-        super.onDestroy()
-    }
-
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
-            accessibilityClearCacheManager.checkEvent(event)
-    }
-
-    override fun onInterrupt() {
-    }
-
-    private fun openAppInfo(pkgName: String) {
-        LocalBroadcastManager.getInstance(this).sendBroadcast(
-            Intent(Constant.Intent.CleanCacheAppInfo.ACTION).apply {
-                putExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME, pkgName)
-            }
-        )
-    }
-
-    private suspend fun clearCache(pkgList: ArrayList<String>) {
+    override fun onClearCache(pkgList: ArrayList<String>?) {
         if (BuildConfig.DEBUG)
             logger.onClearCache()
 
-        Handler(Looper.getMainLooper()).post {
+        pkgList?.let{
             accessibilityOverlay.show()
-        }
-
-        val interrupted = accessibilityClearCacheManager.clearCacheApp(pkgList, this::openAppInfo)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(
-            Intent(Constant.Intent.CleanCacheFinish.ACTION).apply {
-                putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
+            CoroutineScope(Dispatchers.IO).launch {
+                accessibilityClearCacheManager.clearCacheApp(
+                    pkgList,
+                    localBroadcastManager::sendAppInfo,
+                    localBroadcastManager::sendFinish)
             }
-        )
-
-        Handler(Looper.getMainLooper()).post {
-            accessibilityOverlay.hide()
-        }
+        } ?: localBroadcastManager.sendFinish(true)
     }
 
-    companion object {
-        private val accessibilityClearCacheManager = AccessibilityClearCacheManager()
+    override fun onCleanCacheFinish() {
+        accessibilityOverlay.hide()
     }
 }

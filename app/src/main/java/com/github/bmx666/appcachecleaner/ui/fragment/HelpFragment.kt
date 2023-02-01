@@ -1,11 +1,7 @@
 package com.github.bmx666.appcachecleaner.ui.fragment
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +9,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.databinding.FragmentHelpBinding
+import com.github.bmx666.appcachecleaner.util.ActivityHelper
 
 class HelpFragment: Fragment() {
 
@@ -36,20 +33,7 @@ class HelpFragment: Fragment() {
             binding.textHelpAndroid13AccessibilityPermission.visibility = View.VISIBLE
 
             binding.btnHelpOpenAppSettings.setOnClickListener {
-                context?.packageName.let { packageName ->
-                    try {
-                        startActivity(
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                                addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                                data = Uri.parse("package:$packageName")
-                            }
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        e.printStackTrace()
-                    }
-                }
+                ActivityHelper.startApplicationDetailsActivity(context, context?.packageName)
             }
             binding.btnHelpOpenAppSettings.visibility = View.VISIBLE
         }

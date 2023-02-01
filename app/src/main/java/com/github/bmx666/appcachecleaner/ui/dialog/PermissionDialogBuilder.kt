@@ -2,10 +2,9 @@ package com.github.bmx666.appcachecleaner.ui.dialog
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import com.github.bmx666.appcachecleaner.R
+import com.github.bmx666.appcachecleaner.util.ActivityHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker
 
 class PermissionDialogBuilder {
@@ -16,9 +15,7 @@ class PermissionDialogBuilder {
                 .setTitle(R.string.text_enable_accessibility_title)
                 .setMessage(R.string.text_enable_accessibility_message)
                 .setPositiveButton(R.string.allow) { _, _ ->
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    context.startActivity(intent)
+                    ActivityHelper.showAccessibilitySettings(context)
                 }
                 .setNegativeButton(R.string.deny) { _, _ ->
                 }
@@ -32,9 +29,7 @@ class PermissionDialogBuilder {
                 .setTitle(R.string.text_enable_usage_stats_title)
                 .setMessage(R.string.text_enable_usage_stats_message)
                 .setPositiveButton(R.string.allow) { _, _ ->
-                    val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    context.startActivity(intent)
+                    ActivityHelper.showUsageAccessSettings(context)
                 }
                 .setNegativeButton(R.string.deny) { _, _ ->
                 }

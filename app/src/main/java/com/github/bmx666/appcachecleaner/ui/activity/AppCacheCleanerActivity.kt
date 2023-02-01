@@ -1,12 +1,10 @@
 package com.github.bmx666.appcachecleaner.ui.activity
 
-import android.content.*
+import android.content.Intent
 import android.content.pm.PackageInfo
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.FileUtils
-import android.provider.Settings
 import android.text.format.Formatter
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,6 +14,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
@@ -27,10 +26,7 @@ import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.SettingsFragment
-import com.github.bmx666.appcachecleaner.util.ExtraSearchTextHelper
-import com.github.bmx666.appcachecleaner.util.LocaleHelper
-import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
-import com.github.bmx666.appcachecleaner.util.PermissionChecker
+import com.github.bmx666.appcachecleaner.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,51 +34,25 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
-class AppCacheCleanerActivity : AppCompatActivity() {
+class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
+
+    companion object {
+        const val ARG_DISPLAY_TEXT = "display-text"
+        const val FRAGMENT_CONTAINER_VIEW_TAG = "fragment-container-view-tag"
+
+        val loadingPkgList = AtomicBoolean(false)
+    }
 
     private lateinit var binding: ActivityMainBinding
     private val checkedPkgList: HashSet<String> = HashSet()
     private var pkgInfoListFragment: ArrayList<PackageInfo> = ArrayList()
 
-    private val mLocalReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                Constant.Intent.CleanCacheAppInfo.ACTION -> {
-                    startApplicationDetailsActivity(
-                        intent.getStringExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME)
-                    )
-                }
-                Constant.Intent.CleanCacheFinish.ACTION -> {
-                    cleanCacheFinish(
-                        intent.getBooleanExtra(
-                            Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
-                            false
-                        )
-                    )
-                    if (BuildConfig.DEBUG)
-                        saveLogFile()
-                }
-                Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
-                    runOnUiThread {
-                        updateStartStopServiceButton()
-                    }
-                }
-            }
-        }
-    }
+    private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(
-                mLocalReceiver,
-                IntentFilter().apply {
-                    addAction(Constant.Intent.CleanCacheFinish.ACTION)
-                    addAction(Constant.Intent.CleanCacheAppInfo.ACTION)
-                    addAction(Constant.Intent.StopAccessibilityServiceFeedback.ACTION)
-                }
-            )
+        localBroadcastManager = LocalBroadcastManagerActivityHelper(this, this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -90,25 +60,13 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         onBackPressedDispatcher.addCallback(
-            this, // lifecycle owner
+            this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (loadingPkgList.get()) {
-                        hideFragmentViews()
-                        showMainViews()
-                        return
-                    }
-
-                    supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
-                        ?.let { fragment ->
-                            restoreActionBar()
-                            hideFragmentViews()
-                            supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-                            showMainViews()
-                            return
-                        }
+                    this@AppCacheCleanerActivity.handleOnBackPressed()
                 }
-            })
+            }
+        )
 
         binding.btnCleanUserAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
@@ -148,14 +106,14 @@ class AppCacheCleanerActivity : AppCompatActivity() {
 
         binding.btnStartStopService.setOnClickListener {
             if (PermissionChecker.checkAccessibilityPermission(this))
-                disableAccessibilityService()
+                localBroadcastManager.disableAccessibilityService()
             else
                 PermissionDialogBuilder.buildAccessibilityPermissionDialog(this)
         }
 
         binding.btnCloseApp.setOnClickListener {
             if (PermissionChecker.checkAccessibilityPermission(this))
-                disableAccessibilityService()
+                localBroadcastManager.disableAccessibilityService()
             finish()
         }
 
@@ -163,27 +121,31 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             startCleanCache()
         }
 
-        binding.fabCheckAllApps.tag = "uncheck"
         binding.fabCheckAllApps.setOnClickListener {
-
-            if (PlaceholderContent.isAllCheckedVisible())
-                binding.fabCheckAllApps.tag = "uncheck"
-            else if (PlaceholderContent.isAllUncheckedVisible())
-                binding.fabCheckAllApps.tag = "check"
-
-            if (binding.fabCheckAllApps.tag.equals("uncheck")) {
-                binding.fabCheckAllApps.tag = "check"
-                binding.fabCheckAllApps.contentDescription =
-                    getString(R.string.description_apps_all_check)
-                PlaceholderContent.uncheckAllVisible()
-            } else {
-                binding.fabCheckAllApps.tag = "uncheck"
-                binding.fabCheckAllApps.contentDescription =
-                    getString(R.string.description_apps_all_uncheck)
-                PlaceholderContent.checkAllVisible()
+            when (
+                if (PlaceholderContent.isAllCheckedVisible())
+                    "uncheck"
+                else if (PlaceholderContent.isAllUncheckedVisible())
+                    "check"
+                else
+                    binding.fabCheckAllApps.tag
+            ) {
+                "uncheck" -> {
+                    binding.fabCheckAllApps.tag = "check"
+                    binding.fabCheckAllApps.contentDescription =
+                        getString(R.string.description_apps_all_check)
+                    PlaceholderContent.uncheckAllVisible()
+                }
+                "check" -> {
+                    binding.fabCheckAllApps.tag = "uncheck"
+                    binding.fabCheckAllApps.contentDescription =
+                        getString(R.string.description_apps_all_uncheck)
+                    PlaceholderContent.checkAllVisible()
+                }
             }
 
-            PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
+            PlaceholderContent.getVisibleCheckedPackageList()
+                .forEach { checkedPkgList.add(it) }
             PlaceholderContent.getVisibleUncheckedPackageList()
                 .forEach { checkedPkgList.remove(it) }
 
@@ -198,12 +160,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 .commitNowAllowingStateLoss()
         }
 
-        checkedPkgList.addAll(SharedPreferencesManager.PackageList.getChecked(this))
-
-        if (PermissionChecker.checkAllRequiredPermissions(this))
-            binding.textView.text = intent.getCharSequenceExtra(ARG_DISPLAY_TEXT)
-        else
-            checkAndShowPermissionDialogs()
+        updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -219,11 +176,11 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 true
             }
             R.id.help -> {
-                showHelp()
+                showMenuFragment(HelpFragment.newInstance(), R.string.menu_item_help)
                 true
             }
             R.id.settings -> {
-                showSettings()
+                showMenuFragment(SettingsFragment.newInstance(), R.string.menu_item_settings)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -237,7 +194,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
+        localBroadcastManager.onDestroy()
         super.onDestroy()
     }
 
@@ -252,7 +209,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         pkgList.apply {
             // ignore empty list and show main screen
             if (isEmpty()) {
-                binding.textView.text = ""
+                updateMainText(null)
                 return
             }
 
@@ -266,14 +223,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             }
         }
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(
-            Intent(Constant.Intent.ClearCache.ACTION).apply {
-                putStringArrayListExtra(
-                    Constant.Intent.ClearCache.NAME_PACKAGE_LIST,
-                    pkgList as ArrayList<String>
-                )
-            }
-        )
+        localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
 
         CoroutineScope(Dispatchers.IO).launch {
             PlaceholderContent.getVisibleCheckedPackageList().forEach { checkedPkgList.add(it) }
@@ -285,46 +235,6 @@ class AppCacheCleanerActivity : AppCompatActivity() {
                 checkedPkgList
             )
         }
-    }
-
-    private fun cleanCacheFinish(cleanCacheInterrupted: Boolean) {
-
-        val cleanCacheBytes =
-            PlaceholderContent.getItems().filter { it.checked }.sumOf {
-                PackageManagerHelper.getCacheSizeDiff(
-                    it.stats,
-                    PackageManagerHelper.getStorageStats(this, it.pkgInfo)
-                )
-            }
-
-        val displayText =
-            if (cleanCacheInterrupted)
-                getString(
-                    R.string.text_clean_cache_interrupt,
-                    Formatter.formatFileSize(this, cleanCacheBytes)
-                )
-            else
-                getString(
-                    R.string.text_clean_cache_finish,
-                    Formatter.formatFileSize(this, cleanCacheBytes)
-                )
-
-        runOnUiThread {
-            binding.textView.text = displayText
-            updateStartStopServiceButton()
-        }
-
-        // return back to Main Activity, sometimes not possible press Back from Settings
-        startActivity(
-            this.intent.apply {
-                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                putExtra(ARG_DISPLAY_TEXT, displayText)
-            }
-        )
     }
 
     private fun addPackageToPlaceholderContent() {
@@ -372,6 +282,7 @@ class AppCacheCleanerActivity : AppCompatActivity() {
             binding.layoutProgress.visibility = View.GONE
             binding.fragmentContainerView.visibility = View.VISIBLE
             binding.layoutFab.visibility = View.VISIBLE
+            binding.fabCheckAllApps.tag = "uncheck"
 
             supportFragmentManager.beginTransaction()
                 .replace(
@@ -400,6 +311,8 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         loadingPkgList.set(true)
 
         CoroutineScope(Dispatchers.IO).launch {
+            val pkgList = SharedPreferencesManager.PackageList.getChecked(this@AppCacheCleanerActivity)
+            checkedPkgList.addAll(pkgList)
             addPackageToPlaceholderContent()
         }
     }
@@ -456,28 +369,11 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         return PermissionChecker.checkAllRequiredPermissions(this)
     }
 
-    fun startApplicationDetailsActivity(packageName: String?) {
-        // everything is possible...
-        if (packageName == null || packageName.trim().isEmpty()) return
-        try {
-            startActivity(
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                    data = Uri.parse("package:$packageName")
-                }
-            )
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
-        }
-    }
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) return@registerForActivityResult
-        startApplicationDetailsActivity(this.packageName)
+        ActivityHelper.startApplicationDetailsActivity(this, this.packageName)
     }
 
     private val requestSaveLogFileLauncher = registerForActivityResult(
@@ -544,32 +440,18 @@ class AppCacheCleanerActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
-    private fun showHelp() {
+    private fun showMenuFragment(fragment: Fragment, @StringRes title: Int) {
         hideFragmentViews()
         hideMainViews()
         binding.fragmentContainerView.visibility = View.VISIBLE
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.fragment_container_view,
-                HelpFragment.newInstance(),
+                fragment,
                 FRAGMENT_CONTAINER_VIEW_TAG
             )
             .commitNow()
-        updateActionBar(R.string.menu_item_help)
-    }
-
-    private fun showSettings() {
-        hideFragmentViews()
-        hideMainViews()
-        binding.fragmentContainerView.visibility = View.VISIBLE
-        supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.fragment_container_view,
-                SettingsFragment.newInstance(),
-                FRAGMENT_CONTAINER_VIEW_TAG
-            )
-            .commitNow()
-        updateActionBar(R.string.menu_item_settings)
+        updateActionBar(title)
     }
 
     private fun updateExtraButtonsVisibility() {
@@ -587,28 +469,68 @@ class AppCacheCleanerActivity : AppCompatActivity() {
     }
 
     private fun updateStartStopServiceButton() {
-        if (PermissionChecker.checkAccessibilityPermission(this))
-            binding.btnStartStopService.setText(R.string.btn_stop_accessibility_service)
-        else
-            binding.btnStartStopService.setText(R.string.btn_start_accessibility_service)
-    }
-
-    private fun disableAccessibilityService() {
-        LocalBroadcastManager.getInstance(this)
-            .sendBroadcast(Intent(Constant.Intent.StopAccessibilityService.ACTION))
-
-        // Android 6 doesn't have methods to disable Accessibility service
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            startActivity(intent)
+        val hasPermission = PermissionChecker.checkAccessibilityPermission(this)
+        val resId = when (hasPermission) {
+            true -> R.string.btn_stop_accessibility_service
+            else -> R.string.btn_start_accessibility_service
+        }
+        runOnUiThread {
+            binding.btnStartStopService.setText(resId)
         }
     }
 
-    companion object {
-        const val ARG_DISPLAY_TEXT = "display-text"
-        const val FRAGMENT_CONTAINER_VIEW_TAG = "fragment-container-view-tag"
+    private fun updateMainText(text: CharSequence?) {
+        runOnUiThread {
+            binding.textView.text = text
+        }
+    }
 
-        val loadingPkgList = AtomicBoolean(false)
+    private fun handleOnBackPressed() {
+        if (loadingPkgList.get()) {
+            hideFragmentViews()
+            showMainViews()
+            return
+        }
+
+        supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+            ?.let { fragment ->
+                restoreActionBar()
+                hideFragmentViews()
+                supportFragmentManager.beginTransaction().remove(fragment).commitNow()
+                showMainViews()
+                return
+            }
+    }
+
+    override fun onCleanCacheFinish(interrupted: Boolean) {
+        val cleanCacheBytes =
+            PlaceholderContent.getItems().filter { it.checked }.sumOf {
+                PackageManagerHelper.getCacheSizeDiff(
+                    it.stats,
+                    PackageManagerHelper.getStorageStats(this, it.pkgInfo)
+                )
+            }
+
+        val resId = when (interrupted) {
+            true -> R.string.text_clean_cache_interrupt
+            else -> R.string.text_clean_cache_finish
+        }
+
+        val displayText = getString(resId,
+            Formatter.formatFileSize(this, cleanCacheBytes))
+
+        updateMainText(displayText)
+        updateStartStopServiceButton()
+
+        // return back to Main Activity, sometimes not possible press Back from Settings
+        ActivityHelper.returnBackToMainActivity(this,
+            this.intent.putExtra(ARG_DISPLAY_TEXT, displayText))
+
+        if (BuildConfig.DEBUG)
+            saveLogFile()
+    }
+
+    override fun onStopAccessibilityServiceFeedback() {
+        updateStartStopServiceButton()
     }
 }
