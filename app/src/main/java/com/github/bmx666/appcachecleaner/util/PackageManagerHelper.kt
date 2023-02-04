@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.storage.StorageManager
@@ -65,7 +66,9 @@ class PackageManagerHelper {
                     val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
                     val resId = pkgInfo.applicationInfo.labelRes
                     if (resId != 0)
+                    try {
                         localizedLabel = res.getString(resId)
+                    } catch (e: Resources.NotFoundException) {}
                 } catch (e: PackageManager.NameNotFoundException) {}
             }
 
