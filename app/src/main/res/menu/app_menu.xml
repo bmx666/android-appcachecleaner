@@ -9,4 +9,10 @@
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/menu_item_settings"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_search"
+        android:visible="false"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@android:string/search_go"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 </menu>

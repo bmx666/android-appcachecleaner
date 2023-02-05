@@ -1,5 +1,7 @@
 package com.github.bmx666.appcachecleaner.ui.activity
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.os.Build
@@ -15,6 +17,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
@@ -48,6 +51,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private lateinit var binding: ActivityMainBinding
     private var pkgInfoListFragment: ArrayList<PackageInfo> = ArrayList()
     private var customListName: String? = null
+
+    private lateinit var onMenuHideSearch: () -> Unit
+    private lateinit var onMenuShowSearch: () -> Unit
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
@@ -159,7 +165,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.fabCustomListOk.setOnClickListener {
-            val checkedPkgList = PlaceholderContent.getVisibleCheckedPackageList().toSet()
+            val checkedPkgList = PlaceholderContent.getCheckedPackageList().toSet()
             if (checkedPkgList.isEmpty()) {
                 Toast.makeText(this,
                     R.string.toast_custom_list_add_list_empty,
@@ -196,6 +202,57 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.app_menu, menu)
+
+        onMenuHideSearch = {
+            menu.findItem(R.id.menu_help).isVisible = true
+            menu.findItem(R.id.menu_settings).isVisible = true
+            menu.findItem(R.id.menu_search).isVisible = false
+        }
+
+        onMenuShowSearch = {
+            menu.findItem(R.id.menu_help).isVisible = false
+            menu.findItem(R.id.menu_settings).isVisible = false
+            menu.findItem(R.id.menu_search).isVisible = true
+        }
+
+        val searchView = menu.findItem(R.id.menu_search)?.actionView as SearchView?
+
+        searchView?.apply {
+            val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setIconifiedByDefault(false)
+
+            setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+
+                private fun filter(text: String?) {
+                    text ?: return
+                    supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                        ?.let { fragment ->
+                            if (fragment is PackageListFragment)
+                                fragment.updateAdapter(text)
+                        }
+                }
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    filter(newText)
+                    return false
+                }
+            })
+            setOnCloseListener {
+                PlaceholderContent.getItems().forEach { it.ignore = false }
+                PlaceholderContent.sortByLabel()
+                false
+            }
+        }
+
+        customListName?.let {
+            updateActionBarSearch(customListName)
+        }
+
         return true
     }
 
@@ -332,7 +389,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         hideMainViews()
 
         customListName?.let {
-            updateActionBar(customListName)
+            updateActionBarSearch(customListName)
         } ?: updateActionBar(R.string.clear_cache_btn_text)
 
         binding.textProgressPackageList.text = String.format(
@@ -480,14 +537,16 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun updateActionBar(title: String?) {
+    private fun updateActionBarSearch(title: String?) {
         supportActionBar?.title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        onMenuShowSearch()
     }
 
     private fun restoreActionBar() {
         supportActionBar?.setTitle(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        onMenuHideSearch()
     }
 
     private fun showMenuFragment(fragment: Fragment, @StringRes title: Int) {
@@ -545,20 +604,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // always reset custom list name to avoid undefined behavior
         customListName = null
 
-        if (loadingPkgList.get()) {
-            hideFragmentViews()
-            showMainViews()
-            return
-        }
-
+        hideFragmentViews()
         supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
             ?.let { fragment ->
-                restoreActionBar()
-                hideFragmentViews()
                 supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-                showMainViews()
-                return
             }
+        showMainViews()
     }
 
     override fun onCleanCacheFinish(interrupted: Boolean) {

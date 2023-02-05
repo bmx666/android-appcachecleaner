@@ -15,9 +15,15 @@ import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 
+
 class PackageRecyclerViewAdapter(
-    private val values: List<PlaceholderContent.PlaceholderPackage>
+    private var values: List<PlaceholderContent.PlaceholderPackage>
 ) : RecyclerView.Adapter<PackageRecyclerViewAdapter.ViewHolder>() {
+
+    fun filterList(filterList: List<PlaceholderContent.PlaceholderPackage>) {
+        values = filterList
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -28,11 +34,10 @@ class PackageRecyclerViewAdapter(
                 false
             )
         )
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
+        val item = values.filter { !it.ignore }[position]
         if (item.ignore) {
             holder.packageLayout.visibility = View.GONE
             return
