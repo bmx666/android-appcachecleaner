@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -22,6 +23,7 @@ import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
@@ -45,6 +47,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private lateinit var binding: ActivityMainBinding
     private var pkgInfoListFragment: ArrayList<PackageInfo> = ArrayList()
+    private var customListName: String? = null
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
@@ -117,7 +120,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.fabCleanCache.setOnClickListener {
-            startCleanCache()
+            val pkgList = PlaceholderContent.getVisibleCheckedPackageList().toMutableList()
+            startCleanCache(pkgList)
         }
 
         binding.fabCheckAllApps.setOnClickListener {
@@ -152,6 +156,38 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     FRAGMENT_CONTAINER_VIEW_TAG
                 )
                 .commitNowAllowingStateLoss()
+        }
+
+        binding.fabCustomListOk.setOnClickListener {
+            val checkedPkgList = PlaceholderContent.getVisibleCheckedPackageList().toSet()
+            if (checkedPkgList.isEmpty()) {
+                Toast.makeText(this,
+                    R.string.toast_custom_list_add_list_empty,
+                    Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            customListName?.let { name ->
+                SharedPreferencesManager.PackageList.save(this, name, checkedPkgList)
+                Toast.makeText(this,
+                    getString(R.string.toast_custom_list_has_been_saved, name),
+                    Toast.LENGTH_SHORT).show()
+            }
+            handleOnBackPressed()
+        }
+
+        binding.fabCustomListCancel.setOnClickListener {
+            handleOnBackPressed()
+        }
+
+        binding.btnCleanCustomListAppCache.setOnClickListener {
+            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
+
+            CustomListDialogBuilder.buildCleanCacheDialog(this) { name ->
+                name ?: return@buildCleanCacheDialog
+                val pkgList = SharedPreferencesManager.PackageList.get(this, name)
+                startCleanCache(pkgList.toMutableList())
+            }
         }
 
         updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
@@ -192,9 +228,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         super.onDestroy()
     }
 
-    private fun startCleanCache() {
-        val pkgList = PlaceholderContent.getVisibleCheckedPackageList().toMutableList()
-
+    private fun startCleanCache(pkgList: MutableList<String>) {
         addExtraSearchText()
 
         hideFragmentViews()
@@ -232,7 +266,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             if (!loadingPkgList.get()) return
 
-            val stats = PackageManagerHelper.getStorageStats(this, pkgInfo)
+            // skip getting stats if custom list is loaded
+            val stats = customListName?.let { null }
+                ?: PackageManagerHelper.getStorageStats(this, pkgInfo)
 
             if (PlaceholderContent.contains(pkgInfo)) {
                 PlaceholderContent.updateStats(pkgInfo, stats)
@@ -257,14 +293,27 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         if (!loadingPkgList.get()) return
-        PlaceholderContent.sort()
+
         PlaceholderContent.uncheckAllVisible()
+
+        customListName?.let { listName ->
+            PlaceholderContent.hideStats()
+            val checkedPkgList = SharedPreferencesManager.PackageList.get(this, listName)
+            PlaceholderContent.getItems().forEach {
+                it.checked = checkedPkgList.contains(it.name)
+            }
+            PlaceholderContent.sortByLabel()
+        } ?: PlaceholderContent.sort()
 
         if (!loadingPkgList.get()) return
         runOnUiThread {
             binding.layoutProgress.visibility = View.GONE
             binding.fragmentContainerView.visibility = View.VISIBLE
-            binding.layoutFab.visibility = View.VISIBLE
+            binding.layoutFabCustomList.visibility =
+                customListName?.let { View.VISIBLE } ?: View.GONE
+            binding.layoutFab.visibility =
+                customListName?.let { View.GONE } ?: View.VISIBLE
+
             binding.fabCheckAllApps.tag = "uncheck"
 
             supportFragmentManager.beginTransaction()
@@ -281,7 +330,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun showPackageFragment() {
         hideFragmentViews()
         hideMainViews()
-        updateActionBar(R.string.clear_cache_btn_text)
+
+        customListName?.let {
+            updateActionBar(customListName)
+        } ?: updateActionBar(R.string.clear_cache_btn_text)
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -296,6 +348,17 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         CoroutineScope(Dispatchers.IO).launch {
             addPackageToPlaceholderContent()
         }
+    }
+
+    internal fun showCustomListPackageFragment(name: String) {
+        customListName = name
+        pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
+            context = this,
+            systemNotUpdated = true,
+            systemUpdated = true,
+            userOnly = true,
+        )
+        showPackageFragment()
     }
 
     private fun addExtraSearchText() {
@@ -398,6 +461,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         restoreActionBar()
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
+        binding.layoutFabCustomList.visibility = View.GONE
         binding.layoutProgress.visibility = View.GONE
     }
 
@@ -413,6 +477,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun updateActionBar(@StringRes title: Int) {
         supportActionBar?.setTitle(title)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun updateActionBar(title: String?) {
+        supportActionBar?.title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -447,6 +516,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 true -> View.VISIBLE
                 else -> View.GONE
             }
+
+        binding.btnCleanCustomListAppCache.visibility =
+            when (SharedPreferencesManager.PackageList.getNames(this).isNotEmpty()) {
+                true -> View.VISIBLE
+                else -> View.GONE
+            }
     }
 
     private fun updateStartStopServiceButton() {
@@ -467,6 +542,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun handleOnBackPressed() {
+        // always reset custom list name to avoid undefined behavior
+        customListName = null
+
         if (loadingPkgList.get()) {
             hideFragmentViews()
             showMainViews()

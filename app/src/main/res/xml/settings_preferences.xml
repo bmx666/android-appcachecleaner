@@ -26,4 +26,29 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/prefs_custom_lists">
+
+        <Preference
+            app:key="custom_list_add"
+            app:icon="@drawable/ic_baseline_add_circle_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_custom_list_add"
+            app:summary="@string/prefs_summary_custom_list_add"/>
+
+        <Preference
+            app:key="custom_list_edit"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_custom_list_edit"
+            app:summary="@string/prefs_summary_custom_list_edit"/>
+
+        <Preference
+            app:key="custom_list_remove"
+            app:icon="@drawable/ic_baseline_remove_circle_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_custom_list_remove"
+            app:summary="@string/prefs_summary_custom_list_remove"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
