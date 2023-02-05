@@ -55,7 +55,8 @@ class PackageRecyclerViewAdapter(
             )
             .into(holder.packageIconView)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && item.stats != null) {
+        val showStats = item.stats != null && !item.hideStats
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && showStats) {
             val ctx = holder.cacheSizeView.context
             holder.cacheSizeView.text = ctx.getString(
                 R.string.text_cache_size_fmt,

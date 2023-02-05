@@ -19,7 +19,11 @@ object PlaceholderContent {
     }
 
     fun reset() {
-        ITEMS.forEach{ it.ignore = true }
+        ITEMS.forEach{ it.ignore = true; it.hideStats = false }
+    }
+
+    fun hideStats() {
+        ITEMS.forEach{ it.hideStats = true }
     }
 
     fun sort() {
@@ -29,7 +33,7 @@ object PlaceholderContent {
             sortByLabel()
     }
 
-    private fun sortByLabel() {
+    fun sortByLabel() {
         ITEMS.sortWith(compareBy<PlaceholderPackage> { it.ignore }
             .thenBy{ !it.checked }
             .thenBy { it.label })
@@ -52,6 +56,7 @@ object PlaceholderContent {
                 label = label,
                 locale = locale,
                 stats = stats,
+                hideStats = false,
                 checked = false,
                 ignore = false))
     }
@@ -107,7 +112,7 @@ object PlaceholderContent {
 
     data class PlaceholderPackage(val pkgInfo: PackageInfo, val name: String,
                                   var label: String, var locale: Locale,
-                                  var stats: StorageStats?,
+                                  var stats: StorageStats?, var hideStats: Boolean,
                                   var checked: Boolean, var ignore: Boolean) {
         override fun toString(): String = name
     }

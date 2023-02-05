@@ -76,25 +76,44 @@ class SharedPreferencesManager {
         companion object {
 
             private const val FILENAME = "package-list"
-            private const val KEY_CHECKED = "checked"
+            private const val LIST_NAMES = "list_names"
 
             @JvmStatic
             private fun getCheckedPackagesListSharedPref(context: Context): SharedPreferences {
                 return context.getSharedPreferences(FILENAME, AppCompatActivity.MODE_PRIVATE)
             }
 
+            fun getNames(context: Context): Set<String> {
+                return getCheckedPackagesListSharedPref(context)
+                    .getStringSet(LIST_NAMES, HashSet()) ?: HashSet()
+            }
+
             @JvmStatic
-            fun saveChecked(context: Context, checkedPkgList: Set<String>) {
+            fun get(context: Context, name: String): Set<String> {
+                return getCheckedPackagesListSharedPref(context)
+                    .getStringSet(name, HashSet()) ?: HashSet()
+            }
+
+            @JvmStatic
+            fun save(context: Context, name: String, checkedPkgList: Set<String>) {
+                val names = getNames(context) as MutableSet<String>
+                names.add(name)
                 getCheckedPackagesListSharedPref(context)
                     .edit()
-                    .putStringSet(KEY_CHECKED, checkedPkgList)
+                    .putStringSet(LIST_NAMES, names)
+                    .putStringSet(name, checkedPkgList)
                     .apply()
             }
 
             @JvmStatic
-            fun getChecked(context: Context): Set<String> {
-                return getCheckedPackagesListSharedPref(context)
-                    .getStringSet(KEY_CHECKED, HashSet()) ?: HashSet()
+            fun remove(context: Context, name: String) {
+                val names = getNames(context) as MutableSet<String>
+                names.remove(name)
+                getCheckedPackagesListSharedPref(context)
+                    .edit()
+                    .putStringSet(LIST_NAMES, names)
+                    .remove(name)
+                    .apply()
             }
         }
     }

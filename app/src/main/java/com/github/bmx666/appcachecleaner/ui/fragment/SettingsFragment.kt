@@ -3,10 +3,14 @@ package com.github.bmx666.appcachecleaner.ui.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.preference.EditTextPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
+import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import java.util.*
 
@@ -47,6 +51,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     SharedPreferencesManager.ExtraSearchText.saveStorage(context, locale, value)
             }
         )
+
+        initializeCustomList(
+            context,
+            preferenceManager.findPreference("custom_list_add"),
+            preferenceManager.findPreference("custom_list_edit"),
+            preferenceManager.findPreference("custom_list_remove"),
+        )
     }
 
     private fun initializeExtraSearchText(pref: EditTextPreference?,
@@ -75,6 +86,70 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             setOnPreferenceChangeListener { _, newValue ->
                 onChangeExtraText(newValue as String)
+                true
+            }
+        }
+    }
+
+    private fun initializeCustomList(context: Context,
+                                     addPref: Preference?,
+                                     editPref: Preference?,
+                                     removePref: Preference?) {
+        SharedPreferencesManager.PackageList.getNames(context).apply {
+            editPref?.isVisible = isNotEmpty()
+            removePref?.isVisible = isNotEmpty()
+        }
+
+        addPref?.apply {
+            setOnPreferenceClickListener {
+                // show dialog from Settings Fragment for better UX
+                CustomListDialogBuilder.buildAddDialog(context) { name ->
+                    name ?: return@buildAddDialog
+
+                    // check if entered name already exists
+                    val names = SharedPreferencesManager.PackageList.getNames(context)
+                    if (names.contains(name)) {
+                        Toast.makeText(context,
+                            R.string.toast_custom_list_add_already_exists,
+                            Toast.LENGTH_SHORT).show()
+                        return@buildAddDialog
+                    }
+                    (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
+                }
+                true
+            }
+        }
+
+        editPref?.apply {
+            setOnPreferenceClickListener {
+                // show dialog from Settings Fragment for better UX
+                CustomListDialogBuilder.buildEditDialog(context) { name ->
+                    name ?: return@buildEditDialog
+
+                    // check if entered name already exists
+                    val names = SharedPreferencesManager.PackageList.getNames(context)
+                    if (names.contains(name))
+                        (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
+                }
+                true
+            }
+        }
+
+        removePref?.apply {
+            setOnPreferenceClickListener {
+                // show dialog from Settings Fragment for better UX
+                CustomListDialogBuilder.buildRemoveDialog(context) { name ->
+                    name?.let {
+                        SharedPreferencesManager.PackageList.remove(context, name)
+                        SharedPreferencesManager.PackageList.getNames(context).apply {
+                            editPref?.isVisible = isNotEmpty()
+                            removePref?.isVisible = isNotEmpty()
+                        }
+                        Toast.makeText(context,
+                            R.string.toast_custom_list_has_been_removed,
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
                 true
             }
         }
