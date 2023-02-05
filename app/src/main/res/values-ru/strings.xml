@@ -183,12 +183,34 @@
 
     <string name="description_accessibility_overlay_button_interrupt">Прервать процесс очистки кеша</string>
 
+    <!-- Custom package lists -->
+    <string name="btn_clean_custom_list_cache">Очистка кэша из собств. списка</string>
+    <string name="dialog_title_custom_list_add">Добавить собств. список</string>
+    <string name="dialog_message_custom_list_add">Введите новое имя:</string>
+    <string name="dialog_title_custom_list_edit">Редактировать собств. список</string>
+    <string name="dialog_message_custom_list_edit">Выберите список:</string>
+    <string name="dialog_title_custom_list_remove">Удалить собств. список</string>
+    <string name="dialog_message_custom_list_remove">Выберите список:</string>
+    <string name="dialog_title_custom_list_clean_cache">Очистка кэша из собств. списка</string>
+    <string name="dialog_message_custom_list_clean_cache">Выберите список:</string>
+    <string name="toast_custom_list_add_already_exists">Введенное имя уже существует, выберите другое имя</string>
+    <string name="toast_custom_list_add_list_empty">Список пуст, добавьте хотя бы одно приложение</string>
+    <string name="toast_custom_list_has_been_saved">Список %1$s был сохранен</string>
+    <string name="toast_custom_list_has_been_removed">Список %1$s был удален</string>
+
     <!-- Preference -->
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
     <string name="prefs_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
-    <string translatable="false" name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>
+    <string name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>
     <string name="prefs_show_button_close_app">Выйти из приложения</string>
-    <string translatable="false" name="prefs_summary_show_button_close_app">Для некоторых смартфонов вам необходимо вручную остановить службу специальных возможностей и закрыть приложение</string>
+    <string name="prefs_summary_show_button_close_app">Для некоторых смартфонов вам необходимо вручную остановить службу специальных возможностей и закрыть приложение</string>
+    <string name="prefs_custom_lists">Собств. списки приложений</string>
+    <string name="prefs_title_custom_list_add">Добавить</string>
+    <string name="prefs_summary_custom_list_add">Добавить новый собств. список приложений</string>
+    <string name="prefs_title_custom_list_edit">Редактировать</string>
+    <string name="prefs_summary_custom_list_edit">Редактировать существующий собств. список приложений</string>
+    <string name="prefs_title_custom_list_remove">Удалить</string>
+    <string name="prefs_summary_custom_list_remove">Удалить существующий собств. список приложений</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>
