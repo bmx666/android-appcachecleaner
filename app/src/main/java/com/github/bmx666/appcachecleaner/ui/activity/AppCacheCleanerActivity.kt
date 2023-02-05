@@ -205,11 +205,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 onBackPressedDispatcher.onBackPressed()
                 true
             }
-            R.id.help -> {
+            R.id.menu_help -> {
                 showMenuFragment(HelpFragment.newInstance(), R.string.menu_item_help)
                 true
             }
-            R.id.settings -> {
+            R.id.menu_settings -> {
                 showMenuFragment(SettingsFragment.newInstance(), R.string.menu_item_settings)
                 true
             }
