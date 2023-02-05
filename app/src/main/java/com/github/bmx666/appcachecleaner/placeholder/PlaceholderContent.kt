@@ -80,6 +80,12 @@ object PlaceholderContent {
         }
     }
 
+    fun getCheckedPackageList(): List<String> {
+        return ITEMS
+            .filter { it.checked }
+            .map { it.name }
+    }
+
     fun getVisibleCheckedPackageList(): List<String> {
         return ITEMS
             .filter { !it.ignore }
