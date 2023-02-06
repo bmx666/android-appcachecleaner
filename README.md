@@ -15,6 +15,10 @@ Since Android 6 (Marshmallow) it is no longer possible to clear cache of all app
 
 or get the APK from the [Releases Section](https://github.com/bmx666/android-appcachecleaner/releases/latest).
 
+## List of banned smartphones on Google Play forever due to a large number of negative reviews 🚫
+
+* lge mdh5lm (LG K31) - Android WindowManager is modified by LGE, the Accessibility overlay button cannot be displayed over the screen causing the service to crash
+
 ## Warning ⚠️
 Since Android 13 Accessibility APIs is restricted for 3rd party apps, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
 
