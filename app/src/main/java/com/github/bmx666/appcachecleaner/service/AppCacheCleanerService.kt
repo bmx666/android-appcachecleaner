@@ -33,7 +33,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
         localBroadcastManager = LocalBroadcastManagerServiceHelper(this, this)
 
-        accessibilityOverlay = AccessibilityOverlay(this) {
+        accessibilityOverlay = AccessibilityOverlay {
             accessibilityClearCacheManager.interrupt()
         }
     }
@@ -85,7 +85,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
             logger.onClearCache()
 
         pkgList?.let{
-            accessibilityOverlay.show()
+            accessibilityOverlay.show(this)
             CoroutineScope(Dispatchers.IO).launch {
                 accessibilityClearCacheManager.clearCacheApp(
                     pkgList,
@@ -96,6 +96,6 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
     }
 
     override fun onCleanCacheFinish() {
-        accessibilityOverlay.hide()
+        accessibilityOverlay.hide(this)
     }
 }
