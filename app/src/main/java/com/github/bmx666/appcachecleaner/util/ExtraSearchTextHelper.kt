@@ -45,6 +45,8 @@ class ExtraSearchTextHelper {
             arrayListOf(
                 "storage_settings_for_app",
                 "storage_label",
+                // not official
+                "storage_use",
             ).forEach { resourceName ->
                 PackageManagerHelper.getApplicationResourceString(
                     context,"com.android.settings", resourceName)?.let { value ->
