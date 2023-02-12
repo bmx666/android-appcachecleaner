@@ -79,6 +79,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanUserAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
+            customListName = null
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = false,
@@ -91,6 +92,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanSystemAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
+            customListName = null
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = true,
@@ -103,6 +105,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanAllAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
+            customListName = null
             pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = true,
@@ -126,15 +129,15 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.fabCleanCache.setOnClickListener {
-            val pkgList = PlaceholderContent.getVisibleCheckedPackageList().toMutableList()
+            val pkgList = PlaceholderContent.getAllChecked().toMutableList()
             startCleanCache(pkgList)
         }
 
         binding.fabCheckAllApps.setOnClickListener {
             when (
-                if (PlaceholderContent.isAllCheckedVisible())
+                if (PlaceholderContent.isAllVisibleChecked())
                     "uncheck"
-                else if (PlaceholderContent.isAllUncheckedVisible())
+                else if (PlaceholderContent.isAllVisibleUnchecked())
                     "check"
                 else
                     binding.fabCheckAllApps.tag
@@ -155,17 +158,18 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             PlaceholderContent.sort()
 
+            val hideStats = customListName?.let { true } ?: false
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container_view,
-                    PackageListFragment.newInstance(),
+                    PackageListFragment.newInstance(hideStats),
                     FRAGMENT_CONTAINER_VIEW_TAG
                 )
                 .commitNowAllowingStateLoss()
         }
 
         binding.fabCustomListOk.setOnClickListener {
-            val checkedPkgList = PlaceholderContent.getCheckedPackageList().toSet()
+            val checkedPkgList = PlaceholderContent.getAllChecked().toSet()
             if (checkedPkgList.isEmpty()) {
                 Toast.makeText(this,
                     R.string.toast_custom_list_add_list_empty,
@@ -229,7 +233,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                         ?.let { fragment ->
                             if (fragment is PackageListFragment)
-                                fragment.updateAdapter(text)
+                                fragment.updateAdapterFilterByName(text)
                         }
                 }
 
@@ -314,10 +318,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun addPackageToPlaceholderContent() {
         val locale = LocaleHelper.getCurrentLocale(this)
 
-        PlaceholderContent.reset()
-
         var progressApps = 0
         val totalApps = pkgInfoListFragment.size
+
+        PlaceholderContent.resetAll()
 
         pkgInfoListFragment.forEach { pkgInfo ->
 
@@ -351,14 +355,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         if (!loadingPkgList.get()) return
 
-        PlaceholderContent.uncheckAllVisible()
-
         customListName?.let { listName ->
-            PlaceholderContent.hideStats()
             val checkedPkgList = SharedPreferencesManager.PackageList.get(this, listName)
-            PlaceholderContent.getItems().forEach {
-                it.checked = checkedPkgList.contains(it.name)
-            }
+            PlaceholderContent.check(checkedPkgList)
             PlaceholderContent.sortByLabel()
         } ?: PlaceholderContent.sort()
 
@@ -373,10 +372,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             binding.fabCheckAllApps.tag = "uncheck"
 
+            val hideStats = customListName?.let { true } ?: false
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container_view,
-                    PackageListFragment.newInstance(),
+                    PackageListFragment.newInstance(hideStats),
                     FRAGMENT_CONTAINER_VIEW_TAG
                 )
                 .commitNowAllowingStateLoss()
