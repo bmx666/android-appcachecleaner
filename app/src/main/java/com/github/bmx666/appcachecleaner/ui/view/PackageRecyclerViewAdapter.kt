@@ -17,13 +17,9 @@ import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 
 
 class PackageRecyclerViewAdapter(
-    private var values: List<PlaceholderContent.PlaceholderPackage>
+    private val values: List<PlaceholderContent.PlaceholderPackage>,
+    private val hideStats: Boolean
 ) : RecyclerView.Adapter<PackageRecyclerViewAdapter.ViewHolder>() {
-
-    fun filterList(filterList: List<PlaceholderContent.PlaceholderPackage>) {
-        values = filterList
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -37,11 +33,7 @@ class PackageRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values.filter { !it.ignore }[position]
-        if (item.ignore) {
-            holder.packageLayout.visibility = View.GONE
-            return
-        }
+        val item = values[position]
         holder.packageLayout.visibility = View.VISIBLE
         holder.packageNameView.text = item.name
         holder.packageLabelView.text = item.label
@@ -60,7 +52,7 @@ class PackageRecyclerViewAdapter(
             )
             .into(holder.packageIconView)
 
-        val showStats = item.stats != null && !item.hideStats
+        val showStats = item.stats != null && !hideStats
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && showStats) {
             val ctx = holder.cacheSizeView.context
             holder.cacheSizeView.text = ctx.getString(
@@ -72,7 +64,7 @@ class PackageRecyclerViewAdapter(
         }
     }
 
-    override fun getItemCount(): Int = values.filter { !it.ignore }.size
+    override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(binding: FragmentPackageBinding) :
         RecyclerView.ViewHolder(binding.root)

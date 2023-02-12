@@ -1,9 +1,11 @@
 package com.github.bmx666.appcachecleaner.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +13,7 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.ui.view.PackageRecyclerViewAdapter
 
-class PackageListFragment : Fragment() {
+class PackageListFragment(private val hideStats: Boolean) : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var onUpdateAdapter: () -> Unit
@@ -28,35 +30,34 @@ class PackageListFragment : Fragment() {
             with(view) {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context.applicationContext)
-                adapter = PackageRecyclerViewAdapter(PlaceholderContent.getItems())
+                adapter = PackageRecyclerViewAdapter(PlaceholderContent.getVisibleItems(), hideStats)
             }
             onUpdateAdapter = {
                 try {
                     view.swapAdapter(
-                        PackageRecyclerViewAdapter(PlaceholderContent.getItems()),
+                        PackageRecyclerViewAdapter(PlaceholderContent.getVisibleItems(), hideStats),
                         true)
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         return view
     }
 
-    fun updateAdapter(text: String) {
-        if (text.trim().isEmpty()) {
-            PlaceholderContent.getItems().forEach { it.ignore = false }
-        } else {
-            PlaceholderContent.getItems().forEach { it.ignore = true }
-            PlaceholderContent.getItems()
-                .filter { it.label.lowercase().contains(text.lowercase()) }
-                .forEach { it.ignore = false }
-        }
-        PlaceholderContent.sortByLabel()
+    fun updateAdapterFilterByName(text: String) {
+        PlaceholderContent.filterByName(text)
+        onUpdateAdapter()
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateAdapterFilterByMinCacheBytes(minCacheBytes: Long) {
+        PlaceholderContent.filterByCacheSize(minCacheBytes)
         onUpdateAdapter()
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() = PackageListFragment()
+        fun newInstance(hideStats: Boolean) = PackageListFragment(hideStats)
     }
 }
