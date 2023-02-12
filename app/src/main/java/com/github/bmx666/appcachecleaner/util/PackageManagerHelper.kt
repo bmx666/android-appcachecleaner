@@ -51,8 +51,14 @@ class PackageManagerHelper {
                     val res = pm.getResourcesForApplication(pkgName)
                     val resId = res.getIdentifier(resourceName,"string", pkgName)
                     if (resId != 0)
-                        return res.getString(resId)
-                } catch (e: PackageManager.NameNotFoundException) {}
+                        try {
+                            return res.getString(resId)
+                        } catch (e: Resources.NotFoundException) {
+                            e.printStackTrace()
+                        }
+                } catch (e: PackageManager.NameNotFoundException) {
+                    e.printStackTrace()
+                }
             }
 
             return null
@@ -66,10 +72,14 @@ class PackageManagerHelper {
                     val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
                     val resId = pkgInfo.applicationInfo.labelRes
                     if (resId != 0)
-                    try {
-                        localizedLabel = res.getString(resId)
-                    } catch (e: Resources.NotFoundException) {}
-                } catch (e: PackageManager.NameNotFoundException) {}
+                        try {
+                            localizedLabel = res.getString(resId)
+                        } catch (e: Resources.NotFoundException) {
+                            e.printStackTrace()
+                        }
+                } catch (e: PackageManager.NameNotFoundException) {
+                    e.printStackTrace()
+                }
             }
 
             return localizedLabel
