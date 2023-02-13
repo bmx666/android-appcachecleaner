@@ -49,8 +49,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private lateinit var binding: ActivityMainBinding
-    private var pkgInfoListFragment: ArrayList<PackageInfo> = ArrayList()
     private var customListName: String? = null
+    private var minCacheBytes: Long = 0L
 
     private lateinit var onMenuHideSearch: () -> Unit
     private lateinit var onMenuShowSearch: () -> Unit
@@ -79,40 +79,40 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanUserAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            customListName = null
-            pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
-                context = this,
-                systemNotUpdated = false,
-                systemUpdated = true,
-                userOnly = true,
+            showPackageFragment(null,
+                PackageManagerHelper.getInstalledApps(
+                    context = this,
+                    systemNotUpdated = false,
+                    systemUpdated = true,
+                    userOnly = true,
+                )
             )
-            showPackageFragment()
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            customListName = null
-            pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
-                context = this,
-                systemNotUpdated = true,
-                systemUpdated = false,
-                userOnly = false,
+            showPackageFragment(null,
+                PackageManagerHelper.getInstalledApps(
+                    context = this,
+                    systemNotUpdated = true,
+                    systemUpdated = false,
+                    userOnly = false,
+                )
             )
-            showPackageFragment()
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            customListName = null
-            pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
-                context = this,
-                systemNotUpdated = true,
-                systemUpdated = true,
-                userOnly = true,
+            showPackageFragment(null,
+                PackageManagerHelper.getInstalledApps(
+                    context = this,
+                    systemNotUpdated = true,
+                    systemUpdated = true,
+                    userOnly = true,
+                )
             )
-            showPackageFragment()
         }
 
         binding.btnStartStopService.setOnClickListener {
@@ -158,14 +158,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             PlaceholderContent.sort()
 
-            val hideStats = customListName?.let { true } ?: false
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container_view,
-                    PackageListFragment.newInstance(hideStats),
-                    FRAGMENT_CONTAINER_VIEW_TAG
-                )
-                .commitNowAllowingStateLoss()
+            supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                ?.let { fragment ->
+                    if (fragment is PackageListFragment)
+                        fragment.updateAdapter()
+                }
         }
 
         binding.fabCustomListOk.setOnClickListener {
@@ -315,15 +312,15 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
     }
 
-    private fun addPackageToPlaceholderContent() {
+    private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>) {
         val locale = LocaleHelper.getCurrentLocale(this)
 
         var progressApps = 0
-        val totalApps = pkgInfoListFragment.size
+        val totalApps = pkgInfoList.size
 
         PlaceholderContent.resetAll()
 
-        pkgInfoListFragment.forEach { pkgInfo ->
+        pkgInfoList.forEach { pkgInfo ->
 
             if (!loadingPkgList.get()) return
 
@@ -384,7 +381,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         loadingPkgList.set(false)
     }
 
-    private fun showPackageFragment() {
+    private fun showPackageFragment(customListName: String?,
+                                    pkgInfoList: ArrayList<PackageInfo>) {
+        this.customListName = customListName
+        minCacheBytes = 0L
+
         hideFragmentViews()
         hideMainViews()
 
@@ -394,28 +395,28 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
-            "%d / %d", 0, pkgInfoListFragment.size
+            "%d / %d", 0, pkgInfoList.size
         )
         binding.progressBarPackageList.progress = 0
-        binding.progressBarPackageList.max = pkgInfoListFragment.size
+        binding.progressBarPackageList.max = pkgInfoList.size
         binding.layoutProgress.visibility = View.VISIBLE
 
         loadingPkgList.set(true)
 
         CoroutineScope(Dispatchers.IO).launch {
-            addPackageToPlaceholderContent()
+            addPackageToPlaceholderContent(pkgInfoList)
         }
     }
 
     internal fun showCustomListPackageFragment(name: String) {
-        customListName = name
-        pkgInfoListFragment = PackageManagerHelper.getInstalledApps(
-            context = this,
-            systemNotUpdated = true,
-            systemUpdated = true,
-            userOnly = true,
+        showPackageFragment(name,
+            PackageManagerHelper.getInstalledApps(
+                context = this,
+                systemNotUpdated = true,
+                systemUpdated = true,
+                userOnly = true,
+            )
         )
-        showPackageFragment()
     }
 
     private fun addExtraSearchText() {
