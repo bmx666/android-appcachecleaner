@@ -16,7 +16,8 @@ import com.github.bmx666.appcachecleaner.ui.view.PackageRecyclerViewAdapter
 class PackageListFragment(private val hideStats: Boolean) : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var onUpdateAdapter: () -> Unit
+    private lateinit var onSwapAdapter: () -> Unit
+    private lateinit var onRefreshAdapter: () -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +33,7 @@ class PackageListFragment(private val hideStats: Boolean) : Fragment() {
                 layoutManager = LinearLayoutManager(context.applicationContext)
                 adapter = PackageRecyclerViewAdapter(PlaceholderContent.getVisibleItems(), hideStats)
             }
-            onUpdateAdapter = {
+            onSwapAdapter = {
                 try {
                     view.swapAdapter(
                         PackageRecyclerViewAdapter(PlaceholderContent.getVisibleItems(), hideStats),
@@ -41,23 +42,30 @@ class PackageListFragment(private val hideStats: Boolean) : Fragment() {
                     e.printStackTrace()
                 }
             }
+            onRefreshAdapter = {
+                try {
+                    view.adapter?.notifyItemRangeChanged(0, PlaceholderContent.getVisibleItems().size)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
         return view
     }
 
-    fun updateAdapter() {
-        onUpdateAdapter()
+    fun refreshAdapter() {
+        onRefreshAdapter()
     }
 
-    fun updateAdapterFilterByName(text: String) {
+    fun swapAdapterFilterByName(text: String) {
         PlaceholderContent.filterByName(text)
-        onUpdateAdapter()
+        onSwapAdapter()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateAdapterFilterByCacheBytes(minCacheBytes: Long) {
+    fun swapAdapterFilterByCacheBytes(minCacheBytes: Long) {
         PlaceholderContent.filterByCacheSize(minCacheBytes)
-        onUpdateAdapter()
+        onSwapAdapter()
     }
 
     companion object {

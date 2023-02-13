@@ -159,12 +159,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 }
             }
 
-            PlaceholderContent.sort()
-
             supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                 ?.let { fragment ->
                     if (fragment is PackageListFragment)
-                        fragment.updateAdapter()
+                        fragment.refreshAdapter()
                 }
         }
 
@@ -243,7 +241,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                         ?.let { fragment ->
                             if (fragment is PackageListFragment)
-                                fragment.updateAdapterFilterByName(text)
+                                fragment.swapAdapterFilterByName(text)
                         }
                 }
 
@@ -263,9 +261,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
-        customListName?.let {
-            updateActionBarSearch(customListName)
-        }
+        supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+            ?.let { frag -> updateActionBar(frag is PackageListFragment) }
 
         return true
     }
@@ -407,9 +404,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         hideFragmentViews()
         hideMainViews()
 
-        customListName?.let {
-            updateActionBarSearch(customListName)
-        } ?: updateActionBarFilter(getString(R.string.clear_cache_btn_text))
+        updateActionBar(true)
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -534,7 +529,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // interrupt to load package list
         loadingPkgList.set(false)
 
-        restoreActionBar()
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
         binding.layoutFabCustomList.visibility = View.GONE
@@ -545,19 +539,30 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.layoutButton.visibility = View.VISIBLE
         updateExtraButtonsVisibility()
         updateStartStopServiceButton()
+        restoreActionBar()
     }
 
     private fun hideMainViews() {
         binding.layoutButton.visibility = View.GONE
     }
 
-    private fun updateActionBar(@StringRes title: Int) {
-        supportActionBar?.setTitle(title)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    private fun updateActionBar(isPackageListFragment: Boolean) {
+        if (isPackageListFragment)
+            customListName?.let {
+                updateActionBarSearch(customListName)
+            } ?: updateActionBarFilter(R.string.clear_cache_btn_text)
+        else
+            restoreActionBar()
     }
 
-    private fun updateActionBarFilter(title: String?) {
-        supportActionBar?.title = title
+    private fun updateActionBarMenu(@StringRes resId: Int) {
+        supportActionBar?.setTitle(resId)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        onMenuShowMain()
+    }
+
+    private fun updateActionBarFilter(@StringRes resId: Int) {
+        supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowFilter()
     }
@@ -585,7 +590,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 FRAGMENT_CONTAINER_VIEW_TAG
             )
             .commitNow()
-        updateActionBar(title)
+        updateActionBarMenu(title)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -599,7 +604,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                 ?.let { fragment ->
                     if (fragment is PackageListFragment)
-                        fragment.updateAdapterFilterByCacheBytes(minCacheBytes)
+                        fragment.swapAdapterFilterByCacheBytes(minCacheBytes)
                 }
         }
     }
