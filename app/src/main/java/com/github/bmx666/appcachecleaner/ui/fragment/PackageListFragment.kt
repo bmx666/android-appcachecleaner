@@ -45,13 +45,17 @@ class PackageListFragment(private val hideStats: Boolean) : Fragment() {
         return view
     }
 
+    fun updateAdapter() {
+        onUpdateAdapter()
+    }
+
     fun updateAdapterFilterByName(text: String) {
         PlaceholderContent.filterByName(text)
         onUpdateAdapter()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateAdapterFilterByMinCacheBytes(minCacheBytes: Long) {
+    fun updateAdapterFilterByCacheBytes(minCacheBytes: Long) {
         PlaceholderContent.filterByCacheSize(minCacheBytes)
         onUpdateAdapter()
     }
