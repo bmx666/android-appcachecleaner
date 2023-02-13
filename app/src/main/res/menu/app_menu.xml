@@ -9,6 +9,11 @@
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/menu_item_settings"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_filter"
+        android:visible="false"
+        android:icon="@drawable/ic_baseline_filter_alt_24"
+        android:title="@string/filter"
+        app:showAsAction="always"/>
     <item android:id="@+id/menu_search"
         android:visible="false"
         android:icon="@android:drawable/ic_menu_search"
