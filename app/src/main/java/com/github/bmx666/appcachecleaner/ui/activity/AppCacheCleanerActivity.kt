@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -27,6 +28,7 @@ import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
+import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
@@ -52,7 +54,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private var customListName: String? = null
     private var minCacheBytes: Long = 0L
 
-    private lateinit var onMenuHideSearch: () -> Unit
+    private lateinit var onMenuShowMain: () -> Unit
+    private lateinit var onMenuShowFilter: () -> Unit
     private lateinit var onMenuShowSearch: () -> Unit
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
@@ -204,15 +207,25 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.app_menu, menu)
 
-        onMenuHideSearch = {
+        onMenuShowMain = {
             menu.findItem(R.id.menu_help).isVisible = true
             menu.findItem(R.id.menu_settings).isVisible = true
+            menu.findItem(R.id.menu_filter).isVisible = false
+            menu.findItem(R.id.menu_search).isVisible = false
+        }
+
+        onMenuShowFilter = {
+            menu.findItem(R.id.menu_help).isVisible = false
+            menu.findItem(R.id.menu_settings).isVisible = false
+            menu.findItem(R.id.menu_filter).isVisible =
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             menu.findItem(R.id.menu_search).isVisible = false
         }
 
         onMenuShowSearch = {
             menu.findItem(R.id.menu_help).isVisible = false
             menu.findItem(R.id.menu_settings).isVisible = false
+            menu.findItem(R.id.menu_filter).isVisible = false
             menu.findItem(R.id.menu_search).isVisible = true
         }
 
@@ -269,6 +282,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
             R.id.menu_settings -> {
                 showMenuFragment(SettingsFragment.newInstance(), R.string.menu_item_settings)
+                true
+            }
+            R.id.menu_filter -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    showFilterDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -391,7 +409,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         customListName?.let {
             updateActionBarSearch(customListName)
-        } ?: updateActionBar(R.string.clear_cache_btn_text)
+        } ?: updateActionBarFilter(getString(R.string.clear_cache_btn_text))
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -538,6 +556,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    private fun updateActionBarFilter(title: String?) {
+        supportActionBar?.title = title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        onMenuShowFilter()
+    }
+
     private fun updateActionBarSearch(title: String?) {
         supportActionBar?.title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -547,7 +571,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun restoreActionBar() {
         supportActionBar?.setTitle(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        onMenuHideSearch()
+        onMenuShowMain()
     }
 
     private fun showMenuFragment(fragment: Fragment, @StringRes title: Int) {
@@ -562,6 +586,22 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             )
             .commitNow()
         updateActionBar(title)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showFilterDialog() {
+        FilterListDialogBuilder.buildMinCacheSizeDialog(this) { str ->
+            val value =
+                try { str?.toFloat() ?: 0.0f }
+                catch (e: NumberFormatException) { 0.0f }
+            if (!value.isFinite() or (value < 0.0f)) return@buildMinCacheSizeDialog
+            minCacheBytes = (value * 1024f * 1024f).toLong()
+            supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                ?.let { fragment ->
+                    if (fragment is PackageListFragment)
+                        fragment.updateAdapterFilterByCacheBytes(minCacheBytes)
+                }
+        }
     }
 
     private fun updateExtraButtonsVisibility() {

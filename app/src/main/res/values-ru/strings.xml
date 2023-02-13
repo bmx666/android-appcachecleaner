@@ -69,6 +69,9 @@
     <string name="dialog_extra_search_text_btn_ok">OK</string>
     <string name="dialog_extra_search_text_btn_remove">Удалить</string>
 
+    <string name="dialog_filter_min_cache_size_title">Фильтр по размеру кэша</string>
+    <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша в Мб для фильтрации приложений</string>
+
     <string name="menu_extra_search_text_title">Доп. текст для поиска:</string>
 
     <string name="help_about"><![CDATA[
@@ -219,4 +222,5 @@
     <string name="deny" msgid="7326117222944479942">"Отклонить"</string>
     <string name="menu_item_settings" msgid="1413723516369078665">"Настройки"</string>
     <string name="menu_item_help" msgid="4570953476186849841">"Справка"</string>
+    <string name="filter" msgid="9039576690686251462">"Фильтр"</string>
 </resources>
