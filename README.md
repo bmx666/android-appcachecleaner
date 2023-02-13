@@ -19,6 +19,11 @@ or get the APK from the [Releases Section](https://github.com/bmx666/android-app
 
 * lge mdh5lm (LG K31) - WindowManager modified by LGE, the Accessibility overlay button cannot be displayed over the screen causing the service to crash
 
+## FAQ
+
+* Clear cache process unexpectedly stops -> please read the issue [#8](https://github.com/bmx666/android-appcachecleaner/issues/8)
+* **Clean Cache** does not anything -> please read the section [Customized Settings UI](#customized-settings-ui)
+
 ## Warning ⚠️
 Since Android 13 Accessibility APIs is restricted for 3rd party apps, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
 
