@@ -28,7 +28,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             context.getText(R.string.clear_cache_btn_text),
             { SharedPreferencesManager.ExtraSearchText.getClearCache(context, locale) },
             { value ->
-                if (value.isEmpty() or value.trim().isEmpty())
+                if (value.trim().isEmpty())
                     SharedPreferencesManager.ExtraSearchText.removeClearCache(context, locale)
                 else
                     SharedPreferencesManager.ExtraSearchText.saveClearCache(context, locale, value)
@@ -45,7 +45,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             },
             { SharedPreferencesManager.ExtraSearchText.getStorage(context, locale) },
             { value ->
-                if (value.isEmpty() or value.trim().isEmpty())
+                if (value.trim().isEmpty())
                     SharedPreferencesManager.ExtraSearchText.removeStorage(context, locale)
                 else
                     SharedPreferencesManager.ExtraSearchText.saveStorage(context, locale, value)
