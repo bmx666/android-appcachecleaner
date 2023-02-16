@@ -1,0 +1,62 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/filter">
+
+        <EditTextPreference
+            app:key="filter_min_cache_size"
+            app:title="@string/prefs_title_filter_min_cache_size" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/btn_add_extra_search_text">
+
+        <EditTextPreference
+            app:key="clear_cache"
+            app:title="@string/clear_cache_btn_text" />
+
+        <EditTextPreference
+            app:key="storage"
+            app:title="@string/storage_settings_for_app" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/prefs_show_extra_buttons">
+
+        <SwitchPreferenceCompat
+            app:key="show_button_start_stop_service"
+            app:title="@string/prefs_show_button_start_stop_service"
+            app:summary="@string/prefs_summary_show_button_start_stop_service"/>
+
+        <SwitchPreferenceCompat
+            app:key="show_button_close_app"
+            app:title="@string/prefs_show_button_close_app"
+            app:summary="@string/prefs_summary_show_button_close_app" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/prefs_custom_lists">
+
+        <Preference
+            app:key="custom_list_add"
+            app:icon="@drawable/ic_baseline_add_circle_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_custom_list_add"
+            app:summary="@string/prefs_summary_custom_list_add"/>
+
+        <Preference
+            app:key="custom_list_edit"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_custom_list_edit"
+            app:summary="@string/prefs_summary_custom_list_edit"/>
+
+        <Preference
+            app:key="custom_list_remove"
+            app:icon="@drawable/ic_baseline_remove_circle_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_custom_list_remove"
+            app:summary="@string/prefs_summary_custom_list_remove"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

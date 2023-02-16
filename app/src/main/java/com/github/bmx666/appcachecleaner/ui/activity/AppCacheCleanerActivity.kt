@@ -367,11 +367,20 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         if (!loadingPkgList.get()) return
 
-        customListName?.let { listName ->
-            val checkedPkgList = SharedPreferencesManager.PackageList.get(this, listName)
-            PlaceholderContent.check(checkedPkgList)
-            PlaceholderContent.sortByLabel()
-        } ?: PlaceholderContent.sort()
+        when (customListName) {
+            null -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    PlaceholderContent.filterByCacheSize(
+                        SharedPreferencesManager.Filter.getMinCacheSize(this))
+                else
+                    PlaceholderContent.sort()
+            }
+            else -> {
+                val checkedPkgList = SharedPreferencesManager.PackageList.get(this, customListName!!)
+                PlaceholderContent.check(checkedPkgList)
+                PlaceholderContent.sortByLabel()
+            }
+        }
 
         if (!loadingPkgList.get()) return
         runOnUiThread {

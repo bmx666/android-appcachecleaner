@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -21,6 +22,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val context = requireContext()
         val locale = LocaleHelper.getCurrentLocale(context)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            initializeFilterMinCacheSize(
+                preferenceManager.findPreference("filter_min_cache_size"),
+                context,
+                { SharedPreferencesManager.Filter.getMinCacheSize(context) },
+                { str ->
+                    val value =
+                        try { str.trim().toLong() }
+                        catch (e: NumberFormatException) { -1L }
+                    if (value > 0L) {
+                        SharedPreferencesManager.Filter.saveMinCacheSize(context, (value * 1024L * 1024L))
+                    } else if (value == 0L) {
+                        SharedPreferencesManager.Filter.removeMinCacheSize(context)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getText(R.string.prefs_error_convert_filter_min_cache_size),
+                            Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            )
+        }
 
         initializeExtraSearchText(
             preferenceManager.findPreference("clear_cache"),
@@ -58,6 +83,43 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preferenceManager.findPreference("custom_list_edit"),
             preferenceManager.findPreference("custom_list_remove"),
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initializeFilterMinCacheSize(pref: EditTextPreference?,
+                                          context: Context,
+                                          getMinCacheSize: () -> Long,
+                                          onChangeMinCacheSize: (String) -> Unit) {
+        val showSummary = {
+            val value = getMinCacheSize()
+            if (value != 0L)
+                context.getString(R.string.prefs_summary_filter_min_cache_size,
+                    (value / (1024f * 1024f)).toInt())
+            else
+                null
+        }
+
+        pref?.apply {
+            dialogTitle = context.getString(R.string.dialog_filter_min_cache_size_message)
+            summary = showSummary()
+            setSummaryProvider {
+                showSummary()
+            }
+            setOnBindEditTextListener { editText ->
+                val value = getMinCacheSize()
+                if (value != 0L) {
+                    editText.setText(String.format("%d", (value / (1024f * 1024f)).toInt()))
+                    editText.hint = null
+                } else {
+                    editText.text = null
+                    editText.hint = "0"
+                }
+            }
+            setOnPreferenceChangeListener { _, newValue ->
+                onChangeMinCacheSize(newValue as String)
+                true
+            }
+        }
     }
 
     private fun initializeExtraSearchText(pref: EditTextPreference?,
