@@ -52,7 +52,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private lateinit var binding: ActivityMainBinding
     private var customListName: String? = null
-    private var minCacheBytes: Long = 0L
 
     private lateinit var onMenuShowMain: () -> Unit
     private lateinit var onMenuShowFilter: () -> Unit
@@ -408,7 +407,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun showPackageFragment(customListName: String?,
                                     pkgInfoList: ArrayList<PackageInfo>) {
         this.customListName = customListName
-        minCacheBytes = 0L
 
         hideFragmentViews()
         hideMainViews()
@@ -615,7 +613,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 try { str?.toFloat() ?: 0.0f }
                 catch (e: NumberFormatException) { 0.0f }
             if (!value.isFinite() or (value < 0.0f)) return@buildMinCacheSizeDialog
-            minCacheBytes = (value * 1024f * 1024f).toLong()
+            val minCacheBytes = (value * 1024f * 1024f).toLong()
             supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                 ?.let { fragment ->
                     if (fragment is PackageListFragment)
