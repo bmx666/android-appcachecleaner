@@ -2,6 +2,8 @@ package com.github.bmx666.appcachecleaner.config
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import java.util.*
@@ -140,6 +142,44 @@ class SharedPreferencesManager {
             fun getShowCloseApp(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(KEY_CLOSE_APP, false)
+            }
+        }
+    }
+
+    class Filter {
+
+        companion object {
+
+            private const val KEY_MIN_CACHE_SIZE_BYTES = "filter_min_cache_size_bytes"
+
+            @JvmStatic
+            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+                return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            @RequiresApi(Build.VERSION_CODES.O)
+            fun getMinCacheSize(context: Context): Long {
+                return getDefaultSharedPref(context)
+                    .getLong(KEY_MIN_CACHE_SIZE_BYTES, 0L)
+            }
+
+            @JvmStatic
+            @RequiresApi(Build.VERSION_CODES.O)
+            fun saveMinCacheSize(context: Context, value: Long) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putLong(KEY_MIN_CACHE_SIZE_BYTES, value)
+                    .apply()
+            }
+
+            @JvmStatic
+            @RequiresApi(Build.VERSION_CODES.O)
+            fun removeMinCacheSize(context: Context) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .remove(KEY_MIN_CACHE_SIZE_BYTES)
+                    .apply()
             }
         }
     }
