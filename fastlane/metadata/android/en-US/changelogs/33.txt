@@ -1,0 +1,2 @@
+* add filter by min cache size into settings
+* fix small bug
