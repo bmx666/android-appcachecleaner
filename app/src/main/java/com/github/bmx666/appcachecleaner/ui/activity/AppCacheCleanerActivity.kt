@@ -262,7 +262,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
-            ?.let { frag -> updateActionBar(frag is PackageListFragment) }
+            ?.let { frag -> updateActionBar(frag) }
 
         return true
     }
@@ -413,7 +413,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         hideFragmentViews()
         hideMainViews()
 
-        updateActionBar(true)
+        updateActionBarPackageList()
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -555,13 +555,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.layoutButton.visibility = View.GONE
     }
 
-    private fun updateActionBar(isPackageListFragment: Boolean) {
-        if (isPackageListFragment)
-            customListName?.let {
-                updateActionBarSearch(customListName)
-            } ?: updateActionBarFilter(R.string.clear_cache_btn_text)
-        else
-            restoreActionBar()
+    private fun updateActionBar(fragment: Fragment) {
+        when (fragment) {
+            is PackageListFragment -> updateActionBarPackageList()
+            is HelpFragment -> updateActionBarMenu(R.string.menu_item_help)
+            is SettingsFragment -> updateActionBarMenu(R.string.menu_item_settings)
+            else -> restoreActionBar()
+        }
+    }
+
+    private fun updateActionBarPackageList() {
+        customListName?.let {
+            updateActionBarSearch(customListName)
+        } ?: updateActionBarFilter(R.string.clear_cache_btn_text)
     }
 
     private fun updateActionBarMenu(@StringRes resId: Int) {
