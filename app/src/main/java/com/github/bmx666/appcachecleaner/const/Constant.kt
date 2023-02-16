@@ -43,4 +43,12 @@ class Constant {
             }
         }
     }
+
+    class Bundle {
+        class PackageFragment {
+            companion object {
+                const val KEY_CUSTOM_LIST_NAME = "custom_list_name"
+            }
+        }
+    }
 }
