@@ -260,9 +260,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
-        supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
-            ?.let { frag -> updateActionBar(frag) }
-
+        restoreUI()
         return true
     }
 
@@ -393,10 +391,15 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             binding.fabCheckAllApps.tag = "uncheck"
 
             val hideStats = customListName?.let { true } ?: false
+            val pkgFragment = PackageListFragment.newInstance()
+            Bundle().apply {
+                putString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME, customListName)
+                pkgFragment.arguments = this
+            }
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container_view,
-                    PackageListFragment.newInstance(hideStats),
+                    pkgFragment,
                     FRAGMENT_CONTAINER_VIEW_TAG
                 )
                 .commitNowAllowingStateLoss()
@@ -657,6 +660,34 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         runOnUiThread {
             binding.textView.text = text
         }
+    }
+
+    private fun restoreUI() {
+        supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+            ?.let { frag ->
+                hideFragmentViews()
+                hideMainViews()
+                binding.fragmentContainerView.visibility = View.VISIBLE
+                when (frag) {
+                    is PackageListFragment -> {
+                        customListName = frag.arguments?.getString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME)
+                        when (customListName) {
+                            null -> {
+                                binding.layoutFab.visibility = View.VISIBLE
+                                binding.layoutFabCustomList.visibility = View.GONE
+                            }
+                            else -> {
+                                binding.layoutFab.visibility = View.GONE
+                                binding.layoutFabCustomList.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+                updateActionBar(frag)
+                supportFragmentManager.beginTransaction()
+                    .show(frag)
+                    .commitNowAllowingStateLoss()
+            } ?: restoreActionBar()
     }
 
     private fun handleOnBackPressed() {

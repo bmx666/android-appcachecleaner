@@ -10,10 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.bmx666.appcachecleaner.R
+import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.ui.view.PackageRecyclerViewAdapter
 
-class PackageListFragment(private val hideStats: Boolean) : Fragment() {
+class PackageListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var onSwapAdapter: () -> Unit
@@ -24,6 +25,9 @@ class PackageListFragment(private val hideStats: Boolean) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_package_list, container, false)
+
+        val hideStats = arguments?.getString(
+            Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME)?.let { true } ?: false
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -70,6 +74,6 @@ class PackageListFragment(private val hideStats: Boolean) : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(hideStats: Boolean) = PackageListFragment(hideStats)
+        fun newInstance() = PackageListFragment()
     }
 }
