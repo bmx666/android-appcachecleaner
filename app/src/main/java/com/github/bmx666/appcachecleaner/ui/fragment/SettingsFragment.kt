@@ -208,7 +208,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             removePref?.isVisible = isNotEmpty()
                         }
                         Toast.makeText(context,
-                            R.string.toast_custom_list_has_been_removed,
+                            getString(R.string.toast_custom_list_has_been_removed, name),
                             Toast.LENGTH_SHORT).show()
                     }
                 }
