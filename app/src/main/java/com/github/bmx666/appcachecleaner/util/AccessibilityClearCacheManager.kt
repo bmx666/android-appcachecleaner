@@ -39,6 +39,9 @@ class AccessibilityClearCacheManager {
         stateMachine.init()
 
         for (pkg in pkgList) {
+            if (BuildConfig.DEBUG)
+                Logger.d("clearCacheApp: package name = $pkg")
+
             // everything is possible...
             if (pkg.trim().isEmpty()) continue
 
@@ -46,6 +49,8 @@ class AccessibilityClearCacheManager {
             if (stateMachine.isInterrupted()) break
 
             stateMachine.setOpenAppInfo()
+            if (BuildConfig.DEBUG)
+                Logger.d("clearCacheApp: open AppInfo")
             openAppInfo(pkg)
 
             // state not changes, something goes wrong...
