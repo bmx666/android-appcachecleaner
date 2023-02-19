@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.log.Logger
 
 abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 
@@ -52,6 +54,8 @@ class LocalBroadcastManagerActivityHelper(
                 Constant.Intent.CleanCacheAppInfo.ACTION -> {
                     val pkgName = intent.getStringExtra(
                         Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME)
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Activity] CleanCacheAppInfo: package name = $pkgName")
                     ActivityHelper.startApplicationDetailsActivity(
                         this@LocalBroadcastManagerActivityHelper.context,
                         pkgName
@@ -62,9 +66,13 @@ class LocalBroadcastManagerActivityHelper(
                         Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
                         false
                     )
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Activity] CleanCacheFinish: interrupted = $interrupted")
                     callback.onCleanCacheFinish(interrupted)
                 }
                 Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Activity] StopAccessibilityServiceFeedback")
                     callback.onStopAccessibilityServiceFeedback()
                 }
             }
@@ -82,6 +90,8 @@ class LocalBroadcastManagerActivityHelper(
     }
 
     fun disableAccessibilityService() {
+        if (BuildConfig.DEBUG)
+            Logger.d("[Activity] disableAccessibilityService")
         // Android 6 doesn't have methods to disable Accessibility service
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
             ActivityHelper.showAccessibilitySettings(context)
@@ -90,6 +100,12 @@ class LocalBroadcastManagerActivityHelper(
     }
 
     fun sendPackageList(pkgList: ArrayList<String>) {
+        if (BuildConfig.DEBUG) {
+            Logger.d("[Activity] sendPackageList")
+            pkgList.forEach {
+                Logger.d("[Activity] sendPackageList: package name = $it")
+            }
+        }
         sendBroadcast(
             Intent(Constant.Intent.ClearCache.ACTION).apply {
                 putStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST, pkgList)
@@ -113,21 +129,42 @@ class LocalBroadcastManagerServiceHelper(
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 Constant.Intent.StopAccessibilityService.ACTION -> {
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Service] StopAccessibilityService")
                     // send back to Activity - service was stopped
                     sendBroadcast(Intent(Constant.Intent.StopAccessibilityServiceFeedback.ACTION))
                     callback.onStopAccessibilityService()
                 }
                 Constant.Intent.ExtraSearchText.ACTION -> {
-                    callback.onExtraSearchText(
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST),
+                    val clearCacheTextList =
+                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST)
+                    val storageTextList =
                         intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST)
-                    )
+                    if (BuildConfig.DEBUG) {
+                        Logger.d("[Service] ExtraSearchText")
+                        clearCacheTextList?.forEach {
+                            Logger.d("[Service] ExtraSearchText: clearCache text = '$it'")
+                        }
+                        storageTextList?.forEach {
+                            Logger.d("[Service] ExtraSearchText: storage text = '$it'")
+                        }
+                    }
+                    callback.onExtraSearchText(clearCacheTextList, storageTextList)
                 }
                 Constant.Intent.ClearCache.ACTION -> {
-                    callback.onClearCache(
-                        intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST))
+                    val pkgList =
+                        intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)
+                    if (BuildConfig.DEBUG) {
+                        Logger.d("[Service] ClearCache")
+                        pkgList?.forEach {
+                            Logger.d("[Service] ClearCache: package name = $it")
+                        }
+                    }
+                    callback.onClearCache(pkgList)
                 }
                 Constant.Intent.CleanCacheFinish.ACTION -> {
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Service] CleanCacheFinish")
                     callback.onCleanCacheFinish()
                 }
             }
@@ -146,6 +183,8 @@ class LocalBroadcastManagerServiceHelper(
     }
 
     fun sendAppInfo(pkgName: String) {
+        if (BuildConfig.DEBUG)
+            Logger.d("[Service] sendAppInfo: package name = $pkgName")
         sendBroadcast(
             Intent(Constant.Intent.CleanCacheAppInfo.ACTION).apply {
                 putExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME, pkgName)
@@ -154,6 +193,8 @@ class LocalBroadcastManagerServiceHelper(
     }
 
     fun sendFinish(interrupted: Boolean) {
+        if (BuildConfig.DEBUG)
+            Logger.d("[Service] sendFinish: interrupted = $interrupted")
         sendBroadcast(
             Intent(Constant.Intent.CleanCacheFinish.ACTION).apply {
                 putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
