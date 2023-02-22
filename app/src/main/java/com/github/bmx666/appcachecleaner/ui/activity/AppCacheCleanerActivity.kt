@@ -81,39 +81,42 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanUserAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            showPackageFragment(null,
+            preparePackageList(null,
                 PackageManagerHelper.getInstalledApps(
                     context = this,
                     systemNotUpdated = false,
                     systemUpdated = true,
                     userOnly = true,
-                )
+                ),
+                false
             )
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            showPackageFragment(null,
+            preparePackageList(null,
                 PackageManagerHelper.getInstalledApps(
                     context = this,
                     systemNotUpdated = true,
                     systemUpdated = false,
                     userOnly = false,
-                )
+                ),
+                false
             )
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            showPackageFragment(null,
+            preparePackageList(null,
                 PackageManagerHelper.getInstalledApps(
                     context = this,
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
-                )
+                ),
+                false
             )
         }
 
@@ -192,8 +195,14 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             CustomListDialogBuilder.buildCleanCacheDialog(this) { name ->
                 name ?: return@buildCleanCacheDialog
-                val pkgList = SharedPreferencesManager.PackageList.get(this, name)
-                startCleanCache(pkgList.toMutableList())
+
+                preparePackageList(name,
+                    PackageManagerHelper.getCustomInstalledApps(
+                        context = this,
+                        pkgList = SharedPreferencesManager.PackageList.get(this, name)
+                    ),
+                    true
+                )
             }
         }
 
@@ -324,7 +333,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
     }
 
-    private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>) {
+    private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
+                                               isCustomListClearOnly: Boolean) {
         val locale = LocaleHelper.getCurrentLocale(this)
 
         var progressApps = 0
@@ -340,15 +350,25 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             val stats = customListName?.let { null }
                 ?: PackageManagerHelper.getStorageStats(this, pkgInfo)
 
-            if (PlaceholderContent.contains(pkgInfo)) {
-                PlaceholderContent.updateStats(pkgInfo, stats)
-                if (!PlaceholderContent.isSameLabelLocale(pkgInfo, locale)) {
-                    val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                    PlaceholderContent.updateLabel(pkgInfo, label, locale)
+            // update only stats if run cleaning process of custom list
+            if (isCustomListClearOnly) {
+                if (PlaceholderContent.contains(pkgInfo)) {
+                    PlaceholderContent.updateStats(pkgInfo, stats)
+                } else {
+                    // skip getting the label of app it can take a lot of time on old phones
+                    PlaceholderContent.addItem(pkgInfo, pkgInfo.packageName, locale, stats)
                 }
             } else {
-                val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                PlaceholderContent.addItem(pkgInfo, label, locale, stats)
+                if (PlaceholderContent.contains(pkgInfo)) {
+                    PlaceholderContent.updateStats(pkgInfo, stats)
+                    if (!PlaceholderContent.isSameLabelLocale(pkgInfo, locale)) {
+                        val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                        PlaceholderContent.updateLabel(pkgInfo, label, locale)
+                    }
+                } else {
+                    val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                    PlaceholderContent.addItem(pkgInfo, label, locale, stats)
+                }
             }
 
             progressApps += 1
@@ -380,35 +400,20 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         if (!loadingPkgList.get()) return
+
         runOnUiThread {
-            binding.layoutProgress.visibility = View.GONE
-            binding.fragmentContainerView.visibility = View.VISIBLE
-            binding.layoutFabCustomList.visibility =
-                customListName?.let { View.VISIBLE } ?: View.GONE
-            binding.layoutFab.visibility =
-                customListName?.let { View.GONE } ?: View.VISIBLE
-
-            binding.fabCheckAllApps.tag = "uncheck"
-
-            val hideStats = customListName?.let { true } ?: false
-            val pkgFragment = PackageListFragment.newInstance()
-            Bundle().apply {
-                putString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME, customListName)
-                pkgFragment.arguments = this
-            }
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container_view,
-                    pkgFragment,
-                    FRAGMENT_CONTAINER_VIEW_TAG
-                )
-                .commitNowAllowingStateLoss()
+            if (isCustomListClearOnly)
+                startCleanCache(PlaceholderContent.getAllChecked().toMutableList())
+            else
+                showPackageFragment()
         }
+
         loadingPkgList.set(false)
     }
 
-    private fun showPackageFragment(customListName: String?,
-                                    pkgInfoList: ArrayList<PackageInfo>) {
+    private fun preparePackageList(customListName: String?,
+                                   pkgInfoList: ArrayList<PackageInfo>,
+                                   isCustomListClearOnly: Boolean) {
         this.customListName = customListName
 
         hideFragmentViews()
@@ -427,18 +432,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         loadingPkgList.set(true)
 
         CoroutineScope(Dispatchers.IO).launch {
-            addPackageToPlaceholderContent(pkgInfoList)
+            addPackageToPlaceholderContent(pkgInfoList, isCustomListClearOnly)
         }
     }
 
     internal fun showCustomListPackageFragment(name: String) {
-        showPackageFragment(name,
+        preparePackageList(name,
             PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = true,
                 systemUpdated = true,
                 userOnly = true,
-            )
+            ),
+            false
         )
     }
 
@@ -700,6 +706,30 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 supportFragmentManager.beginTransaction().remove(fragment).commitNow()
             }
         showMainViews()
+    }
+
+    private fun showPackageFragment() {
+        binding.layoutProgress.visibility = View.GONE
+        binding.fragmentContainerView.visibility = View.VISIBLE
+        binding.layoutFabCustomList.visibility =
+            customListName?.let { View.VISIBLE } ?: View.GONE
+        binding.layoutFab.visibility =
+            customListName?.let { View.GONE } ?: View.VISIBLE
+
+        binding.fabCheckAllApps.tag = "uncheck"
+
+        val pkgFragment = PackageListFragment.newInstance()
+        Bundle().apply {
+            putString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME, customListName)
+            pkgFragment.arguments = this
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container_view,
+                pkgFragment,
+                FRAGMENT_CONTAINER_VIEW_TAG
+            )
+            .commitNowAllowingStateLoss()
     }
 
     override fun onCleanCacheFinish(interrupted: Boolean) {

@@ -39,6 +39,20 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
+        fun getCustomInstalledApps(context: Context,
+                                   pkgList: Set<String>): ArrayList<PackageInfo> {
+            val list = context.packageManager.getInstalledPackages(0)
+            val pkgInfoList = ArrayList<PackageInfo>()
+            for (i in list.indices) {
+                val packageInfo = list[i]
+                if (pkgList.contains(packageInfo.packageName))
+                    pkgInfoList.add(packageInfo)
+            }
+
+            return pkgInfoList
+        }
+
+        @JvmStatic
         fun getApplicationIcon(context: Context, pkgInfo: PackageInfo): Drawable? {
             return context.packageManager.getApplicationIcon(pkgInfo.packageName)
         }
