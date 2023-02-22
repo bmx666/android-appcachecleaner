@@ -206,6 +206,8 @@
     <string translatable="false" name="toast_custom_list_has_been_removed">The list %1$s has been removed</string>
 
     <!-- Preference -->
+    <string translatable="false" name="prefs_ui">UI</string>
+    <string translatable="false" name="prefs_ui_night_mode">Dark theme</string>
     <string translatable="false" name="prefs_title_filter_min_cache_size">Min cache size in Mb to filter apps</string>
     <string translatable="false" name="prefs_summary_filter_min_cache_size">Min %1$d Mb</string>
     <string translatable="false" name="prefs_error_convert_filter_min_cache_size">Please enter an integer OR 0 to reset</string>
