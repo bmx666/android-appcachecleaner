@@ -210,4 +210,22 @@ class SharedPreferencesManager {
             }
         }
     }
+
+    class UI {
+        companion object {
+
+            private const val KEY_NIGHT_MODE = "ui_night_mode"
+
+            @JvmStatic
+            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+                return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            fun getNightMode(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(KEY_NIGHT_MODE, false)
+            }
+        }
+    }
 }

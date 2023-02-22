@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -22,6 +23,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val context = requireContext()
         val locale = LocaleHelper.getCurrentLocale(context)
+
+        initializeUiNightMode(preferenceManager.findPreference("ui_night_mode"))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             initializeFilterMinCacheSize(
@@ -83,6 +86,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preferenceManager.findPreference("custom_list_edit"),
             preferenceManager.findPreference("custom_list_remove"),
         )
+    }
+
+    private fun initializeUiNightMode(pref: Preference?) {
+        pref?.apply {
+            onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                val context = requireContext()
+                val nightMode =
+                    if (SharedPreferencesManager.UI.getNightMode(context))
+                        AppCompatDelegate.MODE_NIGHT_YES
+                    else
+                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                AppCompatDelegate.setDefaultNightMode(nightMode)
+                true
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
