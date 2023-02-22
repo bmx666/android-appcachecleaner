@@ -542,7 +542,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun hideFragmentViews() {
-        // interrupt to load package list
+        // interrupt package list preparation
         loadingPkgList.set(false)
 
         binding.fragmentContainerView.visibility = View.GONE
