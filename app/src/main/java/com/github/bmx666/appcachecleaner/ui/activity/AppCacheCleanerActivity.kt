@@ -669,6 +669,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun restoreUI() {
+        // interrupt package list preparation if user has rotated screen
+        loadingPkgList.set(false)
+
         supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
             ?.let { frag ->
                 hideFragmentViews()
