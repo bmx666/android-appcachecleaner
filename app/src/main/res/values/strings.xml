@@ -71,6 +71,15 @@
     <string translatable="false" name="dialog_filter_min_cache_size_title">Filter by cache size</string>
     <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the minimum cache size in MB for application filtering</string>
 
+    <string translatable="false" name="dialog_help_customized_settings_ui_title">Customized Settings UI</string>
+    <string translatable="false" name="dialog_help_customized_settings_ui_message">
+        Many companies or Android ROMs add or change default Android UI, including Settings.
+        This can cause an issue because the <b>Cache Cleaner</b> app is looking for specific text
+        and if it does not match, the app does nothing.
+        \n\n
+        I confirm that I have read and understand the <b>Customized Settings UI</b> paragraph in the <b>Help</b> menu
+    </string>
+
     <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>
 
     <string translatable="false" name="help_about"><![CDATA[

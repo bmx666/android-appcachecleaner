@@ -183,4 +183,31 @@ class SharedPreferencesManager {
             }
         }
     }
+
+    class FirstBoot {
+
+        companion object {
+            private const val KEY_SHOW_DIALOG_HELP_CUSTOMIZED_SETTINGS_UI =
+                "show_dialog_help_customized_settings_ui"
+
+            @JvmStatic
+            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+                return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            fun showDialogHelpCustomizedSettingsUI(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(KEY_SHOW_DIALOG_HELP_CUSTOMIZED_SETTINGS_UI, true)
+            }
+
+            @JvmStatic
+            fun hideDialogHelpCustomizedSettingsUI(context: Context) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putBoolean(KEY_SHOW_DIALOG_HELP_CUSTOMIZED_SETTINGS_UI, false)
+                    .apply()
+            }
+        }
+    }
 }

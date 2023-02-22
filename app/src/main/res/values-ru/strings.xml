@@ -72,6 +72,16 @@
     <string name="dialog_filter_min_cache_size_title">Фильтр по размеру кэша</string>
     <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша в Мб для фильтрации приложений</string>
 
+    <string name="dialog_help_customized_settings_ui_title">Измененный интерфейс Настроек</string>
+    <string name="dialog_help_customized_settings_ui_message">
+        Многие компании и сторонние прошивки дополняют или изменяют стандартый интерфейс Андроида,
+        включая Настройки. Это может вызывать проблемы, потому что приложение <b>Очиститель кэша</b>
+        ищет определенный текст на экране среди кнопок и меню, и если совпадение не было найдено, то
+        приложение ничего не делает.
+        \n\n
+        Я подтверждаю, что прочитал и понял главу <b>Измененный интерфейс Настроек</b> в меню <b>Помощи</b>
+    </string>
+
     <string name="menu_extra_search_text_title">Доп. текст для поиска:</string>
 
     <string name="help_about"><![CDATA[
