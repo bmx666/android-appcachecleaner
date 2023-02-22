@@ -1,0 +1,1 @@
+* show dialog about customized settings ui on the first boot
