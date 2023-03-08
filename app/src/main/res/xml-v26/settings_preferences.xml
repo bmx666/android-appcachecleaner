@@ -70,7 +70,7 @@
     <PreferenceCategory app:title="@string/prefs_other">
 
         <SeekBarPreference
-            app:key="settings_max_wait_app_timeout_ms"
+            app:key="settings_max_wait_app_timeout"
             app:title="@string/prefs_title_max_wait_app_timeout_ms"
             app:summary="@string/prefs_summary_max_wait_app_timeout_ms"/>
 

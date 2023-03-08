@@ -81,12 +81,12 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         }
     }
 
-    override fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeoutMs: Int) {
+    override fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeout: Int) {
         if (BuildConfig.DEBUG)
             logger.onClearCache()
 
         pkgList?.let{
-            accessibilityClearCacheManager.setMaxWaitAppTimeoutMs(maxWaitAppTimeoutMs)
+            accessibilityClearCacheManager.setMaxWaitAppTimeout(maxWaitAppTimeout)
             accessibilityOverlay.show(this)
             CoroutineScope(Dispatchers.IO).launch {
                 accessibilityClearCacheManager.clearCacheApp(

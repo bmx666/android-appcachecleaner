@@ -338,8 +338,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
-        val maxWaitAppTimeoutMs = SharedPreferencesManager.Settings.getMaxWaitAppTimeoutMs(this)
-        localBroadcastManager.sendPackageList(pkgList as ArrayList<String>, maxWaitAppTimeoutMs)
+        val maxWaitAppTimeout = SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this)
+        localBroadcastManager.sendPackageList(pkgList as ArrayList<String>, maxWaitAppTimeout)
     }
 
     private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,

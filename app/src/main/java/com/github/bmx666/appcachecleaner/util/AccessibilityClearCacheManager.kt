@@ -26,14 +26,14 @@ class AccessibilityClearCacheManager {
         arrayTextStorageAndCacheMenu.addAll(array)
     }
 
-    fun setMaxWaitAppTimeoutMs(timeout: Int) {
-        maxWaitAppTimeoutMs = timeout
+    fun setMaxWaitAppTimeout(timeout: Int) {
+        maxWaitAppTimeoutMs = timeout * 1000
 
         if (maxWaitAppTimeoutMs < MIN_WAIT_APP_PERFORM_CLICK_MS)
             maxWaitAppTimeoutMs = MIN_WAIT_APP_PERFORM_CLICK_MS
 
         maxPerformClickCountTries =
-            (timeout - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
+            (maxWaitAppTimeoutMs - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
     }
 
     private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
