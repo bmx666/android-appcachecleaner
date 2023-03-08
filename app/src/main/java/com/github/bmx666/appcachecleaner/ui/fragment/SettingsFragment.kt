@@ -26,10 +26,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val context = requireContext()
         val locale = LocaleHelper.getCurrentLocale(context)
 
-        initializeUiNightMode(preferenceManager.findPreference("ui_night_mode"))
+        initializeUiNightMode(
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_ui_night_mode))
+        )
 
         initializeSettingsMaxWaitAppTimeout(
-            preferenceManager.findPreference("settings_max_wait_app_timeout"),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_settings_max_wait_app_timeout)),
             context,
             { SharedPreferencesManager.Settings.getMaxWaitAppTimeout(context) },
             { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeout(context, timeout) }
@@ -37,7 +41,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             initializeFilterMinCacheSize(
-                preferenceManager.findPreference("filter_min_cache_size"),
+                preferenceManager.findPreference(
+                    context.getString(R.string.prefs_key_filter_min_cache_size)),
                 context,
                 { SharedPreferencesManager.Filter.getMinCacheSize(context) },
                 { str ->
@@ -60,7 +65,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         initializeExtraSearchText(
-            preferenceManager.findPreference("clear_cache"),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_clear_cache)),
             context, locale,
             context.getText(R.string.clear_cache_btn_text),
             { SharedPreferencesManager.ExtraSearchText.getClearCache(context, locale) },
@@ -73,7 +79,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         )
 
         initializeExtraSearchText(
-            preferenceManager.findPreference("storage"),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_storage)),
             context, locale,
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
@@ -91,9 +98,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         initializeCustomList(
             context,
-            preferenceManager.findPreference("custom_list_add"),
-            preferenceManager.findPreference("custom_list_edit"),
-            preferenceManager.findPreference("custom_list_remove"),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_custom_list_add)),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_custom_list_edit)),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_custom_list_remove)),
         )
     }
 

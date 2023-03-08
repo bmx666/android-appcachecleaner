@@ -3,7 +3,7 @@
     <PreferenceCategory app:title="@string/prefs_ui">
 
         <SwitchPreferenceCompat
-            app:key="ui_night_mode"
+            app:key="@string/prefs_key_ui_night_mode"
             app:title="@string/prefs_ui_night_mode"/>
 
     </PreferenceCategory>
@@ -11,11 +11,11 @@
     <PreferenceCategory app:title="@string/btn_add_extra_search_text">
 
         <EditTextPreference
-            app:key="clear_cache"
+            app:key="@string/prefs_key_clear_cache"
             app:title="@string/clear_cache_btn_text" />
 
         <EditTextPreference
-            app:key="storage"
+            app:key="@string/prefs_key_storage"
             app:title="@string/storage_settings_for_app" />
 
     </PreferenceCategory>
@@ -23,13 +23,13 @@
     <PreferenceCategory app:title="@string/prefs_show_extra_buttons">
 
         <SwitchPreferenceCompat
-            app:key="show_button_start_stop_service"
-            app:title="@string/prefs_show_button_start_stop_service"
+            app:key="@string/prefs_key_show_button_start_stop_service"
+            app:title="@string/prefs_title_show_button_start_stop_service"
             app:summary="@string/prefs_summary_show_button_start_stop_service"/>
 
         <SwitchPreferenceCompat
-            app:key="show_button_close_app"
-            app:title="@string/prefs_show_button_close_app"
+            app:key="@string/prefs_key_show_button_close_app"
+            app:title="@string/prefs_title_show_button_close_app"
             app:summary="@string/prefs_summary_show_button_close_app" />
 
     </PreferenceCategory>
@@ -37,21 +37,21 @@
     <PreferenceCategory app:title="@string/prefs_custom_lists">
 
         <Preference
-            app:key="custom_list_add"
+            app:key="@string/prefs_key_custom_list_add"
             app:icon="@drawable/ic_baseline_add_circle_24"
             app:iconSpaceReserved="true"
             app:title="@string/prefs_title_custom_list_add"
             app:summary="@string/prefs_summary_custom_list_add"/>
 
         <Preference
-            app:key="custom_list_edit"
+            app:key="@string/prefs_key_custom_list_edit"
             app:icon="@drawable/ic_baseline_edit_24"
             app:iconSpaceReserved="true"
             app:title="@string/prefs_title_custom_list_edit"
             app:summary="@string/prefs_summary_custom_list_edit"/>
 
         <Preference
-            app:key="custom_list_remove"
+            app:key="@string/prefs_key_custom_list_remove"
             app:icon="@drawable/ic_baseline_remove_circle_24"
             app:iconSpaceReserved="true"
             app:title="@string/prefs_title_custom_list_remove"
@@ -62,7 +62,7 @@
     <PreferenceCategory app:title="@string/prefs_other">
 
         <SeekBarPreference
-            app:key="settings_max_wait_app_timeout"
+            app:key="@string/prefs_key_settings_max_wait_app_timeout"
             app:title="@string/prefs_title_max_wait_app_timeout"
             app:summary="@string/prefs_summary_max_wait_app_timeout"/>
 

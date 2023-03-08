@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
 import java.util.*
 
@@ -124,10 +125,6 @@ class SharedPreferencesManager {
     class ExtraButtons {
 
         companion object {
-
-            private const val KEY_CLOSE_APP = "show_button_close_app"
-            private const val KEY_START_STOP_SERVICE = "show_button_start_stop_service"
-
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
@@ -136,13 +133,17 @@ class SharedPreferencesManager {
             @JvmStatic
             fun getShowStartStopService(context: Context): Boolean {
                 return getDefaultSharedPref(context)
-                    .getBoolean(KEY_START_STOP_SERVICE, false)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_show_button_start_stop_service),
+                        false)
             }
 
             @JvmStatic
             fun getShowCloseApp(context: Context): Boolean {
                 return getDefaultSharedPref(context)
-                    .getBoolean(KEY_CLOSE_APP, false)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_show_button_close_app),
+                        false)
             }
         }
     }
@@ -214,9 +215,6 @@ class SharedPreferencesManager {
 
     class UI {
         companion object {
-
-            private const val KEY_NIGHT_MODE = "ui_night_mode"
-
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
@@ -225,15 +223,13 @@ class SharedPreferencesManager {
             @JvmStatic
             fun getNightMode(context: Context): Boolean {
                 return getDefaultSharedPref(context)
-                    .getBoolean(KEY_NIGHT_MODE, false)
+                    .getBoolean(context.getString(R.string.prefs_key_ui_night_mode), false)
             }
         }
     }
 
     class Settings {
         companion object {
-            private const val KEY_MAX_WAIT_APP_TIMEOUT = "settings_max_wait_app_timeout"
-
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
@@ -242,7 +238,7 @@ class SharedPreferencesManager {
             @JvmStatic
             fun getMaxWaitAppTimeout(context: Context): Int {
                 return getDefaultSharedPref(context)
-                    .getInt(KEY_MAX_WAIT_APP_TIMEOUT,
+                    .getInt(context.getString(R.string.prefs_key_settings_max_wait_app_timeout),
                         Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
             }
 
@@ -250,7 +246,7 @@ class SharedPreferencesManager {
             fun setMaxWaitAppTimeout(context: Context, timeout: Int) {
                 getDefaultSharedPref(context)
                     .edit()
-                    .putInt(KEY_MAX_WAIT_APP_TIMEOUT, timeout)
+                    .putInt(context.getString(R.string.prefs_key_settings_max_wait_app_timeout), timeout)
                     .apply()
             }
         }

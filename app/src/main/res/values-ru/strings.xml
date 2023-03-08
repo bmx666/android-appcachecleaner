@@ -218,9 +218,9 @@
     <string name="prefs_summary_filter_min_cache_size">Мин. %1$d Мб</string>
     <string name="prefs_error_convert_filter_min_cache_size">Введите целое число ИЛИ 0 для сброса</string>
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
-    <string name="prefs_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
+    <string name="prefs_title_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
     <string name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>
-    <string name="prefs_show_button_close_app">Выйти из приложения</string>
+    <string name="prefs_title_show_button_close_app">Выйти из приложения</string>
     <string name="prefs_summary_show_button_close_app">Для некоторых смартфонов вам необходимо вручную остановить службу специальных возможностей и закрыть приложение</string>
     <string name="prefs_custom_lists">Собств. списки приложений</string>
     <string name="prefs_title_custom_list_add">Добавить</string>
