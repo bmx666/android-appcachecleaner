@@ -120,6 +120,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             min = Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000
             max = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2 / 1000
             setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
+            if (value < Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000)
+                value = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000
             showSeekBarValue = true
             title = context.getString(R.string.prefs_title_max_wait_app_timeout_ms, value)
             setOnPreferenceChangeListener { _, newValue ->
