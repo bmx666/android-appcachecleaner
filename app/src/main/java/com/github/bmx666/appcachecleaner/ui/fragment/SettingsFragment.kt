@@ -29,10 +29,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         initializeUiNightMode(preferenceManager.findPreference("ui_night_mode"))
 
         initializeSettingsMaxWaitAppTimeout(
-            preferenceManager.findPreference("settings_max_wait_app_timeout_ms"),
+            preferenceManager.findPreference("settings_max_wait_app_timeout"),
             context,
-            { SharedPreferencesManager.Settings.getMaxWaitAppTimeoutMs(context) },
-            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeoutMs(context, timeout) }
+            { SharedPreferencesManager.Settings.getMaxWaitAppTimeout(context) },
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeout(context, timeout) }
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -114,19 +114,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun initializeSettingsMaxWaitAppTimeout(pref: SeekBarPreference?,
                                                     context: Context,
-                                                    getMaxWaitAppTimeoutMs: () -> Int,
-                                                    setMaxWaitAppTimeoutMs: (Int) -> Unit) {
+                                                    getMaxWaitAppTimeout: () -> Int,
+                                                    setMaxWaitAppTimeout: (Int) -> Unit) {
         pref?.apply {
             min = Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000
             max = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2 / 1000
             setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
+            value = getMaxWaitAppTimeout()
             if (value < Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000)
                 value = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000
             showSeekBarValue = true
             title = context.getString(R.string.prefs_title_max_wait_app_timeout_ms, value)
             setOnPreferenceChangeListener { _, newValue ->
                 title = context.getString(R.string.prefs_title_max_wait_app_timeout_ms, newValue as Int)
-                setMaxWaitAppTimeoutMs(newValue * 1000)
+                setMaxWaitAppTimeout(newValue)
                 true
             }
         }

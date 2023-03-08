@@ -28,7 +28,7 @@ class Constant {
             companion object {
                 const val ACTION = "ClearCache"
                 const val NAME_PACKAGE_LIST = "package_list"
-                const val NAME_MAX_WAIT_APP_TIMEOUT_MS = "max_wait_app_timeout_ms"
+                const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
             }
         }
 

@@ -232,7 +232,7 @@ class SharedPreferencesManager {
 
     class Settings {
         companion object {
-            private const val KEY_MAX_WAIT_APP_TIMEOUT_MS = "settings_max_wait_app_timeout_ms"
+            private const val KEY_MAX_WAIT_APP_TIMEOUT = "settings_max_wait_app_timeout"
 
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
@@ -240,17 +240,17 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getMaxWaitAppTimeoutMs(context: Context): Int {
+            fun getMaxWaitAppTimeout(context: Context): Int {
                 return getDefaultSharedPref(context)
-                    .getInt(KEY_MAX_WAIT_APP_TIMEOUT_MS,
-                        Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS)
+                    .getInt(KEY_MAX_WAIT_APP_TIMEOUT,
+                        Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
             }
 
             @JvmStatic
-            fun setMaxWaitAppTimeoutMs(context: Context, timeout: Int) {
+            fun setMaxWaitAppTimeout(context: Context, timeout: Int) {
                 getDefaultSharedPref(context)
                     .edit()
-                    .putInt(KEY_MAX_WAIT_APP_TIMEOUT_MS, timeout)
+                    .putInt(KEY_MAX_WAIT_APP_TIMEOUT, timeout)
                     .apply()
             }
         }
