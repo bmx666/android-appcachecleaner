@@ -223,6 +223,9 @@
     <string translatable="false" name="prefs_summary_custom_list_edit">Edit an existing custom list of apps</string>
     <string translatable="false" name="prefs_title_custom_list_remove">Remove</string>
     <string translatable="false" name="prefs_summary_custom_list_remove">Remove an existing custom list of apps</string>
+    <string translatable="false" name="prefs_other">Other</string>
+    <string translatable="false" name="prefs_title_max_wait_app_timeout_ms">Maximum timeout per app - %ds</string>
+    <string translatable="false" name="prefs_summary_max_wait_app_timeout_ms">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>

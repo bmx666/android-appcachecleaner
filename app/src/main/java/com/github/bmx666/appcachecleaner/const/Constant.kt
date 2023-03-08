@@ -1,5 +1,7 @@
 package com.github.bmx666.appcachecleaner.const
 
+import androidx.annotation.IntRange
+
 class Constant {
     class Intent {
         class ExtraSearchText {
@@ -26,6 +28,7 @@ class Constant {
             companion object {
                 const val ACTION = "ClearCache"
                 const val NAME_PACKAGE_LIST = "package_list"
+                const val NAME_MAX_WAIT_APP_TIMEOUT_MS = "max_wait_app_timeout_ms"
             }
         }
 
@@ -48,6 +51,19 @@ class Constant {
         class PackageFragment {
             companion object {
                 const val KEY_CUSTOM_LIST_NAME = "custom_list_name"
+            }
+        }
+    }
+
+    class Settings {
+        class CacheClean {
+            companion object {
+                @IntRange(from = 250)
+                const val MIN_DELAY_PERFORM_CLICK_MS= 250
+                @IntRange(from = 8 * 250)
+                const val MIN_WAIT_APP_PERFORM_CLICK_MS = 8 * MIN_DELAY_PERFORM_CLICK_MS
+                @IntRange(from = 8 * 250)
+                const val DEFAULT_WAIT_APP_PERFORM_CLICK_MS = 30000
             }
         }
     }

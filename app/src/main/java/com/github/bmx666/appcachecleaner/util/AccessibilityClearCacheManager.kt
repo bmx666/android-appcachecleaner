@@ -3,6 +3,9 @@ package com.github.bmx666.appcachecleaner.util
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.log.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +24,16 @@ class AccessibilityClearCacheManager {
     fun setArrayTextStorageAndCacheMenu(array: ArrayList<CharSequence>) {
         arrayTextStorageAndCacheMenu.clear()
         arrayTextStorageAndCacheMenu.addAll(array)
+    }
+
+    fun setMaxWaitAppTimeoutMs(timeout: Int) {
+        maxWaitAppTimeoutMs = timeout
+
+        if (maxWaitAppTimeoutMs < MIN_WAIT_APP_PERFORM_CLICK_MS)
+            maxWaitAppTimeoutMs = MIN_WAIT_APP_PERFORM_CLICK_MS
+
+        maxPerformClickCountTries =
+            (timeout - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
     }
 
     private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
@@ -57,7 +70,7 @@ class AccessibilityClearCacheManager {
             if (stateMachine.isInterrupted()) break
 
             // find "Storage & cache" or "Clean cache" and do perform click
-            if (!stateMachine.waitState(MAX_WAIT_APP_PERFORM_CLICK_MS))
+            if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
                 stateMachine.setInterrupted()
 
             // found "clear cache" and perform clicked
@@ -68,7 +81,7 @@ class AccessibilityClearCacheManager {
             if (stateMachine.isInterrupted()) break
 
             // find "Clean cache" and do perform click
-            if (!stateMachine.waitState(MAX_WAIT_APP_PERFORM_CLICK_MS))
+            if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
                 stateMachine.setInterrupted()
 
             // state not changes, something goes wrong...
@@ -101,10 +114,10 @@ class AccessibilityClearCacheManager {
                 if (result == true)
                     break
 
-                if (tries++ >= MAX_COUNT_TRIES)
+                if (tries++ >= maxPerformClickCountTries)
                     break
 
-                delay(MIN_DELAY_PERFORM_CLICK_MS + tries * MIN_DELAY_PERFORM_CLICK_MS)
+                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
             } while (result != true)
 
             return (result == true)
@@ -166,11 +179,9 @@ class AccessibilityClearCacheManager {
     }
 
     companion object {
-        private const val MAX_COUNT_TRIES: Long = 16
-        private const val MIN_DELAY_PERFORM_CLICK_MS: Long = 250
-        private const val MAX_WAIT_APP_PERFORM_CLICK_MS: Long =
-            MAX_COUNT_TRIES / 2 * (2 * MIN_DELAY_PERFORM_CLICK_MS + (MAX_COUNT_TRIES - 1) * MIN_DELAY_PERFORM_CLICK_MS)
-
+        private var maxWaitAppTimeoutMs = DEFAULT_WAIT_APP_PERFORM_CLICK_MS
+        private var maxPerformClickCountTries =
+            (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
 
         private val arrayTextClearCacheButton = ArrayList<CharSequence>()
         private val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()

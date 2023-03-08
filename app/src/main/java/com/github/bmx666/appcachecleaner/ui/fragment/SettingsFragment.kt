@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SeekBarPreference
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
@@ -25,6 +27,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val locale = LocaleHelper.getCurrentLocale(context)
 
         initializeUiNightMode(preferenceManager.findPreference("ui_night_mode"))
+
+        initializeSettingsMaxWaitAppTimeout(
+            preferenceManager.findPreference("settings_max_wait_app_timeout_ms"),
+            context,
+            { SharedPreferencesManager.Settings.getMaxWaitAppTimeoutMs(context) },
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeoutMs(context, timeout) }
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             initializeFilterMinCacheSize(
@@ -98,6 +107,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     else
                         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 AppCompatDelegate.setDefaultNightMode(nightMode)
+                true
+            }
+        }
+    }
+
+    private fun initializeSettingsMaxWaitAppTimeout(pref: SeekBarPreference?,
+                                                    context: Context,
+                                                    getMaxWaitAppTimeoutMs: () -> Int,
+                                                    setMaxWaitAppTimeoutMs: (Int) -> Unit) {
+        pref?.apply {
+            min = Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000
+            max = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2 / 1000
+            setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
+            showSeekBarValue = true
+            title = context.getString(R.string.prefs_title_max_wait_app_timeout_ms, value)
+            setOnPreferenceChangeListener { _, newValue ->
+                title = context.getString(R.string.prefs_title_max_wait_app_timeout_ms, newValue as Int)
+                setMaxWaitAppTimeoutMs(newValue * 1000)
                 true
             }
         }
