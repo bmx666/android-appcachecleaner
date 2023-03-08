@@ -229,6 +229,9 @@
     <string name="prefs_summary_custom_list_edit">Редактировать существующий собств. список приложений</string>
     <string name="prefs_title_custom_list_remove">Удалить</string>
     <string name="prefs_summary_custom_list_remove">Удалить существующий собств. список приложений</string>
+    <string name="prefs_other">Другое</string>
+    <string name="prefs_title_max_wait_app_timeout_ms">Макс. время ожидание на прил. - %dc</string>
+    <string name="prefs_summary_max_wait_app_timeout_ms">Для старых смартфонов вам необходимо увеличить время ожидания на каждое приложение, т.к. вычисление кэша требует больше времени</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>

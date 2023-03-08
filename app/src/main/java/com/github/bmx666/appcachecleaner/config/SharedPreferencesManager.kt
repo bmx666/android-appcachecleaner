@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.github.bmx666.appcachecleaner.const.Constant
 import java.util.*
 
 class SharedPreferencesManager {
@@ -225,6 +226,32 @@ class SharedPreferencesManager {
             fun getNightMode(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(KEY_NIGHT_MODE, false)
+            }
+        }
+    }
+
+    class Settings {
+        companion object {
+            private const val KEY_MAX_WAIT_APP_TIMEOUT_MS = "settings_max_wait_app_timeout_ms"
+
+            @JvmStatic
+            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+                return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            fun getMaxWaitAppTimeoutMs(context: Context): Int {
+                return getDefaultSharedPref(context)
+                    .getInt(KEY_MAX_WAIT_APP_TIMEOUT_MS,
+                        Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS)
+            }
+
+            @JvmStatic
+            fun setMaxWaitAppTimeoutMs(context: Context, timeout: Int) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putInt(KEY_MAX_WAIT_APP_TIMEOUT_MS, timeout)
+                    .apply()
             }
         }
     }

@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
+import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
@@ -80,11 +81,12 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         }
     }
 
-    override fun onClearCache(pkgList: ArrayList<String>?) {
+    override fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeoutMs: Int) {
         if (BuildConfig.DEBUG)
             logger.onClearCache()
 
         pkgList?.let{
+            accessibilityClearCacheManager.setMaxWaitAppTimeoutMs(maxWaitAppTimeoutMs)
             accessibilityOverlay.show(this)
             CoroutineScope(Dispatchers.IO).launch {
                 accessibilityClearCacheManager.clearCacheApp(

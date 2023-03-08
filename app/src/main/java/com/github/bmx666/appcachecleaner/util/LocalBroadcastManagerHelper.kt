@@ -99,7 +99,7 @@ class LocalBroadcastManagerActivityHelper(
             sendBroadcast(Intent(Constant.Intent.StopAccessibilityService.ACTION))
     }
 
-    fun sendPackageList(pkgList: ArrayList<String>) {
+    fun sendPackageList(pkgList: ArrayList<String>, maxWaitAppTimeoutMs: Int) {
         if (BuildConfig.DEBUG) {
             Logger.d("[Activity] sendPackageList")
             pkgList.forEach {
@@ -109,6 +109,7 @@ class LocalBroadcastManagerActivityHelper(
         sendBroadcast(
             Intent(Constant.Intent.ClearCache.ACTION).apply {
                 putStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST, pkgList)
+                putExtra(Constant.Intent.ClearCache.NAME_MAX_WAIT_APP_TIMEOUT_MS, maxWaitAppTimeoutMs)
             }
         )
     }
@@ -117,7 +118,7 @@ class LocalBroadcastManagerActivityHelper(
 interface IIntentServiceCallback {
     fun onStopAccessibilityService()
     fun onExtraSearchText(clearCacheTextList: Array<String>?, storageTextList: Array<String>?)
-    fun onClearCache(pkgList: ArrayList<String>?)
+    fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeoutMs: Int)
     fun onCleanCacheFinish()
 }
 
@@ -154,13 +155,16 @@ class LocalBroadcastManagerServiceHelper(
                 Constant.Intent.ClearCache.ACTION -> {
                     val pkgList =
                         intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)
+                    val maxWaitAppTimeoutMs =
+                        intent.getIntExtra(Constant.Intent.ClearCache.NAME_MAX_WAIT_APP_TIMEOUT_MS,
+                                            Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS)
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ClearCache")
                         pkgList?.forEach {
                             Logger.d("[Service] ClearCache: package name = $it")
                         }
                     }
-                    callback.onClearCache(pkgList)
+                    callback.onClearCache(pkgList, maxWaitAppTimeoutMs)
                 }
                 Constant.Intent.CleanCacheFinish.ACTION -> {
                     if (BuildConfig.DEBUG)
