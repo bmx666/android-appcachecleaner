@@ -1,14 +1,15 @@
 # Cache Cleaner
 
+## THE PROJECT HAS BEEN ARCHIVED
+
+**Cache Cleaner** has been removed from Google Play due to a lot of malware and suspicious application reports and negative reviews - all of them because vendors like Xiaomi, Samsung, LGE and other are using non-standard vendor specific behaviour for Accessiblity and Settings UI which are far from standard Google Android behavior, also these smartphones have problems passing Google CTS for Accessibility.
+
 ## Description
 
 Since Android 6 (Marshmallow) it is no longer possible to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.
 
 **Cache Cleaner** app can request all installed user and system apps and it replaces all manual actions related to clean cache using Accessibility service.
 
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-     alt="Get it on Google Play"
-     height="80">](https://play.google.com/store/apps/details?id=com.github.bmx666.appcachecleaner)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/com.github.bmx666.appcachecleaner/)
