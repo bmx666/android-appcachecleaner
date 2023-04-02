@@ -1,9 +1,5 @@
 # Cache Cleaner
 
-## THE PROJECT HAS BEEN ARCHIVED
-
-**Cache Cleaner** has been removed from Google Play due to a lot of malware and suspicious application reports and negative reviews - all of them because vendors like Xiaomi, Samsung, LGE and other are using non-standard vendor specific behaviour for Accessiblity and Settings UI which are far from standard Google Android behavior, also these smartphones have problems passing Google CTS for Accessibility.
-
 ## Description
 
 Since Android 6 (Marshmallow) it is no longer possible to clear cache of all apps at same time and Google has moved this permission to system apps only. There is only one possible way left - open manually info about application and find specific "Storage" menu and then press "Clean cache" button.
@@ -16,9 +12,7 @@ Since Android 6 (Marshmallow) it is no longer possible to clear cache of all app
 
 or get the APK from the [Releases Section](https://github.com/bmx666/android-appcachecleaner/releases/latest).
 
-## List of banned smartphones on Google Play forever due to a large number of negative reviews 🚫
-
-* lge mdh5lm (LG K31) - WindowManager modified by LGE, the Accessibility overlay button cannot be displayed over the screen causing the service to crash
+**Clean Cache** has been removed from Google Play, [no more app on Google Play](https://github.com/bmx666/android-appcachecleaner/issues/101)
 
 ## FAQ
 
