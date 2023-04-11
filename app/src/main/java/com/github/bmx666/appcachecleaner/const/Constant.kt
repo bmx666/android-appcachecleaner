@@ -59,7 +59,7 @@ class Constant {
         class CacheClean {
             companion object {
                 @IntRange(from = 250)
-                const val MIN_DELAY_PERFORM_CLICK_MS= 250
+                const val MIN_DELAY_PERFORM_CLICK_MS = 250
                 @IntRange(from = 8 * 250)
                 const val MIN_WAIT_APP_PERFORM_CLICK_MS = 8 * MIN_DELAY_PERFORM_CLICK_MS
                 @IntRange(from = 8 * 250)
