@@ -1,7 +1,9 @@
 package com.github.bmx666.appcachecleaner.util
 
+import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
@@ -126,6 +128,35 @@ class AccessibilityClearCacheManager {
         return null
     }
 
+    private fun doPerformScrollForward(nodeInfo: AccessibilityNodeInfo,
+                                              debugText: String): Boolean?
+    {
+        Logger.d("found $debugText")
+        if (nodeInfo.isEnabled) {
+            Logger.d("$debugText is enabled")
+
+            val result = nodeInfo.performAction(AccessibilityAction.ACTION_SCROLL_FORWARD.id, Bundle())
+            when (result) {
+                true -> Logger.d("perform action scroll forward on $debugText")
+                false -> Logger.e("no perform action scroll forward on $debugText")
+            }
+
+            return result
+        }
+
+        return null
+    }
+
+    private fun fakeDelay(timeMillis: Long) {
+        var waitEvent = true
+        while (waitEvent) {
+            CoroutineScope(Dispatchers.IO).launch {
+                waitEvent = false
+                delay(timeMillis)
+            }
+        }
+    }
+
     fun checkEvent(event: AccessibilityEvent) {
 
         if (stateMachine.isDone()) return
@@ -143,34 +174,61 @@ class AccessibilityClearCacheManager {
             Logger.d("===>>> TREE END <<<===")
         }
 
-        nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
-            CoroutineScope(Dispatchers.IO).launch {
-                when (doPerformClick(clearCacheButton, "clean cache button")) {
-                    // clean cache button was found and it's enabled but perform click was failed
-                    false -> stateMachine.setInterrupted()
-                    else -> {}
-                }
-                // move to the next app
-                stateMachine.setFinishCleanApp()
-            }
-            return
-        }
+        CoroutineScope(Dispatchers.IO).launch {
 
-        nodeInfo.findStorageAndCacheMenu(arrayTextStorageAndCacheMenu)?.let { storageAndCacheMenu ->
-            CoroutineScope(Dispatchers.IO).launch {
-                when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
+            nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    when (doPerformClick(clearCacheButton, "clean cache button")) {
+                        // clean cache button was found and it's enabled but perform click was failed
+                        false -> stateMachine.setInterrupted()
+                        else -> {}
+                    }
                     // move to the next app
-                    null -> stateMachine.setFinishCleanApp()
-                    // storage & cache button was found and it's enabled but perform click was failed
-                    false -> stateMachine.setInterrupted()
-                    // open App Storage Activity
-                    true -> stateMachine.setStorageInfo()
+                    stateMachine.setFinishCleanApp()
+                }
+                return@launch
+            }
+
+            var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
+
+            while (recyclerViewNodeInfo != null) {
+
+                // first use "nodeInfo", then refreshed RecyclerView
+                recyclerViewNodeInfo.findStorageAndCacheMenu(arrayTextStorageAndCacheMenu)?.let { storageAndCacheMenu ->
+                    when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
+                        // move to the next app
+                        null -> stateMachine.setFinishCleanApp()
+                        // storage & cache button was found and it's enabled but perform click was failed
+                        false -> stateMachine.setInterrupted()
+                        // open App Storage Activity
+                        true -> stateMachine.setStorageInfo()
+                    }
+                    return@launch
+                }
+
+                // re-assign RecyclerView nodeInfo
+                recyclerViewNodeInfo = nodeInfo.findRecyclerView() ?: break
+
+                // scroll forward the RecyclerView to display the "Storage" menu
+                if (doPerformScrollForward(recyclerViewNodeInfo, "RecycleView") != true)
+                    break
+
+                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+                if (!recyclerViewNodeInfo.refresh())
+                    break
+
+                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+                if (BuildConfig.DEBUG) {
+                    Logger.d("===>>> recyclerView TREE BEGIN <<<===")
+                    showTree(0, recyclerViewNodeInfo)
+                    Logger.d("===>>> recyclerView TREE END <<<===")
                 }
             }
-            return
-        }
 
-        stateMachine.setFinishCleanApp()
+            stateMachine.setFinishCleanApp()
+        }
     }
 
     fun interrupt() {
@@ -213,5 +271,16 @@ private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
     return this.takeIf { nodeInfo ->
         nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
                 && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+    }
+}
+
+private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findRecyclerView()?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.viewIdResourceName?.contentEquals("com.android.settings:id/recycler_view") == true
     }
 }
