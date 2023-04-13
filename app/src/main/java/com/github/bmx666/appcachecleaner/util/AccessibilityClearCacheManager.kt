@@ -147,16 +147,6 @@ class AccessibilityClearCacheManager {
         return null
     }
 
-    private fun fakeDelay(timeMillis: Long) {
-        var waitEvent = true
-        while (waitEvent) {
-            CoroutineScope(Dispatchers.IO).launch {
-                waitEvent = false
-                delay(timeMillis)
-            }
-        }
-    }
-
     fun checkEvent(event: AccessibilityEvent) {
 
         if (stateMachine.isDone()) return
