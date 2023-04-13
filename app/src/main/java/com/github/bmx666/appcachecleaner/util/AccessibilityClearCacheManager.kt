@@ -147,6 +147,70 @@ class AccessibilityClearCacheManager {
         return null
     }
 
+    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
+            when (doPerformClick(clearCacheButton, "clean cache button")) {
+                // clean cache button was found and it's enabled but perform click was failed
+                false -> stateMachine.setInterrupted()
+                // move to the next app
+                else -> stateMachine.setFinishCleanApp()
+            }
+            return true
+        }
+        return false
+    }
+
+    private suspend fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findStorageAndCacheMenu(arrayTextStorageAndCacheMenu)?.let { storageAndCacheMenu ->
+            when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
+                // move to the next app
+                null -> stateMachine.setFinishCleanApp()
+                // storage & cache button was found and it's enabled but perform click was failed
+                false -> stateMachine.setInterrupted()
+                // open App Storage Activity
+                true -> stateMachine.setStorageInfo()
+            }
+            return true
+        }
+        return false
+    }
+
+    private suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo) {
+        if (findClearCacheButton(nodeInfo))
+            return
+
+        var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
+
+        while (recyclerViewNodeInfo != null) {
+
+            // first use "nodeInfo", then refreshed RecyclerView
+            if (findStorageAndCacheMenu(recyclerViewNodeInfo))
+                return
+
+            // re-assign RecyclerView nodeInfo
+            recyclerViewNodeInfo = nodeInfo.findRecyclerView() ?: break
+
+            // scroll forward the RecyclerView to display the "Storage" menu
+            if (doPerformScrollForward(recyclerViewNodeInfo, "RecycleView") != true)
+                break
+
+            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+            if (!recyclerViewNodeInfo.refresh())
+                break
+
+            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+            if (BuildConfig.DEBUG) {
+                Logger.d("===>>> recyclerView TREE BEGIN <<<===")
+                showTree(0, recyclerViewNodeInfo)
+                Logger.d("===>>> recyclerView TREE END <<<===")
+            }
+        }
+
+        stateMachine.setFinishCleanApp()
+    }
+
     fun checkEvent(event: AccessibilityEvent) {
 
         if (stateMachine.isDone()) return
@@ -165,59 +229,7 @@ class AccessibilityClearCacheManager {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-
-            nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    when (doPerformClick(clearCacheButton, "clean cache button")) {
-                        // clean cache button was found and it's enabled but perform click was failed
-                        false -> stateMachine.setInterrupted()
-                        else -> {}
-                    }
-                    // move to the next app
-                    stateMachine.setFinishCleanApp()
-                }
-                return@launch
-            }
-
-            var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
-
-            while (recyclerViewNodeInfo != null) {
-
-                // first use "nodeInfo", then refreshed RecyclerView
-                recyclerViewNodeInfo.findStorageAndCacheMenu(arrayTextStorageAndCacheMenu)?.let { storageAndCacheMenu ->
-                    when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
-                        // move to the next app
-                        null -> stateMachine.setFinishCleanApp()
-                        // storage & cache button was found and it's enabled but perform click was failed
-                        false -> stateMachine.setInterrupted()
-                        // open App Storage Activity
-                        true -> stateMachine.setStorageInfo()
-                    }
-                    return@launch
-                }
-
-                // re-assign RecyclerView nodeInfo
-                recyclerViewNodeInfo = nodeInfo.findRecyclerView() ?: break
-
-                // scroll forward the RecyclerView to display the "Storage" menu
-                if (doPerformScrollForward(recyclerViewNodeInfo, "RecycleView") != true)
-                    break
-
-                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-
-                if (!recyclerViewNodeInfo.refresh())
-                    break
-
-                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-
-                if (BuildConfig.DEBUG) {
-                    Logger.d("===>>> recyclerView TREE BEGIN <<<===")
-                    showTree(0, recyclerViewNodeInfo)
-                    Logger.d("===>>> recyclerView TREE END <<<===")
-                }
-            }
-
-            stateMachine.setFinishCleanApp()
+            doCacheClean(nodeInfo)
         }
     }
 
