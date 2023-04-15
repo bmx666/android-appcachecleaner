@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
-import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
@@ -88,9 +87,13 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         pkgList?.let{
             accessibilityClearCacheManager.setMaxWaitAppTimeout(maxWaitAppTimeout)
             accessibilityOverlay.show(this)
+            val pkgListSize = pkgList.size
             CoroutineScope(Dispatchers.IO).launch {
                 accessibilityClearCacheManager.clearCacheApp(
                     pkgList,
+                    { index: Int ->
+                        accessibilityOverlay.updateCounter(index, pkgListSize)
+                    },
                     localBroadcastManager::sendAppInfo,
                     localBroadcastManager::sendFinish)
             }

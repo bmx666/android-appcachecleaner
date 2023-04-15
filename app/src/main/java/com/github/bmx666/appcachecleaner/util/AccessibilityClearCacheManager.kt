@@ -48,14 +48,17 @@ class AccessibilityClearCacheManager {
     }
 
     fun clearCacheApp(pkgList: ArrayList<String>,
+                      updatePosition: (Int) -> Unit,
                       openAppInfo: KFunction1<String, Unit>,
                       finish: KFunction1<Boolean, Unit>) {
 
         stateMachine.init()
 
-        for (pkg in pkgList) {
+        for ((index, pkg) in pkgList.withIndex()) {
             if (BuildConfig.DEBUG)
                 Logger.d("clearCacheApp: package name = $pkg")
+
+            updatePosition(index)
 
             // everything is possible...
             if (pkg.trim().isEmpty()) continue
