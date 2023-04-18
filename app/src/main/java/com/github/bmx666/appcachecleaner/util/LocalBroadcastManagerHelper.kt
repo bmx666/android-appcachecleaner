@@ -118,6 +118,7 @@ class LocalBroadcastManagerActivityHelper(
 interface IIntentServiceCallback {
     fun onStopAccessibilityService()
     fun onExtraSearchText(clearCacheTextList: Array<String>?, storageTextList: Array<String>?)
+    fun onScenario(scenario: Constant.Scenario?)
     fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeout: Int)
     fun onCleanCacheFinish()
 }
@@ -152,6 +153,18 @@ class LocalBroadcastManagerServiceHelper(
                     }
                     callback.onExtraSearchText(clearCacheTextList, storageTextList)
                 }
+                Constant.Intent.Scenario.ACTION -> {
+                    val scenario: Constant.Scenario? =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                            intent.getSerializableExtra(Constant.Intent.Scenario.NAME_TYPE,
+                                Constant.Scenario::class.java)
+                        else
+                            intent.getSerializableExtra(Constant.Intent.Scenario.NAME_TYPE) as Constant.Scenario?
+                    if (BuildConfig.DEBUG) {
+                        Logger.d("[Service] Scenario: type = '$scenario'")
+                    }
+                    callback.onScenario(scenario)
+                }
                 Constant.Intent.ClearCache.ACTION -> {
                     val pkgList =
                         intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)
@@ -178,6 +191,7 @@ class LocalBroadcastManagerServiceHelper(
     override val intentFilter = IntentFilter().apply {
         addAction(Constant.Intent.StopAccessibilityService.ACTION)
         addAction(Constant.Intent.ExtraSearchText.ACTION)
+        addAction(Constant.Intent.Scenario.ACTION)
         addAction(Constant.Intent.ClearCache.ACTION)
         addAction(Constant.Intent.CleanCacheFinish.ACTION)
     }

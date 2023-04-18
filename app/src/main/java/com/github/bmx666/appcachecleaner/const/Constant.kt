@@ -12,6 +12,13 @@ class Constant {
             }
         }
 
+        class Scenario {
+            companion object {
+                const val ACTION = "Scenario"
+                const val NAME_TYPE = "type"
+            }
+        }
+
         class StopAccessibilityService {
             companion object {
                 const val ACTION = "StopAccessibilityService"
@@ -66,5 +73,9 @@ class Constant {
                 const val DEFAULT_WAIT_APP_PERFORM_CLICK_MS = 30000
             }
         }
+    }
+
+    enum class Scenario {
+        DEFAULT,
     }
 }

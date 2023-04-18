@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
+import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
@@ -77,6 +78,12 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                     add(getText(R.string.storage_label))
                 }
             )
+        }
+    }
+
+    override fun onScenario(scenario: Constant.Scenario?) {
+        scenario?.let {
+            accessibilityClearCacheManager.setScenario(it)
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
+import java.lang.Exception
 import java.util.*
 
 class SharedPreferencesManager {
@@ -248,6 +249,17 @@ class SharedPreferencesManager {
                     .edit()
                     .putInt(context.getString(R.string.prefs_key_settings_max_wait_app_timeout), timeout)
                     .apply()
+            }
+
+            @JvmStatic
+            fun getScenario(context: Context): Constant.Scenario {
+                try {
+                    val value = getDefaultSharedPref(context)
+                        .getString(context.getString(R.string.prefs_key_settings_scenario),
+                            null) ?: Constant.Scenario.DEFAULT.ordinal.toString()
+                    return Constant.Scenario.values()[value.toInt()]
+                } catch (_: Exception) {}
+                return Constant.Scenario.DEFAULT
             }
         }
     }
