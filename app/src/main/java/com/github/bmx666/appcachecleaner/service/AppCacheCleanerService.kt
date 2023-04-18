@@ -62,12 +62,20 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
     }
 
     override fun onExtraSearchText(clearCacheTextList: Array<String>?,
+                                   clearDataTextList: Array<String>?,
                                    storageTextList: Array<String>?) {
         accessibilityClearCacheManager.apply {
             setArrayTextClearCacheButton(
                 ArrayList<CharSequence>().apply {
                     clearCacheTextList?.forEach { add(it) }
                     add(getText(R.string.clear_cache_btn_text))
+                }
+            )
+
+            setArrayTextClearDataButton(
+                ArrayList<CharSequence>().apply {
+                    clearDataTextList?.forEach { add(it) }
+                    add(getText(R.string.clear_user_data_text))
                 }
             )
 

@@ -37,6 +37,17 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
+        fun getTextForClearData(context: Context): Array<String> {
+            val list = ArrayList<String>()
+
+            when (SharedPreferencesManager.Settings.getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+            }
+
+            return list.toTypedArray()
+        }
+
+        @JvmStatic
         fun getTextForStorage(context: Context): Array<String> {
             val locale = LocaleHelper.getCurrentLocale(context)
 

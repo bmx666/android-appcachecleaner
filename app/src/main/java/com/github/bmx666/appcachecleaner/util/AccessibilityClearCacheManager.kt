@@ -24,6 +24,11 @@ class AccessibilityClearCacheManager {
         arrayTextClearCacheButton.addAll(array)
     }
 
+    fun setArrayTextClearDataButton(array: ArrayList<CharSequence>) {
+        arrayTextClearDataButton.clear()
+        arrayTextClearDataButton.addAll(array)
+    }
+
     fun setArrayTextStorageAndCacheMenu(array: ArrayList<CharSequence>) {
         arrayTextStorageAndCacheMenu.clear()
         arrayTextStorageAndCacheMenu.addAll(array)
@@ -258,6 +263,7 @@ class AccessibilityClearCacheManager {
             (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
 
         private val arrayTextClearCacheButton = ArrayList<CharSequence>()
+        private val arrayTextClearDataButton = ArrayList<CharSequence>()
         private val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
 
         private val stateMachine = CleanCacheStateMachine()
