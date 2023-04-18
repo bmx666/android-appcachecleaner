@@ -8,4 +8,5 @@
     <string name="menu_item_settings" msgid="1413723516369078665">"ຕັ້ງຄ່າ"</string>
     <string name="menu_item_help" msgid="4570953476186849841">"ຊ່ວຍເຫຼືອ"</string>
     <string name="filter" msgid="9039576690686251462">"ໂຕກັ່ນຕອງ"</string>
+    <string name="clear_user_data_text" msgid="6773186434260397947">"ລຶບພື້ນທີ່ຈັດເກັບຂໍ້ມູນ"</string>
 </resources>
