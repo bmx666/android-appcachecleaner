@@ -466,6 +466,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST, list)
         }
 
+        ExtraSearchTextHelper.getTextForClearData(this).let { list ->
+            if (list.isNotEmpty())
+                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_DATA_TEXT_LIST, list)
+        }
+
         ExtraSearchTextHelper.getTextForStorage(this).let { list ->
             if (list.isNotEmpty())
                 intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST, list)

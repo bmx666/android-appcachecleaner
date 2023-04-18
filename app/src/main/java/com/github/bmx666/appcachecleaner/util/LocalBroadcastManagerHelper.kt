@@ -117,7 +117,9 @@ class LocalBroadcastManagerActivityHelper(
 
 interface IIntentServiceCallback {
     fun onStopAccessibilityService()
-    fun onExtraSearchText(clearCacheTextList: Array<String>?, storageTextList: Array<String>?)
+    fun onExtraSearchText(clearCacheTextList: Array<String>?,
+                          clearDataTextList: Array<String>?,
+                          storageTextList: Array<String>?)
     fun onScenario(scenario: Constant.Scenario?)
     fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeout: Int)
     fun onCleanCacheFinish()
@@ -140,6 +142,8 @@ class LocalBroadcastManagerServiceHelper(
                 Constant.Intent.ExtraSearchText.ACTION -> {
                     val clearCacheTextList =
                         intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST)
+                    val clearDataTextList =
+                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_DATA_TEXT_LIST)
                     val storageTextList =
                         intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST)
                     if (BuildConfig.DEBUG) {
@@ -147,11 +151,17 @@ class LocalBroadcastManagerServiceHelper(
                         clearCacheTextList?.forEach {
                             Logger.d("[Service] ExtraSearchText: clearCache text = '$it'")
                         }
+                        clearDataTextList?.forEach {
+                            Logger.d("[Service] ExtraSearchText: clearData text = '$it'")
+                        }
                         storageTextList?.forEach {
                             Logger.d("[Service] ExtraSearchText: storage text = '$it'")
                         }
                     }
-                    callback.onExtraSearchText(clearCacheTextList, storageTextList)
+                    callback.onExtraSearchText(
+                        clearCacheTextList,
+                        clearDataTextList,
+                        storageTextList)
                 }
                 Constant.Intent.Scenario.ACTION -> {
                     val scenario: Constant.Scenario? =

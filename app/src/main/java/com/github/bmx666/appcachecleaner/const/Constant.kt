@@ -8,6 +8,7 @@ class Constant {
             companion object {
                 const val ACTION = "ExtraSearchText"
                 const val NAME_CLEAR_CACHE_TEXT_LIST = "clear_cache_text_list"
+                const val NAME_CLEAR_DATA_TEXT_LIST = "clear_data_text_list"
                 const val NAME_STORAGE_TEXT_LIST = "storage_text_list"
             }
         }
