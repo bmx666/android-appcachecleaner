@@ -8,7 +8,7 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
-import com.github.bmx666.appcachecleaner.util.AccessibilityClearCacheManager
+import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearCacheManager
 import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerServiceHelper
 import kotlinx.coroutines.CoroutineScope
@@ -65,36 +65,25 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                                    clearDataTextList: Array<String>?,
                                    storageTextList: Array<String>?,
                                    okTextList: Array<String>?) {
-        accessibilityClearCacheManager.apply {
-            setArrayTextClearCacheButton(
-                ArrayList<CharSequence>().apply {
-                    clearCacheTextList?.forEach { add(it) }
-                    add(getText(R.string.clear_cache_btn_text))
-                }
-            )
-
-            setArrayTextClearDataButton(
-                ArrayList<CharSequence>().apply {
-                    clearDataTextList?.forEach { add(it) }
-                    add(getText(R.string.clear_user_data_text))
-                }
-            )
-
-            setArrayTextStorageAndCacheMenu(
-                ArrayList<CharSequence>().apply {
-                    storageTextList?.forEach { add(it) }
-                    add(getText(R.string.storage_settings_for_app))
-                    add(getText(R.string.storage_label))
-                }
-            )
-
-            setArrayTextOkButton(
-                ArrayList<CharSequence>().apply {
-                    okTextList?.forEach { add(it) }
-                    add(getText(android.R.string.ok))
-                }
-            )
-        }
+        accessibilityClearCacheManager.setExtraSearchText(
+            ArrayList<CharSequence>().apply {
+                clearCacheTextList?.forEach { add(it) }
+                add(getText(R.string.clear_cache_btn_text))
+            },
+            ArrayList<CharSequence>().apply {
+                clearDataTextList?.forEach { add(it) }
+                add(getText(R.string.clear_user_data_text))
+            },
+            ArrayList<CharSequence>().apply {
+                storageTextList?.forEach { add(it) }
+                add(getText(R.string.storage_settings_for_app))
+                add(getText(R.string.storage_label))
+            },
+            ArrayList<CharSequence>().apply {
+                okTextList?.forEach { add(it) }
+                add(getText(android.R.string.ok))
+            },
+        )
     }
 
     override fun onScenario(scenario: Constant.Scenario?) {
