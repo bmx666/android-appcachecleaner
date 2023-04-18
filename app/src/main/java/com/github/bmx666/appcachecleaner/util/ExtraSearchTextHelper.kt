@@ -9,6 +9,17 @@ class ExtraSearchTextHelper {
     companion object {
 
         @JvmStatic
+        fun getTextForOk(context: Context): Array<String> {
+            val list = ArrayList<String>()
+
+            when (SharedPreferencesManager.Settings.getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+            }
+
+            return list.toTypedArray()
+        }
+
+        @JvmStatic
         fun getTextForClearCache(context: Context): Array<String> {
             val locale = LocaleHelper.getCurrentLocale(context)
 
