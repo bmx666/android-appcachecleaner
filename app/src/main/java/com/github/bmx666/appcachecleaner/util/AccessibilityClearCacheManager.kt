@@ -5,6 +5,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import com.github.bmx666.appcachecleaner.BuildConfig
+import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_APP_PERFORM_CLICK_MS
@@ -36,6 +37,10 @@ class AccessibilityClearCacheManager {
 
         maxPerformClickCountTries =
             (maxWaitAppTimeoutMs - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
+    }
+
+    fun setScenario(scenario: Constant.Scenario) {
+        cacheCleanScenario = scenario
     }
 
     private fun showTree(level: Int, nodeInfo: AccessibilityNodeInfo?) {
@@ -74,23 +79,27 @@ class AccessibilityClearCacheManager {
             // state not changes, something goes wrong...
             if (stateMachine.isInterrupted()) break
 
-            // find "Storage & cache" or "Clean cache" and do perform click
-            if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-                stateMachine.setInterrupted()
+            when (cacheCleanScenario) {
+                Constant.Scenario.DEFAULT -> {
+                    // find "Storage & cache" or "Clean cache" and do perform click
+                    if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
+                        stateMachine.setInterrupted()
 
-            // found "clear cache" and perform clicked
-            // OR "Storage & cache" is disabled
-            if (stateMachine.isFinishCleanApp()) continue
+                    // found "clear cache" and perform clicked
+                    // OR "Storage & cache" is disabled
+                    if (stateMachine.isFinishCleanApp()) continue
 
-            // state not changes, something goes wrong...
-            if (stateMachine.isInterrupted()) break
+                    // state not changes, something goes wrong...
+                    if (stateMachine.isInterrupted()) break
 
-            // find "Clean cache" and do perform click
-            if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-                stateMachine.setInterrupted()
+                    // find "Clean cache" and do perform click
+                    if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
+                        stateMachine.setInterrupted()
 
-            // state not changes, something goes wrong...
-            if (stateMachine.isInterrupted()) break
+                    // state not changes, something goes wrong...
+                    if (stateMachine.isInterrupted()) break
+                }
+            }
         }
 
         val interrupted = stateMachine.isInterrupted()
@@ -232,7 +241,9 @@ class AccessibilityClearCacheManager {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            doCacheClean(nodeInfo)
+            when (cacheCleanScenario) {
+                Constant.Scenario.DEFAULT -> doCacheClean(nodeInfo)
+            }
         }
     }
 
@@ -250,6 +261,8 @@ class AccessibilityClearCacheManager {
         private val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
 
         private val stateMachine = CleanCacheStateMachine()
+
+        private var cacheCleanScenario = Constant.Scenario.DEFAULT
     }
 }
 

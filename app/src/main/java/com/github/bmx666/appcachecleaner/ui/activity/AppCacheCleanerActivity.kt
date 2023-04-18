@@ -317,6 +317,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun startCleanCache(pkgList: MutableList<String>) {
         addExtraSearchText()
+        setScenario()
 
         hideFragmentViews()
         showMainViews()
@@ -473,6 +474,14 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         intent.extras?.let {
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
+    }
+
+    private fun setScenario() {
+        val intent = Intent(Constant.Intent.Scenario.ACTION)
+        intent.putExtra(
+            Constant.Intent.Scenario.NAME_TYPE,
+            SharedPreferencesManager.Settings.getScenario(this))
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     private fun checkAndShowPermissionDialogs(): Boolean {

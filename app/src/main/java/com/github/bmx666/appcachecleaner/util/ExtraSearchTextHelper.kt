@@ -2,6 +2,7 @@ package com.github.bmx666.appcachecleaner.util
 
 import android.content.Context
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import com.github.bmx666.appcachecleaner.const.Constant
 
 class ExtraSearchTextHelper {
 
@@ -18,13 +19,17 @@ class ExtraSearchTextHelper {
                     list.add(value)
             }
 
-            arrayListOf(
-                "clear_cache_btn_text",
-            ).forEach { resourceName ->
-                PackageManagerHelper.getApplicationResourceString(
-                    context,"com.android.settings", resourceName)?.let { value ->
-                    if (value.isNotEmpty())
-                        list.add(value)
+            when (SharedPreferencesManager.Settings.getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {
+                    arrayListOf(
+                        "clear_cache_btn_text",
+                    ).forEach { resourceName ->
+                        PackageManagerHelper.getApplicationResourceString(
+                            context,"com.android.settings", resourceName)?.let { value ->
+                            if (value.isNotEmpty())
+                                list.add(value)
+                        }
+                    }
                 }
             }
 
@@ -42,16 +47,20 @@ class ExtraSearchTextHelper {
                     list.add(value)
             }
 
-            arrayListOf(
-                "storage_settings_for_app",
-                "storage_label",
-                // not official
-                "storage_use",
-            ).forEach { resourceName ->
-                PackageManagerHelper.getApplicationResourceString(
-                    context,"com.android.settings", resourceName)?.let { value ->
-                    if (value.isNotEmpty())
-                        list.add(value)
+            when (SharedPreferencesManager.Settings.getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {
+                    arrayListOf(
+                        "storage_settings_for_app",
+                        "storage_label",
+                        // not official
+                        "storage_use",
+                    ).forEach { resourceName ->
+                        PackageManagerHelper.getApplicationResourceString(
+                            context,"com.android.settings", resourceName)?.let { value ->
+                            if (value.isNotEmpty())
+                                list.add(value)
+                        }
+                    }
                 }
             }
 
