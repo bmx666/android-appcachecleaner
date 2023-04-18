@@ -109,6 +109,38 @@ class AccessibilityClearCacheManager {
                     // state not changes, something goes wrong...
                     if (stateMachine.isInterrupted()) break
                 }
+                Constant.Scenario.XIAOMI_MIUI -> {
+                    // find "Clear data" or "Clear cache" button and do perform click
+                    if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
+                        stateMachine.setInterrupted()
+
+                    // 1. nothing found, sometimes it displays "Manage space" button
+                    // that mean - 0 bytes of cache and only clear user data available
+                    // 2. nothing is enabled, skip
+                    if (stateMachine.isFinishCleanApp()) continue
+
+                    // state not changes, something goes wrong...
+                    if (stateMachine.isInterrupted()) break
+
+                    // find "Clear data" or "Clear cache" dialog and do perform click
+                    if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
+                        stateMachine.setInterrupted()
+
+                    // 1. found "Clear data" dialog and "Clear cache" perform clicked
+                    // 2. found "Clear cache" dialog and "OK" perform clicked
+                    // 3. nothing is enabled, skip
+                    if (stateMachine.isFinishCleanApp()) continue
+
+                    // state not changes, something goes wrong...
+                    if (stateMachine.isInterrupted()) break
+
+                    // "Clear cache" dialog and do perform click
+                    if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
+                        stateMachine.setInterrupted()
+
+                    // state not changes, something goes wrong...
+                    if (stateMachine.isInterrupted()) break
+                }
             }
         }
 
@@ -233,6 +265,75 @@ class AccessibilityClearCacheManager {
         stateMachine.setFinishCleanApp()
     }
 
+    private suspend fun findXiaomiMIUI_ClearDataButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findXiaomiMIUI_MenuItemText(arrayTextClearDataButton)?.let { clearDataButton ->
+            when (doPerformClick(clearDataButton, "Xiaomi MIUI - clear data button")) {
+                // clear data button was found and it's enabled but perform click was failed
+                false -> stateMachine.setInterrupted()
+                // move to the next step
+                else -> stateMachine.setXiaomiMIUIClearDataDialog()
+            }
+            return true
+        }
+        return false
+    }
+
+    private suspend fun findXiaomiMIUI_ClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findXiaomiMIUI_MenuItemText(arrayTextClearCacheButton)?.let { clearCacheButton ->
+            when (doPerformClick(clearCacheButton, "Xiaomi MIUI - clear cache button")) {
+                // clean cache button was found and it's enabled but perform click was failed
+                false -> stateMachine.setInterrupted()
+                // move to the next app
+                else -> stateMachine.setXiaomiMIUIClearCacheDialog()
+            }
+            return true
+        }
+        return false
+    }
+
+    private suspend fun findXiaomiMIUI_ClearDataDialog_ClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findXiaomiMIUI_DialogText(arrayTextClearCacheButton)?.let { clearCacheDialogButton ->
+            when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear data dialog - clear cache button")) {
+                // clean cache button was found and it's enabled but perform click was failed
+                false -> stateMachine.setInterrupted()
+                // move to the next app
+                else -> stateMachine.setXiaomiMIUIClearCacheDialog()
+            }
+            return true
+        }
+        return false
+    }
+
+    private suspend fun findXiaomiMIUI_ClearCacheDialog_OkButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findXiaomiMIUI_DialogButton(arrayTextOkButton)?.let { clearCacheDialogButton ->
+            when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear cache dialog - ok button")) {
+                // clean cache button was found and it's enabled but perform click was failed
+                false -> stateMachine.setInterrupted()
+                // move to the next app
+                else -> stateMachine.setFinishCleanApp()
+            }
+            return true
+        }
+        return false
+    }
+
+    private suspend fun doCacheCleanXiaomiMIUI(nodeInfo: AccessibilityNodeInfo) {
+        if (stateMachine.isXiaomiMIUIClearDataDialog()) {
+            if (findXiaomiMIUI_ClearDataDialog_ClearCacheButton(nodeInfo))
+                return
+        } else if (stateMachine.isXiaomiMIUIClearCacheDialog()) {
+            if (findXiaomiMIUI_ClearCacheDialog_OkButton(nodeInfo))
+                return
+        } else {
+            if (findXiaomiMIUI_ClearCacheButton(nodeInfo))
+                return
+            if (findXiaomiMIUI_ClearDataButton(nodeInfo))
+                return
+        }
+
+        stateMachine.setFinishCleanApp()
+    }
+
     fun checkEvent(event: AccessibilityEvent) {
 
         if (stateMachine.isDone()) return
@@ -253,6 +354,7 @@ class AccessibilityClearCacheManager {
         CoroutineScope(Dispatchers.IO).launch {
             when (cacheCleanScenario) {
                 Constant.Scenario.DEFAULT -> doCacheClean(nodeInfo)
+                Constant.Scenario.XIAOMI_MIUI -> doCacheCleanXiaomiMIUI(nodeInfo)
             }
         }
     }
@@ -312,5 +414,44 @@ private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
 
     return this.takeIf { nodeInfo ->
         nodeInfo.viewIdResourceName?.contentEquals("com.android.settings:id/recycler_view") == true
+    }
+}
+
+private fun AccessibilityNodeInfo.findXiaomiMIUI_MenuItemText(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findXiaomiMIUI_MenuItemText(arrayText)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.viewIdResourceName?.contentEquals("com.miui.securitycenter:id/action_menu_item_child_text") == true
+                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+    }
+}
+
+private fun AccessibilityNodeInfo.findXiaomiMIUI_DialogText(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findXiaomiMIUI_DialogText(arrayText)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.viewIdResourceName?.matches("android:id/text.*".toRegex()) == true
+                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+    }
+}
+
+private fun AccessibilityNodeInfo.findXiaomiMIUI_DialogButton(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findXiaomiMIUI_DialogButton(arrayText)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.viewIdResourceName?.matches("android:id/button.*".toRegex()) == true
+                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
     }
 }

@@ -34,6 +34,9 @@ class CleanCacheStateMachine {
         OPEN_STORAGE_INFO,
         FINISH_CLEAN_APP,
         INTERRUPTED,
+        // Xiaomi MIUI clear cache scenario
+        XIAOMI_MIUI_OPEN_CLEAR_DATA_DIALOG,
+        XIAOMI_MIUI_OPEN_CLEAR_CACHE_DIALOG,
     }
 
     private var state = STATE.INIT
@@ -85,5 +88,26 @@ class CleanCacheStateMachine {
 
     fun isDone(): Boolean {
         return isInit() or isInterrupted()
+    }
+
+    // special cases for different scenarios
+    fun setXiaomiMIUIClearDataDialog() {
+        if (!isInterrupted())
+            state = STATE.XIAOMI_MIUI_OPEN_CLEAR_DATA_DIALOG
+        condVarWaitState.open()
+    }
+
+    fun isXiaomiMIUIClearDataDialog(): Boolean {
+        return state == STATE.XIAOMI_MIUI_OPEN_CLEAR_DATA_DIALOG
+    }
+
+    fun setXiaomiMIUIClearCacheDialog() {
+        if (!isInterrupted())
+            state = STATE.XIAOMI_MIUI_OPEN_CLEAR_CACHE_DIALOG
+        condVarWaitState.open()
+    }
+
+    fun isXiaomiMIUIClearCacheDialog(): Boolean {
+        return state == STATE.XIAOMI_MIUI_OPEN_CLEAR_CACHE_DIALOG
     }
 }

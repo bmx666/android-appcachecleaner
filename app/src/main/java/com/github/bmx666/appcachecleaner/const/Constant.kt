@@ -79,5 +79,6 @@ class Constant {
 
     enum class Scenario {
         DEFAULT,
+        XIAOMI_MIUI
     }
 }
