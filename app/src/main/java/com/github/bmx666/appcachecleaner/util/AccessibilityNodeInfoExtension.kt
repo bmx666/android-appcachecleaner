@@ -1,6 +1,7 @@
 package com.github.bmx666.appcachecleaner.util
 
 import android.view.accessibility.AccessibilityNodeInfo
+import com.github.bmx666.appcachecleaner.log.Logger
 
 fun AccessibilityNodeInfo.lowercaseCompareText(text: CharSequence?): Boolean {
     return this.lowercaseCompareText(text?.toString())
@@ -49,5 +50,15 @@ fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo?> {
         override fun next(): AccessibilityNodeInfo? {
             return this@getAllChild.getChild(currentIdx++)
         }
+    }
+}
+
+fun AccessibilityNodeInfo.showTree(level: Int) {
+    Logger.d(">".repeat(level) +
+            " " + this.className +
+            ":" + this.text +
+            ":" + this.viewIdResourceName)
+    this.getAllChild().forEach { childNode ->
+        childNode?.showTree(level + 1)
     }
 }
