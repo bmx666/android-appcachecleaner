@@ -34,6 +34,11 @@ class AccessibilityClearCacheManager {
         arrayTextStorageAndCacheMenu.addAll(array)
     }
 
+    fun setArrayTextOkButton(array: ArrayList<CharSequence>) {
+        arrayTextOkButton.clear()
+        arrayTextOkButton.addAll(array)
+    }
+
     fun setMaxWaitAppTimeout(timeout: Int) {
         maxWaitAppTimeoutMs = timeout * 1000
 
@@ -265,6 +270,7 @@ class AccessibilityClearCacheManager {
         private val arrayTextClearCacheButton = ArrayList<CharSequence>()
         private val arrayTextClearDataButton = ArrayList<CharSequence>()
         private val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
+        private val arrayTextOkButton = ArrayList<CharSequence>()
 
         private val stateMachine = CleanCacheStateMachine()
 

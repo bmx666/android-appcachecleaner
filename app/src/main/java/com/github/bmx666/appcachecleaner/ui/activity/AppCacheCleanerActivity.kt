@@ -476,6 +476,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST, list)
         }
 
+        ExtraSearchTextHelper.getTextForOk(this).let { list ->
+            if (list.isNotEmpty())
+                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_OK_TEXT_LIST, list)
+        }
+
         intent.extras?.let {
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }

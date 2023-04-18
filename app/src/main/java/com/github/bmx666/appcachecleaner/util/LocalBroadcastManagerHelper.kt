@@ -119,7 +119,8 @@ interface IIntentServiceCallback {
     fun onStopAccessibilityService()
     fun onExtraSearchText(clearCacheTextList: Array<String>?,
                           clearDataTextList: Array<String>?,
-                          storageTextList: Array<String>?)
+                          storageTextList: Array<String>?,
+                          okTextList: Array<String>?)
     fun onScenario(scenario: Constant.Scenario?)
     fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeout: Int)
     fun onCleanCacheFinish()
@@ -146,6 +147,8 @@ class LocalBroadcastManagerServiceHelper(
                         intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_DATA_TEXT_LIST)
                     val storageTextList =
                         intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST)
+                    val okTextList =
+                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_OK_TEXT_LIST)
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ExtraSearchText")
                         clearCacheTextList?.forEach {
@@ -157,11 +160,15 @@ class LocalBroadcastManagerServiceHelper(
                         storageTextList?.forEach {
                             Logger.d("[Service] ExtraSearchText: storage text = '$it'")
                         }
+                        okTextList?.forEach {
+                            Logger.d("[Service] ExtraSearchText: ok text = '$it'")
+                        }
                     }
                     callback.onExtraSearchText(
                         clearCacheTextList,
                         clearDataTextList,
-                        storageTextList)
+                        storageTextList,
+                        okTextList)
                 }
                 Constant.Intent.Scenario.ACTION -> {
                     val scenario: Constant.Scenario? =
