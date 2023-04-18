@@ -235,6 +235,7 @@
     <string name="prefs_title_scenario">Сценарий очистки кэша</string>
     <string-array name="settings_scenario_entries">
         <item>По умолчанию</item>
+        <item>Xiaomi MIUI</item>
     </string-array>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>

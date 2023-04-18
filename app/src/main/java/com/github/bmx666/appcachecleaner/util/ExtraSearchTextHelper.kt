@@ -14,6 +14,17 @@ class ExtraSearchTextHelper {
 
             when (SharedPreferencesManager.Settings.getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {
+                    arrayListOf(
+                        "app_manager_dlg_ok",
+                    ).forEach { resourceName ->
+                        PackageManagerHelper.getApplicationResourceString(
+                            context,"com.miui.securitycenter", resourceName)?.let { value ->
+                            if (value.isNotEmpty())
+                                list.add(value)
+                        }
+                    }
+                }
             }
 
             return list.toTypedArray()
@@ -42,6 +53,17 @@ class ExtraSearchTextHelper {
                         }
                     }
                 }
+                Constant.Scenario.XIAOMI_MIUI -> {
+                    arrayListOf(
+                        "app_manager_clear_cache",
+                    ).forEach { resourceName ->
+                        PackageManagerHelper.getApplicationResourceString(
+                            context,"com.miui.securitycenter", resourceName)?.let { value ->
+                            if (value.isNotEmpty())
+                                list.add(value)
+                        }
+                    }
+                }
             }
 
             return list.toTypedArray()
@@ -53,6 +75,17 @@ class ExtraSearchTextHelper {
 
             when (SharedPreferencesManager.Settings.getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {
+                    arrayListOf(
+                        "app_manager_menu_clear_data",
+                    ).forEach { resourceName ->
+                        PackageManagerHelper.getApplicationResourceString(
+                            context,"com.miui.securitycenter", resourceName)?.let { value ->
+                            if (value.isNotEmpty())
+                                list.add(value)
+                        }
+                    }
+                }
             }
 
             return list.toTypedArray()
@@ -84,6 +117,7 @@ class ExtraSearchTextHelper {
                         }
                     }
                 }
+                Constant.Scenario.XIAOMI_MIUI -> {}
             }
 
             return list.toTypedArray()

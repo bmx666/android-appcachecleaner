@@ -229,9 +229,11 @@
     <string translatable="false" name="prefs_title_scenario">Clear cache scenario</string>
     <string-array translatable="false" name="settings_scenario_entries">
         <item>Default</item>
+        <item>Xiaomi MIUI</item>
     </string-array>
     <string-array translatable="false" name="settings_scenario_entry_values">
         <item>0</item>
+        <item>1</item>
     </string-array>
 
     <!-- Settings keys -->
