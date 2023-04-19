@@ -316,8 +316,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun startCleanCache(pkgList: MutableList<String>) {
-        addExtraSearchText()
-        setScenario()
+        setSettings()
 
         hideFragmentViews()
         showMainViews()
@@ -339,8 +338,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
-        val maxWaitAppTimeout = SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this)
-        localBroadcastManager.sendPackageList(pkgList as ArrayList<String>, maxWaitAppTimeout)
+        localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
     }
 
     private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
@@ -458,39 +456,37 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         )
     }
 
-    private fun addExtraSearchText() {
-        val intent = Intent(Constant.Intent.ExtraSearchText.ACTION)
+    private fun setSettings() {
+        val intent = Intent(Constant.Intent.Settings.ACTION)
 
         ExtraSearchTextHelper.getTextForClearCache(this).let { list ->
             if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST, list)
+                intent.putExtra(Constant.Intent.Settings.NAME_CLEAR_CACHE_TEXT_LIST, list)
         }
 
         ExtraSearchTextHelper.getTextForClearData(this).let { list ->
             if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_DATA_TEXT_LIST, list)
+                intent.putExtra(Constant.Intent.Settings.NAME_CLEAR_DATA_TEXT_LIST, list)
         }
 
         ExtraSearchTextHelper.getTextForStorage(this).let { list ->
             if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST, list)
+                intent.putExtra(Constant.Intent.Settings.NAME_STORAGE_TEXT_LIST, list)
         }
 
         ExtraSearchTextHelper.getTextForOk(this).let { list ->
             if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.ExtraSearchText.NAME_OK_TEXT_LIST, list)
+                intent.putExtra(Constant.Intent.Settings.NAME_OK_TEXT_LIST, list)
         }
 
-        intent.extras?.let {
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-        }
-    }
-
-    private fun setScenario() {
-        val intent = Intent(Constant.Intent.Scenario.ACTION)
         intent.putExtra(
-            Constant.Intent.Scenario.NAME_TYPE,
+            Constant.Intent.Settings.NAME_SCENARIO,
             SharedPreferencesManager.Settings.getScenario(this))
+
+        intent.putExtra(
+            Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
+            SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this))
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
