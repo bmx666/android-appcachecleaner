@@ -1,0 +1,1 @@
+* add clear cache scenario for Xiaomi MIUI
