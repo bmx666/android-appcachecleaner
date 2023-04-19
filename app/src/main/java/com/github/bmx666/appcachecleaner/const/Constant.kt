@@ -4,20 +4,18 @@ import androidx.annotation.IntRange
 
 class Constant {
     class Intent {
-        class ExtraSearchText {
+        class Settings {
             companion object {
-                const val ACTION = "ExtraSearchText"
+                const val ACTION = "Settings"
+
                 const val NAME_CLEAR_CACHE_TEXT_LIST = "clear_cache_text_list"
                 const val NAME_CLEAR_DATA_TEXT_LIST = "clear_data_text_list"
                 const val NAME_STORAGE_TEXT_LIST = "storage_text_list"
                 const val NAME_OK_TEXT_LIST = "ok_text_list"
-            }
-        }
 
-        class Scenario {
-            companion object {
-                const val ACTION = "Scenario"
-                const val NAME_TYPE = "type"
+                const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
+
+                const val NAME_SCENARIO = "scenario"
             }
         }
 
@@ -37,7 +35,6 @@ class Constant {
             companion object {
                 const val ACTION = "ClearCache"
                 const val NAME_PACKAGE_LIST = "package_list"
-                const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
             }
         }
 

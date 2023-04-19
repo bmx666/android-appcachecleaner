@@ -99,7 +99,7 @@ class LocalBroadcastManagerActivityHelper(
             sendBroadcast(Intent(Constant.Intent.StopAccessibilityService.ACTION))
     }
 
-    fun sendPackageList(pkgList: ArrayList<String>, maxWaitAppTimeout: Int) {
+    fun sendPackageList(pkgList: ArrayList<String>) {
         if (BuildConfig.DEBUG) {
             Logger.d("[Activity] sendPackageList")
             pkgList.forEach {
@@ -109,7 +109,6 @@ class LocalBroadcastManagerActivityHelper(
         sendBroadcast(
             Intent(Constant.Intent.ClearCache.ACTION).apply {
                 putStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST, pkgList)
-                putExtra(Constant.Intent.ClearCache.NAME_MAX_WAIT_APP_TIMEOUT, maxWaitAppTimeout)
             }
         )
     }
@@ -117,14 +116,19 @@ class LocalBroadcastManagerActivityHelper(
 
 interface IIntentServiceCallback {
     fun onStopAccessibilityService()
-    fun onExtraSearchText(clearCacheTextList: Array<String>?,
-                          clearDataTextList: Array<String>?,
-                          storageTextList: Array<String>?,
-                          okTextList: Array<String>?)
-    fun onScenario(scenario: Constant.Scenario?)
-    fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeout: Int)
+    fun onSetSettings(settings: IntentSettings?)
+    fun onClearCache(pkgList: ArrayList<String>?)
     fun onCleanCacheFinish()
 }
+
+data class IntentSettings(
+    val clearCacheTextList: Array<String>?,
+    val clearDataTextList: Array<String>?,
+    val storageTextList: Array<String>?,
+    val okTextList: Array<String>?,
+    val scenario: Constant.Scenario?,
+    val maxWaitAppTimeout: Int?,
+)
 
 class LocalBroadcastManagerServiceHelper(
     context: Context,
@@ -140,15 +144,28 @@ class LocalBroadcastManagerServiceHelper(
                     sendBroadcast(Intent(Constant.Intent.StopAccessibilityServiceFeedback.ACTION))
                     callback.onStopAccessibilityService()
                 }
-                Constant.Intent.ExtraSearchText.ACTION -> {
+                Constant.Intent.Settings.ACTION -> {
                     val clearCacheTextList =
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_CACHE_TEXT_LIST)
+                        intent.getStringArrayExtra(Constant.Intent.Settings.NAME_CLEAR_CACHE_TEXT_LIST)
                     val clearDataTextList =
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_CLEAR_DATA_TEXT_LIST)
+                        intent.getStringArrayExtra(Constant.Intent.Settings.NAME_CLEAR_DATA_TEXT_LIST)
                     val storageTextList =
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_STORAGE_TEXT_LIST)
+                        intent.getStringArrayExtra(Constant.Intent.Settings.NAME_STORAGE_TEXT_LIST)
                     val okTextList =
-                        intent.getStringArrayExtra(Constant.Intent.ExtraSearchText.NAME_OK_TEXT_LIST)
+                        intent.getStringArrayExtra(Constant.Intent.Settings.NAME_OK_TEXT_LIST)
+
+                    val scenario: Constant.Scenario? =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                            intent.getSerializableExtra(Constant.Intent.Settings.NAME_SCENARIO,
+                                Constant.Scenario::class.java)
+                        else
+                            intent.getSerializableExtra(Constant.Intent.Settings.NAME_SCENARIO)
+                                    as Constant.Scenario?
+
+                    val maxWaitAppTimeout =
+                        intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
+                            Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
+
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ExtraSearchText")
                         clearCacheTextList?.forEach {
@@ -163,38 +180,31 @@ class LocalBroadcastManagerServiceHelper(
                         okTextList?.forEach {
                             Logger.d("[Service] ExtraSearchText: ok text = '$it'")
                         }
-                    }
-                    callback.onExtraSearchText(
-                        clearCacheTextList,
-                        clearDataTextList,
-                        storageTextList,
-                        okTextList)
-                }
-                Constant.Intent.Scenario.ACTION -> {
-                    val scenario: Constant.Scenario? =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                            intent.getSerializableExtra(Constant.Intent.Scenario.NAME_TYPE,
-                                Constant.Scenario::class.java)
-                        else
-                            intent.getSerializableExtra(Constant.Intent.Scenario.NAME_TYPE) as Constant.Scenario?
-                    if (BuildConfig.DEBUG) {
                         Logger.d("[Service] Scenario: type = '$scenario'")
+                        Logger.d("[Service] Scenario: max wait app timeout = $maxWaitAppTimeout")
                     }
-                    callback.onScenario(scenario)
+
+                    callback.onSetSettings(
+                        IntentSettings(
+                            clearCacheTextList = clearCacheTextList,
+                            clearDataTextList = clearDataTextList,
+                            storageTextList = storageTextList,
+                            okTextList = okTextList,
+                            scenario = scenario,
+                            maxWaitAppTimeout = maxWaitAppTimeout,
+                        )
+                    )
                 }
                 Constant.Intent.ClearCache.ACTION -> {
                     val pkgList =
                         intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)
-                    val maxWaitAppTimeout =
-                        intent.getIntExtra(Constant.Intent.ClearCache.NAME_MAX_WAIT_APP_TIMEOUT,
-                                            Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ClearCache")
                         pkgList?.forEach {
                             Logger.d("[Service] ClearCache: package name = $it")
                         }
                     }
-                    callback.onClearCache(pkgList, maxWaitAppTimeout)
+                    callback.onClearCache(pkgList)
                 }
                 Constant.Intent.CleanCacheFinish.ACTION -> {
                     if (BuildConfig.DEBUG)
@@ -207,8 +217,7 @@ class LocalBroadcastManagerServiceHelper(
 
     override val intentFilter = IntentFilter().apply {
         addAction(Constant.Intent.StopAccessibilityService.ACTION)
-        addAction(Constant.Intent.ExtraSearchText.ACTION)
-        addAction(Constant.Intent.Scenario.ACTION)
+        addAction(Constant.Intent.Settings.ACTION)
         addAction(Constant.Intent.ClearCache.ACTION)
         addAction(Constant.Intent.CleanCacheFinish.ACTION)
     }

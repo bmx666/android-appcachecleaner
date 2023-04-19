@@ -5,11 +5,11 @@ import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
-import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearCacheManager
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
-import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearCacheManager
 import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
+import com.github.bmx666.appcachecleaner.util.IntentSettings
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerServiceHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,43 +61,43 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         disableSelf()
     }
 
-    override fun onExtraSearchText(clearCacheTextList: Array<String>?,
-                                   clearDataTextList: Array<String>?,
-                                   storageTextList: Array<String>?,
-                                   okTextList: Array<String>?) {
-        accessibilityClearCacheManager.setExtraSearchText(
-            ArrayList<CharSequence>().apply {
-                clearCacheTextList?.forEach { add(it) }
-                add(getText(R.string.clear_cache_btn_text))
-            },
-            ArrayList<CharSequence>().apply {
-                clearDataTextList?.forEach { add(it) }
-                add(getText(R.string.clear_user_data_text))
-            },
-            ArrayList<CharSequence>().apply {
-                storageTextList?.forEach { add(it) }
-                add(getText(R.string.storage_settings_for_app))
-                add(getText(R.string.storage_label))
-            },
-            ArrayList<CharSequence>().apply {
-                okTextList?.forEach { add(it) }
-                add(getText(android.R.string.ok))
-            },
+    override fun onSetSettings(intentSettings: IntentSettings?) {
+        intentSettings ?: return
+
+        accessibilityClearCacheManager.setSettings(
+            intentSettings.scenario,
+            AccessibilityClearCacheManager.Settings(
+                clearCacheTextList =
+                    ArrayList<CharSequence>().apply {
+                        intentSettings.clearCacheTextList?.forEach { add(it) }
+                        add(getText(R.string.clear_cache_btn_text))
+                    },
+                clearDataTextList =
+                    ArrayList<CharSequence>().apply {
+                        intentSettings.clearDataTextList?.forEach { add(it) }
+                        add(getText(R.string.clear_user_data_text))
+                    },
+                storageTextList =
+                    ArrayList<CharSequence>().apply {
+                        intentSettings.storageTextList?.forEach { add(it) }
+                        add(getText(R.string.storage_settings_for_app))
+                        add(getText(R.string.storage_label))
+                    },
+                okTextList =
+                    ArrayList<CharSequence>().apply {
+                        intentSettings.okTextList?.forEach { add(it) }
+                        add(getText(android.R.string.ok))
+                    },
+                maxWaitAppTimeout = intentSettings.maxWaitAppTimeout
+            )
         )
     }
 
-    override fun onScenario(scenario: Constant.Scenario?) {
-        scenario?.let {
-            accessibilityClearCacheManager.setScenario(it)
-        }
-    }
-
-    override fun onClearCache(pkgList: ArrayList<String>?, maxWaitAppTimeout: Int) {
+    override fun onClearCache(pkgList: ArrayList<String>?) {
         if (BuildConfig.DEBUG)
             logger.onClearCache()
 
         pkgList?.let{
-            accessibilityClearCacheManager.setMaxWaitAppTimeout(maxWaitAppTimeout)
             accessibilityOverlay.show(this)
             val pkgListSize = pkgList.size
             CoroutineScope(Dispatchers.IO).launch {

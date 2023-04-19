@@ -15,37 +15,32 @@ import kotlin.reflect.KFunction1
 
 class AccessibilityClearCacheManager {
 
-    fun setExtraSearchText(clearCacheTextList: ArrayList<CharSequence>,
-                           clearDataTextList: ArrayList<CharSequence>,
-                           storageTextList: ArrayList<CharSequence>,
-                           okTextList: ArrayList<CharSequence>) {
-        arrayTextClearCacheButton = clearCacheTextList
-        arrayTextClearDataButton = clearDataTextList
-        arrayTextStorageAndCacheMenu = storageTextList
-        arrayTextOkButton = okTextList
+    data class Settings(
+        val clearCacheTextList: ArrayList<CharSequence>,
+        val clearDataTextList: ArrayList<CharSequence>,
+        val storageTextList: ArrayList<CharSequence>,
+        val okTextList: ArrayList<CharSequence>,
+        val maxWaitAppTimeout: Int?,
+    )
+
+    fun setSettings(scenario: Constant.Scenario?, settings: Settings) {
+        scenario?.let {
+            cacheCleanScenario =
+                when (it) {
+                    Constant.Scenario.DEFAULT -> DefaultClearCacheScenario()
+                    Constant.Scenario.XIAOMI_MIUI -> XiaomiMIUIClearCacheScenario()
+                }
+        }
 
         cacheCleanScenario.setExtraSearchText(
-            arrayTextClearCacheButton,
-            arrayTextClearDataButton,
-            arrayTextStorageAndCacheMenu,
-            arrayTextOkButton)
-    }
+            settings.clearCacheTextList,
+            settings.clearDataTextList,
+            settings.storageTextList,
+            settings.okTextList)
 
-    fun setMaxWaitAppTimeout(timeout: Int) {
-        cacheCleanScenario.setMaxWaitAppTimeout(timeout)
-    }
-
-    fun setScenario(scenario: Constant.Scenario) {
-        cacheCleanScenario =
-            when (scenario) {
-                Constant.Scenario.DEFAULT -> DefaultClearCacheScenario()
-                Constant.Scenario.XIAOMI_MIUI -> XiaomiMIUIClearCacheScenario()
-            }
-        cacheCleanScenario.setExtraSearchText(
-            arrayTextClearCacheButton,
-            arrayTextClearDataButton,
-            arrayTextStorageAndCacheMenu,
-            arrayTextOkButton)
+        settings.maxWaitAppTimeout?.let {
+            cacheCleanScenario.setMaxWaitAppTimeout(it)
+        }
     }
 
     fun clearCacheApp(pkgList: ArrayList<String>,
@@ -115,11 +110,6 @@ class AccessibilityClearCacheManager {
     }
 
     companion object {
-        private var arrayTextClearCacheButton = ArrayList<CharSequence>()
-        private var arrayTextClearDataButton = ArrayList<CharSequence>()
-        private var arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
-        private var arrayTextOkButton = ArrayList<CharSequence>()
-
         private var cacheCleanScenario: BaseClearCacheScenario = DefaultClearCacheScenario()
     }
 }
