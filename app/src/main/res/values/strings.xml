@@ -150,7 +150,17 @@
         Many companies or Android ROMs add or change default Android UI, including Settings.
         This can cause an issue because the <b>Cache Cleaner</b> app is looking for specific text
         and if it does not match, the app does nothing.
-        Please follow the steps below to resolve this issue:
+        <br/>
+        <br/>
+        Xiaomi smartphones with specific regional MIUI firmware must use the different clear cache scenario:
+        <br/>
+        <br/>
+        1. Open <b>Settings</b> menu in the top right corner and find section <b>Other</b>
+        <br/>
+        2. Click <b>Clear cache scenario</b> and select <b>Xiaomi MIUI</b>
+        <br/>
+        <br/>
+        Please follow the steps below to resolve clear cache issue:
         <br/>
         <br/>
         1. Select any app and go to <b>&quot;App Info&quot;</b>
