@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.bmx666.appcachecleaner.R
+import com.github.bmx666.appcachecleaner.util.getDayNightModeContext
 
 
 class AccessibilityOverlay(
@@ -48,7 +49,7 @@ class AccessibilityOverlay(
 
         hide(context)
         try {
-            getOverlayLayout(context)?.apply {
+            getOverlayLayout(context.getDayNightModeContext())?.apply {
                 findViewById<ImageButton>(R.id.overlayButton)?.apply {
                     setOnClickListener { callbackClick.invoke() }
                 }
