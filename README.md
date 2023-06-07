@@ -42,11 +42,6 @@ Since Android 13 Accessibility APIs is restricted for 3rd party apps, the soluti
 
 Many companies or Android ROMs add or change default Android UI, including Settings. This can cause an issue because the **Cache Cleaner** app is looking for specific text and if it doesn't match, the app does nothing.
 
-Xiaomi smartphones with specific regional MIUI firmware must use the different clear cache scenario:
-
-1. Open **Settings** menu in the top right corner and find section **Other**
-2. Click **Clear cache scenario** and select **Xiaomi MIUI**
-
 Please follow the steps below to resolve clear cache issue:
 
 1. Select any app and go to "App Info"
@@ -57,6 +52,11 @@ Please follow the steps below to resolve clear cache issue:
 6. Open **Settings** menu in the top right corner and find section **Add Extra Search Text**
 7. Tap on **Clear Cache**, enter the custom search text for "Clear Cache" button" in input field and press "OK" to save it. To remove custom search text for "Clear Cache" button" just erase a whole text in input field and press "OK"
 8. Tap on **Storage**, enter the custom search text for "Storage" menu" in input field and press "OK" to save it. To remove custom search text for "Storage" menu" just erase a whole text in input field and press "OK"
+
+#### Xiaomi smartphones with specific regional MIUI firmware must use the different clear cache scenario:
+
+1. Open **Settings** menu in the top right corner and find section **Other**
+2. Click **Clear cache scenario** and select **Xiaomi MIUI**
 
 ## Icon copyright
 
