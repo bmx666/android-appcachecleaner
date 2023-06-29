@@ -63,6 +63,7 @@
     <string name="description_apps_all_check">Отметить все приложения</string>
     <string name="description_apps_all_uncheck">Снять выделение со всех приложений</string>
     <string name="text_cache_size_fmt">Кэш: %1$s</string>
+    <string name="toast_package_list_item_long_click">Удерживайте иконку приложения, чтобы открыть настройки &lt;О приложении&gt;</string>
 
     <string name="dialog_extra_search_text_title">Добавить доп. текст для поиска</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nвместо \"%3$s\"</string>
