@@ -9,10 +9,12 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.util.ActivityHelper
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 
 
@@ -51,6 +53,18 @@ class PackageRecyclerViewAdapter(
                 )
             )
             .into(holder.packageIconView)
+        holder.packageIconView.setOnClickListener {
+            Toast.makeText(holder.packageIconView.context,
+                R.string.toast_package_list_item_long_click,
+                Toast.LENGTH_SHORT).show()
+        }
+        holder.packageIconView.setOnLongClickListener {
+            ActivityHelper.startApplicationDetailsActivity(
+                holder.packageIconView.context,
+                holder.packageNameView.text.toString()
+            )
+            true
+        }
 
         val showStats = item.stats != null && !hideStats
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && showStats) {

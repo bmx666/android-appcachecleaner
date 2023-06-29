@@ -62,6 +62,7 @@
     <string translatable="false" name="description_apps_all_check">Check all apps</string>
     <string translatable="false" name="description_apps_all_uncheck">Uncheck all apps</string>
     <string translatable="false" name="text_cache_size_fmt">Cache: %1$s</string>
+    <string translatable="false" name="toast_package_list_item_long_click">Hold the app icon to launch &lt;App Info&gt;</string>
 
     <string translatable="false" name="dialog_extra_search_text_title">Add extra search text</string>
     <string translatable="false" name="dialog_extra_search_text_message">%1$s (%2$s)\ninstead of \"%3$s\"</string>
