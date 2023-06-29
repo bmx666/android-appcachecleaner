@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.clearcache.scenario
 
+import android.os.Build
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.clearcache.scenario.state.DefaultStateMachine
@@ -119,8 +120,10 @@ private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
     }
 
     return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+        (
+            (nodeInfo.className?.contentEquals("android.widget.TextView") == true) ||
+            (nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true)
+        ) && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
     }
 }
 
