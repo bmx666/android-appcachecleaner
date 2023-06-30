@@ -1,0 +1,1 @@
+* use extra step to find Storage and Cache menu for Android 14 only
