@@ -1,0 +1,5 @@
+Android 6 (Marshmallow) sürümünden bu yana, tüm uygulamaların önbelleğini aynı anda temizleme seçeneği, Google tarafından yalnızca sistem uygulamalarına kısıtlandı. Bu, kullanıcıların artık tüm uygulamalarının önbelleğini aynı anda temizleme kolaylığından mahrum kaldığı anlamına gelir. Bireysel uygulamaların önbelleğini temizlemek için her bir uygulamanın "Uygulama Bilgileri" ekranına manuel olarak gitmek, "Depolama" menüsünü bulmak ve ardından "Önbelleği Temizle" düğmesini seçmek gerekmektedir.
+
+Bu süreci basitleştirmek ve zaman kazanmak için <b>Cache Cleaner</b>, cihazınızdaki yüklü uygulamaların bir listesini talep eder ve önbelleği temizleme işleminde yer alan manuel adımları değiştirmek için Erişilebilirlik hizmetinden yararlanır. Bu, önbellek temizleme sürecinin daha pratik ve otomatik hale gelmesini sağlar.
+
+<b>Cache Cleaner</b>, özelleştirilebilir uygulama listeleri sunmanın ek faydasını sağlar. Bu işlevsellik, belirli uygulamaların kişiselleştirilmiş listelerini oluşturmanıza olanak tanır ve yalnızca seçtiğiniz uygulamaların önbelleğini seçici bir şekilde temizleme esnekliği sunar.
