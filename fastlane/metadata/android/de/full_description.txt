@@ -1,0 +1,5 @@
+Seit der Veröffentlichung von Android 6 (Marshmallow) ist die Möglichkeit, den Cache aller Apps auf einmal zu löschen, von Google auf System-Apps beschränkt worden. Das bedeutet, dass Benutzer nicht mehr die Möglichkeit haben, den Cache aller ihrer Apps gleichzeitig zu löschen. Um den Cache einzelner Apps zu löschen, muss man manuell zum "App Info"-Bildschirm jeder App navigieren, das "Speicher"-Menü finden und dann die Schaltfläche "Cache löschen" auswählen.
+
+Um diesen Prozess zu vereinfachen und Zeit zu sparen, fordert <b>Cache Cleaner</b> eine Liste der installierten Apps auf Ihrem Gerät an und nutzt den Zugänglichkeitsdienst, um die manuellen Schritte beim Löschen des Caches zu ersetzen. Dadurch wird ein bequemerer und automatisierterer Prozess der Cache-Reinigung ermöglicht.
+
+<b>Cache Cleaner</b> bietet zudem den zusätzlichen Vorteil von anpassbaren App-Listen. Diese Funktion ermöglicht es Ihnen, personalisierte Listen bestimmter Apps zu erstellen und somit flexibel nur den Cache der ausgewählten Apps zu löschen.
