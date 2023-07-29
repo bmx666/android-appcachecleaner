@@ -36,4 +36,8 @@
     <color name="teal50_A200">#64FFDA</color>
     <color name="teal50_A400">#1DE9B6</color>
     <color name="teal50_A700">#00BFA5</color>
+    <color name="light_blue_50">#FFE1F5FE</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
 </resources>

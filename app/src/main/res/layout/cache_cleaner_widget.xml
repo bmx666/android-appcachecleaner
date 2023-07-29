@@ -1,0 +1,17 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.AppCacheCleaner.AppWidget.Container"
+    android:theme="@style/Theme.AppCacheCleaner.AppWidgetContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/widget_text"
+        style="@style/Widget.AppCacheCleaner.AppWidget.InnerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="0dp"
+        android:contentDescription="@string/widget_description" />
+</RelativeLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:updatePeriodMillis="0"
+    android:previewImage="@mipmap/ic_launcher_round"
+    android:initialLayout="@layout/cache_cleaner_widget"
+    android:description="@string/widget_description"
+
+    android:widgetCategory="home_screen"
+    android:resizeMode="horizontal"
+    android:previewLayout="@layout/cache_cleaner_widget"
+    android:targetCellHeight="1"
+    android:targetCellWidth="1"
+    android:initialKeyguardLayout="@layout/cache_cleaner_widget"
+/>
