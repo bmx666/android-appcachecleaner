@@ -2,6 +2,7 @@ package com.github.bmx666.appcachecleaner.ui.dialog
 
 import android.Manifest
 import android.content.Context
+import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
@@ -13,7 +14,11 @@ class PermissionDialogBuilder {
         fun buildAccessibilityPermissionDialog(context: Context) {
             AlertDialogBuilder(context)
                 .setTitle(R.string.text_enable_accessibility_title)
-                .setMessage(R.string.text_enable_accessibility_message)
+                .setMessage(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        R.string.text_enable_accessibility_message_api33
+                    else
+                        R.string.text_enable_accessibility_message)
                 .setPositiveButton(R.string.allow) { _, _ ->
                     ActivityHelper.showAccessibilitySettings(context)
                 }
