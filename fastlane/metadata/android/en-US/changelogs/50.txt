@@ -1,0 +1,1 @@
+* update help menu and accessibility dialog
