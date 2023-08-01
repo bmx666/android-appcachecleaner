@@ -202,8 +202,6 @@
         <b>Источник</b> - https://www.flaticon.com/free-icon/broom_2954888
     ]]></string>
 
-    <string name="help_open_app_settings">Открыть настройки приложения</string>
-
     <string name="description_accessibility_overlay_button_interrupt">Прервать процесс очистки кеша</string>
 
     <!-- Custom package lists -->
