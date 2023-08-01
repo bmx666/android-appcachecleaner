@@ -9,7 +9,6 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.databinding.FragmentHelpBinding
-import com.github.bmx666.appcachecleaner.util.ActivityHelper
 
 class HelpFragment: Fragment() {
 
@@ -31,11 +30,6 @@ class HelpFragment: Fragment() {
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
             binding.textHelpAndroid13AccessibilityPermission.visibility = View.VISIBLE
-
-            binding.btnHelpOpenAppSettings.setOnClickListener {
-                ActivityHelper.startApplicationDetailsActivity(context, context?.packageName)
-            }
-            binding.btnHelpOpenAppSettings.visibility = View.VISIBLE
         }
 
         binding.textHelpHowToUse.text = HtmlCompat.fromHtml(
