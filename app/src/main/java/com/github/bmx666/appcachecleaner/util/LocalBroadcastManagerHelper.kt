@@ -128,6 +128,7 @@ data class IntentSettings(
     val okTextList: Array<String>?,
     val scenario: Constant.Scenario?,
     val maxWaitAppTimeout: Int?,
+    val maxWaitClearCacheButtonTimeout: Int?,
 )
 
 class LocalBroadcastManagerServiceHelper(
@@ -166,6 +167,10 @@ class LocalBroadcastManagerServiceHelper(
                         intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
                             Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
 
+                    val maxWaitClearCacheButtonTimeout =
+                        intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
+                            Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
+
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ExtraSearchText")
                         clearCacheTextList?.forEach {
@@ -182,6 +187,7 @@ class LocalBroadcastManagerServiceHelper(
                         }
                         Logger.d("[Service] Scenario: type = '$scenario'")
                         Logger.d("[Service] Scenario: max wait app timeout = $maxWaitAppTimeout")
+                        Logger.d("[Service] Scenario: max wait clear cache button timeout = $maxWaitClearCacheButtonTimeout")
                     }
 
                     callback.onSetSettings(
@@ -192,6 +198,7 @@ class LocalBroadcastManagerServiceHelper(
                             okTextList = okTextList,
                             scenario = scenario,
                             maxWaitAppTimeout = maxWaitAppTimeout,
+                            maxWaitClearCacheButtonTimeout = maxWaitClearCacheButtonTimeout,
                         )
                     )
                 }

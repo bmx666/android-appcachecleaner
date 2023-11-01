@@ -88,7 +88,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                         intentSettings.okTextList?.forEach { add(it) }
                         add(getText(android.R.string.ok))
                     },
-                maxWaitAppTimeout = intentSettings.maxWaitAppTimeout
+                maxWaitAppTimeout = intentSettings.maxWaitAppTimeout,
+                maxWaitClearCacheButtonTimeout = intentSettings.maxWaitClearCacheButtonTimeout
             )
         )
     }

@@ -14,6 +14,7 @@ class Constant {
                 const val NAME_OK_TEXT_LIST = "ok_text_list"
 
                 const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
+                const val NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT = "max_wait_clear_cache_button_timeout"
 
                 const val NAME_SCENARIO = "scenario"
             }
@@ -70,6 +71,8 @@ class Constant {
                 const val MIN_WAIT_APP_PERFORM_CLICK_MS = 8 * MIN_DELAY_PERFORM_CLICK_MS
                 @IntRange(from = 8 * 250)
                 const val DEFAULT_WAIT_APP_PERFORM_CLICK_MS = 30000
+                @IntRange(from = 0)
+                const val MIN_WAIT_CLEAR_CACHE_BUTTON_MS = 0
             }
         }
     }

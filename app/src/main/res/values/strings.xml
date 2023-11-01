@@ -254,8 +254,10 @@
     <string translatable="false" name="prefs_title_custom_list_remove">Remove</string>
     <string translatable="false" name="prefs_summary_custom_list_remove">Remove an existing custom list of apps</string>
     <string translatable="false" name="prefs_other">Other</string>
-    <string translatable="false" name="prefs_title_max_wait_app_timeout">Maximum timeout per app - %ds</string>
+    <string translatable="false" name="prefs_title_max_wait_app_timeout">Max. timeout per app - %ds</string>
     <string translatable="false" name="prefs_summary_max_wait_app_timeout">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
+    <string translatable="false" name="prefs_title_max_wait_clear_cache_btn_timeout">Max. timeout to wait Clear Cache button - %ds</string>
+    <string translatable="false" name="prefs_summary_max_wait_clear_cache_btn_timeout">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
     <string translatable="false" name="prefs_title_scenario">Clear cache scenario</string>
     <string-array translatable="false" name="settings_scenario_entries">
         <item>Default</item>
@@ -277,6 +279,7 @@
     <string translatable="false" name="prefs_key_custom_list_edit">custom_list_edit</string>
     <string translatable="false" name="prefs_key_custom_list_remove">custom_list_remove</string>
     <string translatable="false" name="prefs_key_settings_max_wait_app_timeout">settings_max_wait_app_timeout</string>
+    <string translatable="false" name="prefs_key_settings_max_wait_clear_cache_btn_timeout">settings_max_wait_clear_cache_btn_timeout</string>
     <string translatable="false" name="prefs_key_settings_scenario">settings_scenario</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>

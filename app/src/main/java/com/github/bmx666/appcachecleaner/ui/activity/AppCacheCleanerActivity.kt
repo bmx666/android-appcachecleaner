@@ -487,6 +487,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
             SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this))
 
+        intent.putExtra(
+            Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
+            SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(this))
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 

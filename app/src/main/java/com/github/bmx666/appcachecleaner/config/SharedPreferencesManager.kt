@@ -252,6 +252,21 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
+            fun getMaxWaitClearCacheButtonTimeout(context: Context): Int {
+                return getDefaultSharedPref(context)
+                    .getInt(context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout),
+                        Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
+            }
+
+            @JvmStatic
+            fun setMaxWaitClearCacheButtonTimeout(context: Context, timeout: Int) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putInt(context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout), timeout)
+                    .apply()
+            }
+
+            @JvmStatic
             fun getScenario(context: Context): Constant.Scenario {
                 try {
                     val value = getDefaultSharedPref(context)

@@ -21,6 +21,7 @@ class AccessibilityClearCacheManager {
         val storageTextList: ArrayList<CharSequence>,
         val okTextList: ArrayList<CharSequence>,
         val maxWaitAppTimeout: Int?,
+        val maxWaitClearCacheButtonTimeout: Int?,
     )
 
     fun setSettings(scenario: Constant.Scenario?, settings: Settings) {
@@ -40,6 +41,10 @@ class AccessibilityClearCacheManager {
 
         settings.maxWaitAppTimeout?.let {
             cacheCleanScenario.setMaxWaitAppTimeout(it)
+        }
+
+        settings.maxWaitClearCacheButtonTimeout?.let {
+            cacheCleanScenario.setMaxWaitClearCacheButtonTimeout(it)
         }
     }
 

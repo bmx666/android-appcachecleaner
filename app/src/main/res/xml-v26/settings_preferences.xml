@@ -81,6 +81,11 @@
             app:title="@string/prefs_title_max_wait_app_timeout"
             app:summary="@string/prefs_summary_max_wait_app_timeout"/>
 
+        <SeekBarPreference
+            app:key="@string/prefs_key_settings_max_wait_clear_cache_btn_timeout"
+            app:title="@string/prefs_title_max_wait_clear_cache_btn_timeout"
+            app:summary="@string/prefs_summary_max_wait_clear_cache_btn_timeout"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>
