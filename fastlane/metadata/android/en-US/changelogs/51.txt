@@ -1,0 +1,2 @@
+* improve the process of cleaning cache
+* add optional timeout to wait clear cache button
