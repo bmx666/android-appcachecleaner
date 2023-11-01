@@ -33,12 +33,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context.getString(R.string.prefs_key_ui_night_mode))
         )
 
-        initializeSettingsMaxWaitAppTimeout(
+        initializeSettingsMaxWaitTimeout(
             preferenceManager.findPreference(
                 context.getString(R.string.prefs_key_settings_max_wait_app_timeout)),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout)),
             context,
             { SharedPreferencesManager.Settings.getMaxWaitAppTimeout(context) },
-            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeout(context, timeout) }
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeout(context, timeout) },
+            { SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(context) },
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitClearCacheButtonTimeout(context, timeout) }
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -124,11 +128,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun initializeSettingsMaxWaitAppTimeout(pref: SeekBarPreference?,
-                                                    context: Context,
-                                                    getMaxWaitAppTimeout: () -> Int,
-                                                    setMaxWaitAppTimeout: (Int) -> Unit) {
-        pref?.apply {
+    private fun initializeSettingsMaxWaitTimeout(
+        prefMaxWaitAppTimeout: SeekBarPreference?,
+        prefMaxWaitClearCacheButtonTimeout: SeekBarPreference?,
+        context: Context,
+        getMaxWaitAppTimeout: () -> Int,
+        setMaxWaitAppTimeout: (Int) -> Unit,
+        getMaxWaitClearCacheButtonTimeout: () -> Int,
+        setMaxWaitClearCacheButtonTimeout: (Int) -> Unit)
+    {
+        prefMaxWaitAppTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000
             max = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2 / 1000
             setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
@@ -140,6 +149,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
             setOnPreferenceChangeListener { _, newValue ->
                 title = context.getString(R.string.prefs_title_max_wait_app_timeout, newValue as Int)
                 setMaxWaitAppTimeout(newValue)
+                // shift Clear Cache button timeout
+                if (newValue < getMaxWaitClearCacheButtonTimeout())
+                    setMaxWaitClearCacheButtonTimeout(newValue - 1)
+                prefMaxWaitClearCacheButtonTimeout?.apply {
+                    max = getMaxWaitAppTimeout() - 1
+                    value = getMaxWaitClearCacheButtonTimeout()
+                    title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, value)
+                }
+                true
+            }
+        }
+
+        prefMaxWaitClearCacheButtonTimeout?.apply {
+            min = Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000
+            max = getMaxWaitAppTimeout() - 1
+            setDefaultValue(Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
+            value = getMaxWaitClearCacheButtonTimeout()
+            if (value >= getMaxWaitAppTimeout() && value > 0)
+                value = getMaxWaitAppTimeout() - 1
+            showSeekBarValue = true
+            title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, value)
+            setOnPreferenceChangeListener { _, newValue ->
+                title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, newValue as Int)
+                setMaxWaitClearCacheButtonTimeout(newValue)
                 true
             }
         }

@@ -6,6 +6,7 @@ import com.github.bmx666.appcachecleaner.clearcache.scenario.state.IStateMachine
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_CLEAR_CACHE_BUTTON_MS
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.performClick
 import kotlinx.coroutines.delay
@@ -19,6 +20,8 @@ internal abstract class BaseClearCacheScenario {
 
     protected var maxWaitAppTimeoutMs =
         DEFAULT_WAIT_APP_PERFORM_CLICK_MS
+    protected var maxWaitClearCacheButtonTimeoutMs =
+        MIN_WAIT_CLEAR_CACHE_BUTTON_MS
     protected var maxPerformClickCountTries =
         (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
 
@@ -52,6 +55,16 @@ internal abstract class BaseClearCacheScenario {
 
         maxPerformClickCountTries =
             (maxWaitAppTimeoutMs - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
+    }
+
+    fun setMaxWaitClearCacheButtonTimeout(timeout: Int) {
+        maxWaitClearCacheButtonTimeoutMs = timeout * 1000
+
+        if (maxWaitClearCacheButtonTimeoutMs >= maxWaitAppTimeoutMs)
+            maxWaitClearCacheButtonTimeoutMs = maxWaitAppTimeoutMs - 1000
+
+        if (maxWaitClearCacheButtonTimeoutMs < MIN_WAIT_CLEAR_CACHE_BUTTON_MS)
+            maxWaitClearCacheButtonTimeoutMs = MIN_WAIT_CLEAR_CACHE_BUTTON_MS
     }
 
     protected suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,

@@ -17,6 +17,35 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
 
     private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
         nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
+
+            // Android 7.1 and early does not support this feature
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                var tries = maxWaitClearCacheButtonTimeoutMs / MIN_DELAY_PERFORM_CLICK_MS
+                Logger.d("===>>> findClearCacheButton: tries = $tries <<<===")
+
+                while (tries-- > 0) {
+                    Logger.d("===>>> findClearCacheButton: loop: tries left = $tries <<<===")
+
+                    if (clearCacheButton.isEnabled) {
+                        Logger.d("===>>> findClearCacheButton: loop: is enabled, BREAK <<<===")
+                        if (clearCacheButton.isClickable) {
+                            Logger.d("===>>> findClearCacheButton: loop: is clickable, BREAK <<<===")
+                            break
+                        }
+                    }
+
+                    Logger.d("===>>> findClearCacheButton: loop: refresh, BEGIN <<<===")
+                    if (!clearCacheButton.refresh()) {
+                        Logger.d("===>>> findClearCacheButton: loop: refresh, FAIL <<<===")
+                        stateMachine.setInterrupted()
+                        return true
+                    }
+                    Logger.d("===>>> findClearCacheButton: loop: refresh, END <<<===")
+
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                }
+            }
+
             when (doPerformClick(clearCacheButton, "clean cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
                 false -> stateMachine.setInterrupted()
