@@ -95,4 +95,8 @@ internal class DefaultStateMachine: IStateMachine {
             state = STATE.OPEN_STORAGE_INFO
         condVarWaitState.open()
     }
+
+    fun isOpenStorageInfo(): Boolean {
+        return state == STATE.OPEN_STORAGE_INFO
+    }
 }

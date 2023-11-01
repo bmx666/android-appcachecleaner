@@ -47,8 +47,28 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
     }
 
     override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo) {
-        if (findClearCacheButton(nodeInfo))
+        Logger.d("===>>> doCacheClean BEGIN <<<===")
+        if (cacheClean(nodeInfo)) {
+            Logger.d("===>>> doCacheClean: cacheClean END <<<===")
             return
+        }
+
+        if (!stateMachine.isOpenStorageInfo()) {
+            if (!stateMachine.isInterrupted())
+                stateMachine.setFinishCleanApp()
+            Logger.d("===>>> doCacheClean: !stateMachine.isOpenStorageInfo END <<<===")
+            return
+        }
+
+        Logger.d("===>>> nodeInfo refresh BEGIN <<<===")
+        nodeInfo.refresh()
+        Logger.d("===>>> nodeInfo.refresh END <<<===")
+        Logger.d("===>>> doCacheClean END <<<===")
+    }
+
+    private suspend fun cacheClean(nodeInfo: AccessibilityNodeInfo): Boolean {
+        if (findClearCacheButton(nodeInfo))
+            return true
 
         var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
 
@@ -56,7 +76,7 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
 
             // first use "nodeInfo", then refreshed RecyclerView
             if (findStorageAndCacheMenu(recyclerViewNodeInfo))
-                return
+                return true
 
             // re-assign RecyclerView nodeInfo
             recyclerViewNodeInfo = nodeInfo.findRecyclerView() ?: break
@@ -79,7 +99,7 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
             }
         }
 
-        stateMachine.setFinishCleanApp()
+        return false
     }
 
     override fun processState() {
