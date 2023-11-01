@@ -2,7 +2,6 @@ package com.github.bmx666.appcachecleaner.clearcache.scenario
 
 import android.os.Build
 import android.view.accessibility.AccessibilityNodeInfo
-import androidx.annotation.RequiresApi
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.clearcache.scenario.state.DefaultStateMachine
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
@@ -43,8 +42,6 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
         }
 
         nodeInfo.findStorageAndCacheMenu(arrayTextStorageAndCacheMenu)?.let { return fn(it) }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-            nodeInfo.findStorageAndCacheMenuApi34(arrayTextStorageAndCacheMenu)?.let { return fn(it) }
 
         return false
     }
@@ -126,22 +123,12 @@ private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
     }
 
     return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-private fun AccessibilityNodeInfo.findStorageAndCacheMenuApi34(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findStorageAndCacheMenuApi34(arrayText)?.let { return it }
-    }
-
-    return this.takeIf { nodeInfo ->
-        nodeInfo.className?.contentEquals("android.widget.TextView") == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+            nodeInfo.className?.contentEquals("android.widget.TextView") == true
+                    && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+        else
+            nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
+                    && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
     }
 }
 
