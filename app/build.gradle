@@ -17,16 +17,16 @@ android {
             storePassword 'AppCacheCleaner'
         }
     }
+
     defaultConfig {
         applicationId "com.github.bmx666.appcachecleaner"
         minSdk 23
         targetSdk 34
-        versionCode 50
-        versionName "1.8.2"
+        versionCode 51
+        versionName "1.8.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled true
