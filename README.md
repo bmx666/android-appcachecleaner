@@ -63,3 +63,12 @@ Please follow the steps below to resolve clear cache issue:
 ## Icon copyright
 
 **Broom** [icon](https://www.flaticon.com/free-icon/broom_2954888) created by [Smashicons](https://www.flaticon.com/authors/smashicons) - [Flaticon](https://www.flaticon.com/)
+
+## Support my project
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;">](https://www.buymeacoffee.com/bmx666)
+
+[<img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" style="height: 60px !important;">](https://paypal.me/bmx666dev)
+
+[<img src="https://codebard.com/ext_images/patreon-medium-button.png" alt="Patreon" style="height: 60px !important;">](https://www.patreon.com/bmx666)
+
