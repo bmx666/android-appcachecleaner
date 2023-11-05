@@ -184,6 +184,14 @@ class SharedPreferencesManager {
                     .remove(KEY_MIN_CACHE_SIZE_BYTES)
                     .apply()
             }
+
+            @JvmStatic
+            fun getHideDisabledApps(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_filter_hide_disabled_apps),
+                        false)
+            }
         }
     }
 

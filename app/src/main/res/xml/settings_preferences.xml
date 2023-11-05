@@ -8,6 +8,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/filter">
+
+        <SwitchPreferenceCompat
+            app:key="@string/prefs_key_filter_hide_disabled_apps"
+            app:title="@string/prefs_title_filter_hide_disabled_apps" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/btn_add_extra_search_text">
 
         <EditTextPreference

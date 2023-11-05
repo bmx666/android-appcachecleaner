@@ -14,6 +14,10 @@
             app:key="@string/prefs_key_filter_min_cache_size"
             app:title="@string/prefs_title_filter_min_cache_size" />
 
+        <SwitchPreferenceCompat
+            app:key="@string/prefs_key_filter_hide_disabled_apps"
+            app:title="@string/prefs_title_filter_hide_disabled_apps" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/btn_add_extra_search_text">
