@@ -344,6 +344,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
                                                isCustomListClearOnly: Boolean) {
         val locale = LocaleHelper.getCurrentLocale(this)
+        val hideDisabledApps = SharedPreferencesManager.Filter.getHideDisabledApps(this)
 
         var progressApps = 0
         val totalApps = pkgInfoList.size
@@ -354,28 +355,33 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             if (!loadingPkgList.get()) return
 
-            // skip getting stats if custom list is loaded
-            val stats = customListName?.let { null }
-                ?: PackageManagerHelper.getStorageStats(this, pkgInfo)
+            val skipDisabledApp = hideDisabledApps && !pkgInfo.applicationInfo.enabled
 
-            // update only stats if run cleaning process of custom list
-            if (isCustomListClearOnly) {
-                if (PlaceholderContent.contains(pkgInfo)) {
-                    PlaceholderContent.updateStats(pkgInfo, stats)
-                } else {
-                    // skip getting the label of app it can take a lot of time on old phones
-                    PlaceholderContent.addItem(pkgInfo, pkgInfo.packageName, locale, stats)
-                }
-            } else {
-                if (PlaceholderContent.contains(pkgInfo)) {
-                    PlaceholderContent.updateStats(pkgInfo, stats)
-                    if (!PlaceholderContent.isSameLabelLocale(pkgInfo, locale)) {
-                        val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                        PlaceholderContent.updateLabel(pkgInfo, label, locale)
+            if (!skipDisabledApp) {
+
+                // skip getting stats if custom list is loaded
+                val stats = customListName?.let { null }
+                    ?: PackageManagerHelper.getStorageStats(this, pkgInfo)
+
+                // update only stats if run cleaning process of custom list
+                if (isCustomListClearOnly) {
+                    if (PlaceholderContent.contains(pkgInfo)) {
+                        PlaceholderContent.updateStats(pkgInfo, stats)
+                    } else {
+                        // skip getting the label of app it can take a lot of time on old phones
+                        PlaceholderContent.addItem(pkgInfo, pkgInfo.packageName, locale, stats)
                     }
                 } else {
-                    val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                    PlaceholderContent.addItem(pkgInfo, label, locale, stats)
+                    if (PlaceholderContent.contains(pkgInfo)) {
+                        PlaceholderContent.updateStats(pkgInfo, stats)
+                        if (!PlaceholderContent.isSameLabelLocale(pkgInfo, locale)) {
+                            val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                            PlaceholderContent.updateLabel(pkgInfo, label, locale)
+                        }
+                    } else {
+                        val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                        PlaceholderContent.addItem(pkgInfo, label, locale, stats)
+                    }
                 }
             }
 
