@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
@@ -45,7 +46,7 @@ class PackageRecyclerViewAdapter(
             item.checked = checked
         }
 
-        GlideApp.with(holder.packageIconView.context)
+        Glide.with(holder.packageIconView.context)
             .load(
                 PackageManagerHelper.getApplicationIcon(
                     holder.packageIconView.context,
