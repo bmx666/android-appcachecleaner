@@ -116,7 +116,7 @@ class LocalBroadcastManagerActivityHelper(
 
 interface IIntentServiceCallback {
     fun onStopAccessibilityService()
-    fun onSetSettings(settings: IntentSettings?)
+    fun onSetSettings(intentSettings: IntentSettings?)
     fun onClearCache(pkgList: ArrayList<String>?)
     fun onCleanCacheFinish()
 }
