@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.fragment.app.Fragment
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.databinding.FragmentHelpBinding
@@ -46,6 +47,8 @@ class HelpFragment: Fragment() {
             resources.getString(R.string.help_icon_copyright),
             HtmlCompat.FROM_HTML_MODE_COMPACT
         )
+        binding.textHelpIconCopyright.movementMethod =
+            LinkMovementMethodCompat.getInstance()
 
         return view
     }

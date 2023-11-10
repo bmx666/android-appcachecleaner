@@ -213,9 +213,7 @@
         <br/>
         <h2>Icon copyright</h2>
         <br/>
-        Broom icon created by Smashicons - Flaticon
-        <br/><br/>
-        <b>Source</b> - https://www.flaticon.com/free-icon/broom_2954888
+        <a href="https://www.flaticon.com/free-icon/broom_2954888><b>Broom icon</b> created by Smashicons - Flaticon</a>
     ]]></string>
 
     <string translatable="false" name="description_accessibility_overlay_button_interrupt">Interrupt cache cleaning process</string>
