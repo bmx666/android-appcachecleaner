@@ -95,13 +95,53 @@
     <string translatable="false" name="dialog_filter_min_cache_size_title">Filter by cache size</string>
     <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the minimum cache size in MB for application filtering</string>
 
-    <string translatable="false" name="dialog_help_customized_settings_ui_title">Customized Settings UI</string>
-    <string translatable="false" name="dialog_help_customized_settings_ui_message">
+    <string translatable="false" name="first_boot_title">Please read before using</string>
+    <string translatable="false" name="first_boot_message"><![CDATA[
+        <h2>Customized Settings UI</h2>
+        <br/>
         Many companies or Android ROMs add or change default Android UI, including Settings.
         This can cause an issue because the <b>Cache Cleaner</b> app is looking for specific text
         and if it does not match, the app does nothing.
-        \n\n
-        I confirm that I have read and understand the <b>Customized Settings UI</b> paragraph in the <b>Help</b> menu
+    ]]></string>
+    <string translatable="false" name="first_boot_confirm_1">
+        I confirm that I will read the chapter <b>Customized Settings UI</b> in the <b>Help</b> menu,
+        before performing any actions with the <b>Cache Cleaner</b> app.
+    </string>
+    <string translatable="false" name="first_boot_confirm_2">
+        I confirm that if the <b>Cache Cleaner</b> does not perform any actions,
+        I will undertake the actions described in the <b>Help</b> menu in the chapter <b>Customized Settings UI</b>,
+        related to setting alternative text for searching the <b>Storage and Cache</b> or <b>Storage</b> menu,
+        as well as setting alternative text for searching the <b>Clear Cache</b> button.
+    </string>
+    <string translatable="false" name="first_boot_confirm_3">
+        I confirm that if the <b>Cache Cleaner</b> does not perform any actions,
+        I will change the cache clearing scenario in the <b>Settings</b> from the <b>Default</b> scenario
+        to the <b>Xiaomi MIUI</b> scenario if my phone is a <b>Xiaomi with specific regional MIUI firmware</b>.
+    </string>
+    <string translatable="false" name="first_boot_confirm_4">
+        I confirm that if the <b>Cache Cleaner</b> does not perform any of the above-described actions,
+        I am obligated to report my problem at the address specified in the chapter
+        <b>Submit a bug report</b> in the <b>Help</b> menu.
+    </string>
+    <string translatable="false" name="first_boot_confirm_googleplay_1">
+        I confirm that if the <b>Cache Cleaner</b> does not perform any of the above-described actions,
+        and after reporting my issue at the address specified in the chapter
+        <b>Submit a bug report</b> in the <b>Help</b> menu, I do not receive any support from the author,
+        I can file a complaint through GooglePlay against the <b>Cache Cleaner</b> app,
+        as an application that misleads users.
+    </string>
+    <string translatable="false" name="first_boot_confirm_googleplay_2">
+        I confirm that if the <b>Cache Cleaner</b> does not perform any of the above-described actions,
+        and after filing a complaint through GooglePlay against the <b>Cache Cleaner</b> app,
+        I am obligated to leave a review on GooglePlay related to my issue.
+    </string>
+    <string translatable="false" name="first_boot_confirm_googleplay_3">
+        I confirm that if I do not perform any of the above-listed actions,
+        I completely renounce my right to leave negative feedback or complaints about misleading users.
+    </string>
+    <string translatable="false" name="first_boot_confirm_googleplay_4">
+        If I do not agree with any of the above-listed actions, I am obligated to delete
+        the <b>Cache Cleaner</b> app from my device and have no claims against it and the author.
     </string>
 
     <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>

@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
-import java.lang.Exception
 import java.util.*
 
 class SharedPreferencesManager {
@@ -198,8 +197,8 @@ class SharedPreferencesManager {
     class FirstBoot {
 
         companion object {
-            private const val KEY_SHOW_DIALOG_HELP_CUSTOMIZED_SETTINGS_UI =
-                "show_dialog_help_customized_settings_ui"
+            private const val KEY_SHOW_FIRST_BOOT_CONFIRMATION =
+                "show_first_boot_confirmation"
 
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
@@ -207,16 +206,16 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun showDialogHelpCustomizedSettingsUI(context: Context): Boolean {
+            fun showFirstBootConfirmation(context: Context): Boolean {
                 return getDefaultSharedPref(context)
-                    .getBoolean(KEY_SHOW_DIALOG_HELP_CUSTOMIZED_SETTINGS_UI, true)
+                    .getBoolean(KEY_SHOW_FIRST_BOOT_CONFIRMATION, true)
             }
 
             @JvmStatic
-            fun hideDialogHelpCustomizedSettingsUI(context: Context) {
+            fun hideFirstBootConfirmation(context: Context) {
                 getDefaultSharedPref(context)
                     .edit()
-                    .putBoolean(KEY_SHOW_DIALOG_HELP_CUSTOMIZED_SETTINGS_UI, false)
+                    .putBoolean(KEY_SHOW_FIRST_BOOT_CONFIRMATION, false)
                     .apply()
             }
         }
