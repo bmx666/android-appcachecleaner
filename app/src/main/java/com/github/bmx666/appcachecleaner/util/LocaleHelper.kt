@@ -2,7 +2,7 @@ package com.github.bmx666.appcachecleaner.util
 
 import android.content.Context
 import android.os.Build
-import java.util.*
+import java.util.Locale
 
 class LocaleHelper {
 
