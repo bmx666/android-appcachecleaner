@@ -30,7 +30,6 @@ import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
-import com.github.bmx666.appcachecleaner.ui.dialog.FirstBootDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
@@ -212,9 +211,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
-
-        if (SharedPreferencesManager.FirstBoot.showDialogHelpCustomizedSettingsUI(this))
-            FirstBootDialogBuilder.buildHelpCustomizedSettingsUIDialog(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

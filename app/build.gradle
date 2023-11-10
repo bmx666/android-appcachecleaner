@@ -19,6 +19,7 @@ android {
     }
 
     defaultConfig {
+        buildConfigField "boolean", "GOOGLEPLAY", "false"
         applicationId "com.github.bmx666.appcachecleaner"
         minSdk 23
         targetSdk 34
@@ -36,6 +37,11 @@ android {
         }
         debug {
             applicationIdSuffix '.debug'
+        }
+        googleplay {
+            initWith release
+            applicationIdSuffix '.googleplay'
+            buildConfigField "boolean", "GOOGLEPLAY", "true"
         }
     }
     bundle {

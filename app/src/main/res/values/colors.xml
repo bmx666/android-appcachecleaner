@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="error">#FFB00020</color>
+
     <!-- 2014 Material Design color palettes -->
     <!-- https://m2.material.io/design/color/the-color-system.html -->
     <color name="purple50">#F3E5F5</color>
