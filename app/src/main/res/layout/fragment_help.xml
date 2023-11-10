@@ -44,6 +44,12 @@
             android:layout_height="wrap_content"
             android:text=""/>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textHelpSubmitBugReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
