@@ -50,6 +50,13 @@ class HelpFragment: Fragment() {
         binding.textHelpIconCopyright.movementMethod =
             LinkMovementMethodCompat.getInstance()
 
+        binding.textHelpSubmitBugReport.text = HtmlCompat.fromHtml(
+            resources.getString(R.string.help_submit_bug_report),
+            HtmlCompat.FROM_HTML_MODE_COMPACT
+        )
+        binding.textHelpSubmitBugReport.movementMethod =
+            LinkMovementMethodCompat.getInstance()
+
         return view
     }
 
