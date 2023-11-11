@@ -1,0 +1,24 @@
+package com.github.bmx666.appcachecleaner.util
+
+import android.app.StatusBarManager
+import android.os.Build
+import androidx.annotation.RequiresApi
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+internal enum class TileRequestResult(val code: Int) {
+    TILE_ADD_REQUEST_ERROR_APP_NOT_IN_FOREGROUND(StatusBarManager.TILE_ADD_REQUEST_ERROR_APP_NOT_IN_FOREGROUND),
+    TILE_ADD_REQUEST_ERROR_BAD_COMPONENT(StatusBarManager.TILE_ADD_REQUEST_ERROR_BAD_COMPONENT),
+    TILE_ADD_REQUEST_ERROR_MISMATCHED_PACKAGE(StatusBarManager.TILE_ADD_REQUEST_ERROR_MISMATCHED_PACKAGE),
+    TILE_ADD_REQUEST_ERROR_NOT_CURRENT_USER(StatusBarManager.TILE_ADD_REQUEST_ERROR_NOT_CURRENT_USER),
+    TILE_ADD_REQUEST_ERROR_NO_STATUS_BAR_SERVICE(StatusBarManager.TILE_ADD_REQUEST_ERROR_NO_STATUS_BAR_SERVICE),
+    TILE_ADD_REQUEST_ERROR_REQUEST_IN_PROGRESS(StatusBarManager.TILE_ADD_REQUEST_ERROR_REQUEST_IN_PROGRESS),
+    TILE_ADD_REQUEST_RESULT_TILE_ADDED(StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED),
+    TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED(StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED),
+    TILE_ADD_REQUEST_RESULT_TILE_NOT_ADDED(StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_NOT_ADDED);
+
+    companion object {
+        fun findByCode(code: Int): TileRequestResult? {
+            return values().firstOrNull { it.code == code }
+        }
+    }
+}

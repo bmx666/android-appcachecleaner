@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
 
 class ActivityHelper {
 
@@ -20,6 +21,8 @@ class ActivityHelper {
                         addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                         addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                        if (context is CacheCleanerTileService)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         data = Uri.parse("package:$packageName")
                     }
                 )
@@ -32,6 +35,8 @@ class ActivityHelper {
         fun showAccessibilitySettings(context: Context) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            if (context is CacheCleanerTileService)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
 
@@ -39,6 +44,8 @@ class ActivityHelper {
         fun showUsageAccessSettings(context: Context) {
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            if (context is CacheCleanerTileService)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
 
@@ -53,6 +60,15 @@ class ActivityHelper {
                     addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
                 }
             )
+        }
+
+        @JvmStatic
+        fun navigateToHomeScreen(context: Context) {
+            context.startActivity(
+                Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            })
         }
     }
 }
