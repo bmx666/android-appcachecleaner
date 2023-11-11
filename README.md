@@ -8,13 +8,14 @@ To simplify this process and save time, **Cache Cleaner** requests a list of ins
 
 **Cache Cleaner** provides the added benefit of customizable app lists. This functionality allows you to create personalized lists of specific apps, giving you the flexibility to selectively clear the cache of only the apps you choose.
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=com.github.bmx666.appcachecleaner.googleplay)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/com.github.bmx666.appcachecleaner/)
 
 or get the APK from the [Releases Section](https://github.com/bmx666/android-appcachecleaner/releases/latest).
-
-**Clean Cache** has been removed from Google Play, [no more app on Google Play](https://github.com/bmx666/android-appcachecleaner/issues/101)
 
 ## FAQ
 
