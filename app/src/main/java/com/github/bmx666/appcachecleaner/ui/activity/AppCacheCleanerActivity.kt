@@ -1,9 +1,12 @@
 package com.github.bmx666.appcachecleaner.ui.activity
 
 import android.app.SearchManager
+import android.app.StatusBarManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import android.os.FileUtils
@@ -27,7 +30,9 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
+import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
@@ -128,7 +133,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             if (PermissionChecker.checkAccessibilityPermission(this))
                 localBroadcastManager.disableAccessibilityService()
             else
-                PermissionDialogBuilder.buildAccessibilityPermissionDialog(this)
+                PermissionDialogBuilder.buildAccessibilityPermissionDialog(this).show()
         }
 
         binding.btnCloseApp.setOnClickListener {
@@ -211,6 +216,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
+        checkRequestAddTileService()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -507,7 +513,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun checkAndShowPermissionDialogs(): Boolean {
         val hasAccessibilityPermission = PermissionChecker.checkAccessibilityPermission(this)
         if (!hasAccessibilityPermission) {
-            PermissionDialogBuilder.buildAccessibilityPermissionDialog(this)
+            PermissionDialogBuilder.buildAccessibilityPermissionDialog(this).show()
             return false
         }
 
@@ -515,7 +521,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val hasUsageStatsPermission = PermissionChecker.checkUsageStatsPermission(this)
             if (!hasUsageStatsPermission) {
-                PermissionDialogBuilder.buildUsageStatsPermissionDialog(this)
+                PermissionDialogBuilder.buildUsageStatsPermissionDialog(this).show()
                 return false
             }
         }
@@ -529,7 +535,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     PermissionDialogBuilder.buildWriteExternalStoragePermissionDialog(
                         this,
                         requestPermissionLauncher
-                    )
+                    ).show()
                     return false
                 }
             }
@@ -618,7 +624,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun updateActionBarMenu(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        onMenuShowMain()
+        onMenuShowFilter()
     }
 
     private fun updateActionBarFilter(@StringRes resId: Int) {
@@ -803,5 +809,47 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     override fun onStopAccessibilityServiceFeedback() {
         updateStartStopServiceButton()
+    }
+
+    private fun checkRequestAddTileService() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+            return
+
+        getSystemService(StatusBarManager::class.java)?.requestAddTileService(
+            ComponentName(
+                this,
+                CacheCleanerTileService::class.java
+            ),
+            getString(R.string.tile_name),
+            Icon.createWithResource(this, R.drawable.ic_baseline_icon_tile_24),
+            {
+                Logger.d("requestAddTileService result success")
+                runOnUiThread {
+                    // "requestAddTileService result success"
+                }
+            },
+            { resultCodeFailure ->
+                Logger.d("requestAddTileService failure: resultCodeFailure: $resultCodeFailure")
+                val resultFailureText =
+                    when (val ret = TileRequestResult.findByCode(resultCodeFailure)) {
+                        TileRequestResult.TILE_ADD_REQUEST_ERROR_APP_NOT_IN_FOREGROUND,
+                        TileRequestResult.TILE_ADD_REQUEST_ERROR_BAD_COMPONENT,
+                        TileRequestResult.TILE_ADD_REQUEST_ERROR_MISMATCHED_PACKAGE,
+                        TileRequestResult.TILE_ADD_REQUEST_ERROR_NOT_CURRENT_USER,
+                        TileRequestResult.TILE_ADD_REQUEST_ERROR_NO_STATUS_BAR_SERVICE,
+                        TileRequestResult.TILE_ADD_REQUEST_ERROR_REQUEST_IN_PROGRESS,
+                        TileRequestResult.TILE_ADD_REQUEST_RESULT_TILE_ADDED,
+                        TileRequestResult.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED,
+                        TileRequestResult.TILE_ADD_REQUEST_RESULT_TILE_NOT_ADDED -> {
+                            ret.name
+                        }
+                        null -> {
+                            "unknown resultCodeFailure: $resultCodeFailure"
+                        }
+                    }
+                runOnUiThread {
+                    // resultFailureText
+                }
+            })
     }
 }

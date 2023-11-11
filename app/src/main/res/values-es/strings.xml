@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Limpiador de Caché</string>
     <string name="service_name">Limpiador de Caché</string>
+    <string name="tile_name">Limpiador de Caché</string>
     <string name="text_clean_cache_left">Aplicaciones restantes</string>
     <string name="text_clean_cache_finish">La limpieza de caché finalizó\nSe limpió %1$s</string>
     <string name="text_clean_cache_interrupt">Se interrumpió la limpieza de caché\nSe limpió %1$s</string>

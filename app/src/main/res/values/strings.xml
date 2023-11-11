@@ -2,6 +2,7 @@
 <resources>
     <string translatable="false" name="app_name">Cache Cleaner</string>
     <string translatable="false" name="service_name">Cache Cleaner</string>
+    <string translatable="false" name="tile_name">Cache Cleaner</string>
     <string translatable="false" name="text_enable_accessibility_title">Enable Accessibility Service</string>
     <string translatable="false" name="text_enable_accessibility_message">
         To functional properly, <b>Cache Cleaner</b> needs your permission.

@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Очиститель кэша</string>
     <string name="service_name">Очиститель кэша</string>
+    <string name="tile_name">Очиститель кэша</string>
     <string name="text_enable_accessibility_title">Включить службу спец. возможностей</string>
     <string name="text_enable_accessibility_message">
         Для работы приложению <b>Очиститель кэша</b> требуется ваше разрешение.
