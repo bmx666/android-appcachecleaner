@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.ui.dialog
 
+import android.app.Dialog
 import android.content.Context
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -23,14 +24,14 @@ class CustomListDialogBuilder {
         }
 
         @JvmStatic
-        fun buildAddDialog(context: Context, onOkClick: (String?) -> Unit) {
+        fun buildAddDialog(context: Context, onOkClick: (String?) -> Unit): Dialog {
             val inputEditText = EditText(context).apply {
                 hint = context.getString(android.R.string.unknownName)
                 minHeight = AlertDialogBuilder.getMinTouchTargetSize(context)
                 minWidth = AlertDialogBuilder.getMinTouchTargetSize(context)
             }
 
-            AlertDialogBuilder(context)
+            return AlertDialogBuilder(context)
                 .setTitle(R.string.dialog_title_custom_list_add)
                 .setMessage(R.string.dialog_message_custom_list_add)
                 .setView(inputEditText)
@@ -40,14 +41,13 @@ class CustomListDialogBuilder {
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                 }
                 .create()
-                .show()
         }
 
         @JvmStatic
-        fun buildEditDialog(context: Context, onOkClick: (String?) -> Unit) {
+        fun buildEditDialog(context: Context, onOkClick: (String?) -> Unit): Dialog {
             val customListSpinner = getCustomListSpinner(context)
 
-            AlertDialogBuilder(context)
+            return AlertDialogBuilder(context)
                 .setTitle(R.string.dialog_title_custom_list_edit)
                 .setMessage(R.string.dialog_message_custom_list_edit)
                 .setView(customListSpinner)
@@ -57,14 +57,13 @@ class CustomListDialogBuilder {
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                 }
                 .create()
-                .show()
         }
 
         @JvmStatic
-        fun buildRemoveDialog(context: Context, onOkClick: (String?) -> Unit) {
+        fun buildRemoveDialog(context: Context, onOkClick: (String?) -> Unit): Dialog {
             val customListSpinner = getCustomListSpinner(context)
 
-            AlertDialogBuilder(context)
+            return AlertDialogBuilder(context)
                 .setTitle(R.string.dialog_title_custom_list_remove)
                 .setMessage(R.string.dialog_message_custom_list_remove)
                 .setView(customListSpinner)
@@ -74,14 +73,13 @@ class CustomListDialogBuilder {
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                 }
                 .create()
-                .show()
         }
 
         @JvmStatic
-        fun buildCleanCacheDialog(context: Context, onOkClick: (String?) -> Unit) {
+        fun buildCleanCacheDialog(context: Context, onOkClick: (String?) -> Unit): Dialog {
             val customListSpinner = getCustomListSpinner(context)
 
-            AlertDialogBuilder(context)
+            return AlertDialogBuilder(context)
                 .setTitle(R.string.dialog_title_custom_list_clean_cache)
                 .setMessage(R.string.dialog_message_custom_list_clean_cache)
                 .setView(customListSpinner)
@@ -91,7 +89,6 @@ class CustomListDialogBuilder {
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                 }
                 .create()
-                .show()
         }
     }
 }
