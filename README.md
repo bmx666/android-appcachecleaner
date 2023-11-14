@@ -61,6 +61,12 @@ Please follow the steps below to resolve clear cache issue:
 1. Open **Settings** menu in the top right corner and find section **Other**
 2. Click **Clear cache scenario** and select **Xiaomi MIUI**
 
+#### ATTENTION ⚠️: Huawei and Xiaomi smartphones often use aggressive battery optimization that can disrupt communication between **Cache Cleaner** and the Accessibility service, preventing them from working as expected. Please follow the steps below:
+
+1. Open **Settings** menu in the top right corner and find section **Show extra buttons**
+2. Enable option **Start/Stop Accessibility service**
+3. The next time you start **Cache Cleaner**, if the Accessibility service is running, stop it by clicking **Stop Accessibility service** button. Then, enable it again by clicking **Start Accessibility service** button
+
 ## Icon copyright
 
 **Broom** [icon](https://www.flaticon.com/free-icon/broom_2954888) created by [Smashicons](https://www.flaticon.com/authors/smashicons) - [Flaticon](https://www.flaticon.com/)
