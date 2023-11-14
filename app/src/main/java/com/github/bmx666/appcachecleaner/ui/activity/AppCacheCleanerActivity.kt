@@ -207,7 +207,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     ),
                     true
                 )
-            }
+            }.show()
         }
 
         updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
@@ -658,7 +658,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     if (fragment is PackageListFragment)
                         fragment.swapAdapterFilterByCacheBytes(minCacheBytes)
                 }
-        }
+        }.show()
     }
 
     private fun updateExtraButtonsVisibility() {

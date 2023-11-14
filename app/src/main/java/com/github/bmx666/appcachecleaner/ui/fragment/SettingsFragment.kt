@@ -268,7 +268,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         return@buildAddDialog
                     }
                     (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
-                }
+                }.show()
                 true
             }
         }
@@ -283,7 +283,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     val names = SharedPreferencesManager.PackageList.getNames(context)
                     if (names.contains(name))
                         (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
-                }
+                }.show()
                 true
             }
         }
@@ -302,7 +302,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             getString(R.string.toast_custom_list_has_been_removed, name),
                             Toast.LENGTH_SHORT).show()
                     }
-                }
+                }.show()
                 true
             }
         }

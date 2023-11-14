@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.ui.dialog
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.text.InputType
@@ -13,7 +14,7 @@ class FilterListDialogBuilder {
 
         @JvmStatic
         @RequiresApi(Build.VERSION_CODES.O)
-        fun buildMinCacheSizeDialog(context: Context, onOkClick: (String?) -> Unit) {
+        fun buildMinCacheSizeDialog(context: Context, onOkClick: (String?) -> Unit): Dialog {
             val inputEditText = EditText(context).apply {
                 inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
                 hint = "0"
@@ -21,7 +22,7 @@ class FilterListDialogBuilder {
                 minWidth = AlertDialogBuilder.getMinTouchTargetSize(context)
             }
 
-            AlertDialogBuilder(context)
+            return AlertDialogBuilder(context)
                 .setTitle(R.string.dialog_filter_min_cache_size_title)
                 .setMessage(R.string.dialog_filter_min_cache_size_message)
                 .setView(inputEditText)
@@ -31,7 +32,6 @@ class FilterListDialogBuilder {
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                 }
                 .create()
-                .show()
         }
     }
 }
