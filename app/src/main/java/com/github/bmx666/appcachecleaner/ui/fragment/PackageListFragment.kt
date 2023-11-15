@@ -35,12 +35,14 @@ class PackageListFragment : Fragment() {
             with(view) {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context.applicationContext)
-                adapter = PackageRecyclerViewAdapter(PlaceholderContent.getVisibleItems(), hideStats)
+                val visiblePkgList = PlaceholderContent.Current.getVisible()
+                adapter = PackageRecyclerViewAdapter(visiblePkgList, hideStats)
             }
             onSwapAdapter = {
                 try {
+                    val visiblePkgList = PlaceholderContent.Current.getVisible()
                     view.swapAdapter(
-                        PackageRecyclerViewAdapter(PlaceholderContent.getVisibleItems(), hideStats),
+                        PackageRecyclerViewAdapter(visiblePkgList, hideStats),
                         true)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -48,7 +50,8 @@ class PackageListFragment : Fragment() {
             }
             onRefreshAdapter = {
                 try {
-                    view.adapter?.notifyItemRangeChanged(0, PlaceholderContent.getVisibleItems().size)
+                    val visiblePkgList = PlaceholderContent.Current.getVisible()
+                    view.adapter?.notifyItemRangeChanged(0, visiblePkgList.size)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -62,13 +65,15 @@ class PackageListFragment : Fragment() {
     }
 
     fun swapAdapterFilterByName(text: String) {
-        PlaceholderContent.filterByName(text)
+        PlaceholderContent.Current.update(
+            PlaceholderContent.All.getFilteredByName(text))
         onSwapAdapter()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun swapAdapterFilterByCacheBytes(minCacheBytes: Long) {
-        PlaceholderContent.filterByCacheSize(minCacheBytes)
+        PlaceholderContent.Current.update(
+            PlaceholderContent.All.getFilteredByCacheSize(minCacheBytes))
         onSwapAdapter()
     }
 

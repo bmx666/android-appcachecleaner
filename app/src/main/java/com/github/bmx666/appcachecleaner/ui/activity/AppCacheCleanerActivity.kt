@@ -138,15 +138,15 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.fabCleanCache.setOnClickListener {
-            val pkgList = PlaceholderContent.getAllChecked().toMutableList()
+            val pkgList = PlaceholderContent.Current.getCheckedPackageNames().toMutableList()
             startCleanCache(pkgList)
         }
 
         binding.fabCheckAllApps.setOnClickListener {
             when (
-                if (PlaceholderContent.isAllVisibleChecked())
+                if (PlaceholderContent.Current.isAllVisibleChecked())
                     "uncheck"
-                else if (PlaceholderContent.isAllVisibleUnchecked())
+                else if (PlaceholderContent.Current.isAllVisibleUnchecked())
                     "check"
                 else
                     binding.fabCheckAllApps.tag
@@ -155,13 +155,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     binding.fabCheckAllApps.tag = "check"
                     binding.fabCheckAllApps.contentDescription =
                         getString(R.string.description_apps_all_check)
-                    PlaceholderContent.uncheckAllVisible()
+                    PlaceholderContent.All.uncheckVisible()
                 }
                 "check" -> {
                     binding.fabCheckAllApps.tag = "uncheck"
                     binding.fabCheckAllApps.contentDescription =
                         getString(R.string.description_apps_all_uncheck)
-                    PlaceholderContent.checkAllVisible()
+                    PlaceholderContent.All.checkVisible()
                 }
             }
 
@@ -173,7 +173,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.fabCustomListOk.setOnClickListener {
-            val checkedPkgList = PlaceholderContent.getAllChecked().toSet()
+            val checkedPkgList = PlaceholderContent.Current.getCheckedPackageNames().toSet()
             if (checkedPkgList.isEmpty()) {
                 Toast.makeText(this,
                     R.string.toast_custom_list_add_list_empty,
@@ -267,8 +267,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 }
             })
             setOnCloseListener {
-                PlaceholderContent.getItems().forEach { it.ignore = false }
-                PlaceholderContent.sortByLabel()
+                // unset ignore flag for all packages in the current list
+                PlaceholderContent.All.unignore(
+                    PlaceholderContent.Current.getPackageNames().toSet())
+                PlaceholderContent.Current.update(
+                    PlaceholderContent.All.getSortedByLabel())
                 false
             }
         }
@@ -345,7 +348,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         var progressApps = 0
         val totalApps = pkgInfoList.size
 
-        PlaceholderContent.resetAll()
+        PlaceholderContent.All.reset()
 
         pkgInfoList.forEach { pkgInfo ->
 
@@ -361,22 +364,22 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
                 // update only stats if run cleaning process of custom list
                 if (isCustomListClearOnly) {
-                    if (PlaceholderContent.contains(pkgInfo)) {
-                        PlaceholderContent.updateStats(pkgInfo, stats)
+                    if (PlaceholderContent.All.contains(pkgInfo)) {
+                        PlaceholderContent.All.updateStats(pkgInfo, stats)
                     } else {
                         // skip getting the label of app it can take a lot of time on old phones
-                        PlaceholderContent.addItem(pkgInfo, pkgInfo.packageName, locale, stats)
+                        PlaceholderContent.All.add(pkgInfo, pkgInfo.packageName, locale, stats)
                     }
                 } else {
-                    if (PlaceholderContent.contains(pkgInfo)) {
-                        PlaceholderContent.updateStats(pkgInfo, stats)
-                        if (!PlaceholderContent.isSameLabelLocale(pkgInfo, locale)) {
+                    if (PlaceholderContent.All.contains(pkgInfo)) {
+                        PlaceholderContent.All.updateStats(pkgInfo, stats)
+                        if (!PlaceholderContent.All.isSameLabelLocale(pkgInfo, locale)) {
                             val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                            PlaceholderContent.updateLabel(pkgInfo, label, locale)
+                            PlaceholderContent.All.updateLabel(pkgInfo, label, locale)
                         }
                     } else {
                         val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                        PlaceholderContent.addItem(pkgInfo, label, locale, stats)
+                        PlaceholderContent.All.add(pkgInfo, label, locale, stats)
                     }
                 }
             }
@@ -397,15 +400,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         when (customListName) {
             null -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    PlaceholderContent.filterByCacheSize(
-                        SharedPreferencesManager.Filter.getMinCacheSize(this))
+                    PlaceholderContent.Current.update(
+                        PlaceholderContent.All.getFilteredByCacheSize(
+                            SharedPreferencesManager.Filter.getMinCacheSize(this))
+                    )
                 else
-                    PlaceholderContent.sort()
+                    PlaceholderContent.Current.update(
+                        PlaceholderContent.All.getSorted())
             }
             else -> {
                 val checkedPkgList = SharedPreferencesManager.PackageList.get(this, customListName!!)
-                PlaceholderContent.check(checkedPkgList)
-                PlaceholderContent.sortByLabel()
+                PlaceholderContent.All.check(checkedPkgList)
+                PlaceholderContent.Current.update(
+                    PlaceholderContent.All.getSortedByLabel())
             }
         }
 
@@ -413,7 +420,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         runOnUiThread {
             if (isCustomListClearOnly)
-                startCleanCache(PlaceholderContent.getAllChecked().toMutableList())
+                startCleanCache(
+                    PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
             else
                 showPackageFragment()
         }
@@ -767,7 +775,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     override fun onCleanCacheFinish(interrupted: Boolean) {
         val cleanCacheBytes =
-            PlaceholderContent.getItems().filter { it.checked }.sumOf {
+            PlaceholderContent.Current.getChecked().sumOf {
                 PackageManagerHelper.getCacheSizeDiff(
                     it.stats,
                     PackageManagerHelper.getStorageStats(this, it.pkgInfo)
