@@ -1,1 +1,1 @@
-add Quick Settings tile
+* add Quick Settings tile
