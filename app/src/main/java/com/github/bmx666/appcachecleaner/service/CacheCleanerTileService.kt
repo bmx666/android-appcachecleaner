@@ -49,9 +49,6 @@ class CacheCleanerTileService: TileService() {
             showDialog(PermissionDialogBuilder.buildAccessibilityPermissionDialog(this))
         } else {
             val intent = Intent(this, AppCacheCleanerActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
