@@ -1,0 +1,3 @@
+Add extra actions:
+* Automatically stop the Accessibility service after clearing the cache
+* Automatically close the app after clearing the cache
