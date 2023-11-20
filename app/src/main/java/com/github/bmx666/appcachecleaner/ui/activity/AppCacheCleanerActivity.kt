@@ -677,13 +677,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun updateExtraButtonsVisibility() {
         binding.btnStartStopService.visibility =
-            when (SharedPreferencesManager.ExtraButtons.getShowStartStopService(this)) {
+            when (SharedPreferencesManager.Extra.getShowStartStopService(this)) {
                 true -> View.VISIBLE
                 else -> View.GONE
             }
 
         binding.btnCloseApp.visibility =
-            when (SharedPreferencesManager.ExtraButtons.getShowCloseApp(this)) {
+            when (SharedPreferencesManager.Extra.getShowCloseApp(this)) {
                 true -> View.VISIBLE
                 else -> View.GONE
             }
@@ -805,6 +805,17 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         if (BuildConfig.DEBUG)
             saveLogFile()
+
+        // Automatically disable service
+        if (SharedPreferencesManager.Extra.getAfterClearingCacheStopService(this)) {
+            if (PermissionChecker.checkAccessibilityPermission(this))
+                localBroadcastManager.disableAccessibilityService()
+        }
+
+        // Automatically close app
+        if (SharedPreferencesManager.Extra.getAfterClearingCacheCloseApp(this)) {
+            finish()
+        }
     }
 
     override fun onStopAccessibilityServiceFeedback() {

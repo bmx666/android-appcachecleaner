@@ -46,6 +46,20 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/prefs_extra_actions">
+
+        <SwitchPreferenceCompat
+            app:key="@string/prefs_key_extra_action_stop_service"
+            app:title="@string/prefs_title_extra_action_stop_service"
+            app:summary="@string/prefs_summary_extra_action_stop_service"/>
+
+        <SwitchPreferenceCompat
+            app:key="@string/prefs_key_extra_action_close_app"
+            app:title="@string/prefs_title_extra_action_close_app"
+            app:summary="@string/prefs_summary_extra_action_close_app"/>
+
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/prefs_custom_lists">
 
         <Preference

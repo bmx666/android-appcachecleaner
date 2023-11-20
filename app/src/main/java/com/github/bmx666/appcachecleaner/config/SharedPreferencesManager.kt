@@ -122,7 +122,7 @@ class SharedPreferencesManager {
         }
     }
 
-    class ExtraButtons {
+    class Extra {
 
         companion object {
             @JvmStatic
@@ -143,6 +143,22 @@ class SharedPreferencesManager {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_show_button_close_app),
+                        false)
+            }
+
+            @JvmStatic
+            fun getAfterClearingCacheStopService(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_extra_action_stop_service),
+                        false)
+            }
+
+            @JvmStatic
+            fun getAfterClearingCacheCloseApp(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_extra_action_close_app),
                         false)
             }
         }
