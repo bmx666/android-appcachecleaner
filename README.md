@@ -71,6 +71,9 @@ Please follow the steps below to resolve clear cache issue:
 
 **Broom** [icon](https://www.flaticon.com/free-icon/broom_2954888) created by [Smashicons](https://www.flaticon.com/authors/smashicons) - [Flaticon](https://www.flaticon.com/)
 
+* [Freepik license for Broom icon](LICENSE_Freepik_icon.pdf)
+* [Freepik license for monochrome Broom icon](LICENSE_Freepik_icon_monochrome.pdf)
+
 ## Support my project
 
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;">](https://www.buymeacoffee.com/bmx666)
