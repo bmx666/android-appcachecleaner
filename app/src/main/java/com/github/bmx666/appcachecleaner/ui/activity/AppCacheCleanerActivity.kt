@@ -59,6 +59,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private lateinit var binding: ActivityMainBinding
     private var customListName: String? = null
 
+    private lateinit var onMenuHideAll: () -> Unit
     private lateinit var onMenuShowMain: () -> Unit
     private lateinit var onMenuShowFilter: () -> Unit
     private lateinit var onMenuShowSearch: () -> Unit
@@ -222,6 +223,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.app_menu, menu)
+
+        onMenuHideAll = {
+            menu.findItem(R.id.menu_help).isVisible = false
+            menu.findItem(R.id.menu_settings).isVisible = false
+            menu.findItem(R.id.menu_filter).isVisible = false
+            menu.findItem(R.id.menu_search).isVisible = false
+        }
 
         onMenuShowMain = {
             menu.findItem(R.id.menu_help).isVisible = true
@@ -609,8 +617,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun updateActionBar(fragment: Fragment) {
         when (fragment) {
             is PackageListFragment -> updateActionBarPackageList()
-            is HelpFragment -> updateActionBarMenu(R.string.menu_item_help)
-            is SettingsFragment -> updateActionBarMenu(R.string.menu_item_settings)
+            is HelpFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_help)
+            is SettingsFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_settings)
             else -> restoreActionBar()
         }
     }
@@ -621,10 +629,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         } ?: updateActionBarFilter(R.string.clear_cache_btn_text)
     }
 
-    private fun updateActionBarMenu(@StringRes resId: Int) {
+    private fun updateActionBarTextAndHideMenu(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        onMenuShowFilter()
+        onMenuHideAll()
     }
 
     private fun updateActionBarFilter(@StringRes resId: Int) {
@@ -656,7 +664,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 FRAGMENT_CONTAINER_VIEW_TAG
             )
             .commitNow()
-        updateActionBarMenu(title)
+        updateActionBarTextAndHideMenu(title)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
