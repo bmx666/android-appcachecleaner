@@ -39,12 +39,20 @@ import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.SettingsFragment
-import com.github.bmx666.appcachecleaner.util.*
+import com.github.bmx666.appcachecleaner.util.ActivityHelper
+import com.github.bmx666.appcachecleaner.util.ExtraSearchTextHelper
+import com.github.bmx666.appcachecleaner.util.IIntentActivityCallback
+import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelper
+import com.github.bmx666.appcachecleaner.util.LocaleHelper
+import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
+import com.github.bmx666.appcachecleaner.util.PermissionChecker
+import com.github.bmx666.appcachecleaner.util.TileRequestResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
@@ -65,6 +73,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private lateinit var onMenuShowSearch: () -> Unit
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
+
+    private var calculationCleanedCacheJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -216,7 +226,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }.show()
         }
 
-        updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
+        if (calculationCleanedCacheJob?.isActive != true)
+            updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
+
         checkRequestAddTileService()
     }
 
@@ -340,6 +352,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     override fun onDestroy() {
+        calculationCleanedCacheJob?.cancel()
         localBroadcastManager.onDestroy()
         super.onDestroy()
     }
@@ -804,21 +817,17 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     override fun onCleanCacheFinish(interrupted: Boolean) {
-        val cleanCacheBytes =
-            PlaceholderContent.Current.getChecked().sumOf {
-                PackageManagerHelper.getCacheSizeDiff(
-                    it.stats,
-                    PackageManagerHelper.getStorageStats(this, it.pkgInfo)
-                )
+        // run job to calculate cleaned cache
+        calculationCleanedCacheJob?.cancel()
+        calculationCleanedCacheJob =
+            CoroutineScope(Dispatchers.IO).launch {
+                calculateCleanedCache(interrupted)
             }
 
-        val resId = when (interrupted) {
-            true -> R.string.text_clean_cache_interrupt
-            else -> R.string.text_clean_cache_finish
+        val displayText = when (interrupted) {
+            true -> getString(R.string.text_clean_cache_interrupt_processing)
+            else -> getString(R.string.text_clean_cache_finish_processing)
         }
-
-        val displayText = getString(resId,
-            Formatter.formatFileSize(this, cleanCacheBytes))
 
         updateMainText(displayText)
         updateStartStopServiceButton()
@@ -886,5 +895,25 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     // resultFailureText
                 }
             })
+    }
+
+    private fun calculateCleanedCache(interrupted: Boolean) {
+        val cleanCacheBytes =
+            PlaceholderContent.Current.getChecked().sumOf {
+                PackageManagerHelper.getCacheSizeDiff(
+                    it.stats,
+                    PackageManagerHelper.getStorageStats(this, it.pkgInfo)
+                )
+            }
+
+        val resId = when (interrupted) {
+            true -> R.string.text_clean_cache_interrupt
+            else -> R.string.text_clean_cache_finish
+        }
+
+        val displayText = getString(resId,
+            Formatter.formatFileSize(this, cleanCacheBytes))
+
+        updateMainText(displayText)
     }
 }

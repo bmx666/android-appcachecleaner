@@ -5,7 +5,9 @@
     <string name="tile_name">Önbellek Temizleyici</string>
     <string name="text_clean_cache_left">kalan uygulama</string>
     <string name="text_clean_cache_finish">Önbellek temizleme bitti\n%1$s temizlendi</string>
+    <string name="text_clean_cache_finish_processing">Önbellek temizleme bitti\nİşleniyor…</string>
     <string name="text_clean_cache_interrupt">Önbellek temizlemeye müdahale edildi\n%1$s temizlendi</string>
+    <string name="text_clean_cache_interrupt_processing">Önbellek temizlemeye müdahale edildi\nİşleniyor…</string>
     <string name="btn_open_accessibility">Erişebilirlik Ayarlarını Aç</string>
     <string name="btn_open_usage_stats">Kullanım Erişim İzni Verin</string>
     <string name="btn_clean_all_cache">Tüm uygulamaların önbelleğini temizle</string>

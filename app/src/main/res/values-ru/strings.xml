@@ -74,7 +74,9 @@
     </string>
     <string name="text_clean_cache_left">осталось приложений</string>
     <string name="text_clean_cache_finish">Очистка кэша завершена\nОчищено %1$s</string>
+    <string name="text_clean_cache_finish_processing">Очистка кэша завершена\nОбработка…</string>
     <string name="text_clean_cache_interrupt">Очистка кэша была прервана\nОчищено %1$s</string>
+    <string name="text_clean_cache_interrupt_processing">Очистка кэша была прервана\nОбработка…</string>
     <string name="btn_open_accessibility">Открыть настройки Спец. возможностей</string>
     <string name="btn_open_usage_stats">Открыть настройки Данные об Использ.</string>
     <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>

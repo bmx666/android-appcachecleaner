@@ -73,7 +73,9 @@
     </string>
     <string translatable="false" name="text_clean_cache_left">left apps</string>
     <string translatable="false" name="text_clean_cache_finish">Clean cache was finished\nCleaned up %1$s</string>
+    <string translatable="false" name="text_clean_cache_finish_processing">Clean cache was finished\nProcessing…</string>
     <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted\nCleaned up %1$s</string>
+    <string translatable="false" name="text_clean_cache_interrupt_processing">Clean cache was interrupted\nProcessing…</string>
     <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
     <string translatable="false" name="btn_open_usage_stats">Open Usage Stats Settings</string>
     <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
