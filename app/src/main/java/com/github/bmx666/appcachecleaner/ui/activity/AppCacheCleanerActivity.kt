@@ -60,8 +60,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     companion object {
         const val ARG_DISPLAY_TEXT = "display-text"
         const val FRAGMENT_CONTAINER_VIEW_TAG = "fragment-container-view-tag"
-
-        val loadingPkgList = AtomicBoolean(false)
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -75,6 +73,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
     private var calculationCleanedCacheJob: Job? = null
+    private var loadingPkgListJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -352,6 +351,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     override fun onDestroy() {
+        loadingPkgListJob?.cancel()
         calculationCleanedCacheJob?.cancel()
         localBroadcastManager.onDestroy()
         super.onDestroy()
@@ -395,7 +395,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         pkgInfoList.forEach { pkgInfo ->
 
-            if (!loadingPkgList.get()) return
+            if (loadingPkgListJob?.isActive != true) return
 
             val skipDisabledApp = hideDisabledApps && !pkgInfo.applicationInfo.enabled
 
@@ -438,7 +438,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
-        if (!loadingPkgList.get()) return
+        if (loadingPkgListJob?.isActive != true) return
 
         when (customListName) {
             null -> {
@@ -459,17 +459,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
-        if (!loadingPkgList.get()) return
+        if (loadingPkgListJob?.isActive != true) return
 
-        runOnUiThread {
-            if (isCustomListClearOnly)
-                startCleanCache(
-                    PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
-            else
-                showPackageFragment()
+        loadingPkgListJob?.invokeOnCompletion { throwable ->
+            if (throwable == null) {
+                runOnUiThread {
+                    if (isCustomListClearOnly)
+                        startCleanCache(
+                            PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
+                    else
+                        showPackageFragment()
+                }
+            }
         }
-
-        loadingPkgList.set(false)
     }
 
     private fun preparePackageList(customListName: String?,
@@ -490,11 +492,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.progressBarPackageList.max = pkgInfoList.size
         binding.layoutProgress.visibility = View.VISIBLE
 
-        loadingPkgList.set(true)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            addPackageToPlaceholderContent(pkgInfoList, isCustomListClearOnly)
-        }
+        loadingPkgListJob?.cancel()
+        loadingPkgListJob =
+            CoroutineScope(Dispatchers.IO).launch {
+                addPackageToPlaceholderContent(pkgInfoList, isCustomListClearOnly)
+            }
     }
 
     internal fun showCustomListPackageFragment(name: String) {
@@ -624,7 +626,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun hideFragmentViews() {
         // interrupt package list preparation
-        loadingPkgList.set(false)
+        loadingPkgListJob?.cancel()
 
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
@@ -751,7 +753,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun restoreUI() {
         // interrupt package list preparation if user has rotated screen
-        loadingPkgList.set(false)
+        loadingPkgListJob?.cancel()
 
         supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
             ?.let { frag ->
