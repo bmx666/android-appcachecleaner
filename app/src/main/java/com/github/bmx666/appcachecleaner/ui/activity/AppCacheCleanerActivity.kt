@@ -918,14 +918,18 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 )
             }
 
-        val resId = when (interrupted) {
-            true -> R.string.text_clean_cache_interrupt_display_size
-            else -> R.string.text_clean_cache_finish_display_size
+        calculationCleanedCacheJob?.invokeOnCompletion { throwable ->
+            if (throwable == null) {
+                val resId = when (interrupted) {
+                    true -> R.string.text_clean_cache_interrupt_display_size
+                    else -> R.string.text_clean_cache_finish_display_size
+                }
+
+                val displayText = getString(resId,
+                    Formatter.formatFileSize(this, cleanCacheBytes))
+
+                updateMainText(displayText)
+            }
         }
-
-        val displayText = getString(resId,
-            Formatter.formatFileSize(this, cleanCacheBytes))
-
-        updateMainText(displayText)
     }
 }
