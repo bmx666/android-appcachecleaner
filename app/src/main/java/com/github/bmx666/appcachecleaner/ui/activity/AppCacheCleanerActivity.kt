@@ -817,17 +817,27 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     override fun onCleanCacheFinish(interrupted: Boolean) {
-        // run job to calculate cleaned cache
-        calculationCleanedCacheJob?.cancel()
-        calculationCleanedCacheJob =
-            CoroutineScope(Dispatchers.IO).launch {
-                calculateCleanedCache(interrupted)
-            }
+        val resId: Int
 
-        val displayText = when (interrupted) {
-            true -> getString(R.string.text_clean_cache_interrupt_processing)
-            else -> getString(R.string.text_clean_cache_finish_processing)
+        // run job to calculate cleaned cache on Android 8 and later
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            calculationCleanedCacheJob?.cancel()
+            calculationCleanedCacheJob =
+                CoroutineScope(Dispatchers.IO).launch {
+                    calculateCleanedCache(interrupted)
+                }
+            resId = when (interrupted) {
+                true -> R.string.text_clean_cache_interrupt_processing
+                else -> R.string.text_clean_cache_finish_processing
+            }
+        } else {
+            resId = when (interrupted) {
+                true -> R.string.text_clean_cache_interrupt
+                else -> R.string.text_clean_cache_finish
+            }
         }
+
+        val displayText = getString(resId)
 
         updateMainText(displayText)
         updateStartStopServiceButton()
@@ -907,8 +917,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
 
         val resId = when (interrupted) {
-            true -> R.string.text_clean_cache_interrupt
-            else -> R.string.text_clean_cache_finish
+            true -> R.string.text_clean_cache_interrupt_display_size
+            else -> R.string.text_clean_cache_finish_display_size
         }
 
         val displayText = getString(resId,
