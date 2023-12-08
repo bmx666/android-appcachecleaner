@@ -228,14 +228,22 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             menu.findItem(R.id.menu_help).isVisible = false
             menu.findItem(R.id.menu_settings).isVisible = false
             menu.findItem(R.id.menu_filter).isVisible = false
-            menu.findItem(R.id.menu_search).isVisible = false
+            menu.findItem(R.id.menu_search).apply {
+                if (isActionViewExpanded)
+                    collapseActionView()
+                isVisible = false
+            }
         }
 
         onMenuShowMain = {
             menu.findItem(R.id.menu_help).isVisible = true
             menu.findItem(R.id.menu_settings).isVisible = true
             menu.findItem(R.id.menu_filter).isVisible = false
-            menu.findItem(R.id.menu_search).isVisible = false
+            menu.findItem(R.id.menu_search).apply {
+                if (isActionViewExpanded)
+                    collapseActionView()
+                isVisible = false
+            }
         }
 
         onMenuShowFilter = {
@@ -243,14 +251,22 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             menu.findItem(R.id.menu_settings).isVisible = false
             menu.findItem(R.id.menu_filter).isVisible =
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            menu.findItem(R.id.menu_search).isVisible = false
+            menu.findItem(R.id.menu_search).apply {
+                if (isActionViewExpanded)
+                    collapseActionView()
+                isVisible = false
+            }
         }
 
         onMenuShowSearch = {
             menu.findItem(R.id.menu_help).isVisible = false
             menu.findItem(R.id.menu_settings).isVisible = false
             menu.findItem(R.id.menu_filter).isVisible = false
-            menu.findItem(R.id.menu_search).isVisible = true
+            menu.findItem(R.id.menu_search).apply {
+                if (isActionViewExpanded)
+                    collapseActionView()
+                isVisible = true
+            }
         }
 
         val searchView = menu.findItem(R.id.menu_search)?.actionView as SearchView?
