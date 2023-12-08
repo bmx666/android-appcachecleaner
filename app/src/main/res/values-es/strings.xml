@@ -4,9 +4,11 @@
     <string name="service_name">Limpiador de Caché</string>
     <string name="tile_name">Limpiador de Caché</string>
     <string name="text_clean_cache_left">Aplicaciones restantes</string>
-    <string name="text_clean_cache_finish">La limpieza de caché finalizó\nSe limpió %1$s</string>
+    <string name="text_clean_cache_finish">La limpieza de caché finalizó</string>
+    <string name="text_clean_cache_finish_display_size">La limpieza de caché finalizó\nSe limpió %1$s</string>
     <string name="text_clean_cache_finish_processing">La limpieza de caché finalizó\nProcesando…</string>
-    <string name="text_clean_cache_interrupt">Se interrumpió la limpieza de caché\nSe limpió %1$s</string>
+    <string name="text_clean_cache_interrupt">Se interrumpió la limpieza de caché</string>
+    <string name="text_clean_cache_interrupt_display_size">Se interrumpió la limpieza de caché\nSe limpió %1$s</string>
     <string name="text_clean_cache_interrupt_processing">Se interrumpió la limpieza de caché\nProcesando…</string>
     <string name="btn_open_accessibility">Abrir configuración de accesibilidad</string>
     <string name="btn_open_usage_stats">Abrir configuración de estadísticas de uso</string>
