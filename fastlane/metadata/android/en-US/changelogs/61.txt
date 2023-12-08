@@ -1,0 +1,1 @@
+* calculate and display the cleaned cache size in the background for Android 8 and later
