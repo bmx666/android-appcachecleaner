@@ -1,29 +1,11 @@
 package com.github.bmx666.appcachecleaner.const
 
+import android.os.Build
 import androidx.annotation.IntRange
 import kotlin.coroutines.cancellation.CancellationException
 
 class Constant {
     class Intent {
-        class Settings {
-            companion object {
-                const val ACTION = "Settings"
-
-                const val NAME_CLEAR_CACHE_TEXT_LIST = "clear_cache_text_list"
-                const val NAME_CLEAR_DATA_TEXT_LIST = "clear_data_text_list"
-                const val NAME_STORAGE_TEXT_LIST = "storage_text_list"
-                const val NAME_OK_TEXT_LIST = "ok_text_list"
-
-                const val NAME_DELAY_FOR_NEXT_APP_TIMEOUT = "delay_for_next_app_timeout"
-                const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
-                const val NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT = "max_wait_clear_cache_button_timeout"
-                const val NAME_MAX_WAIT_ACCESSIBILITY_EVENT_TIMEOUT = "max_wait_accessibility_event_timeout"
-                const val NAME_GO_BACK_AFTER_APPS = "go_back_after_apps"
-
-                const val NAME_SCENARIO = "scenario"
-            }
-        }
-
         class StopAccessibilityService {
             companion object {
                 const val ACTION = "StopAccessibilityService"
@@ -59,22 +41,6 @@ class Constant {
         }
     }
 
-    class Bundle {
-        class AppCacheCleanerActivity {
-            companion object {
-                const val KEY_SKIP_FIRST_RUN = "skip_first_run"
-            }
-        }
-
-        class PackageFragment {
-            companion object {
-                const val KEY_PACKAGE_LIST_ACTION = "package_list_action"
-                const val KEY_CUSTOM_LIST_NAME = "custom_list_name"
-                const val KEY_HIDE_STATS = "hide_stats"
-            }
-        }
-    }
-
     class Settings {
         class CacheClean {
             companion object {
@@ -105,13 +71,56 @@ class Constant {
                 @IntRange(from = 0)
                 const val MAX_WAIT_ACCESSIBILITY_EVENT_MS = 10000
                 @IntRange(from = 0)
-                const val DEFAULT_GO_BACK_AFTER_APPS = 25
+                val MIN_GO_BACK_AFTER_APPS =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) 1
+                    else 0
                 @IntRange(from = 0)
-                const val MIN_GO_BACK_AFTER_APPS = 0
-                @IntRange(from = 1)
-                const val MIN_GO_BACK_AFTER_APPS_FOR_API_34 = 1
+                val DEFAULT_GO_BACK_AFTER_APPS =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) 25
+                    else MIN_GO_BACK_AFTER_APPS
                 @IntRange(from = 0)
                 const val MAX_GO_BACK_AFTER_APPS = 50
+            }
+        }
+
+        class Extra {
+            companion object {
+                const val DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS = false
+                const val DEFAULT_SHOW_BUTTON_START_STOP_SERVICE = false
+                const val DEFAULT_SHOW_BUTTON_CLOSE_APP = false
+                const val DEFAULT_ACTION_STOP_SERVICE = false
+                const val DEFAULT_ACTION_CLOSE_APP = false
+            }
+        }
+
+        class Filter {
+            companion object {
+                const val DEFAULT_HIDE_DISABLED_APPS = false
+                const val DEFAULT_HIDE_IGNORED_APPS = true
+            }
+        }
+
+        class FirstBoot {
+            companion object {
+                // enable first boot by default
+                const val DEFAULT_FIRST_BOOT = true
+            }
+        }
+
+        class UI {
+            enum class Contrast {
+                STANDARD,
+                MEDIUM,
+                HIGH,
+            }
+
+            companion object {
+                // disable force Dark theme by default
+                const val DEFAULT_FORCE_NIGHT_MODE = false
+                // enable dynamic color by default
+                const val DEFAULT_DYNAMIC_COLOR = true
+                // dynamic color contrast by default
+                val DEFAULT_CONTRAST = Contrast.STANDARD
             }
         }
     }
@@ -143,10 +152,20 @@ class Constant {
     }
 
     enum class PackageListAction {
-        DEFAULT,
-        CUSTOM_ADD_EDIT,
-        DISABLED_CLEAN,
-        CUSTOM_CLEAN,
-        IGNORED_APPS_EDIT
+        USER_APPS,
+        SYSTEM_APPS,
+        ALL_APPS,
+        DISABLED_APPS,
+        IGNORED_APPS,
+        CUSTOM_LIST_ADD,
+        CUSTOM_LIST_EDIT,
+    }
+
+    enum class Navigation {
+        FIRST_BOOT,
+        HOME,
+        HELP,
+        SETTINGS,
+        PACKAGE_LIST,
     }
 }

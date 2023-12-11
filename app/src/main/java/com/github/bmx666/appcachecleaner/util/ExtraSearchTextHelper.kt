@@ -1,18 +1,41 @@
 package com.github.bmx666.appcachecleaner.util
 
 import android.content.Context
-import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.data.UserPrefExtraSearchTextManager
+import com.github.bmx666.appcachecleaner.data.UserPrefScenarioManager
+import kotlinx.coroutines.flow.firstOrNull
 
 class ExtraSearchTextHelper {
 
     companion object {
 
         @JvmStatic
-        suspend fun getTextForOk(context: Context): Array<String> {
-            val list = ArrayList<String>()
+        private suspend fun getClearCache(context: Context): CharSequence? {
+            val locale = LocaleHelper.getCurrentLocale(context)
+            val manager = UserPrefExtraSearchTextManager(context.applicationContext)
+            return manager.getClearCache(locale).firstOrNull()
+        }
 
-            when (SharedPreferencesManager.Settings.getScenario(context)) {
+        @JvmStatic
+        private suspend fun getStorage(context: Context): CharSequence? {
+            val locale = LocaleHelper.getCurrentLocale(context)
+            val manager = UserPrefExtraSearchTextManager(context.applicationContext)
+            return manager.getStorage(locale).firstOrNull()
+        }
+
+        @JvmStatic
+        private suspend fun getScenario(context: Context): Constant.Scenario {
+            val manager = UserPrefScenarioManager(context.applicationContext)
+            return manager.scenario.firstOrNull() ?: Constant.Scenario.DEFAULT
+        }
+
+        @JvmStatic
+        suspend fun getTextForOk(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
+
+            when (getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {}
                 Constant.Scenario.XIAOMI_MIUI -> {
                     arrayListOf(
@@ -27,21 +50,21 @@ class ExtraSearchTextHelper {
                 }
             }
 
-            return list.toTypedArray()
+            list.add(context.getText(android.R.string.ok))
+
+            return list
         }
 
         @JvmStatic
-        suspend fun getTextForClearCache(context: Context): Array<String> {
-            val locale = LocaleHelper.getCurrentLocale(context)
+        suspend fun getTextForClearCache(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
 
-            val list = ArrayList<String>()
-
-            SharedPreferencesManager.ExtraSearchText.getClearCache(context, locale)?.let { value ->
+            getClearCache(context)?.let { value ->
                 if (value.isNotEmpty())
                     list.add(value)
             }
 
-            when (SharedPreferencesManager.Settings.getScenario(context)) {
+            when (getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {
                     arrayListOf(
                         "clear_cache_btn_text",
@@ -66,14 +89,16 @@ class ExtraSearchTextHelper {
                 }
             }
 
-            return list.toTypedArray()
+            list.add(context.getText(R.string.clear_cache_btn_text))
+
+            return list
         }
 
         @JvmStatic
-        suspend fun getTextForClearData(context: Context): Array<String> {
-            val list = ArrayList<String>()
+        suspend fun getTextForClearData(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
 
-            when (SharedPreferencesManager.Settings.getScenario(context)) {
+            when (getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {}
                 Constant.Scenario.XIAOMI_MIUI -> {
                     arrayListOf(
@@ -88,21 +113,21 @@ class ExtraSearchTextHelper {
                 }
             }
 
-            return list.toTypedArray()
+            list.add(context.getText(R.string.clear_user_data_text))
+
+            return list
         }
 
         @JvmStatic
-        suspend fun getTextForStorage(context: Context): Array<String> {
-            val locale = LocaleHelper.getCurrentLocale(context)
+        suspend fun getTextForStorage(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
 
-            val list = ArrayList<String>()
-
-            SharedPreferencesManager.ExtraSearchText.getStorage(context, locale)?.let { value ->
+            getStorage(context)?.let { value ->
                 if (value.isNotEmpty())
                     list.add(value)
             }
 
-            when (SharedPreferencesManager.Settings.getScenario(context)) {
+            when (getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {
                     arrayListOf(
                         "storage_settings_for_app",
@@ -120,7 +145,10 @@ class ExtraSearchTextHelper {
                 Constant.Scenario.XIAOMI_MIUI -> {}
             }
 
-            return list.toTypedArray()
+            list.add(context.getText(R.string.storage_settings_for_app))
+            list.add(context.getText(R.string.storage_label))
+
+            return list
         }
     }
 }

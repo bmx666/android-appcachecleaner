@@ -2,10 +2,12 @@ package com.github.bmx666.appcachecleaner.util
 
 import android.content.Context
 import android.content.res.Configuration
-import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import com.github.bmx666.appcachecleaner.data.UserPrefUiManager
+import kotlinx.coroutines.flow.first
 
 suspend fun Context.getDayNightModeContext(): Context {
-    return when (SharedPreferencesManager.UI.getNightMode(this)) {
+    val userPrefUiManager = UserPrefUiManager(this.applicationContext)
+    return when (userPrefUiManager.forceNightMode.first()) {
         true -> {
             val uiModeFlag = Configuration.UI_MODE_NIGHT_YES
             val config = Configuration(this.resources.configuration)

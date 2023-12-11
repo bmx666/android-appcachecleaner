@@ -65,15 +65,5 @@ class ActivityHelper {
                 }
             )
         }
-
-        @JvmStatic
-        fun navigateToHomeScreen(context: Context?) {
-            context?.startActivity(
-                Intent(Intent.ACTION_MAIN).apply {
-                    addCategory(Intent.CATEGORY_HOME)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-            )
-        }
     }
 }

@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Очиститель кэша</string>
     <string name="service_name">Очиститель кэша</string>
-    <string name="tile_name">Очиститель кэша</string>
     <string name="text_enable_accessibility_title">Включить службу спец. возможностей</string>
     <string name="text_enable_accessibility_message">
         Для работы приложению <b>Очиститель кэша</b> требуется ваше разрешение.
@@ -340,13 +339,13 @@
     <string name="prefs_title_custom_list_remove">Удалить</string>
     <string name="prefs_summary_custom_list_remove">Удалить существующий собств. список приложений</string>
     <string name="prefs_other">Другое</string>
-    <string name="prefs_title_delay_for_next_app_timeout">Задержка между приложениями - %dс</string>
+    <string name="prefs_title_delay_for_next_app_timeout">Задержка между приложениями - %.2fс</string>
     <string name="prefs_summary_delay_for_next_app_timeout">Для старых смартфонов рекомендуется увеличить время ожидания между приложениями, так как система Android может вызывать прерывания</string>
-    <string name="prefs_title_max_wait_app_timeout">Макс. время ожидания на прил. - %dc</string>
+    <string name="prefs_title_max_wait_app_timeout">Макс. время ожидания на прил. - %.2fс</string>
     <string name="prefs_summary_max_wait_app_timeout">Для старых смартфонов вам необходимо увеличить время ожидания на каждое приложение, т.к. вычисление кэша требует больше времени</string>
-    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Макс. время ожидания кнопки "Очистить кэш" - %dc</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Макс. время ожидания кнопки "Очистить кэш" - %.2fс</string>
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Для старых смартфонов вам необходимо увеличить время ожидания, т.к. вычисление кэша требует больше времени</string>
-    <string name="prefs_title_max_wait_accessibility_event_timeout">Макс. время ожидания события спец. возм. - %dс</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Макс. время ожидания события спец. возм. - %.2fс</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Для старых смартфонов вам необходимо увеличить время ожидания, т.к. отклик на события сцеп. возможностей требует больше времени</string>
     <string name="prefs_title_go_back_after_apps">Вернуться назад после очистки %d приложений</string>
     <string name="prefs_title_go_back_after_apps_never">Никогда не возвращаться после очистки приложений</string>

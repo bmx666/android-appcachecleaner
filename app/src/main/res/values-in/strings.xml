@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Pembersih Cache</string>
     <string name="service_name">Pembersih Cache</string>
-    <string name="tile_name">Pembersih Cache</string>
     <string name="text_enable_accessibility_title">Aktifkan Layanan Aksesibilitas</string>
     <string name="text_enable_accessibility_message">
         Untuk berfungsi dengan baik, <b>Pembersih Cache</b> memerlukan izin Anda.
@@ -334,13 +333,13 @@
     <string name="prefs_title_custom_list_remove">Hapus</string>
     <string name="prefs_summary_custom_list_remove">Hapus daftar kustom yang ada aplikasi</string>
     <string name="prefs_other">Lainnya</string>
-    <string name="prefs_title_delay_for_next_app_timeout">Waktu tunggu antara aplikasi - %ds</string>
+    <string name="prefs_title_delay_for_next_app_timeout">Waktu tunggu antara aplikasi - %.2fs</string>
     <string name="prefs_summary_delay_for_next_app_timeout">Untuk smartphone lama, disarankan untuk meningkatkan waktu tunggu antara aplikasi, karena Sistem Android dapat menyebabkan gangguan</string>
-    <string name="prefs_title_max_wait_app_timeout">Maks. waktu tunggu per aplikasi - %ds</string>
+    <string name="prefs_title_max_wait_app_timeout">Maks. waktu tunggu per aplikasi - %.2fs</string>
     <string name="prefs_summary_max_wait_app_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena perhitungan ukuran cache bisa memakan waktu lebih lama</string>
-    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Maks. waktu tunggu tombol Bersihkan Cache - %ds</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Maks. waktu tunggu tombol Bersihkan Cache - %.2fs</string>
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena perhitungan ukuran cache bisa memakan waktu lebih lama</string>
-    <string name="prefs_title_max_wait_accessibility_event_timeout">Maks. waktu tunggu untuk acara - %ds</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Maks. waktu tunggu untuk acara - %.2fs</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena acara Aksesibilitas bisa memakan waktu lebih lama</string>
     <string name="prefs_title_go_back_after_apps">Kembali setelah membersihkan %d aplikasi</string>
     <string name="prefs_title_go_back_after_apps_never">Jangan pernah kembali setelah membersihkan aplikasi</string>

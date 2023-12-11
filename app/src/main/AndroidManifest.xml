@@ -27,25 +27,13 @@
         android:theme="@style/Theme.AppCacheCleaner" >
 
         <activity
-            android:name=".ui.activity.LauncherActivity"
+            android:name=".ui.activity.AppCacheCleanerActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCacheCleaner.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.activity.FirstBootActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCacheCleaner.NoActionBar" >
-        </activity>
-
-        <activity
-            android:name=".ui.activity.AppCacheCleanerActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCacheCleaner.NoActionBar" >
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -63,17 +51,6 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
-        </service>
-
-        <service
-            android:name=".service.CacheCleanerTileService"
-            android:exported="true"
-            android:label="@string/tile_name"
-            android:icon="@drawable/ic_baseline_icon_tile_24"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
         </service>
 
         <service
