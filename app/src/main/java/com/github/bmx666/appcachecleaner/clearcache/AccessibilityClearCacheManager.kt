@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.clearcache
 
+import android.content.Context
 import android.os.ConditionVariable
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -14,13 +15,18 @@ import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.C
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
+import com.github.bmx666.appcachecleaner.data.UserPrefScenarioManager
+import com.github.bmx666.appcachecleaner.data.UserPrefTimeoutManager
 import com.github.bmx666.appcachecleaner.log.Logger
+import com.github.bmx666.appcachecleaner.util.ExtraSearchTextHelper
 import com.github.bmx666.appcachecleaner.util.showTree
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
 
@@ -41,52 +47,47 @@ class AccessibilityClearCacheManager {
     private var goBackJob: Job? = null
     private val needGoBack = ConditionVariable()
 
-    data class Settings(
-        val clearCacheTextList: ArrayList<CharSequence>,
-        val clearDataTextList: ArrayList<CharSequence>,
-        val storageTextList: ArrayList<CharSequence>,
-        val okTextList: ArrayList<CharSequence>,
-        val delayForNextAppTimeout: Int?,
-        val maxWaitAppTimeout: Int?,
-        val maxWaitClearCacheButtonTimeout: Int?,
-        val maxWaitAccessibilityEventTimeout: Int?,
-        val goBackAfterApps: Int?,
-    )
+    suspend fun setSettings(@ApplicationContext context: Context) {
+        val userPrefScenarioManager = UserPrefScenarioManager(context)
+        val userPrefTimeoutManager = UserPrefTimeoutManager(context)
 
-    fun setSettings(scenario: Constant.Scenario?, settings: Settings) {
-        scenario?.let {
-            cacheCleanScenario =
-                when (it) {
-                    Constant.Scenario.DEFAULT -> DefaultClearCacheScenario()
-                    Constant.Scenario.XIAOMI_MIUI -> XiaomiMIUIClearCacheScenario()
-                }
-        }
+        val scenario = userPrefScenarioManager.scenario.first()
+        cacheCleanScenario =
+            when (scenario) {
+                Constant.Scenario.DEFAULT -> DefaultClearCacheScenario()
+                Constant.Scenario.XIAOMI_MIUI -> XiaomiMIUIClearCacheScenario()
+            }
 
-        cacheCleanScenario.setExtraSearchText(
-            settings.clearCacheTextList,
-            settings.clearDataTextList,
-            settings.storageTextList,
-            settings.okTextList)
+        cacheCleanScenario.arrayTextClearCacheButton.addAll(
+            ExtraSearchTextHelper.getTextForClearCache(context)
+        )
 
-        settings.maxWaitAppTimeout?.let {
-            cacheCleanScenario.maxWaitAppTimeoutMs = it * 1000
-        }
+        cacheCleanScenario.arrayTextClearDataButton.addAll(
+            ExtraSearchTextHelper.getTextForClearData(context)
+        )
 
-        settings.maxWaitClearCacheButtonTimeout?.let {
-            cacheCleanScenario.maxWaitClearCacheButtonTimeoutMs = it * 1000
-        }
+        cacheCleanScenario.arrayTextStorageAndCacheMenu.addAll(
+            ExtraSearchTextHelper.getTextForStorage(context)
+        )
 
-        settings.delayForNextAppTimeout?.let {
-            cacheCleanScenario.delayForNextAppTimeoutMs = it * 1000
-        }
+        cacheCleanScenario.arrayTextOkButton.addAll(
+            ExtraSearchTextHelper.getTextForOk(context)
+        )
 
-        settings.maxWaitAccessibilityEventTimeout?.let {
-            cacheCleanScenario.maxWaitAccessibilityEventMs = it * 1000
-        }
+        cacheCleanScenario.delayForNextAppTimeoutMs =
+            userPrefTimeoutManager.delayForNextAppTimeout.first()
 
-        settings.goBackAfterApps?.let {
-            cacheCleanScenario.goBackAfterApps = it
-        }
+        cacheCleanScenario.maxWaitAppTimeoutMs =
+            userPrefTimeoutManager.maxWaitAppTimeout.first()
+
+        cacheCleanScenario.maxWaitClearCacheButtonTimeoutMs =
+            userPrefTimeoutManager.maxWaitClearCacheButtonTimeout.first()
+
+        cacheCleanScenario.maxWaitAccessibilityEventMs =
+            userPrefTimeoutManager.maxWaitAccessibilityEventTimeout.first()
+
+        cacheCleanScenario.goBackAfterApps =
+            userPrefTimeoutManager.maxGoBackAfterApps.first()
     }
 
     fun clearCacheApp(pkgList: ArrayList<String>,
@@ -94,7 +95,6 @@ class AccessibilityClearCacheManager {
                       performBack: () -> Boolean,
                       openAppInfo: KFunction1<String, Unit>,
                       finish: (String?, String?) -> Unit) {
-
         accessibilityJob?.cancel(CANCEL_INIT)
         packageJob?.cancel(CANCEL_INIT)
         mainJob?.cancel(CANCEL_INIT)
@@ -149,6 +149,8 @@ class AccessibilityClearCacheManager {
 
                     // timeout, no accessibility events, move to the next app
                     accessibilityJob?.cancel(CANCEL_IGNORE)
+
+                    updatePosition(index + 1)
 
                     // got first Accessibility event, need go back
                     if (waitAccessibilityJob?.isCancelled == true) {

@@ -5,14 +5,18 @@ import android.content.Intent
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
-import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearCacheManager
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
-import com.github.bmx666.appcachecleaner.util.IntentSettings
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerServiceHelper
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     companion object {
@@ -23,6 +27,9 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     private lateinit var accessibilityOverlay: AccessibilityOverlay
     private lateinit var localBroadcastManager: LocalBroadcastManagerServiceHelper
+
+    private val serviceJob = Job()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
     override fun onCreate() {
         super.onCreate()
@@ -64,42 +71,6 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         disableSelf()
     }
 
-    override fun onSetSettings(intentSettings: IntentSettings?) {
-        intentSettings ?: return
-
-        accessibilityClearCacheManager.setSettings(
-            intentSettings.scenario,
-            AccessibilityClearCacheManager.Settings(
-                clearCacheTextList =
-                    ArrayList<CharSequence>().apply {
-                        intentSettings.clearCacheTextList?.forEach { add(it) }
-                        add(getText(R.string.clear_cache_btn_text))
-                    },
-                clearDataTextList =
-                    ArrayList<CharSequence>().apply {
-                        intentSettings.clearDataTextList?.forEach { add(it) }
-                        add(getText(R.string.clear_user_data_text))
-                    },
-                storageTextList =
-                    ArrayList<CharSequence>().apply {
-                        intentSettings.storageTextList?.forEach { add(it) }
-                        add(getText(R.string.storage_settings_for_app))
-                        add(getText(R.string.storage_label))
-                    },
-                okTextList =
-                    ArrayList<CharSequence>().apply {
-                        intentSettings.okTextList?.forEach { add(it) }
-                        add(getText(android.R.string.ok))
-                    },
-                delayForNextAppTimeout = intentSettings.delayForNextAppTimeout,
-                maxWaitAppTimeout = intentSettings.maxWaitAppTimeout,
-                maxWaitClearCacheButtonTimeout = intentSettings.maxWaitClearCacheButtonTimeout,
-                maxWaitAccessibilityEventTimeout = intentSettings.maxWaitAccessibilityEventTimeout,
-                goBackAfterApps = intentSettings.goBackAfterApps,
-            )
-        )
-    }
-
     override fun onClearCache(pkgList: ArrayList<String>?) {
         if (BuildConfig.DEBUG)
             logger.onClearCache()
@@ -107,16 +78,20 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         pkgList?.let{
             accessibilityOverlay.show(this)
             val pkgListSize = pkgList.size
-            accessibilityClearCacheManager.clearCacheApp(
-                pkgList,
-                { index: Int ->
-                    accessibilityOverlay.updateCounter(index, pkgListSize)
-                },
-                {
-                    performGlobalAction(GLOBAL_ACTION_BACK)
-                },
-                localBroadcastManager::sendAppInfo,
-                localBroadcastManager::sendFinish)
+            serviceScope.launch {
+                val context = this@AppCacheCleanerService.applicationContext
+                accessibilityClearCacheManager.setSettings(context)
+                accessibilityClearCacheManager.clearCacheApp(
+                    pkgList,
+                    { index: Int ->
+                        accessibilityOverlay.updateCounter(index, pkgListSize)
+                    },
+                    {
+                        performGlobalAction(GLOBAL_ACTION_BACK)
+                    },
+                    localBroadcastManager::sendAppInfo,
+                    localBroadcastManager::sendFinish)
+            }
         } ?: localBroadcastManager.sendFinish(null, null)
     }
 

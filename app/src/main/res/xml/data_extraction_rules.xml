@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
     <cloud-backup disableIfNoEncryptionCapabilities="false">
-        <include domain="sharedpref" path="."/>
-        <exclude domain="sharedpref" path="FirstBoot.xml"/>
+        <include domain="file" path="datastore/"/>
+        <exclude domain="file" path="datastore/prefsFirstBoot.preferences_pb"/>
     </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="datastore/"/>
+    </device-transfer>
 </data-extraction-rules>

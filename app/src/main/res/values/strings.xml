@@ -2,7 +2,6 @@
 <resources>
     <string translatable="false" name="app_name">Cache Cleaner</string>
     <string translatable="false" name="service_name">Cache Cleaner</string>
-    <string translatable="false" name="tile_name">Cache Cleaner</string>
     <string translatable="false" name="text_enable_accessibility_title">Enable Accessibility Service</string>
     <string translatable="false" name="text_enable_accessibility_message">
         To functional properly, <b>Cache Cleaner</b> needs your permission.
@@ -307,6 +306,8 @@
     <!-- Preference -->
     <string translatable="false" name="prefs_ui">UI</string>
     <string translatable="false" name="prefs_ui_night_mode">Dark theme</string>
+    <string translatable="false" name="prefs_ui_contrast">Contrast</string>
+    <string translatable="false" name="prefs_ui_dynamic_color">Dynamic color</string>
     <string translatable="false" name="prefs_title_filter_min_cache_size">Min. cache size to filter apps</string>
     <string translatable="false" name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
     <string translatable="false" name="prefs_error_convert_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset filter</string>
@@ -333,13 +334,13 @@
     <string translatable="false" name="prefs_title_custom_list_remove">Remove</string>
     <string translatable="false" name="prefs_summary_custom_list_remove">Remove an existing custom list of apps</string>
     <string translatable="false" name="prefs_other">Other</string>
-    <string translatable="false" name="prefs_title_delay_for_next_app_timeout">Timeout between apps - %ds</string>
+    <string translatable="false" name="prefs_title_delay_for_next_app_timeout">Timeout between apps - %.2fs</string>
     <string translatable="false" name="prefs_summary_delay_for_next_app_timeout">For older smartphones, it is advisable to increase the timeout between apps, as the Android System may cause interruptions</string>
-    <string translatable="false" name="prefs_title_max_wait_app_timeout">Max. timeout per app - %ds</string>
+    <string translatable="false" name="prefs_title_max_wait_app_timeout">Max. timeout per app - %.2fs</string>
     <string translatable="false" name="prefs_summary_max_wait_app_timeout">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
-    <string translatable="false" name="prefs_title_max_wait_clear_cache_btn_timeout">Max. timeout to wait Clear Cache button - %ds</string>
+    <string translatable="false" name="prefs_title_max_wait_clear_cache_btn_timeout">Max. timeout to wait Clear Cache button - %.2fs</string>
     <string translatable="false" name="prefs_summary_max_wait_clear_cache_btn_timeout">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
-    <string translatable="false" name="prefs_title_max_wait_accessibility_event_timeout">Max. timeout for event - %ds</string>
+    <string translatable="false" name="prefs_title_max_wait_accessibility_event_timeout">Max. timeout for event - %.2fs</string>
     <string translatable="false" name="prefs_summary_max_wait_accessibility_event_timeout">For old smartphones, you should increase the timeout because the Accessibility event can take much longer</string>
     <string translatable="false" name="prefs_title_go_back_after_apps">Go back after cleaning %d apps</string>
     <string translatable="false" name="prefs_title_go_back_after_apps_never">Never go back after cleaning apps</string>
@@ -354,29 +355,6 @@
         <item>0</item>
         <item>1</item>
     </string-array>
-
-    <!-- Settings keys -->
-    <string translatable="false" name="prefs_key_ui_night_mode">ui_night_mode</string>
-    <string translatable="false" name="prefs_key_filter_min_cache_size">filter_min_cache_size</string>
-    <string translatable="false" name="prefs_key_filter_hide_disabled_apps">filter_hide_disabled_apps</string>
-    <string translatable="false" name="prefs_key_filter_hide_ignored_apps">filter_hide_ignored_apps</string>
-    <string translatable="false" name="prefs_key_filter_list_of_ignored_apps">filter_list_of_ignored_apps</string>
-    <string translatable="false" name="prefs_key_clear_cache">clear_cache</string>
-    <string translatable="false" name="prefs_key_storage">storage</string>
-    <string translatable="false" name="prefs_key_show_button_clean_cache_disabled_apps">show_button_clean_cache_disabled_apps</string>
-    <string translatable="false" name="prefs_key_show_button_start_stop_service">show_button_start_stop_service</string>
-    <string translatable="false" name="prefs_key_show_button_close_app">show_button_close_app</string>
-    <string translatable="false" name="prefs_key_extra_action_stop_service">extra_action_stop_service</string>
-    <string translatable="false" name="prefs_key_extra_action_close_app">extra_action_close_app</string>
-    <string translatable="false" name="prefs_key_custom_list_add">custom_list_add</string>
-    <string translatable="false" name="prefs_key_custom_list_edit">custom_list_edit</string>
-    <string translatable="false" name="prefs_key_custom_list_remove">custom_list_remove</string>
-    <string translatable="false" name="prefs_key_settings_delay_for_next_app_timeout">settings_delay_for_next_app_timeout</string>
-    <string translatable="false" name="prefs_key_settings_max_wait_app_timeout">settings_max_wait_app_timeout</string>
-    <string translatable="false" name="prefs_key_settings_max_wait_accessibility_event_timeout">settings_max_wait_accessibility_event_timeout</string>
-    <string translatable="false" name="prefs_key_settings_max_wait_clear_cache_btn_timeout">settings_max_wait_clear_cache_btn_timeout</string>
-    <string translatable="false" name="prefs_key_settings_go_back_after_apps">settings_go_back_after_apps</string>
-    <string translatable="false" name="prefs_key_settings_scenario">settings_scenario</string>
 
     <!-- Snackbar -->
     <string translatable="false" name="snackbar_processing">Processing, please wait…</string>

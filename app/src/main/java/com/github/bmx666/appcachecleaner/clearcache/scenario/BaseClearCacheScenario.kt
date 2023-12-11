@@ -25,10 +25,10 @@ import kotlinx.coroutines.delay
 
 internal abstract class BaseClearCacheScenario {
 
-    protected val arrayTextClearCacheButton = ArrayList<CharSequence>()
-    protected val arrayTextClearDataButton = ArrayList<CharSequence>()
-    protected val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
-    protected val arrayTextOkButton = ArrayList<CharSequence>()
+    internal val arrayTextClearCacheButton = ArrayList<CharSequence>()
+    internal val arrayTextClearDataButton = ArrayList<CharSequence>()
+    internal val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
+    internal val arrayTextOkButton = ArrayList<CharSequence>()
 
     internal var delayForNextAppTimeoutMs:
         Int = DEFAULT_DELAY_FOR_NEXT_APP_MS
@@ -82,23 +82,6 @@ internal abstract class BaseClearCacheScenario {
 
     abstract fun resetInternalState()
     abstract suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException?
-
-    fun setExtraSearchText(clearCacheTextList: ArrayList<CharSequence>,
-                           clearDataTextList: ArrayList<CharSequence>,
-                           storageTextList: ArrayList<CharSequence>,
-                           okTextList: ArrayList<CharSequence>) {
-        arrayTextClearCacheButton.clear()
-        arrayTextClearCacheButton.addAll(clearCacheTextList)
-
-        arrayTextClearDataButton.clear()
-        arrayTextClearDataButton.addAll(clearDataTextList)
-
-        arrayTextStorageAndCacheMenu.clear()
-        arrayTextStorageAndCacheMenu.addAll(storageTextList)
-
-        arrayTextOkButton.clear()
-        arrayTextOkButton.addAll(okTextList)
-    }
 
     protected suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,
                                        debugText: String): Boolean?

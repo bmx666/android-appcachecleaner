@@ -21,14 +21,6 @@ class OverlayView @JvmOverloads constructor(
     private var showOverlayCallback: (() -> Unit)? = null
     private var hideOverlayCallback: (() -> Unit)? = null
 
-    fun setShowOverlayCallback(callback: () -> Unit) {
-        showOverlayCallback = callback
-    }
-
-    fun setHideOverlayCallback(callback: () -> Unit) {
-        hideOverlayCallback = callback
-    }
-
     @UiContext
     @UiThread
     private fun showOverlay() {

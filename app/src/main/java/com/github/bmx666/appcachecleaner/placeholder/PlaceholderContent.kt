@@ -62,8 +62,12 @@ object PlaceholderContent {
             }
         }
 
+        suspend fun check(packageName: String, checked: Boolean) {
+            items.filter { it.name == packageName }.forEach { it.checked = checked }
+        }
+
         suspend fun check(list: Set<String>) {
-            items.forEach {
+            items.forEach { it.name
                 it.checked = list.contains(it.name)
             }
         }
@@ -76,18 +80,8 @@ object PlaceholderContent {
             items.filterNot { it.ignore }.filter { it.visible }.forEach { it.checked = false }
         }
 
-        suspend fun ignore(list: Set<String>) {
-            items.forEach {
-                if (list.contains(it.name))
-                    it.ignore = true
-            }
-        }
-
-        suspend fun unignore(list: Set<String>) {
-            items.forEach {
-                if (list.contains(it.name))
-                    it.ignore = false
-            }
+        suspend fun getChecked(): Set<String> {
+            return items.filter { it.checked }.map { it.name }.toSet()
         }
 
         suspend fun getSorted(): List<PlaceholderPackage> {
@@ -101,8 +95,7 @@ object PlaceholderContent {
         private suspend fun getSortedByCacheSize(): List<PlaceholderPackage> {
             return items.filterNot { it.ignore }
                 .onEach { it.visible = true }
-                .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
-                    .thenByDescending { it.getCacheSize() }
+                .sortedWith(compareByDescending<PlaceholderPackage> { it.getCacheSize() }
                     .thenBy { it.label })
         }
 
@@ -121,8 +114,7 @@ object PlaceholderContent {
 
             return items.filterNot { it.ignore }
                 .onEach { it.visible = compareCacheBytes(it.getCacheSize()) }
-                .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
-                    .thenByDescending { it.getCacheSize() }
+                .sortedWith(compareByDescending<PlaceholderPackage> { it.getCacheSize() }
                     .thenBy { it.label })
         }
 
@@ -143,10 +135,11 @@ object PlaceholderContent {
     }
 
     object Current {
-        internal var items: List<PlaceholderPackage> = ArrayList()
+        internal val items by lazy { mutableListOf<PlaceholderPackage>() }
 
         suspend fun update(list: List<PlaceholderPackage>) {
-            items = list
+            items.clear()
+            items.addAll(list)
         }
 
         suspend fun getVisible(): List<PlaceholderPackage> {
@@ -155,26 +148,6 @@ object PlaceholderContent {
 
         suspend fun getChecked(): List<PlaceholderPackage> {
             return items.filter { it.checked }
-        }
-
-        suspend fun getPackageNames(): List<String> {
-            return items.map { it.name }
-        }
-
-        suspend fun getCheckedPackageNames(): List<String> {
-            return items.filter { it.checked }.map { it.name }
-        }
-
-        suspend fun isAllVisibleChecked(): Boolean {
-            return items.filter { it.visible }.all { it.checked }
-        }
-
-        suspend fun isAllVisibleUnchecked(): Boolean {
-            return items.filter { it.visible }.none { it.checked }
-        }
-
-        suspend fun find(pkgName: String): PlaceholderPackage? {
-            return items.firstOrNull{ it.name == pkgName }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

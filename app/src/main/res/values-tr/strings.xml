@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Önbellek Temizleyici</string>
     <string name="service_name">Önbellek Temizleyici</string>
-    <string name="tile_name">Önbellek Temizleyici</string>
     <string name="text_clean_cache_left">kalan uygulama</string>
     <string name="text_clean_cache_finish">Önbellek temizleme bitti</string>
     <string name="text_clean_cache_finish_display_size">Önbellek temizleme bitti\n%1$s temizlendi</string>
