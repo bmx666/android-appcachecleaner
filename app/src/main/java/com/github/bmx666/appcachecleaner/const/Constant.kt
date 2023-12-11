@@ -107,4 +107,11 @@ class Constant {
         CUSTOM_CLEAN,
         IGNORED_APPS_EDIT
     }
+
+    enum class Navigation {
+        HOME,
+        HELP,
+        SETTINGS,
+        PACKAGE_LIST,
+    }
 }
