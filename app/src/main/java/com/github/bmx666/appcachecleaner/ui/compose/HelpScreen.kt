@@ -23,14 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import androidx.core.text.method.LinkMovementMethodCompat
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
+import com.github.bmx666.appcachecleaner.const.Constant
 
 @Composable
 private fun CreateHtmlTextView(text: String, hasLink: Boolean = false) {
@@ -98,10 +100,8 @@ private fun ComposeHelpSubmitBugReport() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComposeHelp() {
-    val context = LocalContext.current
+fun HelpScreen(navController: NavHostController) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val navController = rememberNavController()
 
     Scaffold(
         modifier = Modifier
@@ -114,16 +114,16 @@ fun ComposeHelp() {
                 ),
                 title = {
                     Text(
-                        text = context.resources.getString(R.string.menu_item_help),
+                        text = stringResource(R.string.menu_item_help),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navController.navigate(Constant.Navigation.HOME.name) }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Localized description"
+                            contentDescription = "Back"
                         )
                     }
                 },
