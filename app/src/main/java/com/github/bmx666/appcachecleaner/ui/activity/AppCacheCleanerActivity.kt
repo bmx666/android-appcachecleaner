@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -24,6 +25,7 @@ import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.text.HtmlCompat
+import androidx.compose.runtime.Composable
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
@@ -38,10 +40,11 @@ import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
 import com.github.bmx666.appcachecleaner.ui.dialog.AlertDialogBuilder
+import com.github.bmx666.appcachecleaner.ui.theme.AppTheme
+import com.github.bmx666.appcachecleaner.ui.compose.ComposeHelp
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
-import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.SettingsFragment
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
@@ -467,7 +470,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 true
             }
             R.id.menu_help -> {
-                showMenuFragment(HelpFragment.newInstance(), R.string.menu_item_help)
+                setContent {
+                    AppTheme {
+                        ComposeHelp()
+                    }
+                }
                 true
             }
             R.id.menu_settings -> {
@@ -873,6 +880,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // interrupt package list preparation
         loadingPkgListJob?.cancel()
 
+        binding.composeView.visibility = View.GONE
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
         binding.layoutFabCustomList.visibility = View.GONE
@@ -919,7 +927,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     @UiThread
     private fun updateActionBarTextAndHideMenu(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuHideAll()
     }
 
@@ -927,7 +935,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     @UiThread
     private fun updateActionBarFilter(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowFilter()
     }
 
@@ -935,7 +943,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     @UiThread
     private fun updateActionBarSearch(title: String?) {
         supportActionBar?.title = title
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowSearch()
     }
 
@@ -950,8 +958,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     @UiContext
     @UiThread
     private fun restoreActionBar() {
+        supportActionBar?.show()
         supportActionBar?.setTitle(R.string.app_name)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(false)
         onMenuShowMain()
     }
 
@@ -1129,7 +1138,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                         updateActionBarPackageList(pkgListAction)
                     }
 
-                    is HelpFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_help)
                     is SettingsFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_settings)
                     else -> restoreActionBar()
                 }
