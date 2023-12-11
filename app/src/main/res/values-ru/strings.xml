@@ -292,8 +292,8 @@
     <string name="help_submit_bug_report"><![CDATA[
         <br/>
         <h2>Отправить отчет об ошибке</h2>
-        <br/><br/>
-        <b>Github</b> - https://github.com/bmx666/android-appcachecleaner/issues
+        <br/>
+        <b><a href="https://github.com/bmx666/android-appcachecleaner/issues">Github</a></b>
     ]]></string>
 
     <string name="description_accessibility_overlay_button_interrupt">Прервать процесс очистки кеша</string>
