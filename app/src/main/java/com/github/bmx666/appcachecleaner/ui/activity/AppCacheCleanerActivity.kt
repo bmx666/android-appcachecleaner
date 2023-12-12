@@ -1153,12 +1153,14 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // always reset to default package list type to avoid undefined behavior
         currentPkgListAction = Constant.PackageListAction.DEFAULT
 
+        /*
         hideFragmentViews()
         supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
             ?.let { fragment ->
                 supportFragmentManager.beginTransaction().remove(fragment).commitNow()
             }
         showMainViews()
+        */
     }
 
     @UiContext
