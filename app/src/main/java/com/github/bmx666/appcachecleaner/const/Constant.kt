@@ -151,6 +151,7 @@ class Constant {
     }
 
     enum class Navigation {
+        FIRST_BOOT,
         HOME,
         HELP,
         SETTINGS,
