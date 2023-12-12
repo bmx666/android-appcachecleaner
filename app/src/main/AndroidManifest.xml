@@ -22,25 +22,13 @@
         android:theme="@style/Theme.AppCacheCleaner" >
 
         <activity
-            android:name=".ui.activity.LauncherActivity"
+            android:name=".ui.activity.AppCacheCleanerActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCacheCleaner.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.activity.FirstBootActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCacheCleaner.NoActionBar" >
-        </activity>
-
-        <activity
-            android:name=".ui.activity.AppCacheCleanerActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCacheCleaner.NoActionBar" >
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
