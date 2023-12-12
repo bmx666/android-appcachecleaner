@@ -51,7 +51,12 @@ fun SettingsScreen(navController: NavHostController) {
                     IconButton(
                         onClick = {
                             navController.popBackStack()
-                            navController.navigate(Constant.Navigation.HOME.name)
+                            navController.navigate(Constant.Navigation.HOME.name) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         },
                     ) {
                         Icon(
