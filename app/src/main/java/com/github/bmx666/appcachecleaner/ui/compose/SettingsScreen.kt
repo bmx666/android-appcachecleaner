@@ -48,7 +48,12 @@ fun SettingsScreen(navController: NavHostController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Constant.Navigation.HOME.name) }) {
+                    IconButton(
+                        onClick = {
+                            navController.popBackStack()
+                            navController.navigate(Constant.Navigation.HOME.name)
+                        },
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back"
