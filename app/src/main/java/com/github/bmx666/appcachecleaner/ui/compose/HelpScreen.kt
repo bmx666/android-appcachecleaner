@@ -53,51 +53,6 @@ private fun CreateHtmlTextView(text: String, hasLink: Boolean = false) {
     )
 }
 
-@Composable
-private fun ComposeHelpAbout() {
-    val context = LocalContext.current
-    val htmlText = context.resources.getString(R.string.help_about)
-    CreateHtmlTextView(text = htmlText)
-}
-
-@Composable
-private fun ComposeHelpAndroid13AccessibilityPermission() {
-    if (BuildConfig.GOOGLEPLAY) return
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
-
-    val context = LocalContext.current
-    val htmlText = context.resources.getString(R.string.help_android13_accessibility_permission)
-    CreateHtmlTextView(text = htmlText)
-}
-
-@Composable
-private fun ComposeHelpHowToUse() {
-    val context = LocalContext.current
-    val htmlText = context.resources.getString(R.string.help_how_to_use)
-    CreateHtmlTextView(text = htmlText)
-}
-
-@Composable
-private fun ComposeHelpCustomizedSettingsUI() {
-    val context = LocalContext.current
-    val htmlText = context.resources.getString(R.string.help_customized_settings_ui)
-    CreateHtmlTextView(text = htmlText)
-}
-
-@Composable
-private fun ComposeHelpIconCopyright() {
-    val context = LocalContext.current
-    val htmlText = context.resources.getString(R.string.help_icon_copyright)
-    CreateHtmlTextView(text = htmlText, hasLink = true)
-}
-
-@Composable
-private fun ComposeHelpSubmitBugReport() {
-    val context = LocalContext.current
-    val htmlText = context.resources.getString(R.string.help_submit_bug_report)
-    CreateHtmlTextView(text = htmlText, hasLink = true)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HelpScreen(navController: NavHostController) {
@@ -141,12 +96,13 @@ fun HelpScreen(navController: NavHostController) {
                     )
                     .padding(horizontal = 16.dp)
             ) {
-                ComposeHelpAbout()
-                ComposeHelpAndroid13AccessibilityPermission()
-                ComposeHelpHowToUse()
-                ComposeHelpCustomizedSettingsUI()
-                ComposeHelpIconCopyright()
-                ComposeHelpSubmitBugReport()
+                CreateHtmlTextView(text = stringResource(R.string.help_about))
+                if (!BuildConfig.GOOGLEPLAY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    CreateHtmlTextView(text = stringResource(R.string.help_android13_accessibility_permission))
+                CreateHtmlTextView(text = stringResource(R.string.help_how_to_use))
+                CreateHtmlTextView(text = stringResource(R.string.help_customized_settings_ui))
+                CreateHtmlTextView(text = stringResource(R.string.help_icon_copyright))
+                CreateHtmlTextView(text = stringResource(R.string.help_submit_bug_report))
             }
         }
     )
