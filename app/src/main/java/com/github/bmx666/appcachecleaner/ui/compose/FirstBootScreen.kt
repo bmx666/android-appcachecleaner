@@ -213,7 +213,12 @@ fun FirstBootScreen(activity: Activity, navController: NavHostController) {
                         onClick = {
                             SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(activity)
                             navController.popBackStack()
-                            navController.navigate(Constant.Navigation.HOME.name)
+                            navController.navigate(Constant.Navigation.HOME.name) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         }
                     ) {
                         Text(text = stringResource(id = android.R.string.ok))
