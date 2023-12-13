@@ -120,7 +120,9 @@ private fun LabelledCheckBox(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FirstBootScreen(activity: Activity, navController: NavHostController) {
+fun FirstBootScreen(navController: NavHostController,
+                    onConfirm: () -> Unit,
+                    onCancel: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val numberOfCheckboxes = if (BuildConfig.GOOGLEPLAY) 8 else 4
@@ -202,16 +204,14 @@ fun FirstBootScreen(activity: Activity, navController: NavHostController) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Button(
-                        onClick = {
-                            activity.finish()
-                        }
+                        onClick = onCancel,
                     ) {
                         Text(text = stringResource(id = android.R.string.cancel))
                     }
                     Button(
                         enabled = isButtonOKEnabled,
                         onClick = {
-                            SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(activity)
+                            onConfirm()
                             navController.popBackStack()
                             navController.navigate(Constant.Navigation.HOME.name) {
                                 popUpTo(navController.graph.startDestinationId) {
@@ -219,7 +219,7 @@ fun FirstBootScreen(activity: Activity, navController: NavHostController) {
                                 }
                                 launchSingleTop = true
                             }
-                        }
+                        },
                     ) {
                         Text(text = stringResource(id = android.R.string.ok))
                     }
