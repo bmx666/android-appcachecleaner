@@ -389,8 +389,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 ) {
                     composable(Constant.Navigation.FIRST_BOOT.name) {
                         FirstBootScreen(
-                            activity = this@AppCacheCleanerActivity,
                             navController = navController,
+                            onConfirm = {
+                                SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(this@AppCacheCleanerActivity)
+                            },
+                            onCancel = {
+                                finish()
+                            },
                         )
                     }
                     composable(Constant.Navigation.HOME.name) {
