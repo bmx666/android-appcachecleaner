@@ -3,7 +3,7 @@
     <string name="app_name">Cache Cleaner</string>
     <string name="service_name">Cache Cleaner</string>
     <string name="tile_name">Cache Cleaner</string>
-    <string name="text_enable_accessibility_title">Activer le service d'accessibilité</string>
+    <string name="text_enable_accessibility_title">Activer le service d\'accessibilité</string>
     <string name="text_enable_accessibility_message">
         Pour fonctionner correctement, <b>Cache Cleaner</b> a besoin de votre permission.
         Allez dans les paramètres pour autoriser la permission pour <b>Accessibilité</b>.
@@ -12,15 +12,15 @@
         \n
         2. Trouvez <b>Cache Cleaner</b> et tapotez dessus.
         \n
-        3. Accordez l'autorisation.
+        3. Accordez l\'autorisation.
         \n\n
-        <u><b>Informations sur les services d'accessibilités:</b></u>
+        <u><b>Informations sur les services d\'accessibilités:</b></u>
         \n
-        - Cette application nécessite l'API des services d'accessibilité pour mettre en œuvre ses fonctions principales, telles que les clics, les glissements et autres fonctions principales.
+        - Cette application nécessite l\'API des services d\'accessibilité pour mettre en œuvre ses fonctions principales, telles que les clics, les glissements et autres fonctions principales.
         \n
-        - L'autorisation d'utiliser des fonctions spéciales est requise pour Android 6 et les versions ultérieures.
+        - L\'autorisation d\'utiliser des fonctions spéciales est requise pour Android 6 et les versions ultérieures.
         \n
-        - Cette application ne collecte pas et/ou ne transmet pas de données personnelles ou sensibles à l'aide de fonctions spéciales.
+        - Cette application ne collecte pas et/ou ne transmet pas de données personnelles ou sensibles à l\'aide de fonctions spéciales.
     </string>
     <string name="text_enable_accessibility_message_api33">
         Pour fonctionner correctement, <b>Cache Cleaner</b> a besoin de votre permission.
@@ -30,47 +30,47 @@
         \n
         2. Trouvez <b>Cache Cleaner</b> et tapotez dessus.
         \n
-        3. Accordez l'autorisation.
+        3. Accordez l\'autorisation.
         \n\n
-        <u><b>Informations sur les services d'accessibilités:</b></u>
+        <u><b>Informations sur les services d\'accessibilités:</b></u>
         \n
-        - Cette application nécessite l'API des services d'accessibilité pour mettre en œuvre ses fonctions principales, telles que les clics, les glissements et autres fonctions principales.
+        - Cette application nécessite l\'API des services d\'accessibilité pour mettre en œuvre ses fonctions principales, telles que les clics, les glissements et autres fonctions principales.
         \n
-        - L'autorisation d'utiliser des fonctions spéciales est requise pour Android 6 et les versions ultérieures.
+        - L\'autorisation d\'utiliser des fonctions spéciales est requise pour Android 6 et les versions ultérieures.
         \n
-        - Cette application ne collecte pas et/ou ne transmet pas de données personnelles ou sensibles à l'aide de fonctions spéciales.
+        - Cette application ne collecte pas et/ou ne transmet pas de données personnelles ou sensibles à l\'aide de fonctions spéciales.
         \n\n
         <u><b>Autorisez les paramètres restreints:</b></u>
         \n
-        - Depuis Android 13, les API d'accessibilité sont restreintes pour les applications tierces. Lisez le paragraphe
+        - Depuis Android 13, les API d\'accessibilité sont restreintes pour les applications tierces. Lisez le paragraphe
         <b>"Attention ⚠️"</b> dans le menu <b>Aide</b>.
     </string>
     <string name="text_accessibility_description">
-        L'application "Cache Cleaner" nécessite l'autorisation d'utiliser l'API Special Features pour mettre en œuvre des fonctions de base telles que le clic/clic, le défilement, etc.
-        L'application "Cache Cleaner" ne collecte pas et/ou ne transfère pas de données personnelles ou sensibles à l'aide de fonctions spéciales.
+        L\'application "Cache Cleaner" nécessite l\'autorisation d\'utiliser l\'API Special Features pour mettre en œuvre des fonctions de base telles que le clic/clic, le défilement, etc.
+        L\'application "Cache Cleaner" ne collecte pas et/ou ne transfère pas de données personnelles ou sensibles à l\'aide de fonctions spéciales.
     </string>
-    <string name="text_enable_usage_stats_title">Autoriser l'accès aux données d'utilisation.</string>
+    <string name="text_enable_usage_stats_title">Autoriser l\'accès aux données d\'utilisation.</string>
     <string name="text_enable_usage_stats_message">
-        Pour utiliser l'application, <b>Cache Cleaner</b> a besoin de votre permission.
-        Allez dans les paramètres de l'appareil et donnez à l'application <b>l'accès aux données d'utilisation</b>.
+        Pour utiliser l\'application, <b>Cache Cleaner</b> a besoin de votre permission.
+        Allez dans les paramètres de l\'appareil et donnez à l\'application <b>l\'accès aux données d\'utilisation</b>.
         \n\n
         1. Allez dans <b>Applications</b> dans les paramètres.
         \n
         2. Trouvez <b>Accès spéciaux des applis</b> et tapotez dessus.
         \n
-        3. Trouvez <b>Accès aux données d'utilisation</b> et tapotez dessus.
+        3. Trouvez <b>Accès aux données d\'utilisation</b> et tapotez dessus.
         \n
         4. Trouvez <b>Cache Cleaner</b> et tapotez dessus.
         \n
-        5. Accordez l'autorisation.
+        5. Accordez l\'autorisation.
         \n\n
-        <u><b>Informations sur les statistiques d'usage de l'application :</b></u>
+        <u><b>Informations sur les statistiques d\'usage de l\'application :</b></u>
         \n
-        - Cette application a besoin des statistiques d'utilisation pour mettre en œuvre sa fonction principale, telle que l'obtention de la taille du cache des applications installées.
+        - Cette application a besoin des statistiques d\'utilisation pour mettre en œuvre sa fonction principale, telle que l\'obtention de la taille du cache des applications installées.
         \n
-        - L'autorisation relative aux statistiques d'utilisation est requise pour Android 8 et les versions ultérieures.
+        - L\'autorisation relative aux statistiques d\'utilisation est requise pour Android 8 et les versions ultérieures.
         \n
-        - Cette application ne collecte pas et/ou ne partage pas de données personnelles ou sensibles à l'aide des statistiques d'utilisation.
+        - Cette application ne collecte pas et/ou ne partage pas de données personnelles ou sensibles à l\'aide des statistiques d\'utilisation.
     </string>
     <string name="text_clean_cache_left">applis restantes</string>
     <string name="text_clean_cache_finish">Le nettoyage du cache est terminé</string>
@@ -79,19 +79,19 @@
     <string name="text_clean_cache_interrupt">Le nettoyage du cache a été interrompu</string>
     <string name="text_clean_cache_interrupt_display_size">Le nettoyage du cache a été interrompu\n %1$s nettoyé</string>
     <string name="text_clean_cache_interrupt_processing">Le nettoyage du cache a été interrompu\nTraitement en cours…</string>
-    <string name="btn_open_accessibility">Ouvrir les paramètres d'accessibilités</string>
-    <string name="btn_open_usage_stats">Ouvrir les paramètres des statistiques d'utilisation.</string>
+    <string name="btn_open_accessibility">Ouvrir les paramètres d\'accessibilités</string>
+    <string name="btn_open_usage_stats">Ouvrir les paramètres des statistiques d\'utilisation.</string>
     <string name="btn_clean_all_cache">Vider le cache de toutes les applis</string>
     <string name="btn_clean_system_cache">Vider le cache des applis système</string>
     <string name="btn_clean_user_cache">Vider le cache des applis utilisateur</string>
-    <string name="btn_close_app">Fermer l'appli</string>
-    <string name="btn_start_accessibility_service">Démarrer le service d'accessibilité</string>
-    <string name="btn_stop_accessibility_service">Arrêter le service d'accessibilité</string>
+    <string name="btn_close_app">Fermer l\'appli</string>
+    <string name="btn_start_accessibility_service">Démarrer le service d\'accessibilité</string>
+    <string name="btn_stop_accessibility_service">Arrêter le service d\'accessibilité</string>
     <string name="btn_add_extra_search_text">Ajouter un texte de recherche supplémentaire</string>
     <string name="description_apps_all_check">Cocher toutes les applis</string>
     <string name="description_apps_all_uncheck">Décocher toutes les applis</string>
     <string name="text_cache_size_fmt">Cache: %1$s</string>
-    <string name="toast_package_list_item_long_click">Maintenez l'icône de l'application enfoncée pour lancer &lt;Infos sur l'appli&gt;</string>
+    <string name="toast_package_list_item_long_click">Maintenez l\'icône de l\'application enfoncée pour lancer &lt;Infos sur l\'appli&gt;</string>
 
     <string name="dialog_extra_search_text_title">Ajouter un texte de recherche supplémentaire</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nau lieu de \"%3$s\"</string>
@@ -105,74 +105,74 @@
     <string name="first_boot_message"><![CDATA[
         <h2>Interface utilisateur personnalisée</h2>
         <br/>
-        De nombreuses entreprises ou de ROMs Android complètent ou modifient les normes d'interface Android,
-        paramètres inclus. Cela peut causer des problèmes parce que l'application <b>Cache Cleaner</b>
-        est à la recherche de texte spécifique et si elle ne correspond pas, l'application ne fait rien.
+        De nombreuses entreprises ou de ROMs Android complètent ou modifient les normes d&apos;interface Android,
+        paramètres inclus. Cela peut causer des problèmes parce que l&apos;application <b>Cache Cleaner</b>
+        est à la recherche de texte spécifique et si elle ne correspond pas, l&apos;application ne fait rien.
     ]]></string>
     <string name="first_boot_confirm_1">
         Je confirme que je vais lire le chapitre <b>Interface utilisateur personnalisée</b> dans le menu <b>Aide</b>,
-        avant toute action avec l'application <b>Cache Cleaner</b>.
+        avant toute action avec l\'application <b>Cache Cleaner</b>.
     </string>
     <string name="first_boot_confirm_2">
-        Je confirme que si <b>Cache Cleaner</b> n'a effectué aucune action,
-        j'accepte d'exécuter les actions décrites dans le menu <b>Aide</b> dans le chapitre <b>Interface utilisateur personnalisée</b>,
-        relative à la spécification d'un texte alternatif pour les recherches dans les menus <b>Espace de stockage et cache</b> или <b>Stockage</b>,
+        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action,
+        j\'accepte d\'exécuter les actions décrites dans le menu <b>Aide</b> dans le chapitre <b>Interface utilisateur personnalisée</b>,
+        relative à la spécification d\'un texte alternatif pour les recherches dans les menus <b>Espace de stockage et cache</b> или <b>Stockage</b>,
         et en spécifiant un texte alternatif pour la recherche du bouton <b>Effacer du cache</b>.
     </string>
     <string name="first_boot_confirm_3">
-        Je confirme que si <b>Cache Cleaner</b> n'a effectué aucune action,
-        je modifierai le scénario d'effacement du cache dans le <b>Paramètres</b> du scénario <b>Par défaut</b>
+        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action,
+        je modifierai le scénario d\'effacement du cache dans le <b>Paramètres</b> du scénario <b>Par défaut</b>
         au scénario <b>Xiaomi MIUI</b> si mon téléphone es un  <b>Xiaomi avec un firmware MIUI régional spécifique</b>.
     </string>
     <string name="first_boot_confirm_4">
-        Je confirme que si <b>Cache Cleaner</b> n'a effectué aucune action
-        décrit ci-dessus, je m'engage à signaler mon problème à l'adresse indiquée dans le chapitre
+        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action
+        décrit ci-dessus, je m\'engage à signaler mon problème à l\'adresse indiquée dans le chapitre
         <b>Signaler une erreur</b> dans le menu <b>Aide</b>.
     </string>
     <string name="first_boot_confirm_googleplay_1">
-        Je confirme que si <b>Cache Cleaner</b> n'a effectué aucune action
-        décrit ci-dessus, et après avoir signalé mon problème à l'adresse dans le chapitre
-        <b>Envoyer un rapport d'erreur</b> dans le menu <b>Aide</b>, je ne recevrais aucune aide de l'auteur de l'appli.
-        Je peux déposer une plainte auprès de Google Play contre l'appli <b>Cache Cleaner</b>,
+        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action
+        décrit ci-dessus, et après avoir signalé mon problème à l\'adresse dans le chapitre
+        <b>Envoyer un rapport d\'erreur</b> dans le menu <b>Aide</b>, je ne recevrais aucune aide de l\'auteur de l\'appli.
+        Je peux déposer une plainte auprès de Google Play contre l\'appli <b>Cache Cleaner</b>,
         comme une application qui induit les utilisateurs en erreur.
     </string>
     <string name="first_boot_confirm_googleplay_2">
-        Je confirme que si <b>Cache Cleaner</b> n'a effectué aucune action
-        décrit ci-dessus, et après avoir déposé une plainte via Google Play sur l'application <b>Cache Cleaner</b>
-        j'accepte de laisser un avis sur Google Play lié à mon problème.
+        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action
+        décrit ci-dessus, et après avoir déposé une plainte via Google Play sur l\'application <b>Cache Cleaner</b>
+        j\'accepte de laisser un avis sur Google Play lié à mon problème.
     </string>
     <string name="first_boot_confirm_googleplay_3">
-        Je confirme que si je ne respecte pas l'un des points ci-dessus, 
+        Je confirme que si je ne respecte pas l\'un des points ci-dessus, 
         je renonce totalement à mon droit de laisser des commentaires négatifs 
-        ou de me plaindre d'utilisateurs trompeurs.
+        ou de me plaindre d\'utilisateurs trompeurs.
     </string>
     <string name="first_boot_confirm_googleplay_4">
-        Si je ne suis pas d'accord avec l'une quelconque des actions énumérées ci-dessus, 
-        je suis obligé de supprimer l'appli <b>Cache Cleaner</b> de mon appareil et ne pourra faire aucune réclamation 
-        contre elle-même et l'auteur de cette dernière.
+        Si je ne suis pas d\'accord avec l\'une quelconque des actions énumérées ci-dessus, 
+        je suis obligé de supprimer l\'appli <b>Cache Cleaner</b> de mon appareil et ne pourra faire aucune réclamation 
+        contre elle-même et l\'auteur de cette dernière.
     </string>
 
     <string name="menu_extra_search_text_title">Texte supplémentaire pour la recherche :</string>
 
     <string name="help_about"><![CDATA[
-        <h2>À propos de l'aide</h2>
+        <h2>À propos de l&apos;aide</h2>
         <br/>
-        Depuis Android 6 (Marshmallow), il est impossible d'effacer du cache toutes les applications 
-        à la fois, comme Google a installé cette autorisation uniquement pour les systèmes d'application, laissant 
-        une seule possibilité - pour ouvrir manuellement des informations sur l'application, trouver un élément du 
+        Depuis Android 6 (Marshmallow), il est impossible d&apos;effacer du cache toutes les applications 
+        à la fois, comme Google a installé cette autorisation uniquement pour les systèmes d&apos;application, laissant 
+        une seule possibilité - pour ouvrir manuellement des informations sur l&apos;application, trouver un élément du 
         menu
         <b>&quot;Espace de stockage et cache&quot;</b> et appuyer sur le bouton <b>&quot;Vider le cache&quot;</b>.
         <br/><br/>
-        L'appli <b>Cache Cleaner</b> peut demander toutes les applications utilisateur et système installées et 
-        remplacer toutes les actions manuelles liées au cache propre en utilisant le service d'accessibilité.
+        L&apos;appli <b>Cache Cleaner</b> peut demander toutes les applications utilisateur et système installées et 
+        remplacer toutes les actions manuelles liées au cache propre en utilisant le service d&apos;accessibilité.
     ]]></string>
 
     <string name="help_android13_accessibility_permission"><![CDATA[
         <br/>
         <h2>Attention ⚠️</h2>
         <br/>
-        Depuis Android 13, l'accès aux possibilités spéciales est limité aux applications tierces.
-        Suivez les étapes décrites ci-dessous pour activer le service d'accessibilité pour l'appli 
+        Depuis Android 13, l&apos;accès aux possibilités spéciales est limité aux applications tierces.
+        Suivez les étapes décrites ci-dessous pour activer le service d&apos;accessibilité pour l&apos;appli 
         <b>Cache Cleaner</b>.
         <br/><br/>
         <h3>Autorisez les paramètres restreints</h3>
@@ -180,42 +180,42 @@
         Lorsque vous activez les paramètres restreints, vous autorisez les applications à accéder 
         à des informations sensibles qui pourraient mettre vos données personnelles en danger. Nous 
         ne recommandons pas que vous autorisiez les paramètres restreints à moins que vous ne faisiez 
-        confiance au développeur de l'application.
+        confiance au développeur de l&apos;application.
         <br/><br/>
-        Certaines applications consciencieuses demandent également l'accès à certains paramètres. 
-        Par exemple, une demande pour les personnes handicapées peut vous demander d'inclure des 
-        caractéristiques spéciales Paramètres. De cette façon, il pourra accéder au contenu sur l'écran 
-        de l'appareil et interagir avec d'autres applications en votre nom.
+        Certaines applications consciencieuses demandent également l&apos;accès à certains paramètres. 
+        Par exemple, une demande pour les personnes handicapées peut vous demander d&apos;inclure des 
+        caractéristiques spéciales Paramètres. De cette façon, il pourra accéder au contenu sur l&apos;écran 
+        de l&apos;appareil et interagir avec d&apos;autres applications en votre nom.
         <br/><br/>
-        1. Appuyez sur le bouton <b>Ouvrir les paramètres de l'appli</b> en dessous
+        1. Appuyez sur le bouton <b>Ouvrir les paramètres de l&apos;appli</b> en dessous
         <br/>
         2. Allez dans le menu <b>Plus</b> <b>⋮</b> (en haut à droite)
         <br/>
         3. Allez dans <b>Autoriser les paramètres restreints</b>
         <br/>
-        4. Suivez les instructions à l'écran
+        4. Suivez les instructions à l&apos;écran
         <br/><br/>
         <b>Source</b> - https://support.google.com/android/answer/12623953
     ]]></string>
 
     <string name="help_how_to_use"><![CDATA[
         <br/>
-        <h2>Comment utiliser l'application</h2>
+        <h2>Comment utiliser l&apos;application</h2>
         <br/>
         1. Appuyez sur le bouton nettoyer le cache soit des <b>applis utilisateur</b>, <b>Applis systèmes</b>
         OU <b>Toutes les applis</b>.
         <br/>
-        2. Autorisez les données d'utilisation pour l'application <b>Cache Cleaner</b>, le cas échéant.
+        2. Autorisez les données d&apos;utilisation pour l&apos;application <b>Cache Cleaner</b>, le cas échéant.
         <br/>
-        3. Activez l'accessibilité pour l'application <b>Cache Cleaner</b>, le cas échéant.
+        3. Activez l&apos;accessibilité pour l&apos;application <b>Cache Cleaner</b>, le cas échéant.
         <br/>
         4. Vérifier les applications requises dans la liste (utiliser le bouton flottant pour cocher/décocher toutes les applications)
         <br/>
         5. Appuyez sur le bouton flottant <b>Clean Cache</b> pour lancer le processus de nettoyage du cache.
         <br/>
-        6. Appuyez sur le bouton d'accessibilité pour interrompre le processus OU attendez que le processus soit terminé.
+        6. Appuyez sur le bouton d&apos;accessibilité pour interrompre le processus OU attendez que le processus soit terminé.
         <br/>
-        7. <i>(optionnel)</i> Appuyez sur <b>Arrêter le service d'accessibilité</b>, pour désactiver le service d'accessibilité.
+        7. <i>(optionnel)</i> Appuyez sur <b>Arrêter le service d&apos;accessibilité</b>, pour désactiver le service d&apos;accessibilité.
     ]]></string>
 
     <string name="help_customized_settings_ui"><![CDATA[
@@ -223,16 +223,16 @@
         <h2>Interface utilisateur personnalisée</h2>
         <br/>
         De nombreuses entreprises et firmware tiers complètent 
-        ou modifient les normes d'interface Android, y compris les paramètres. 
-        Cela peut causer des problèmes parce que l'application <b>Cache Cleaner</b> 
-        recherche d'un texte spécifique à l'écran parmi les boutons et les menus, 
-        et si aucune correspondance n'a été trouvée, l'application ne fait rien.
+        ou modifient les normes d&apos;interface Android, y compris les paramètres. 
+        Cela peut causer des problèmes parce que l&apos;application <b>Cache Cleaner</b> 
+        recherche d&apos;un texte spécifique à l&apos;écran parmi les boutons et les menus, 
+        et si aucune correspondance n&apos;a été trouvée, l&apos;application ne fait rien.
         <br/>
         <br/>
         Pour résoudre le problème du nettoyage du cache, suivez les étapes suivantes :
         <br/>
         <br/>
-        1. Sélectionner n'importe quelle appli et allez dans <b>&quot;Infos sur l'appli&quot;</b>
+        1. Sélectionner n&apos;importe quelle appli et allez dans <b>&quot;Infos sur l&apos;appli&quot;</b>
         <br/>
         2. Écrivez un texte alternatif pour le menu <b>&quot;Espace de stockage et cache&quot;</b>
         <br/>
@@ -240,20 +240,20 @@
         <br/>
         4. Écrivez un texte alternatif pour le bouton <b>&quot;Vider le cache&quot;</b>
         <br/>
-        5. Ouvrez l'application <b>Cache Cleaner</b> avec la bonne langue (si nécessaire, changez la langue 
-        dans les paramètres et revenez dans l'appli <b>Cache Cleaner</b>)
+        5. Ouvrez l&apos;application <b>Cache Cleaner</b> avec la bonne langue (si nécessaire, changez la langue 
+        dans les paramètres et revenez dans l&apos;appli <b>Cache Cleaner</b>)
         <br/>
         6. Ouvrez le menu <b>Paramètres</b> dans le coin supérieur droit et trouvez la section <b>Ajouter un texte de recherche supplémentaire</b>
         <br/>
         7. Allez dans <b>Vider le cache</b>, saisissez un texte alternatif pour le bouton <b>&quot;Vider le cache&quot;</b>
-        dans le champ d'entrée du texte et cliquez sur <b>&quot;OK&quot;</b>, pour garder les changements.
+        dans le champ d&apos;entrée du texte et cliquez sur <b>&quot;OK&quot;</b>, pour garder les changements.
         Pour supprimer le texte alternatif pour le bouton <b>&quot;Vider le cache&quot;</b> puis il suffit 
-        de supprimer le texte entier dans la boîte d'entrée et cliquez sur <b>&quot;OK&quot;</b>
+        de supprimer le texte entier dans la boîte d&apos;entrée et cliquez sur <b>&quot;OK&quot;</b>
         <br/>
         8. Allez dans <b>Espace de stockage et cache</b>, saisissez un texte alternatif pour menu <b>&quot;Espace de stockage et cache&quot;</b>
-        dans le champ d'entrée du texte et cliquez sur <b>&quot;OK&quot;</b>, pour garder les changements.
+        dans le champ d&apos;entrée du texte et cliquez sur <b>&quot;OK&quot;</b>, pour garder les changements.
         Pour supprimer le texte alternatif pour menu <b>&quot;Espace de stockage et cache&quot;</b> puis il suffit 
-        de supprimer le texte entier dans la boîte d'entrée et cliquez sur <b>&quot;OK&quot;</b>
+        de supprimer le texte entier dans la boîte d&apos;entrée et cliquez sur <b>&quot;OK&quot;</b>
         <br/>
         <br/>
         <h4>Les smartphones Xiaomi avec un firmware régional MIUI doivent utiliser un autre scénario de nettoyage de cache:</h4>
@@ -262,20 +262,20 @@
         2. Appuyez sur <b>Effacer le scénario de cache</b> et sélectionnez <b>Xiaomi MIUI</b>
         <br/>
         <br/>
-        <h4>Attention ⚠️: Les smartphones Huawei et Xiaomi utilisent souvent l'optimisation agressive de la batterie,
-        qui peuvent perturber la communication entre <b>Cache Cleaner</b> et le service d'accessibilité, empêchant
+        <h4>Attention ⚠️: Les smartphones Huawei et Xiaomi utilisent souvent l&apos;optimisation agressive de la batterie,
+        qui peuvent perturber la communication entre <b>Cache Cleaner</b> et le service d&apos;accessibilité, empêchant
         de fonctionner comme prévu. Suivez les étapes ci-dessous pour contrer ce problème :</h4>
         1. Ouvrez le menu <b>Paramètres</b> en haut à droite et trouvez la section <b>Afficher des boutons supplémentaires</b>.
         <br/>
-        2. Activez l'option <b>Démarrer/arrêter le service d'accessibilité</b>.
+        2. Activez l&apos;option <b>Démarrer/arrêter le service d&apos;accessibilité</b>.
         <br/>
-        3. La prochaine fois que vous irez démarrer <b>Cache Cleaner</b>, si le service d'accessibilité est lancé,
-        stoppez-le en appuyant sur le bouton <b>Arrêter le service d'accessibilité</b>.
-        puis redémarrez-le en appuyant <b>Démarrer le service d'accessibilité</b>.    ]]></string>
+        3. La prochaine fois que vous irez démarrer <b>Cache Cleaner</b>, si le service d&apos;accessibilité est lancé,
+        stoppez-le en appuyant sur le bouton <b>Arrêter le service d&apos;accessibilité</b>.
+        puis redémarrez-le en appuyant <b>Démarrer le service d&apos;accessibilité</b>.    ]]></string>
 
     <string name="help_icon_copyright"><![CDATA[
         <br/>
-        <h2>Droit d'auteur de l'icône</h2>
+        <h2>Droit d&apos;auteur de l&apos;icône</h2>
         <br/>
         <a href="https://www.flaticon.com/free-icon/broom_2954888><b>Broom Icon</b> créée par Smashicons - Flaticon</a>
         <br/>
@@ -289,7 +289,7 @@
 
     <string name="help_submit_bug_report"><![CDATA[
         <br/>
-        <h2>Envoyer un rapport d'erreur</h2>
+        <h2>Envoyer un rapport d&apos;erreur</h2>
         <br/>
         <b><a href="https://github.com/bmx666/android-appcachecleaner/issues">Github</a></b>
     ]]></string>
@@ -319,27 +319,27 @@
     <string name="prefs_summary_filter_min_cache_size">Min. %1$d Mo</string>
     <string name="prefs_error_convert_filter_min_cache_size">Entrez un entier OU 0 pour réinitialiser le filtre</string>
     <string name="prefs_show_extra_buttons">Afficher des boutons supplémentaires</string>
-    <string name="prefs_title_show_button_start_stop_service">Démarrer/arrêter le service d'accessibilité</string>
-    <string name="prefs_summary_show_button_start_stop_service">Pour certains smartphones, vous devez démarrer ou arrêter manuellement le service d'accessibilité</string>
-    <string name="prefs_title_show_button_close_app">Fermer l'appli</string>
-    <string name="prefs_summary_show_button_close_app">Pour certains smartphones, vous devez arrêter manuellement le service d'accessibilité et fermer l'application</string>
+    <string name="prefs_title_show_button_start_stop_service">Démarrer/arrêter le service d\'accessibilité</string>
+    <string name="prefs_summary_show_button_start_stop_service">Pour certains smartphones, vous devez démarrer ou arrêter manuellement le service d\'accessibilité</string>
+    <string name="prefs_title_show_button_close_app">Fermer l\'appli</string>
+    <string name="prefs_summary_show_button_close_app">Pour certains smartphones, vous devez arrêter manuellement le service d\'accessibilité et fermer l\'application</string>
     <string name="prefs_extra_actions">Actions supplémentaires</string>
-    <string name="prefs_title_extra_action_stop_service">AutoStop du Service d'accessibilité </string>
-    <string name="prefs_summary_extra_action_stop_service">Arrête automatique du service d'accessibilité après avoir effacé le cache</string>
-    <string name="prefs_title_extra_action_close_app">Fermeture automatique de l'appli</string>
-    <string name="prefs_summary_extra_action_close_app">Ferme automatiquement l'application après avoir effacé le cache</string>
-    <string name="prefs_custom_lists">Liste personnalisée d'applis</string>
+    <string name="prefs_title_extra_action_stop_service">AutoStop du Service d\'accessibilité </string>
+    <string name="prefs_summary_extra_action_stop_service">Arrête automatique du service d\'accessibilité après avoir effacé le cache</string>
+    <string name="prefs_title_extra_action_close_app">Fermeture automatique de l\'appli</string>
+    <string name="prefs_summary_extra_action_close_app">Ferme automatiquement l\'application après avoir effacé le cache</string>
+    <string name="prefs_custom_lists">Liste personnalisée d\'applis</string>
     <string name="prefs_title_custom_list_add">Ajouter</string>
-    <string name="prefs_summary_custom_list_add">Ajouter une liste personnalisée d'applis</string>
+    <string name="prefs_summary_custom_list_add">Ajouter une liste personnalisée d\'applis</string>
     <string name="prefs_title_custom_list_edit">Modifier</string>
-    <string name="prefs_summary_custom_list_edit">Modifier une liste personnalisée d'applis</string>
+    <string name="prefs_summary_custom_list_edit">Modifier une liste personnalisée d\'applis</string>
     <string name="prefs_title_custom_list_remove">Enlever</string>
-    <string name="prefs_summary_custom_list_remove">Enlever une liste d'applications personnalisées existante</string>
+    <string name="prefs_summary_custom_list_remove">Enlever une liste d\'applications personnalisées existante</string>
     <string name="prefs_other">Autres</string>
-    <string name="prefs_title_max_wait_app_timeout">Temps d'attente max. par appli - %dc</string>
-    <string name="prefs_summary_max_wait_app_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
-    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Temps d'attente max. pour le bouton "Vider le cache" - %dc</string>
-    <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
+    <string name="prefs_title_max_wait_app_timeout">Temps d\'attente max. par appli - %dsec.</string>
+    <string name="prefs_summary_max_wait_app_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Temps d\'attente max. pour le bouton "Vider le cache" - %dsec.</string>
+    <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
     <string name="prefs_title_scenario">Scénario du nettoyage du cache</string>
     <string-array name="settings_scenario_entries">
         <item>Par défaut</item>
