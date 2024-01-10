@@ -10,7 +10,6 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.util.PermissionChecker
-import java.util.concurrent.atomic.AtomicBoolean
 
 @RequiresApi(Build.VERSION_CODES.N)
 class CacheCleanerTileService: TileService() {
