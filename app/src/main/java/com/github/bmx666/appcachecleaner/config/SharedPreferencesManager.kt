@@ -278,7 +278,7 @@ class SharedPreferencesManager {
             fun getMaxWaitClearCacheButtonTimeout(context: Context): Int {
                 return getDefaultSharedPref(context)
                     .getInt(context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout),
-                        Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
+                        Constant.Settings.CacheClean.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
             }
 
             @JvmStatic

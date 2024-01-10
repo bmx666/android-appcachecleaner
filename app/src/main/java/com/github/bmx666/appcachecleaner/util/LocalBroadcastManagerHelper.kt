@@ -169,7 +169,7 @@ class LocalBroadcastManagerServiceHelper(
 
                     val maxWaitClearCacheButtonTimeout =
                         intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
-                            Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
+                            Constant.Settings.CacheClean.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
 
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ExtraSearchText")

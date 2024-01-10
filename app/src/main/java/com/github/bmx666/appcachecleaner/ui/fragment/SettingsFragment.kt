@@ -162,7 +162,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         prefMaxWaitClearCacheButtonTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000
             max = getMaxWaitAppTimeout() - 1
-            setDefaultValue(Constant.Settings.CacheClean.MIN_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
+            setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
             value = getMaxWaitClearCacheButtonTimeout()
             if (value >= getMaxWaitAppTimeout() && value > 0)
                 value = getMaxWaitAppTimeout() - 1
