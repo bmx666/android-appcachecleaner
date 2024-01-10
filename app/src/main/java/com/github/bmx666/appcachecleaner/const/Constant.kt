@@ -13,6 +13,7 @@ class Constant {
                 const val NAME_STORAGE_TEXT_LIST = "storage_text_list"
                 const val NAME_OK_TEXT_LIST = "ok_text_list"
 
+                const val NAME_DELAY_FOR_NEXT_APP_TIMEOUT = "delay_for_next_app_timeout"
                 const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
                 const val NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT = "max_wait_clear_cache_button_timeout"
 
@@ -75,6 +76,12 @@ class Constant {
                 const val MIN_WAIT_CLEAR_CACHE_BUTTON_MS = 0
                 @IntRange(from = 0)
                 const val DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS = 1000
+                @IntRange(from = 0)
+                const val MIN_DELAY_FOR_NEXT_APP_MS = 0
+                @IntRange(from = 0)
+                const val MAX_DELAY_FOR_NEXT_APP_MS = 10000
+                @IntRange(from = 0)
+                const val DEFAULT_DELAY_FOR_NEXT_APP_MS = 1000
             }
         }
     }

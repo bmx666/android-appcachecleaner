@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.clearcache.scenario.state.IStateMachine
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_DELAY_FOR_NEXT_APP_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MAX_DELAY_FOR_NEXT_APP_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_FOR_NEXT_APP_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_CLEAR_CACHE_BUTTON_MS
 import com.github.bmx666.appcachecleaner.log.Logger
@@ -19,6 +22,8 @@ internal abstract class BaseClearCacheScenario {
     protected val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
     protected val arrayTextOkButton = ArrayList<CharSequence>()
 
+    protected var delayForNextAppTimeoutMs =
+        DEFAULT_DELAY_FOR_NEXT_APP_MS
     protected var maxWaitAppTimeoutMs =
         DEFAULT_WAIT_APP_PERFORM_CLICK_MS
     protected var maxWaitClearCacheButtonTimeoutMs =
@@ -46,6 +51,16 @@ internal abstract class BaseClearCacheScenario {
 
         arrayTextOkButton.clear()
         arrayTextOkButton.addAll(okTextList)
+    }
+
+    fun setDelayForNextAppTimeout(timeout: Int) {
+        delayForNextAppTimeoutMs = timeout * 1000
+
+        if (delayForNextAppTimeoutMs >= MAX_DELAY_FOR_NEXT_APP_MS)
+            delayForNextAppTimeoutMs = MAX_DELAY_FOR_NEXT_APP_MS
+
+        if (delayForNextAppTimeoutMs < MIN_DELAY_FOR_NEXT_APP_MS)
+            delayForNextAppTimeoutMs = MIN_DELAY_FOR_NEXT_APP_MS
     }
 
     fun setMaxWaitAppTimeout(timeout: Int) {

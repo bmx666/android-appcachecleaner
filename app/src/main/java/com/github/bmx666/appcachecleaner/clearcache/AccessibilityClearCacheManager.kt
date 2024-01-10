@@ -20,6 +20,7 @@ class AccessibilityClearCacheManager {
         val clearDataTextList: ArrayList<CharSequence>,
         val storageTextList: ArrayList<CharSequence>,
         val okTextList: ArrayList<CharSequence>,
+        val delayForNextAppTimeout: Int?,
         val maxWaitAppTimeout: Int?,
         val maxWaitClearCacheButtonTimeout: Int?,
     )
@@ -45,6 +46,10 @@ class AccessibilityClearCacheManager {
 
         settings.maxWaitClearCacheButtonTimeout?.let {
             cacheCleanScenario.setMaxWaitClearCacheButtonTimeout(it)
+        }
+
+        settings.delayForNextAppTimeout?.let {
+            cacheCleanScenario.setDelayForNextAppTimeout(it)
         }
     }
 

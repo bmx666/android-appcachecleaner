@@ -148,6 +148,12 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
         // find "Clean cache" and do perform click
         if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
             stateMachine.setInterrupted()
+
+        // wait before to move to the next app
+        if (delayForNextAppTimeoutMs > 0) {
+            stateMachine.setDelayForNextApp()
+            stateMachine.waitState(delayForNextAppTimeoutMs.toLong())
+        }
     }
 }
 

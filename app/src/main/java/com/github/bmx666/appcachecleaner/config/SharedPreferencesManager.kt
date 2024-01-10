@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
-import java.util.*
+import java.util.Locale
 
 class SharedPreferencesManager {
 
@@ -257,6 +257,21 @@ class SharedPreferencesManager {
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            fun getDelayForNextAppTimeout(context: Context): Int {
+                return getDefaultSharedPref(context)
+                    .getInt(context.getString(R.string.prefs_key_settings_delay_for_next_app_timeout),
+                        Constant.Settings.CacheClean.DEFAULT_DELAY_FOR_NEXT_APP_MS / 1000)
+            }
+
+            @JvmStatic
+            fun setDelayForNextAppTimeout(context: Context, timeout: Int) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putInt(context.getString(R.string.prefs_key_settings_delay_for_next_app_timeout), timeout)
+                    .apply()
             }
 
             @JvmStatic

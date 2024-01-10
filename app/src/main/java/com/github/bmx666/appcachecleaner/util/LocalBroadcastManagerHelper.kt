@@ -127,6 +127,7 @@ data class IntentSettings(
     val storageTextList: Array<String>?,
     val okTextList: Array<String>?,
     val scenario: Constant.Scenario?,
+    val delayForNextAppTimeout: Int?,
     val maxWaitAppTimeout: Int?,
     val maxWaitClearCacheButtonTimeout: Int?,
 )
@@ -163,6 +164,10 @@ class LocalBroadcastManagerServiceHelper(
                             intent.getSerializableExtra(Constant.Intent.Settings.NAME_SCENARIO)
                                     as Constant.Scenario?
 
+                    val delayForNextAppTimeout =
+                        intent.getIntExtra(Constant.Intent.Settings.NAME_DELAY_FOR_NEXT_APP_TIMEOUT,
+                            Constant.Settings.CacheClean.DEFAULT_DELAY_FOR_NEXT_APP_MS / 1000)
+
                     val maxWaitAppTimeout =
                         intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
                             Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
@@ -186,6 +191,7 @@ class LocalBroadcastManagerServiceHelper(
                             Logger.d("[Service] ExtraSearchText: ok text = '$it'")
                         }
                         Logger.d("[Service] Scenario: type = '$scenario'")
+                        Logger.d("[Service] Scenario: delay for next app timeout = $delayForNextAppTimeout")
                         Logger.d("[Service] Scenario: max wait app timeout = $maxWaitAppTimeout")
                         Logger.d("[Service] Scenario: max wait clear cache button timeout = $maxWaitClearCacheButtonTimeout")
                     }
@@ -197,6 +203,7 @@ class LocalBroadcastManagerServiceHelper(
                             storageTextList = storageTextList,
                             okTextList = okTextList,
                             scenario = scenario,
+                            delayForNextAppTimeout = delayForNextAppTimeout,
                             maxWaitAppTimeout = maxWaitAppTimeout,
                             maxWaitClearCacheButtonTimeout = maxWaitClearCacheButtonTimeout,
                         )

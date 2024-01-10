@@ -329,6 +329,8 @@
     <string translatable="false" name="prefs_title_custom_list_remove">Remove</string>
     <string translatable="false" name="prefs_summary_custom_list_remove">Remove an existing custom list of apps</string>
     <string translatable="false" name="prefs_other">Other</string>
+    <string translatable="false" name="prefs_title_delay_for_next_app_timeout">Timeout between apps - %ds</string>
+    <string translatable="false" name="prefs_summary_delay_for_next_app_timeout">For older smartphones, it is advisable to increase the timeout between apps, as the Android System may cause interruptions</string>
     <string translatable="false" name="prefs_title_max_wait_app_timeout">Max. timeout per app - %ds</string>
     <string translatable="false" name="prefs_summary_max_wait_app_timeout">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
     <string translatable="false" name="prefs_title_max_wait_clear_cache_btn_timeout">Max. timeout to wait Clear Cache button - %ds</string>
@@ -356,6 +358,7 @@
     <string translatable="false" name="prefs_key_custom_list_add">custom_list_add</string>
     <string translatable="false" name="prefs_key_custom_list_edit">custom_list_edit</string>
     <string translatable="false" name="prefs_key_custom_list_remove">custom_list_remove</string>
+    <string translatable="false" name="prefs_key_settings_delay_for_next_app_timeout">settings_delay_for_next_app_timeout</string>
     <string translatable="false" name="prefs_key_settings_max_wait_app_timeout">settings_max_wait_app_timeout</string>
     <string translatable="false" name="prefs_key_settings_max_wait_clear_cache_btn_timeout">settings_max_wait_clear_cache_btn_timeout</string>
     <string translatable="false" name="prefs_key_settings_scenario">settings_scenario</string>
