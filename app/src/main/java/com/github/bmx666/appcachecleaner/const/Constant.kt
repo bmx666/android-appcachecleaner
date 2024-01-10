@@ -73,6 +73,8 @@ class Constant {
                 const val DEFAULT_WAIT_APP_PERFORM_CLICK_MS = 30000
                 @IntRange(from = 0)
                 const val MIN_WAIT_CLEAR_CACHE_BUTTON_MS = 0
+                @IntRange(from = 0)
+                const val DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS = 1000
             }
         }
     }

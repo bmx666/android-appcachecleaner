@@ -5,6 +5,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.clearcache.scenario.state.IStateMachine
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_CLEAR_CACHE_BUTTON_MS
 import com.github.bmx666.appcachecleaner.log.Logger
@@ -21,7 +22,7 @@ internal abstract class BaseClearCacheScenario {
     protected var maxWaitAppTimeoutMs =
         DEFAULT_WAIT_APP_PERFORM_CLICK_MS
     protected var maxWaitClearCacheButtonTimeoutMs =
-        MIN_WAIT_CLEAR_CACHE_BUTTON_MS
+        DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS
     protected var maxPerformClickCountTries =
         (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
 
