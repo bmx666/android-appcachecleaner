@@ -1,0 +1,1 @@
+* add delay between apps in the Settings
