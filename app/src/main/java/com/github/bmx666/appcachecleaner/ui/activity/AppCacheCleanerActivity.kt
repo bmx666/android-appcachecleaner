@@ -539,6 +539,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             SharedPreferencesManager.Settings.getScenario(this))
 
         intent.putExtra(
+            Constant.Intent.Settings.NAME_DELAY_FOR_NEXT_APP_TIMEOUT,
+            SharedPreferencesManager.Settings.getDelayForNextAppTimeout(this))
+
+        intent.putExtra(
             Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
             SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this))
 

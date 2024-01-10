@@ -16,7 +16,7 @@ import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
-import java.util.*
+import java.util.Locale
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -33,10 +33,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         initializeSettingsMaxWaitTimeout(
             preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_settings_delay_for_next_app_timeout)),
+            preferenceManager.findPreference(
                 context.getString(R.string.prefs_key_settings_max_wait_app_timeout)),
             preferenceManager.findPreference(
                 context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout)),
             context,
+            { SharedPreferencesManager.Settings.getDelayForNextAppTimeout(context) },
+            { timeout -> SharedPreferencesManager.Settings.setDelayForNextAppTimeout(context, timeout) },
             { SharedPreferencesManager.Settings.getMaxWaitAppTimeout(context) },
             { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeout(context, timeout) },
             { SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(context) },
@@ -127,14 +131,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initializeSettingsMaxWaitTimeout(
+        prefDelayForNextAppTimeout: SeekBarPreference?,
         prefMaxWaitAppTimeout: SeekBarPreference?,
         prefMaxWaitClearCacheButtonTimeout: SeekBarPreference?,
         context: Context,
+        getDelayForNextAppTimeout: () -> Int,
+        setDelayForNextAppTimeout: (Int) -> Unit,
         getMaxWaitAppTimeout: () -> Int,
         setMaxWaitAppTimeout: (Int) -> Unit,
         getMaxWaitClearCacheButtonTimeout: () -> Int,
         setMaxWaitClearCacheButtonTimeout: (Int) -> Unit)
     {
+        prefDelayForNextAppTimeout?.apply {
+            min = Constant.Settings.CacheClean.MIN_DELAY_FOR_NEXT_APP_MS / 1000
+            max = Constant.Settings.CacheClean.MAX_DELAY_FOR_NEXT_APP_MS / 1000
+            setDefaultValue(Constant.Settings.CacheClean.DEFAULT_DELAY_FOR_NEXT_APP_MS / 1000)
+            value = getDelayForNextAppTimeout()
+            if (value < Constant.Settings.CacheClean.MIN_DELAY_FOR_NEXT_APP_MS / 1000)
+                value = Constant.Settings.CacheClean.DEFAULT_DELAY_FOR_NEXT_APP_MS / 1000
+            showSeekBarValue = true
+            title = context.getString(R.string.prefs_title_delay_for_next_app_timeout, value)
+            setOnPreferenceChangeListener { _, newValue ->
+                title = context.getString(R.string.prefs_title_delay_for_next_app_timeout, newValue as Int)
+                setDelayForNextAppTimeout(newValue)
+                true
+            }
+        }
+
         prefMaxWaitAppTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000
             max = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2 / 1000

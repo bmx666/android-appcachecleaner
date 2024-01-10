@@ -95,6 +95,11 @@
             app:entryValues="@array/settings_scenario_entry_values"/>
 
         <SeekBarPreference
+            app:key="@string/prefs_key_settings_delay_for_next_app_timeout"
+            app:title="@string/prefs_title_delay_for_next_app_timeout"
+            app:summary="@string/prefs_summary_delay_for_next_app_timeout"/>
+
+        <SeekBarPreference
             app:key="@string/prefs_key_settings_max_wait_app_timeout"
             app:title="@string/prefs_title_max_wait_app_timeout"
             app:summary="@string/prefs_summary_max_wait_app_timeout"/>

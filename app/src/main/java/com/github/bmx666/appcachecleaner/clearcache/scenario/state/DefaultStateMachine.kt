@@ -43,6 +43,7 @@ internal class DefaultStateMachine: IStateMachine {
         OPEN_STORAGE_INFO,
         FINISH_CLEAN_APP,
         INTERRUPTED,
+        DELAY_FOR_NEXT_APP,
     }
 
     private var state = STATE.INIT
@@ -55,6 +56,12 @@ internal class DefaultStateMachine: IStateMachine {
 
     override fun init() {
         state = STATE.INIT
+    }
+
+    override fun setDelayForNextApp() {
+        if (!isInterrupted())
+            state = STATE.DELAY_FOR_NEXT_APP
+        condVarWaitState.open()
     }
 
     override fun setOpenAppInfo() {
