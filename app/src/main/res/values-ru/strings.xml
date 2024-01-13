@@ -99,7 +99,7 @@
     <string name="dialog_extra_search_text_btn_remove">Удалить</string>
 
     <string name="dialog_filter_min_cache_size_title">Фильтр по размеру кэша</string>
-    <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша в Мб для фильтрации приложений</string>
+    <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша для фильтрации приложений (KB,MB,GB)</string>
 
     <string name="first_boot_title">Прочтите перед использованием</string>
     <string name="first_boot_message"><![CDATA[
@@ -316,8 +316,10 @@
     <!-- Preference -->
     <string name="prefs_ui">Интерфейс</string>
     <string name="prefs_ui_night_mode">Тёмная тема</string>
-    <string name="prefs_title_filter_min_cache_size">Мин. размер кэша в Мб для фильтра приложений</string>
-    <string name="prefs_summary_filter_min_cache_size">Мин. %1$d Мб</string>
+    <string name="prefs_title_filter_min_cache_size">Мин. размер кэша для фильтра приложений</string>
+    <string name="prefs_summary_filter_min_cache_size_kb">Мин. %1$.2f КБ</string>
+    <string name="prefs_summary_filter_min_cache_size_mb">Мин. %1$.2f МБ</string>
+    <string name="prefs_summary_filter_min_cache_size_gb">Мин. %1$.2f ГБ</string>
     <string name="prefs_error_convert_filter_min_cache_size">Введите целое число ИЛИ 0 для сброса</string>
     <string name="prefs_title_filter_hide_disabled_apps">Скрыть отключенные приложения</string>
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
