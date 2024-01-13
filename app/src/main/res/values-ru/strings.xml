@@ -317,9 +317,9 @@
     <string name="prefs_ui">Интерфейс</string>
     <string name="prefs_ui_night_mode">Тёмная тема</string>
     <string name="prefs_title_filter_min_cache_size">Мин. размер кэша в Мб для фильтра приложений</string>
-    <string name="prefs_title_filter_hide_disabled_apps">Скрыть отключенные приложения</string>
     <string name="prefs_summary_filter_min_cache_size">Мин. %1$d Мб</string>
     <string name="prefs_error_convert_filter_min_cache_size">Введите целое число ИЛИ 0 для сброса</string>
+    <string name="prefs_title_filter_hide_disabled_apps">Скрыть отключенные приложения</string>
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
     <string name="prefs_title_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
     <string name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>

@@ -315,9 +315,9 @@
     <string name="prefs_ui">Interface utilisateur</string>
     <string name="prefs_ui_night_mode">Thème sombre</string>
     <string name="prefs_title_filter_min_cache_size">Taille minimale du cache en MB pour filtrer les applis</string>
-    <string name="prefs_title_filter_hide_disabled_apps">Cacher les applications désactivées</string>
     <string name="prefs_summary_filter_min_cache_size">Min. %1$d Mo</string>
     <string name="prefs_error_convert_filter_min_cache_size">Entrez un entier OU 0 pour réinitialiser le filtre</string>
+    <string name="prefs_title_filter_hide_disabled_apps">Cacher les applications désactivées</string>
     <string name="prefs_show_extra_buttons">Afficher des boutons supplémentaires</string>
     <string name="prefs_title_show_button_start_stop_service">Démarrer/arrêter le service d\'accessibilité</string>
     <string name="prefs_summary_show_button_start_stop_service">Pour certains smartphones, vous devez démarrer ou arrêter manuellement le service d\'accessibilité</string>
