@@ -52,6 +52,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
+import java.text.NumberFormat
+import java.text.ParseException
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -64,6 +66,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private lateinit var binding: ActivityMainBinding
     private var customListName: String? = null
+    private var minCacheSizeStr: String? = null
 
     private lateinit var onMenuHideAll: () -> Unit
     private lateinit var onMenuShowMain: () -> Unit
@@ -704,16 +707,55 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showFilterDialog() {
-        FilterListDialogBuilder.buildMinCacheSizeDialog(this) { str ->
-            val value =
-                try { str?.toFloat() ?: 0.0f }
-                catch (e: NumberFormatException) { 0.0f }
-            if (!value.isFinite() or (value < 0.0f)) return@buildMinCacheSizeDialog
-            val minCacheBytes = (value * 1024f * 1024f).toLong()
+        minCacheSizeStr ?: run {
+            val minCacheSizeBytes = SharedPreferencesManager.Filter.getMinCacheSize(this)
+            minCacheSizeStr =
+                if (minCacheSizeBytes >= 1.shl(30))
+                    String.format("%.2f GB", minCacheSizeBytes / (1024f * 1024f * 1024f))
+                else if (minCacheSizeBytes >= 1.shl(20))
+                    String.format("%.2f MB", minCacheSizeBytes / (1024f * 1024f))
+                else if (minCacheSizeBytes >= 0L)
+                    String.format("%.2f KB", minCacheSizeBytes / 1024f)
+                else
+                    null
+        }
+
+        FilterListDialogBuilder.buildMinCacheSizeDialog(this, minCacheSizeStr) { str ->
+            str ?: return@buildMinCacheSizeDialog
+
+            val locale = LocaleHelper.getCurrentLocale(this)
+            val inputNumberFormat = NumberFormat.getNumberInstance(locale)
+            val inputNumberStr = str.trim().takeWhile { it.isDigit() || it == ',' || it == '.' }
+            val minCacheSizeValue = try {
+                inputNumberFormat.parse(inputNumberStr)?.toFloat() ?: -1f
+            } catch (e: ParseException) { -1f }
+
+            if (minCacheSizeValue < 0f)
+                return@buildMinCacheSizeDialog
+
+            val unit = str.trim().substring(inputNumberStr.length).trim()
+
+            val minCacheSizeBytes = when (unit.lowercase(locale)) {
+                "k", "kb" -> (minCacheSizeValue * 1024f).toLong()
+                "m", "mb" -> (minCacheSizeValue * 1024f * 1024f).toLong()
+                "g", "gb" -> (minCacheSizeValue * 1024f * 1024f * 1024f).toLong()
+                else -> minCacheSizeValue.toLong()
+            }
+
+            minCacheSizeStr =
+                if (minCacheSizeBytes >= 1.shl(30))
+                    String.format("%.2f GB", minCacheSizeBytes / (1024f * 1024f * 1024f))
+                else if (minCacheSizeBytes >= 1.shl(20))
+                    String.format("%.2f MB", minCacheSizeBytes / (1024f * 1024f))
+                else if (minCacheSizeBytes >= 0L)
+                    String.format("%.2f KB", minCacheSizeBytes / 1024f)
+                else
+                    null
+
             supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
                 ?.let { fragment ->
                     if (fragment is PackageListFragment)
-                        fragment.swapAdapterFilterByCacheBytes(minCacheBytes)
+                        fragment.swapAdapterFilterByCacheBytes(minCacheSizeBytes)
                 }
         }.show()
     }
@@ -788,6 +830,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun handleOnBackPressed() {
         // always reset custom list name to avoid undefined behavior
+        minCacheSizeStr = null
         customListName = null
 
         hideFragmentViews()
