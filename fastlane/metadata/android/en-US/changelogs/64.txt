@@ -1,0 +1,2 @@
+* set minimum cache size with support for KB, MB, and GB units
+* fix set and display minimum cache size for package list
