@@ -16,8 +16,8 @@ import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
-import java.text.NumberFormat
-import java.text.ParseException
+import com.github.bmx666.appcachecleaner.util.toFormattedString
+import org.springframework.util.unit.DataSize
 import java.util.Locale
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -56,28 +56,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context,
                 { SharedPreferencesManager.Filter.getMinCacheSize(context) },
                 { str ->
-                    val inputNumberFormat = NumberFormat.getNumberInstance(locale)
-                    val inputNumberStr = str.trim().takeWhile { it.isDigit() || it == ',' || it == '.' }
-                    val cacheSizeStr = try {
-                        inputNumberFormat.parse(inputNumberStr)?.toFloat() ?: -1f
-                    } catch (e: ParseException) { -1f }
-
-                    val unit = str.trim().substring(inputNumberStr.length).trim()
-
-                    val value = when (unit.lowercase(locale)) {
-                        "k", "kb" -> (cacheSizeStr * 1024f).toLong()
-                        "m", "mb" -> (cacheSizeStr * 1024f * 1024f).toLong()
-                        "g", "gb" -> (cacheSizeStr * 1024f * 1024f * 1024f).toLong()
-                        else -> cacheSizeStr.toLong()
-                    }
-
-                    if (value > 0L) {
-                        SharedPreferencesManager.Filter.saveMinCacheSize(context,
-                            // set minimal 1KB
-                            if (value > 1024L) value else 1024L)
-                    } else if (value == 0L) {
-                        SharedPreferencesManager.Filter.removeMinCacheSize(context)
-                    } else {
+                    try {
+                        val dataSize = DataSize.parse(str)
+                        val minCacheSize = dataSize.toBytes()
+                        if (minCacheSize > 0L)
+                            SharedPreferencesManager.Filter.saveMinCacheSize(context,
+                                // set minimal 1KB
+                                if (minCacheSize > 1024L) minCacheSize else 1024L)
+                        else
+                            SharedPreferencesManager.Filter.removeMinCacheSize(context)
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
                             context.getText(R.string.prefs_error_convert_filter_min_cache_size),
@@ -221,16 +209,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                           getMinCacheSize: () -> Long,
                                           onChangeMinCacheSize: (String) -> Unit) {
         val showSummary = {
-            val value = getMinCacheSize()
-            if (value >= 1.shl(30))
-                context.getString(R.string.prefs_summary_filter_min_cache_size_gb,
-                    value / (1024f * 1024f * 1024f))
-            else if (value >= 1.shl(20))
-                context.getString(R.string.prefs_summary_filter_min_cache_size_mb,
-                    value / (1024f * 1024f))
-            else if (value > 0L)
-                context.getString(R.string.prefs_summary_filter_min_cache_size_kb,
-                    value / 1024f)
+            val minCacheSize = getMinCacheSize()
+            if (minCacheSize > 0L)
+                context.getString(R.string.prefs_summary_filter_min_cache_size,
+                    DataSize.ofBytes(minCacheSize).toFormattedString(context))
             else
                 null
         }
@@ -243,18 +225,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             setOnBindEditTextListener { editText ->
                 val value = getMinCacheSize()
-                if (value != 0L) {
-                    if (value >= 1.shl(30))
-                        editText.setText(String.format("%.2f GB", value / (1024f * 1024f * 1024f)))
-                    else if (value >= 1.shl(20))
-                        editText.setText(String.format("%.2f MB", value / (1024f * 1024f)))
-                    else
-                        editText.setText(String.format("%.2f KB", value / 1024f))
-                    editText.hint = null
-                } else {
-                    editText.text = null
-                    editText.hint = "0 KB"
+                editText.apply {
+                    hint = "0 KB"
+                    setText(
+                        if (value > 0L)
+                            DataSize.ofBytes(value).toFormattedString(context)
+                        else
+                            null
+                    )
                 }
+
             }
             setOnPreferenceChangeListener { _, newValue ->
                 onChangeMinCacheSize(newValue as String)

@@ -98,7 +98,8 @@
     <string translatable="false" name="dialog_extra_search_text_btn_remove">Remove</string>
 
     <string translatable="false" name="dialog_filter_min_cache_size_title">Filter by cache size</string>
-    <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the minimum cache size for application filtering (KB,MB,GB)</string>
+    <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the min. cache size for application filtering (KB,MB,GB,TB)</string>
+    <string translatable="false" name="toast_error_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset default</string>
 
     <string translatable="false" name="first_boot_title">Please read before using</string>
     <string translatable="false" name="first_boot_message"><![CDATA[
@@ -307,11 +308,9 @@
     <!-- Preference -->
     <string translatable="false" name="prefs_ui">UI</string>
     <string translatable="false" name="prefs_ui_night_mode">Dark theme</string>
-    <string translatable="false" name="prefs_title_filter_min_cache_size">Min cache size to filter apps</string>
-    <string translatable="false" name="prefs_summary_filter_min_cache_size_kb">Min %1$.2f KB</string>
-    <string translatable="false" name="prefs_summary_filter_min_cache_size_mb">Min %1$.2f MB</string>
-    <string translatable="false" name="prefs_summary_filter_min_cache_size_gb">Min %1$.2f GB</string>
-    <string translatable="false" name="prefs_error_convert_filter_min_cache_size">Please enter an integer OR 0 to reset</string>
+    <string translatable="false" name="prefs_title_filter_min_cache_size">Min. cache size to filter apps</string>
+    <string translatable="false" name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
+    <string translatable="false" name="prefs_error_convert_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset filter</string>
     <string translatable="false" name="prefs_title_filter_hide_disabled_apps">Hide disabled apps</string>
     <string translatable="false" name="prefs_show_extra_buttons">Show extra buttons</string>
     <string translatable="false" name="prefs_title_show_button_start_stop_service">Start/Stop Accessibility service</string>

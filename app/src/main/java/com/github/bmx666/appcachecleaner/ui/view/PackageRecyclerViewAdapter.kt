@@ -1,7 +1,6 @@
 package com.github.bmx666.appcachecleaner.ui.view
 
 import android.os.Build
-import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,8 @@ import com.github.bmx666.appcachecleaner.databinding.FragmentPackageBinding
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
+import com.github.bmx666.appcachecleaner.util.toFormattedString
+import org.springframework.util.unit.DataSize
 
 
 class PackageRecyclerViewAdapter(
@@ -72,7 +73,7 @@ class PackageRecyclerViewAdapter(
             val ctx = holder.cacheSizeView.context
             holder.cacheSizeView.text = ctx.getString(
                 R.string.text_cache_size_fmt,
-                Formatter.formatShortFileSize(ctx, item.stats!!.cacheBytes)
+                DataSize.ofBytes(item.stats!!.cacheBytes).toFormattedString(ctx)
             )
         } else {
             holder.cacheSizeView.visibility = View.GONE
