@@ -10,7 +10,6 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import android.os.FileUtils
-import android.text.format.Formatter
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -47,15 +46,14 @@ import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker
 import com.github.bmx666.appcachecleaner.util.TileRequestResult
+import com.github.bmx666.appcachecleaner.util.toFormattedString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.springframework.util.unit.DataSize
 import java.io.File
-import java.text.NumberFormat
-import java.text.ParseException
 import java.util.Locale
-import java.util.concurrent.atomic.AtomicBoolean
 
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
@@ -710,53 +708,34 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         minCacheSizeStr ?: run {
             val minCacheSizeBytes = SharedPreferencesManager.Filter.getMinCacheSize(this)
             minCacheSizeStr =
-                if (minCacheSizeBytes >= 1.shl(30))
-                    String.format("%.2f GB", minCacheSizeBytes / (1024f * 1024f * 1024f))
-                else if (minCacheSizeBytes >= 1.shl(20))
-                    String.format("%.2f MB", minCacheSizeBytes / (1024f * 1024f))
-                else if (minCacheSizeBytes >= 0L)
-                    String.format("%.2f KB", minCacheSizeBytes / 1024f)
+                if (minCacheSizeBytes >= 0L)
+                    DataSize.ofBytes(minCacheSizeBytes).toFormattedString(this)
                 else
                     null
         }
 
         FilterListDialogBuilder.buildMinCacheSizeDialog(this, minCacheSizeStr) { str ->
-            str ?: return@buildMinCacheSizeDialog
+            try {
+                val dataSize = DataSize.parse(str)
+                val minCacheSizeBytes = dataSize.toBytes()
+                minCacheSizeStr =
+                    if (minCacheSizeBytes >= 0L)
+                        DataSize.ofBytes(minCacheSizeBytes).toFormattedString(this)
+                    else
+                        null
 
-            val locale = LocaleHelper.getCurrentLocale(this)
-            val inputNumberFormat = NumberFormat.getNumberInstance(locale)
-            val inputNumberStr = str.trim().takeWhile { it.isDigit() || it == ',' || it == '.' }
-            val minCacheSizeValue = try {
-                inputNumberFormat.parse(inputNumberStr)?.toFloat() ?: -1f
-            } catch (e: ParseException) { -1f }
-
-            if (minCacheSizeValue < 0f)
-                return@buildMinCacheSizeDialog
-
-            val unit = str.trim().substring(inputNumberStr.length).trim()
-
-            val minCacheSizeBytes = when (unit.lowercase(locale)) {
-                "k", "kb" -> (minCacheSizeValue * 1024f).toLong()
-                "m", "mb" -> (minCacheSizeValue * 1024f * 1024f).toLong()
-                "g", "gb" -> (minCacheSizeValue * 1024f * 1024f * 1024f).toLong()
-                else -> minCacheSizeValue.toLong()
+                supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                    ?.let { fragment ->
+                        if (fragment is PackageListFragment)
+                            fragment.swapAdapterFilterByCacheBytes(minCacheSizeBytes)
+                    }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this,
+                    getText(R.string.toast_error_filter_min_cache_size),
+                    Toast.LENGTH_SHORT)
+                    .show()
             }
-
-            minCacheSizeStr =
-                if (minCacheSizeBytes >= 1.shl(30))
-                    String.format("%.2f GB", minCacheSizeBytes / (1024f * 1024f * 1024f))
-                else if (minCacheSizeBytes >= 1.shl(20))
-                    String.format("%.2f MB", minCacheSizeBytes / (1024f * 1024f))
-                else if (minCacheSizeBytes >= 0L)
-                    String.format("%.2f KB", minCacheSizeBytes / 1024f)
-                else
-                    null
-
-            supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
-                ?.let { fragment ->
-                    if (fragment is PackageListFragment)
-                        fragment.swapAdapterFilterByCacheBytes(minCacheSizeBytes)
-                }
         }.show()
     }
 
@@ -956,6 +935,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateCleanedCache(interrupted: Boolean) {
         val cleanCacheBytes =
             PlaceholderContent.Current.getChecked().sumOf {
@@ -973,7 +953,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 }
 
                 val displayText = getString(resId,
-                    Formatter.formatFileSize(this, cleanCacheBytes))
+                    DataSize.ofBytes(cleanCacheBytes).toFormattedString(this))
 
                 updateMainText(displayText)
             }

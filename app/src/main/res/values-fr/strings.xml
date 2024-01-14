@@ -99,7 +99,8 @@
     <string name="dialog_extra_search_text_btn_remove">Enlever</string>
 
     <string name="dialog_filter_min_cache_size_title">Filtrer par taille de cache</string>
-    <string name="dialog_filter_min_cache_size_message">Entrez la taille minimale du cache pour filtrer les applications (KB,MB,GB)</string>
+    <string name="dialog_filter_min_cache_size_message">Entrez la taille minimale du cache pour filtrer les applications (KB,MB,GB,TB)</string>
+    <string name="toast_error_filter_min_cache_size">Veuillez entrer la taille minimale du cache en KB,MB,GB,TB ou 0 pour réinitialiser par défaut</string>
 
     <string name="first_boot_title">À lire avant utilisation</string>
     <string name="first_boot_message"><![CDATA[
@@ -315,10 +316,8 @@
     <string name="prefs_ui">Interface utilisateur</string>
     <string name="prefs_ui_night_mode">Thème sombre</string>
     <string name="prefs_title_filter_min_cache_size">Taille minimale du cache pour filtrer les applis</string>
-    <string name="prefs_summary_filter_min_cache_size_kb">Min. %1$.2f Ko</string>
-    <string name="prefs_summary_filter_min_cache_size_mb">Min. %1$.2f Mo</string>
-    <string name="prefs_summary_filter_min_cache_size_gb">Min. %1$.2f Go</string>
-    <string name="prefs_error_convert_filter_min_cache_size">Entrez un entier OU 0 pour réinitialiser le filtre</string>
+    <string name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
+    <string name="prefs_error_convert_filter_min_cache_size">Veuillez saisir la taille minimale du cache en KB,MB,GB,TB OU 0 pour réinitialiser le filtre</string>
     <string name="prefs_title_filter_hide_disabled_apps">Cacher les applications désactivées</string>
     <string name="prefs_show_extra_buttons">Afficher des boutons supplémentaires</string>
     <string name="prefs_title_show_button_start_stop_service">Démarrer/arrêter le service d\'accessibilité</string>
