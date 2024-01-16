@@ -51,6 +51,8 @@ class Constant {
             companion object {
                 const val ACTION = "CleanCacheFinish"
                 const val NAME_INTERRUPTED = "interrupted"
+                const val NAME_INTERRUPTED_BY_USER = "interrupted_by_user"
+                const val NAME_PACKAGE_NAME = "package_name"
             }
         }
     }

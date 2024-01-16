@@ -40,7 +40,7 @@ abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 }
 
 interface IIntentActivityCallback {
-    fun onCleanCacheFinish(interrupted: Boolean)
+    fun onCleanCacheFinish(interrupted: Boolean, interruptedByUser: Boolean, pkgName: String?)
     fun onStopAccessibilityServiceFeedback()
 }
 
@@ -66,9 +66,18 @@ class LocalBroadcastManagerActivityHelper(
                         Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
                         false
                     )
-                    if (BuildConfig.DEBUG)
+                    val interruptedByUser = intent.getBooleanExtra(
+                        Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_USER,
+                        false
+                    )
+                    val pkgName = intent.getStringExtra(
+                        Constant.Intent.CleanCacheFinish.NAME_PACKAGE_NAME)
+                    if (BuildConfig.DEBUG) {
                         Logger.d("[Activity] CleanCacheFinish: interrupted = $interrupted")
-                    callback.onCleanCacheFinish(interrupted)
+                        Logger.d("[Activity] CleanCacheFinish: interruptedByUser = $interruptedByUser")
+                        Logger.d("[Activity] CleanCacheFinish: pkgName = $pkgName")
+                    }
+                    callback.onCleanCacheFinish(interrupted, interruptedByUser, pkgName)
                 }
                 Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
                     if (BuildConfig.DEBUG)
@@ -250,12 +259,14 @@ class LocalBroadcastManagerServiceHelper(
         )
     }
 
-    fun sendFinish(interrupted: Boolean) {
+    fun sendFinish(interrupted: Boolean, interruptedByUser: Boolean, pkgName: String?) {
         if (BuildConfig.DEBUG)
             Logger.d("[Service] sendFinish: interrupted = $interrupted")
         sendBroadcast(
             Intent(Constant.Intent.CleanCacheFinish.ACTION).apply {
                 putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
+                putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_USER, interruptedByUser)
+                putExtra(Constant.Intent.CleanCacheFinish.NAME_PACKAGE_NAME, pkgName)
             }
         )
     }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction3
 
 class AccessibilityClearCacheManager {
 
@@ -56,13 +57,17 @@ class AccessibilityClearCacheManager {
     fun clearCacheApp(pkgList: ArrayList<String>,
                       updatePosition: (Int) -> Unit,
                       openAppInfo: KFunction1<String, Unit>,
-                      finish: KFunction1<Boolean, Unit>) {
+                      finish: KFunction3<Boolean, Boolean, String?, Unit>) {
 
         cacheCleanScenario.stateMachine.init()
+
+        var currentPkg: String? = null
 
         for ((index, pkg) in pkgList.withIndex()) {
             if (BuildConfig.DEBUG)
                 Logger.d("clearCacheApp: package name = $pkg")
+
+            currentPkg = pkg
 
             updatePosition(index)
 
@@ -89,7 +94,7 @@ class AccessibilityClearCacheManager {
         val interrupted = cacheCleanScenario.stateMachine.isInterrupted()
         cacheCleanScenario.stateMachine.init()
 
-        finish(interrupted)
+        finish(interrupted, isInterruptedByUser(), currentPkg.takeIf { interrupted })
     }
 
     fun checkEvent(event: AccessibilityEvent) {
@@ -115,8 +120,13 @@ class AccessibilityClearCacheManager {
     }
 
     fun interrupt() {
+        cacheCleanScenario.stateMachine.setInterruptedByUser()
         if (cacheCleanScenario.stateMachine.isDone()) return
         cacheCleanScenario.stateMachine.setInterrupted()
+    }
+
+    fun isInterruptedByUser(): Boolean {
+        return cacheCleanScenario.stateMachine.isInterruptedByUser()
     }
 
     companion object {

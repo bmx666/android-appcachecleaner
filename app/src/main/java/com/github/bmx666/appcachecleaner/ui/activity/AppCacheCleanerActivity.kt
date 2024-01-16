@@ -844,7 +844,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             .commitNowAllowingStateLoss()
     }
 
-    override fun onCleanCacheFinish(interrupted: Boolean) {
+    override fun onCleanCacheFinish(interrupted: Boolean,
+                                    interruptedByUser: Boolean,
+                                    pkgName: String?) {
         val resId: Int
 
         // run job to calculate cleaned cache on Android 8 and later
@@ -886,6 +888,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // Automatically close app
         if (SharedPreferencesManager.Extra.getAfterClearingCacheCloseApp(this)) {
             finish()
+            return
         }
     }
 

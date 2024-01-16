@@ -111,7 +111,9 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                     localBroadcastManager::sendAppInfo,
                     localBroadcastManager::sendFinish)
             }
-        } ?: localBroadcastManager.sendFinish(true)
+        } ?: localBroadcastManager.sendFinish(true,
+            accessibilityClearCacheManager.isInterruptedByUser(),
+            null)
     }
 
     override fun onCleanCacheFinish() {

@@ -48,6 +48,7 @@ internal class DefaultStateMachine: IStateMachine {
 
     private var state = STATE.INIT
     private val condVarWaitState = ConditionVariable()
+    private var interruptedByUser = false
 
     override fun waitState(timeoutMs: Long): Boolean {
         condVarWaitState.close()
@@ -87,6 +88,14 @@ internal class DefaultStateMachine: IStateMachine {
 
     override fun isInterrupted(): Boolean {
         return state == STATE.INTERRUPTED
+    }
+
+    override fun setInterruptedByUser() {
+        interruptedByUser = true
+    }
+
+    override fun isInterruptedByUser(): Boolean {
+        return interruptedByUser
     }
 
     override fun isDone(): Boolean {
