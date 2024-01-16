@@ -950,7 +950,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 val label = PlaceholderContent.Current.find(pkgName)?.label
                 IgnoreAppDialogBuilder.buildIgnoreAppDialog(
                     context = this,
-                    pkgName = when {
+                    pkgName = pkgName,
+                    fullPkgName = when {
                         label.isNullOrEmpty() -> "$pkgName"
                         else -> "$label ($pkgName)"
                     }
