@@ -4,7 +4,7 @@ import android.app.usage.StorageStats
 import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
-import java.util.*
+import java.util.Locale
 
 object PlaceholderContent {
 
