@@ -158,6 +158,10 @@ object PlaceholderContent {
         fun isAllVisibleUnchecked(): Boolean {
             return items.filter { it.visible }.none { it.checked }
         }
+
+        fun find(pkgName: String): PlaceholderPackage? {
+            return items.firstOrNull{ it.name == pkgName }
+        }
     }
 
     data class PlaceholderPackage(val pkgInfo: PackageInfo, val name: String,
