@@ -12,9 +12,10 @@ class IgnoreAppDialogBuilder {
 
         @JvmStatic
         fun buildIgnoreAppDialog(context: Context,
-                                 pkgName: String): Dialog {
+                                 pkgName: String,
+                                 fullPkgName: String): Dialog {
             val message = HtmlCompat.fromHtml(
-                context.getString(R.string.dialog_ignore_app_messages, pkgName),
+                context.getString(R.string.dialog_ignore_app_messages, fullPkgName),
                 HtmlCompat.FROM_HTML_MODE_COMPACT)
 
             return AlertDialogBuilder(context)
