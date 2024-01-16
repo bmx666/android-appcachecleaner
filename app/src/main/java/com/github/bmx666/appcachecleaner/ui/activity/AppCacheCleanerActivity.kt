@@ -34,6 +34,7 @@ import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
+import com.github.bmx666.appcachecleaner.ui.dialog.IgnoreAppDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
@@ -101,42 +102,39 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanUserAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            preparePackageList(null,
+            preparePackageList(
                 PackageManagerHelper.getInstalledApps(
                     context = this,
                     systemNotUpdated = false,
                     systemUpdated = true,
                     userOnly = true,
-                ),
-                false
+                )
             )
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            preparePackageList(null,
+            preparePackageList(
                 PackageManagerHelper.getInstalledApps(
                     context = this,
                     systemNotUpdated = true,
                     systemUpdated = false,
                     userOnly = false,
-                ),
-                false
+                )
             )
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            preparePackageList(null,
+            preparePackageList(
                 PackageManagerHelper.getInstalledApps(
                     context = this,
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
-                ),
-                false
+                )
             )
         }
 
@@ -210,18 +208,29 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             handleOnBackPressed()
         }
 
+        binding.fabListOfIgnoredAppsOk.setOnClickListener {
+            val checkedPkgList = PlaceholderContent.Current.getCheckedPackageNames().toSet()
+            SharedPreferencesManager.Filter.setListOfIgnoredApps(this, checkedPkgList)
+            handleOnBackPressed()
+        }
+
+        binding.fabListOfIgnoredAppsCancel.setOnClickListener {
+            handleOnBackPressed()
+        }
+
         binding.btnCleanCustomListAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
             CustomListDialogBuilder.buildCleanCacheDialog(this) { name ->
                 name ?: return@buildCleanCacheDialog
 
-                preparePackageList(name,
+                preparePackageList(
                     PackageManagerHelper.getCustomInstalledApps(
                         context = this,
                         pkgList = SharedPreferencesManager.PackageList.get(this, name)
                     ),
-                    true
+                    customListName = name,
+                    isCustomListClearOnly = true,
                 )
             }.show()
         }
@@ -385,9 +394,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
-                                               isCustomListClearOnly: Boolean) {
+                                               isCustomListClearOnly: Boolean,
+                                               isListOfIgnoredAppsOnly: Boolean) {
         val locale = LocaleHelper.getCurrentLocale(this)
         val hideDisabledApps = SharedPreferencesManager.Filter.getHideDisabledApps(this)
+        val hideIgnoredApps = SharedPreferencesManager.Filter.getHideIgnoredApps(this)
+        val listOfIgnoreApps = SharedPreferencesManager.Filter.getListOfIgnoredApps(this)
 
         var progressApps = 0
         val totalApps = pkgInfoList.size
@@ -398,9 +410,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             if (loadingPkgListJob?.isActive != true) return
 
-            val skipDisabledApp = hideDisabledApps && !pkgInfo.applicationInfo.enabled
+            val skipApp = (hideDisabledApps && !pkgInfo.applicationInfo.enabled)
+                    || (!isListOfIgnoredAppsOnly && hideIgnoredApps && listOfIgnoreApps.contains(pkgInfo.packageName))
 
-            if (!skipDisabledApp) {
+            if (!skipApp) {
 
                 // skip getting stats if custom list is loaded
                 val stats = customListName?.let { null }
@@ -439,6 +452,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
 
+        if (isListOfIgnoredAppsOnly)
+            PlaceholderContent.All.checkVisible()
+
         if (loadingPkgListJob?.isActive != true) return
 
         when (customListName) {
@@ -469,21 +485,27 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                         startCleanCache(
                             PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
                     else
-                        showPackageFragment()
+                        showPackageFragment(
+                            isCustomListOnly = !customListName.isNullOrEmpty(),
+                            isListOfIgnoredAppsOnly = isListOfIgnoredAppsOnly)
                 }
             }
         }
     }
 
-    private fun preparePackageList(customListName: String?,
-                                   pkgInfoList: ArrayList<PackageInfo>,
-                                   isCustomListClearOnly: Boolean) {
+    private fun preparePackageList(pkgInfoList: ArrayList<PackageInfo>,
+                                   customListName: String? = null,
+                                   isCustomListClearOnly: Boolean = false,
+                                   isListOfIgnoredAppsOnly: Boolean = false) {
         this.customListName = customListName
 
         hideFragmentViews()
         hideMainViews()
 
-        updateActionBarPackageList()
+        if (isListOfIgnoredAppsOnly)
+            updateActionBarSearch(R.string.text_list_ignored_apps)
+        else
+            updateActionBarPackageList(showSearchOnly = !customListName.isNullOrEmpty())
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -496,19 +518,32 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         loadingPkgListJob?.cancel()
         loadingPkgListJob =
             CoroutineScope(Dispatchers.IO).launch {
-                addPackageToPlaceholderContent(pkgInfoList, isCustomListClearOnly)
+                addPackageToPlaceholderContent(
+                    pkgInfoList,
+                    isCustomListClearOnly,
+                    isListOfIgnoredAppsOnly)
             }
     }
 
     internal fun showCustomListPackageFragment(name: String) {
-        preparePackageList(name,
+        preparePackageList(
             PackageManagerHelper.getInstalledApps(
                 context = this,
                 systemNotUpdated = true,
                 systemUpdated = true,
                 userOnly = true,
             ),
-            false
+            customListName = name,
+        )
+    }
+
+    internal fun showIgnoredListPackageFragment(pkgList: Set<String>) {
+        preparePackageList(
+            PackageManagerHelper.getCustomInstalledApps(
+                context = this,
+                pkgList = pkgList,
+            ),
+            isListOfIgnoredAppsOnly = true,
         )
     }
 
@@ -636,6 +671,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.fragmentContainerView.visibility = View.GONE
         binding.layoutFab.visibility = View.GONE
         binding.layoutFabCustomList.visibility = View.GONE
+        binding.layoutFabListOfIgnoredApps.visibility = View.GONE
         binding.layoutProgress.visibility = View.GONE
     }
 
@@ -652,17 +688,18 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun updateActionBar(fragment: Fragment) {
         when (fragment) {
-            is PackageListFragment -> updateActionBarPackageList()
+            is PackageListFragment -> updateActionBarPackageList(showSearchOnly = !customListName.isNullOrEmpty())
             is HelpFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_help)
             is SettingsFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_settings)
             else -> restoreActionBar()
         }
     }
 
-    private fun updateActionBarPackageList() {
-        customListName?.let {
+    private fun updateActionBarPackageList(showSearchOnly: Boolean) {
+        if (showSearchOnly)
             updateActionBarSearch(customListName)
-        } ?: updateActionBarFilter(R.string.clear_cache_btn_text)
+        else
+            updateActionBarFilter(R.string.clear_cache_btn_text)
     }
 
     private fun updateActionBarTextAndHideMenu(@StringRes resId: Int) {
@@ -679,6 +716,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun updateActionBarSearch(title: String?) {
         supportActionBar?.title = title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun updateActionBarSearch(@StringRes resId: Int) {
+        supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowSearch()
     }
@@ -792,10 +834,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                             null -> {
                                 binding.layoutFab.visibility = View.VISIBLE
                                 binding.layoutFabCustomList.visibility = View.GONE
+                                binding.layoutFabListOfIgnoredApps.visibility = View.GONE
                             }
                             else -> {
                                 binding.layoutFab.visibility = View.GONE
                                 binding.layoutFabCustomList.visibility = View.VISIBLE
+                                binding.layoutFabListOfIgnoredApps.visibility = View.GONE
                             }
                         }
                     }
@@ -820,13 +864,22 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         showMainViews()
     }
 
-    private fun showPackageFragment() {
+    private fun showPackageFragment(isCustomListOnly: Boolean,
+                                    isListOfIgnoredAppsOnly: Boolean) {
         binding.layoutProgress.visibility = View.GONE
         binding.fragmentContainerView.visibility = View.VISIBLE
-        binding.layoutFabCustomList.visibility =
-            customListName?.let { View.VISIBLE } ?: View.GONE
-        binding.layoutFab.visibility =
-            customListName?.let { View.GONE } ?: View.VISIBLE
+        binding.layoutFab.visibility = View.GONE
+        binding.layoutFabCustomList.visibility = View.GONE
+        binding.layoutFabListOfIgnoredApps.visibility = View.GONE
+
+        when {
+            isCustomListOnly ->
+                binding.layoutFabCustomList.visibility = View.VISIBLE
+            isListOfIgnoredAppsOnly ->
+                binding.layoutFabListOfIgnoredApps.visibility = View.VISIBLE
+            else ->
+                binding.layoutFab.visibility = View.VISIBLE
+        }
 
         binding.fabCheckAllApps.tag = "uncheck"
 
@@ -889,6 +942,20 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         if (SharedPreferencesManager.Extra.getAfterClearingCacheCloseApp(this)) {
             finish()
             return
+        }
+
+        // Show dialog to ignore app
+        if (SharedPreferencesManager.Filter.getShowDialogToIgnoreApp(this)) {
+            pkgName?.takeIf { interrupted }?.let {
+                val label = PlaceholderContent.Current.find(pkgName)?.label
+                IgnoreAppDialogBuilder.buildIgnoreAppDialog(
+                    context = this,
+                    pkgName = when {
+                        label.isNullOrEmpty() -> "$pkgName"
+                        else -> "$label ($pkgName)"
+                    }
+                ).show()
+            }
         }
     }
 

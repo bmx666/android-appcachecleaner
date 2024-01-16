@@ -207,6 +207,38 @@ class SharedPreferencesManager {
                         context.getString(R.string.prefs_key_filter_hide_disabled_apps),
                         false)
             }
+
+            @JvmStatic
+            fun getHideIgnoredApps(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_filter_hide_ignored_apps),
+                        true)
+            }
+
+            @JvmStatic
+            fun getShowDialogToIgnoreApp(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_filter_show_dialog_to_ignore_app),
+                        true)
+            }
+
+            @JvmStatic
+            fun getListOfIgnoredApps(context: Context): Set<String> {
+                val key = context.getString(R.string.prefs_key_filter_list_of_ignored_apps)
+                return getDefaultSharedPref(context)
+                    .getStringSet(key, HashSet()) ?: HashSet()
+            }
+
+            @JvmStatic
+            fun setListOfIgnoredApps(context: Context, pkgList: Set<String>) {
+                val key = context.getString(R.string.prefs_key_filter_list_of_ignored_apps)
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putStringSet(key, pkgList)
+                    .apply()
+            }
         }
     }
 

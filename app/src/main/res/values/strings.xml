@@ -91,6 +91,7 @@
     <string translatable="false" name="description_apps_all_uncheck">Uncheck all apps</string>
     <string translatable="false" name="text_cache_size_fmt">Cache: %1$s</string>
     <string translatable="false" name="toast_package_list_item_long_click">Hold the app icon to launch &lt;App Info&gt;</string>
+    <string translatable="false" name="text_list_ignored_apps">Ignored apps</string>
 
     <string translatable="false" name="dialog_extra_search_text_title">Add extra search text</string>
     <string translatable="false" name="dialog_extra_search_text_message">%1$s (%2$s)\ninstead of \"%3$s\"</string>
@@ -100,6 +101,13 @@
     <string translatable="false" name="dialog_filter_min_cache_size_title">Filter by cache size</string>
     <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the min. cache size for application filtering (KB,MB,GB,TB)</string>
     <string translatable="false" name="toast_error_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset default</string>
+
+    <string translatable="false" name="dialog_ignore_app_title">Ignore app</string>
+    <string translatable="false" name="dialog_ignore_app_messages"><![CDATA[
+        <b>Cache Cleaner</b> was interrupted by the Android System while cleaning the <b>%s</b> app.
+        Would you like to add this app to the list of ignored apps to prevent it from being included in future cleaning processes?
+        You can always remove this app from the list of ignored apps in the Settings.
+    ]]></string>
 
     <string translatable="false" name="first_boot_title">Please read before using</string>
     <string translatable="false" name="first_boot_message"><![CDATA[
@@ -312,6 +320,10 @@
     <string translatable="false" name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
     <string translatable="false" name="prefs_error_convert_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset filter</string>
     <string translatable="false" name="prefs_title_filter_hide_disabled_apps">Hide disabled apps</string>
+    <string translatable="false" name="prefs_title_filter_hide_ignored_apps">Hide ignored apps</string>
+    <string translatable="false" name="prefs_title_filter_show_dialog_to_ignore_app">Show dialog to ignore app</string>
+    <string translatable="false" name="prefs_title_filter_list_of_ignored_apps_edit">List of ignored apps</string>
+    <string translatable="false" name="prefs_summary_filter_list_of_ignored_apps_edit">Edit the list of ignored apps</string>
     <string translatable="false" name="prefs_show_extra_buttons">Show extra buttons</string>
     <string translatable="false" name="prefs_title_show_button_start_stop_service">Start/Stop Accessibility service</string>
     <string translatable="false" name="prefs_summary_show_button_start_stop_service">For some smartphones, you need to manually start or stop the accessibility service</string>
@@ -350,6 +362,9 @@
     <string translatable="false" name="prefs_key_ui_night_mode">ui_night_mode</string>
     <string translatable="false" name="prefs_key_filter_min_cache_size">filter_min_cache_size</string>
     <string translatable="false" name="prefs_key_filter_hide_disabled_apps">filter_hide_disabled_apps</string>
+    <string translatable="false" name="prefs_key_filter_hide_ignored_apps">filter_hide_ignored_apps</string>
+    <string translatable="false" name="prefs_key_filter_show_dialog_to_ignore_app">filter_show_dialog_to_ignore_app</string>
+    <string translatable="false" name="prefs_key_filter_list_of_ignored_apps">filter_list_of_ignored_apps</string>
     <string translatable="false" name="prefs_key_clear_cache">clear_cache</string>
     <string translatable="false" name="prefs_key_storage">storage</string>
     <string translatable="false" name="prefs_key_show_button_start_stop_service">show_button_start_stop_service</string>
