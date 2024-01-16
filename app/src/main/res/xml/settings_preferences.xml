@@ -14,6 +14,23 @@
             app:key="@string/prefs_key_filter_hide_disabled_apps"
             app:title="@string/prefs_title_filter_hide_disabled_apps" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/prefs_key_filter_hide_ignored_apps"
+            app:title="@string/prefs_title_filter_hide_ignored_apps" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/prefs_key_filter_show_dialog_to_ignore_app"
+            app:title="@string/prefs_title_filter_show_dialog_to_ignore_app" />
+
+        <Preference
+            app:key="@string/prefs_key_filter_list_of_ignored_apps"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:iconSpaceReserved="true"
+            app:title="@string/prefs_title_filter_list_of_ignored_apps_edit"
+            app:summary="@string/prefs_summary_filter_list_of_ignored_apps_edit"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/btn_add_extra_search_text">

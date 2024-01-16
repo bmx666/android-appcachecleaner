@@ -92,6 +92,7 @@
     <string name="description_apps_all_uncheck">Снять выделение со всех приложений</string>
     <string name="text_cache_size_fmt">Кэш: %1$s</string>
     <string name="toast_package_list_item_long_click">Удерживайте иконку приложения, чтобы открыть настройки &lt;О приложении&gt;</string>
+    <string name="text_list_ignored_apps">Игнор. приложения</string>
 
     <string name="dialog_extra_search_text_title">Добавить доп. текст для поиска</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nвместо \"%3$s\"</string>
@@ -101,6 +102,13 @@
     <string name="dialog_filter_min_cache_size_title">Фильтр по размеру кэша</string>
     <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша для фильтрации приложений (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса настройки по умолчанию</string>
+
+    <string name="dialog_ignore_app_title">Игнорировать приложение</string>
+    <string name="dialog_ignore_app_messages"><![CDATA[
+        <b>Очиститель кэша</b> был прерван системой Андроид в процессе очистки приложения <b>%s</b>.
+        Хотите добавить это приложение в список игнорируемых приложений, чтобы предотвратить его включение в будущие процессы очистки?
+        Вы всегда можете удалить это приложение из списка игнорируемых приложений в настройках.
+    ]]></string>
 
     <string name="first_boot_title">Прочтите перед использованием</string>
     <string name="first_boot_message"><![CDATA[
@@ -321,6 +329,10 @@
     <string name="prefs_summary_filter_min_cache_size">Мин. %1$s</string>
     <string name="prefs_error_convert_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса фильтра</string>
     <string name="prefs_title_filter_hide_disabled_apps">Скрыть отключенные приложения</string>
+    <string name="prefs_title_filter_hide_ignored_apps">Скрыть игнорируемые приложения</string>
+    <string name="prefs_title_filter_show_dialog_to_ignore_app">Показывать диалог об игнор. приложения</string>
+    <string name="prefs_title_filter_list_of_ignored_apps_edit">Список игнорируемых приложений</string>
+    <string name="prefs_summary_filter_list_of_ignored_apps_edit">Редактировать список игнорируемых приложожений</string>
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
     <string name="prefs_title_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
     <string name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>

@@ -117,6 +117,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preferenceManager.findPreference(
                 context.getString(R.string.prefs_key_custom_list_remove)),
         )
+
+        initializeListOfIgnoredApps(
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_filter_list_of_ignored_apps))
+        )
     }
 
     private fun initializeUiNightMode(pref: Preference?) {
@@ -333,6 +338,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             Toast.LENGTH_SHORT).show()
                     }
                 }.show()
+                true
+            }
+        }
+    }
+
+    private fun initializeListOfIgnoredApps(editListPref: Preference?) {
+        editListPref?.apply {
+            val pkgList = SharedPreferencesManager.Filter.getListOfIgnoredApps(requireContext())
+            pkgList.apply {
+                isVisible = isNotEmpty()
+            }
+
+            setOnPreferenceClickListener {
+                (activity as AppCacheCleanerActivity?)?.showIgnoredListPackageFragment(pkgList)
                 true
             }
         }
