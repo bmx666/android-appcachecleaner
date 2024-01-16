@@ -1,0 +1,1 @@
+* add list of ignored apps
