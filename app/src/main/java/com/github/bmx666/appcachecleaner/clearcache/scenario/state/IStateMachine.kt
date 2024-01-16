@@ -9,5 +9,7 @@ internal interface IStateMachine {
     fun isFinishCleanApp(): Boolean
     fun setInterrupted()
     fun isInterrupted(): Boolean
+    fun setInterruptedByUser()
+    fun isInterruptedByUser(): Boolean
     fun isDone(): Boolean
 }
