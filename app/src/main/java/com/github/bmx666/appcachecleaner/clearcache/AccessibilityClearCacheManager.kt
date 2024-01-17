@@ -94,7 +94,8 @@ class AccessibilityClearCacheManager {
         val interrupted = cacheCleanScenario.stateMachine.isInterrupted()
         cacheCleanScenario.stateMachine.init()
 
-        finish(interrupted, isInterruptedByUser(), currentPkg.takeIf { interrupted })
+        finish(interrupted, isInterruptedByUser(),
+            currentPkg.takeIf { interrupted && !isInterruptedByUser() })
     }
 
     fun checkEvent(event: AccessibilityEvent) {
