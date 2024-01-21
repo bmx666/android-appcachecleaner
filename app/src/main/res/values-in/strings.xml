@@ -1,5 +1,363 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Pembersih Cache</string>
+    <string name="service_name">Pembersih Cache</string>
+    <string name="tile_name">Pembersih Cache</string>
+    <string name="text_enable_accessibility_title">Aktifkan Layanan Aksesibilitas</string>
+    <string name="text_enable_accessibility_message">
+        Untuk berfungsi dengan baik, <b>Pembersih Cache</b> memerlukan izin Anda.
+        Pergi ke Pengaturan untuk memberikan izin untuk <b>Aksesibilitas</b>.
+        \n\n
+        1. Pergi ke <b>Aksesibilitas</b> di Pengaturan.
+        \n
+        2. Temukan <b>Pembersih Cache</b> dan ketuk disana.
+        \n
+        3. Berikan izin.
+        \n\n
+        <u><b>Deklarasi layanan aksesibilitas:</b></u>
+        \n
+        - Aplikasi ini memerlukan API Layanan Aksesibilitas untuk menerapkan fungsi intinya, seperti melakukan klik, gesekan dan fungsi inti lainnya.
+        \n
+        - Izin Aksesibilitas diperlukan untuk Android 6 dan di atasnya.
+        \n
+        - Aplikasi ini tidak mengumpulkan dan/atau membagikan data pribadi atau sensitif menggunakan kemampuan Aksesibilitas.
+    </string>
+    <string name="text_enable_accessibility_message_api33">
+        Untuk berfungsi dengan baik, <b>Pembersih Cache</b> memerlukan izin Anda.
+        Pergi ke Pengaturan untuk memberikan izin untuk <b>Aksesibilitas</b>.
+        \n\n
+        1. Pergi ke <b>Aksesibilitas</b> di Pengaturan.
+        \n
+        2. Temukan <b>Pembersih Cache</b> dan ketuk disana.
+        \n
+        3. Berikan izin.
+        \n\n
+        <u><b>Deklarasi layanan aksesibilitas:</b></u>
+        \n
+        - Aplikasi ini memerlukan API Layanan Aksesibilitas untuk menerapkan fungsi intinya, seperti melakukan klik, gesekan dan fungsi inti lainnya.
+        \n
+        - Izin Aksesibilitas diperlukan untuk Android 6 dan di atasnya.
+        \n
+        - Aplikasi ini tidak mengumpulkan dan/atau membagikan data pribadi atau sensitif menggunakan kemampuan Aksesibilitas.
+        \n\n
+        <u><b>Izinkan pengaturan terbatas:</b></u>
+        \n
+        - Sejak Android 13 API Aksesibilitas dibatasi untuk aplikasi pihak ketiga. Silakan baca
+        <b>Peringatan ⚠️</b> paragraf di menu <b>Bantuan</b>.
+    </string>
+    <string name="text_accessibility_description">
+        "Pembersih Cache" memerlukan API Layanan Aksesibilitas untuk menerapkan fungsi intinya, seperti melakukan klik, gesekan dan fungsi inti lainnya.
+        "Pembersih Cache" tidak mengumpulkan dan/atau membagikan data pribadi atau sensitif menggunakan kemampuan Aksesibilitas.
+    </string>
+    <string name="text_enable_usage_stats_title">Aktifkan Statistik Penggunaan</string>
+    <string name="text_enable_usage_stats_message">
+        Untuk berfungsi dengan baik, <b>Pembersih Cache</b> memerlukan izin Anda. Pergi ke Pengaturan untuk memberikan izin untuk Statistik Penggunaan.
+        \n\n
+        1. Pergi ke <b>Aplikasi</b> di Pengaturan.
+        \n
+        2. Temukan <b>Akses aplikasi khusus</b> dan ketuk disana.
+        \n
+        3. Temukan <b>Akses penggunaan</b> dan ketuk disana.
+        \n
+        4. Temukan <b>Pembersih Cache</b> dan ketuk disana.
+        \n
+        5. Berikan izin.
+        \n\n
+        <u><b>Deklarasi statistik penggunaan:</b></u>
+        \n
+        - Aplikasi ini memerlukan statistik penggunaan untuk menerapkan fungsi intinya, seperti mendapatkan ukuran cache dari aplikasi yang terpasang.
+        \n
+        - Izin statistik penggunaan diperlukan untuk Android 8 dan di atasnya.
+        \n
+        - Aplikasi ini tidak mengumpulkan dan/atau membagikan data pribadi atau sensitif menggunakan statistik penggunaan.
+    </string>
+    <string name="text_clean_cache_left">aplikasi tersisa</string>
+    <string name="text_clean_cache_finish">Pembersihan cache telah selesai</string>
+    <string name="text_clean_cache_finish_display_size">Pembersihan cache telah selesai\nMembersihkan %1$s</string>
+    <string name="text_clean_cache_finish_processing">Pembersihan cache telah selesai\nSedang diproses…</string>
+    <string name="text_clean_cache_interrupt">Pembersihan cache terganggu</string>
+    <string name="text_clean_cache_interrupt_display_size">Pembersihan cache terganggu\nMembersihkan %1$s</string>
+    <string name="text_clean_cache_interrupt_processing">Pembersihan cache terganggu\nSedang diproses…</string>
+    <string name="btn_open_accessibility">Buka Pengaturan Aksesibilitas</string>
+    <string name="btn_open_usage_stats">Buka Pengaturan Statistik Penggunaan</string>
+    <string name="btn_clean_all_cache">Bersihkan cache semua aplikasi</string>
+    <string name="btn_clean_system_cache">Bersihkan cache aplikasi sistem</string>
+    <string name="btn_clean_user_cache">Bersihkan cache aplikasi pengguna</string>
+    <string name="btn_close_app">Tutup aplikasi</string>
+    <string name="btn_start_accessibility_service">Mulai layanan Aksesibilitas</string>
+    <string name="btn_stop_accessibility_service">Hentikan layanan Aksesibilitas</string>
+    <string name="btn_add_extra_search_text">Tambahkan teks pencarian tambahan</string>
+    <string name="description_apps_all_check">Centang semua aplikasi</string>
+    <string name="description_apps_all_uncheck">Hapus centang semua aplikasi</string>
+    <string name="text_cache_size_fmt">Cache: %1$s</string>
+    <string name="toast_package_list_item_long_click">Tahan ikon aplikasi untuk meluncurkan &lt;Info Aplikasi&gt;</string>
+    <string name="text_list_ignored_apps">Aplikasi yang diabaikan</string>
+
+    <string name="dialog_extra_search_text_title">Tambahkan teks pencarian tambahan</string>
+    <string name="dialog_extra_search_text_message">%1$s (%2$s)\nsebagai ganti dari \"%3$s\"</string>
+    <string name="dialog_extra_search_text_btn_ok">OK</string>
+    <string name="dialog_extra_search_text_btn_remove">Hapus</string>
+
+    <string name="dialog_filter_min_cache_size_title">Saring berdasarkan ukuran cache</string>
+    <string name="dialog_filter_min_cache_size_message">Masukkan ukuran cache min. untuk penyaringan aplikasi (KB,MB,GB,TB)</string>
+    <string name="toast_error_filter_min_cache_size">Silakan masukkan ukuran cache min. dalam KB,MB,GB,TB ATAU 0 untuk mereset standar</string>
+
+    <string name="dialog_ignore_app_title">Abaikan aplikasi</string>
+    <string name="dialog_ignore_app_messages"><![CDATA[
+        <b>Pembersih Cache</b> terganggu oleh Sistem Android saat membersihkan aplikasi <b>%s</b>.
+        Apakah Anda ingin menambahkan aplikasi ini ke daftar aplikasi yang diabaikan untuk mencegahnya dimasukkan dalam proses pembersihan di masa depan?
+        Anda selalu dapat menghapus aplikasi ini dari daftar aplikasi yang diabaikan di Pengaturan.
+    ]]></string>
+
+    <string name="first_boot_title">Silakan baca sebelum menggunakan</string>
+    <string name="first_boot_message"><![CDATA[
+        <h2>Pengaturan UI yang Disesuaikan</h2>
+        <br/>
+        Banyak perusahaan atau ROM Android menambahkan atau mengubah UI Android default, termasuk Pengaturan.
+        Ini dapat menyebabkan masalah karena aplikasi <b>Pembersih Cache</b> mencari teks tertentu
+        dan jika tidak cocok, aplikasi tidak melakukan apa-apa.
+    ]]></string>
+    <string name="first_boot_confirm_1">
+        Saya mengonfirmasi bahwa saya akan membaca bab <b>Pengaturan UI yang Disesuaikan</b> di menu <b>Bantuan</b>,
+        sebelum melakukan tindakan apa pun dengan aplikasi <b>Pembersih Cache</b>.
+    </string>
+    <string name="first_boot_confirm_2">
+        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan tindakan apa pun,
+        saya akan melakukan tindakan yang dijelaskan di menu <b>Bantuan</b> di bab <b>Pengaturan UI yang Disesuaikan</b>,
+        terkait dengan pengaturan teks alternatif untuk mencari menu <b>Penyimpanan dan Cache</b> atau <b>Penyimpanan</b>,
+        serta pengaturan teks alternatif untuk mencari tombol <b>Bersihkan Cache</b>.
+    </string>
+    <string name="first_boot_confirm_3">
+        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan tindakan apa pun,
+        saya akan mengubah skenario pembersihan cache di <b>Pengaturan</b> dari skenario <b>Default</b>
+        ke skenario <b>Xiaomi MIUI</b> jika ponsel saya adalah <b>Xiaomi dengan firmware MIUI regional tertentu</b>.
+    </string>
+    <string name="first_boot_confirm_4">
+        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan salah satu tindakan yang dijelaskan di atas,
+        saya berkewajiban untuk melaporkan masalah saya di alamat yang ditentukan di bab
+        <b>Kirim laporan bug</b> di menu <b>Bantuan</b>.
+    </string>
+    <string name="first_boot_confirm_googleplay_1">
+        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan salah satu tindakan yang dijelaskan di atas,
+        dan setelah melaporkan masalah saya di alamat yang ditentukan di bab
+        <b>Kirim laporan bug</b> di menu <b>Bantuan</b>, saya tidak menerima dukungan apa pun dari penulis,
+        saya dapat mengajukan keluhan melalui GooglePlay terhadap aplikasi <b>Pembersih Cache</b>,
+        sebagai aplikasi yang menyesatkan pengguna.
+    </string>
+    <string name="first_boot_confirm_googleplay_2">
+        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan salah satu tindakan yang dijelaskan di atas,
+        dan setelah mengajukan keluhan melalui GooglePlay terhadap aplikasi <b>Pembersih Cache</b>,
+        saya berkewajiban untuk meninggalkan ulasan di GooglePlay terkait dengan masalah saya.
+    </string>
+    <string name="first_boot_confirm_googleplay_3">
+        Saya mengonfirmasi bahwa jika saya tidak melakukan salah satu tindakan yang terdaftar di atas,
+        saya sepenuhnya melepaskan hak saya untuk meninggalkan umpan balik negatif atau keluhan tentang menyesatkan pengguna.
+    </string>
+    <string name="first_boot_confirm_googleplay_4">
+        Jika saya tidak setuju dengan salah satu tindakan yang terdaftar di atas, saya berkewajiban untuk menghapus
+        aplikasi <b>Pembersih Cache</b> dari perangkat saya dan tidak memiliki klaim terhadapnya dan penulisnya.
+    </string>
+
+    <string name="menu_extra_search_text_title">Teks pencarian tambahan untuk:</string>
+
+    <string name="help_about"><![CDATA[
+        <h2>Tentang aplikasi</h2>
+        <br/>
+        Sejak Android 6 (Marshmallow) sudah tidak mungkin lagi untuk membersihkan cache semua aplikasi
+        secara bersamaan dan Google telah memindahkan izin ini hanya untuk aplikasi sistem. Hanya ada satu cara
+        yang mungkin tersisa - buka manual info tentang aplikasi dan temukan menu
+        <b>&quot;Penyimpanan&quot;</b> spesifik dan kemudian tekan
+        <b>&quot;Bersihkan cache&quot;</b>.
+        <br/><br/>
+        Aplikasi <b>Pembersih Cache</b> dapat meminta semua aplikasi pengguna dan sistem yang terpasang dan itu
+        menggantikan semua tindakan manual yang terkait dengan pembersihan cache menggunakan layanan Aksesibilitas.
+    ]]></string>
+
+    <string name="help_android13_accessibility_permission"><![CDATA[
+        <br/>
+        <h2>Peringatan ⚠️</h2>
+        <br/>
+        Sejak Android 13 API Aksesibilitas dibatasi untuk aplikasi pihak ketiga.
+        Silakan ikuti langkah-langkah di bawah ini untuk mengaktifkan Aksesibilitas untuk aplikasi <b>Pembersih Cache</b>.
+        <br/><br/>
+        <h3>Izinkan pengaturan terbatas</h3>
+        <br/>
+        Ketika Anda mengaktifkan pengaturan terbatas, Anda mengizinkan aplikasi untuk mengakses informasi sensitif yang
+        dapat membahayakan data pribadi Anda. Kami tidak menyarankan Anda untuk mengizinkan pengaturan terbatas
+        kecuali Anda mempercayai pengembang aplikasi.
+        <br/><br/>
+        Beberapa aplikasi sah mungkin meminta Anda untuk mengaktifkan pengaturan terbatas. Misalnya, aplikasi yang
+        dirancang untuk mendukung orang dengan disabilitas mungkin meminta Anda untuk mengaktifkan pengaturan aksesibilitas.
+        Dengan akses ke pengaturan aksesibilitas, aplikasi dapat membaca konten di layar Anda dan berinteraksi
+        dengan aplikasi atas nama Anda.
+        <br/><br/>
+        1. Klik tombol <b>Buka Pengaturan Aplikasi</b> di bawah ini
+        <br/>
+        2. Ketuk menu <b>Lainnya</b> <b>⋮</b> (pojok kanan atas)
+        <br/>
+        3. Ketuk <b>Izinkan pengaturan terbatas</b>
+        <br/>
+        4. Ikuti instruksi di layar
+        <br/><br/>
+        <b>Sumber</b> - https://support.google.com/android/answer/12623953
+    ]]></string>
+
+    <string name="help_how_to_use"><![CDATA[
+        <br/>
+        <h2>Cara menggunakan</h2>
+        <br/>
+        1. Klik tombol bersihkan cache dari <b>Aplikasi Pengguna</b>, <b>Aplikasi Sistem</b> ATAU <b>Semua Aplikasi</b>
+        <br/>
+        2. Aktifkan dukungan Statistik Penggunaan untuk aplikasi <b>Pembersih Cache</b> jika diperlukan
+        <br/>
+        3. Aktifkan dukungan Aksesibilitas untuk aplikasi <b>Pembersih Cache</b> jika diperlukan
+        <br/>
+        4. Periksa aplikasi yang diperlukan dalam daftar (gunakan tombol mengambang untuk mencentang/menghilangkan centang semua aplikasi)
+        <br/>
+        5. Tekan <b>tombol mengambang Bersihkan Cache</b> untuk menjalankan proses pembersihan cache
+        <br/>
+        6. Tekan <b>tombol mengambang Aksesibilitas</b> untuk menghentikan proses ATAU tunggu hingga proses selesai
+        <br/>
+        7. <i>(opsional)</i> Tekan <b>Hentikan layanan Aksesibilitas</b> untuk menonaktifkan layanan Aksesibilitas
+    ]]></string>
+
+    <string name="help_customized_settings_ui"><![CDATA[
+        <br/>
+        <h2>Pengaturan UI yang Disesuaikan</h2>
+        <br/>
+        Banyak perusahaan atau ROM Android menambahkan atau mengubah UI Android default, termasuk Pengaturan.
+        Ini dapat menyebabkan masalah karena aplikasi <b>Pembersih Cache</b> mencari teks tertentu
+        dan jika tidak cocok, aplikasi tidak melakukan apa-apa.
+        <br/>
+        <br/>
+        Silakan ikuti langkah-langkah di bawah ini untuk mengatasi masalah pembersihan cache:
+        <br/>
+        <br/>
+        1. Pilih aplikasi apa pun dan buka <b>&quot;Info Aplikasi&quot;</b>
+        <br/>
+        2. Catat teks untuk menu <b>&quot;Penyimpanan&quot;</b>
+        <br/>
+        3. Pergi ke menu <b>&quot;Penyimpanan&quot;</b>
+        <br/>
+        4. Catat teks untuk tombol <b>&quot;Bersihkan Cache&quot;</b>
+        <br/>
+        5. Buka aplikasi <b>Pembersih Cache</b> dengan lokalisasi tertentu (ubah pada lokalisasi yang diperlukan di Pengaturan
+        dan kembali ke aplikasi <b>Pembersih Cache</b>)
+        <br/>
+        6. Buka menu <b>Pengaturan</b> di pojok kanan atas dan temukan bagian <b>Tambahkan Teks Pencarian Tambahan</b>
+        <br/>
+        7. Ketuk pada <b>Bersihkan Cache</b>, masukkan teks pencarian khusus untuk tombol <b>&quot;Bersihkan Cache&quot;</b>
+        di bidang input dan tekan <b>&quot;OK&quot;</b> untuk menyimpannya. Untuk menghapus teks pencarian khusus
+        untuk tombol <b>&quot;Bersihkan Cache&quot;</b> cukup hapus seluruh teks di bidang input dan tekan
+        <b>&quot;OK&quot;</b>
+        <br/>
+        8. Ketuk pada <b>Penyimpanan</b>, masukkan teks pencarian khusus untuk menu <b>&quot;Penyimpanan&quot;</b>
+        di bidang input dan tekan <b>&quot;OK&quot;</b> untuk menyimpannya. Untuk menghapus teks pencarian khusus
+        untuk menu <b>&quot;Penyimpanan&quot;</b> cukup hapus seluruh teks di bidang input dan tekan
+        <b>&quot;OK&quot;</b>
+        <br/>
+        <br/>
+        <h4>Smartphone Xiaomi dengan firmware MIUI regional tertentu harus menggunakan skenario pembersihan cache yang berbeda:</h4>
+        1. Buka menu <b>Pengaturan</b> di pojok kanan atas dan temukan bagian <b>Lainnya</b>
+        <br/>
+        2. Klik <b>Skenario Bersihkan cache</b> dan pilih <b>Xiaomi MIUI</b>
+        <br/>
+        <br/>
+        <h4>PERHATIAN ⚠️: Smartphone Huawei dan Xiaomi sering menggunakan optimalisasi baterai yang agresif yang
+        dapat mengganggu komunikasi antara <b>Pembersih Cache</b> dan layanan Aksesibilitas,
+        mencegah mereka bekerja sesuai harapan. Silakan ikuti langkah-langkah di bawah ini:</h4>
+        1. Buka menu <b>Pengaturan</b> di pojok kanan atas dan temukan bagian <b>Tampilkan tombol tambahan</b>
+        <br/>
+        2. Aktifkan opsi <b>Mulai/Hentikan layanan Aksesibilitas</b>
+        <br/>
+        3. Kali berikutnya Anda memulai <b>Pembersih Cache</b>, jika layanan Aksesibilitas berjalan,
+        hentikan dengan mengklik tombol <b>Hentikan layanan Aksesibilitas</b>.
+        Kemudian, aktifkan kembali dengan mengklik tombol <b>Mulai layanan Aksesibilitas</b>
+    ]]></string>
+
+    <string name="help_icon_copyright"><![CDATA[
+        <br/>
+        <h2>Hak cipta ikon</h2>
+        <br/>
+        <a href="https://www.flaticon.com/free-icon/broom_2954888"><b>Ikon Sapu</b> dibuat oleh Smashicons - Flaticon</a>
+        <br/>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon.pdf">
+        Lisensi Freepik untuk <b>Ikon Sapu</b></a>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon_monochrome.pdf">
+        Lisensi Freepik untuk monokrom <b>Ikon Sapu</b></a>
+    ]]></string>
+
+    <string name="help_submit_bug_report"><![CDATA[
+        <br/>
+        <h2>Kirim laporan bug</h2>
+        <br/>
+        <b><a href="https://github.com/bmx666/android-appcachecleaner/issues">Github</a></b>
+    ]]></string>
+
+    <string name="description_accessibility_overlay_button_interrupt">Menghentikan proses pembersihan cache</string>
+
+    <!-- Custom package lists -->
+    <string name="btn_clean_custom_list_cache">Bersihkan cache daftar kustom</string>
+    <string name="dialog_title_custom_list_add">Tambahkan daftar kustom</string>
+    <string name="dialog_message_custom_list_add">Silakan masukkan nama baru:</string>
+    <string name="dialog_title_custom_list_edit">Edit daftar kustom</string>
+    <string name="dialog_message_custom_list_edit">Silakan pilih daftar:</string>
+    <string name="dialog_title_custom_list_remove">Hapus daftar kustom</string>
+    <string name="dialog_message_custom_list_remove">Silakan pilih daftar:</string>
+    <string name="dialog_title_custom_list_clean_cache">Bersihkan cache daftar kustom</string>
+    <string name="dialog_message_custom_list_clean_cache">Silakan pilih daftar:</string>
+    <string name="toast_custom_list_add_already_exists">Nama yang dimasukkan sudah ada, silakan gunakan nama lain</string>
+    <string name="toast_custom_list_add_list_empty">Daftar kosong, tambahkan setidaknya satu aplikasi</string>
+    <string name="toast_custom_list_has_been_saved">Daftar %1$s telah disimpan</string>
+    <string name="toast_custom_list_has_been_removed">Daftar %1$s telah dihapus</string>
+
+    <!-- Preference -->
+    <string name="prefs_ui">UI</string>
+    <string name="prefs_ui_night_mode">Tema Gelap</string>
+    <string name="prefs_title_filter_min_cache_size">Ukuran Cache Min. untuk menyaring aplikasi</string>
+    <string name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
+    <string name="prefs_error_convert_filter_min_cache_size">Silakan masukkan ukuran cache min. dalam KB,MB,GB,TB ATAU 0 untuk mereset penyaring</string>
+    <string name="prefs_title_filter_hide_disabled_apps">Sembunyikan aplikasi yang dinonaktifkan</string>
+    <string name="prefs_title_filter_hide_ignored_apps">Sembunyikan aplikasi yang diabaikan</string>
+    <string name="prefs_title_filter_show_dialog_to_ignore_app">Tampilkan dialog untuk mengabaikan aplikasi</string>
+    <string name="prefs_title_filter_list_of_ignored_apps_edit">Daftar aplikasi yang diabaikan</string>
+    <string name="prefs_summary_filter_list_of_ignored_apps_edit">Edit daftar aplikasi yang diabaikan</string>
+    <string name="prefs_show_extra_buttons">Tampilkan tombol tambahan</string>
+    <string name="prefs_title_show_button_start_stop_service">Mulai/Hentikan Layanan Aksesibilitas</string>
+    <string name="prefs_summary_show_button_start_stop_service">Untuk beberapa smartphone, Anda perlu secara manual memulai atau menghentikan layanan aksesibilitas</string>
+    <string name="prefs_title_show_button_close_app">Tutup aplikasi</string>
+    <string name="prefs_summary_show_button_close_app">Untuk beberapa smartphone, Anda perlu secara manual menghentikan layanan aksesibilitas dan menutup aplikasi</string>
+    <string name="prefs_extra_actions">Tindakan tambahan</string>
+    <string name="prefs_title_extra_action_stop_service">Hentikan otomatis Layanan Aksesibilitas</string>
+    <string name="prefs_summary_extra_action_stop_service">Secara otomatis menghentikan Layanan Aksesibilitas setelah membersihkan cache</string>
+    <string name="prefs_title_extra_action_close_app">Tutup otomatis aplikasi</string>
+    <string name="prefs_summary_extra_action_close_app">Secara otomatis menutup aplikasi setelah membersihkan cache</string>
+    <string name="prefs_custom_lists">Daftar kustom aplikasi</string>
+    <string name="prefs_title_custom_list_add">Tambah</string>
+    <string name="prefs_summary_custom_list_add">Tambahkan daftar kustom baru aplikasi</string>
+    <string name="prefs_title_custom_list_edit">Edit</string>
+    <string name="prefs_summary_custom_list_edit">Edit daftar kustom yang ada aplikasi</string>
+    <string name="prefs_title_custom_list_remove">Hapus</string>
+    <string name="prefs_summary_custom_list_remove">Hapus daftar kustom yang ada aplikasi</string>
+    <string name="prefs_other">Lainnya</string>
+    <string name="prefs_title_delay_for_next_app_timeout">Waktu tunggu antara aplikasi - %ds</string>
+    <string name="prefs_summary_delay_for_next_app_timeout">Untuk smartphone lama, disarankan untuk meningkatkan waktu tunggu antara aplikasi, karena Sistem Android dapat menyebabkan gangguan</string>
+    <string name="prefs_title_max_wait_app_timeout">Maks. waktu tunggu per aplikasi - %ds</string>
+    <string name="prefs_summary_max_wait_app_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena perhitungan ukuran cache bisa memakan waktu lebih lama</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Maks. waktu tunggu tombol Bersihkan Cache - %ds</string>
+    <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena perhitungan ukuran cache bisa memakan waktu lebih lama</string>
+    <string name="prefs_title_scenario">Skenario menghapus cache</string>
+    <string-array name="settings_scenario_entries">
+        <item>Bawaan</item>
+        <item>Xiaomi MIUI</item>
+    </string-array>
+    <string-array name="settings_scenario_entry_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Hapus cache"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Penyimpanan amp; cache"</string>
     <string name="storage_label" msgid="2522307545547515733">"Penyimpanan"</string>
