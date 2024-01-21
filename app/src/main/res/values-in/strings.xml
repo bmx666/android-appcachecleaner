@@ -85,10 +85,10 @@
     <string name="btn_clean_user_cache">Bersihkan cache aplikasi pengguna</string>
     <string name="btn_close_app">Tutup aplikasi</string>
     <string name="btn_start_accessibility_service">Mulai layanan Aksesibilitas</string>
-    <string name="btn_stop_accessibility_service">Berhenti layanan Aksesibilitas</string>
+    <string name="btn_stop_accessibility_service">Hentikan layanan Aksesibilitas</string>
     <string name="btn_add_extra_search_text">Tambahkan teks pencarian tambahan</string>
-    <string name="description_apps_all_check">Cek semua aplikasi</string>
-    <string name="description_apps_all_uncheck">Uncek semua aplikasi</string>
+    <string name="description_apps_all_check">Centang semua aplikasi</string>
+    <string name="description_apps_all_uncheck">Hapus centang semua aplikasi</string>
     <string name="text_cache_size_fmt">Cache: %1$s</string>
     <string name="toast_package_list_item_long_click">Tahan ikon aplikasi untuk meluncurkan &lt;Info Aplikasi&gt;</string>
     <string name="text_list_ignored_apps">Aplikasi yang diabaikan</string>
@@ -216,9 +216,9 @@
         <br/>
         5. Tekan <b>tombol mengambang Bersihkan Cache</b> untuk menjalankan proses pembersihan cache
         <br/>
-        6. Tekan <b>tombol mengambang Aksesibilitas</b> untuk mengganggu proses ATAU tunggu hingga proses selesai
+        6. Tekan <b>tombol mengambang Aksesibilitas</b> untuk menghentikan proses ATAU tunggu hingga proses selesai
         <br/>
-        7. <i>(opsional)</i> Tekan <b>Berhenti layanan Aksesibilitas</b> untuk menonaktifkan layanan Aksesibilitas
+        7. <i>(opsional)</i> Tekan <b>Hentikan layanan Aksesibilitas</b> untuk menonaktifkan layanan Aksesibilitas
     ]]></string>
 
     <string name="help_customized_settings_ui"><![CDATA[
@@ -268,10 +268,10 @@
         mencegah mereka bekerja sesuai harapan. Silakan ikuti langkah-langkah di bawah ini:</h4>
         1. Buka menu <b>Pengaturan</b> di pojok kanan atas dan temukan bagian <b>Tampilkan tombol tambahan</b>
         <br/>
-        2. Aktifkan opsi <b>Mulai/Berhenti layanan Aksesibilitas</b>
+        2. Aktifkan opsi <b>Mulai/Hentikan layanan Aksesibilitas</b>
         <br/>
         3. Kali berikutnya Anda memulai <b>Pembersih Cache</b>, jika layanan Aksesibilitas berjalan,
-        hentikan dengan mengklik tombol <b>Berhenti layanan Aksesibilitas</b>.
+        hentikan dengan mengklik tombol <b>Hentikan layanan Aksesibilitas</b>.
         Kemudian, aktifkan kembali dengan mengklik tombol <b>Mulai layanan Aksesibilitas</b>
     ]]></string>
 
@@ -325,14 +325,14 @@
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Daftar aplikasi yang diabaikan</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Edit daftar aplikasi yang diabaikan</string>
     <string name="prefs_show_extra_buttons">Tampilkan tombol tambahan</string>
-    <string name="prefs_title_show_button_start_stop_service">Mulai/Berhenti Layanan Aksesibilitas</string>
+    <string name="prefs_title_show_button_start_stop_service">Mulai/Hentikan Layanan Aksesibilitas</string>
     <string name="prefs_summary_show_button_start_stop_service">Untuk beberapa smartphone, Anda perlu secara manual memulai atau menghentikan layanan aksesibilitas</string>
     <string name="prefs_title_show_button_close_app">Tutup aplikasi</string>
     <string name="prefs_summary_show_button_close_app">Untuk beberapa smartphone, Anda perlu secara manual menghentikan layanan aksesibilitas dan menutup aplikasi</string>
     <string name="prefs_extra_actions">Tindakan tambahan</string>
-    <string name="prefs_title_extra_action_stop_service">AutoStop Layanan Aksesibilitas</string>
+    <string name="prefs_title_extra_action_stop_service">Hentikan otomatis Layanan Aksesibilitas</string>
     <string name="prefs_summary_extra_action_stop_service">Secara otomatis menghentikan Layanan Aksesibilitas setelah membersihkan cache</string>
-    <string name="prefs_title_extra_action_close_app">AutoClose aplikasi</string>
+    <string name="prefs_title_extra_action_close_app">Tutup otomatis aplikasi</string>
     <string name="prefs_summary_extra_action_close_app">Secara otomatis menutup aplikasi setelah membersihkan cache</string>
     <string name="prefs_custom_lists">Daftar kustom aplikasi</string>
     <string name="prefs_title_custom_list_add">Tambah</string>
