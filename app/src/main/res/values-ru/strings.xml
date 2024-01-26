@@ -307,6 +307,14 @@
 
     <string name="description_accessibility_overlay_button_interrupt">Прервать процесс очистки кеша</string>
 
+    <!-- Bugs -->
+    <string translatable="false" name="title_bug_322519674">Android 14 ошибка 322519674</string>
+    <string translatable="false" name="message_bug_322519674">
+        Открытие "О приложении" для любого приложения вызывает ошибку в Android 14.
+        После открытия большого количества "О приложении", система Android переходит в неопределенное состояние.
+        Извините, но этот сообщение будет отображаться до тех пор, пока Google не исправит ошибку в Android 14.
+    </string>
+
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Очистка кэша из собств. списка</string>
     <string name="dialog_title_custom_list_add">Добавить собств. список</string>
