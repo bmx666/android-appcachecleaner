@@ -298,6 +298,14 @@
 
     <string translatable="false" name="description_accessibility_overlay_button_interrupt">Interrupt cache cleaning process</string>
 
+    <!-- Bugs -->
+    <string translatable="false" name="title_bug_322519674">Android 14 bug 322519674</string>
+    <string translatable="false" name="message_bug_322519674">
+        Opening AppInfo of any app causes an error in Android 14.
+        After opening too many AppInfo instances, the Android system goes into undefined behavior.
+        Sorry, but this dialog will be shown until Google fixes the bug in Android 14.
+    </string>
+
     <!-- Custom package lists -->
     <string translatable="false" name="btn_clean_custom_list_cache">Clean cache of custom list</string>
     <string translatable="false" name="dialog_title_custom_list_add">Add custom list</string>

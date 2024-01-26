@@ -269,6 +269,33 @@ class SharedPreferencesManager {
         }
     }
 
+    class BugWarning {
+
+        companion object {
+            private const val KEY_BUG_322519674 =
+                "bug_322519674"
+
+            @JvmStatic
+            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+                return PreferenceManager.getDefaultSharedPreferences(context)
+            }
+
+            @JvmStatic
+            fun showBug322519674(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(KEY_BUG_322519674, true)
+            }
+
+            @JvmStatic
+            fun hideBug322519674(context: Context) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putBoolean(KEY_BUG_322519674, false)
+                    .apply()
+            }
+        }
+    }
+
     class UI {
         companion object {
             @JvmStatic

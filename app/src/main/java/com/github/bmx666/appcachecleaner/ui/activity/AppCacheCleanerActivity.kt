@@ -32,6 +32,7 @@ import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
+import com.github.bmx666.appcachecleaner.ui.dialog.AlertDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.IgnoreAppDialogBuilder
@@ -239,6 +240,20 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
 
         checkRequestAddTileService()
+
+        // Show bugs
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (SharedPreferencesManager.BugWarning.showBug322519674(this)) {
+                AlertDialogBuilder(this)
+                    .setTitle(R.string.title_bug_322519674)
+                    .setMessage(R.string.message_bug_322519674)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        // SharedPreferencesManager.BugWarning.hideBug322519674(this)
+                    }
+                    .create()
+                    .show()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
