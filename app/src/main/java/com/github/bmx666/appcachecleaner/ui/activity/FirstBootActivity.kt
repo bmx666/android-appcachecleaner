@@ -57,7 +57,15 @@ class FirstBootActivity: AppCompatActivity() {
                 binding.textConfirmGooglePlay4.isEnabled = true
             }
             binding.textConfirmGooglePlay4.setOnCheckedChangeListener { _, _ ->
+                binding.textConfirmGooglePlayFake1.isEnabled = true
+                binding.textConfirmGooglePlayFake2.isEnabled = true
                 binding.btnOk.isEnabled = true
+            }
+            binding.textConfirmGooglePlayFake1.setOnCheckedChangeListener { _, isChecked ->
+                checkedFake(binding.textConfirmGooglePlayFake1, isChecked)
+            }
+            binding.textConfirmGooglePlayFake2.setOnCheckedChangeListener { _, isChecked ->
+                checkedFake(binding.textConfirmGooglePlayFake2, isChecked)
             }
 
             listOf(
@@ -65,6 +73,8 @@ class FirstBootActivity: AppCompatActivity() {
                 binding.textConfirmGooglePlay2,
                 binding.textConfirmGooglePlay3,
                 binding.textConfirmGooglePlay4,
+                binding.textConfirmGooglePlayFake1,
+                binding.textConfirmGooglePlayFake2,
             ).forEach {
                 it.visibility = View.VISIBLE
             }
@@ -109,18 +119,25 @@ class FirstBootActivity: AppCompatActivity() {
                 binding.textConfirmGooglePlay2,
                 binding.textConfirmGooglePlay3,
                 binding.textConfirmGooglePlay4,
-            ).all { verifyCheckbox(it) }
+            ).all { verifyCheckbox(it, expected = true) }
+            && listOf(
+                binding.textConfirmGooglePlayFake1,
+                binding.textConfirmGooglePlayFake2,
+            ).all { verifyCheckbox(it, expected = false) }
         else
             return listOf(
                 binding.textConfirm1,
                 binding.textConfirm2,
                 binding.textConfirm3,
                 binding.textConfirm4,
-            ).all { verifyCheckbox(it) }
+            ).all { verifyCheckbox(it, expected = true) }
     }
 
-    private fun verifyCheckbox(checkBox: AppCompatCheckBox): Boolean {
-        if (checkBox.isChecked)
+    private fun verifyCheckbox(checkBox: AppCompatCheckBox, expected: Boolean): Boolean {
+        if (expected && checkBox.isChecked)
+            return true
+
+        if (!expected && !checkBox.isChecked)
             return true
 
         val originalTextColors = checkBox.textColors
@@ -141,5 +158,26 @@ class FirstBootActivity: AppCompatActivity() {
         view.getLocationInWindow(coordinates)
         // Use the coordinates to scroll to the view
         scrollView.smoothScrollTo(0, coordinates[1])
+    }
+
+    private fun checkedFake(checkBox: AppCompatCheckBox, isChecked: Boolean) {
+        if (!isChecked)
+            return
+
+        listOf(
+            binding.textConfirm1,
+            binding.textConfirm2,
+            binding.textConfirm3,
+            binding.textConfirm4,
+            binding.textConfirmGooglePlay1,
+            binding.textConfirmGooglePlay2,
+            binding.textConfirmGooglePlay3,
+            binding.textConfirmGooglePlay4,
+        ).forEach {
+            it.isChecked = false
+        }
+        binding.btnOk.isEnabled = false
+
+        verifyCheckbox(checkBox, expected = false)
     }
 }

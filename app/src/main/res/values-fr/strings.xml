@@ -160,6 +160,16 @@
         je suis obligé de supprimer l\'appli <b>Cache Cleaner</b> de mon appareil et ne pourra faire aucune réclamation 
         contre elle-même et l\'auteur de cette dernière.
     </string>
+    <string name="first_boot_confirm_googleplay_fake_1">
+        J\'aime accepter le contrat d\'utilisateur sans rien lire.
+        Ensuite, je prévois d\'offenser le développeur et d\'accuser <b>Cache Cleaner</b> d\'être une application malveillante
+        car je n\'ai aucune idée de ce que signifie le terme open source.
+        <b>POUR CONTINUER, VOUS NE DEVEZ PAS COCHER CETTE CASE!</b>
+    </string>
+    <string name="first_boot_confirm_googleplay_fake_2">
+        Je prévois de laisser un avis négatif parce que je suis trop paresseux pour lire quoi que ce soit.
+        <b>POUR CONTINUER, VOUS NE DEVEZ PAS COCHER CETTE CASE!</b>
+    </string>
 
     <string name="menu_extra_search_text_title">Texte supplémentaire pour la recherche :</string>
 

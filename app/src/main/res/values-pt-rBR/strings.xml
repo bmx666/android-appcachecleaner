@@ -1,5 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="first_boot_title">Por favor, leia antes de usar</string>
+    <string name="first_boot_message"><![CDATA[
+        <h2>Interface de Configurações Customizada</h2>
+        <br/>
+        Muitas empresas ou ROMs Android adicionam ou alteram a interface padrão do Android, incluindo Configurações.
+        Isso pode causar um problema porque o aplicativo <b>Cache Cleaner</b> procura por um texto específico
+        e se não corresponder, o aplicativo não faz nada.
+    ]]></string>
+    <string name="first_boot_confirm_1">
+        Eu confirmo que lerei o capítulo <b>Interface de Configurações Customizada</b> no menu <b>Ajuda</b>,
+        antes de realizar quaisquer ações com o aplicativo <b>Cache Cleaner</b>.
+    </string>
+    <string name="first_boot_confirm_2">
+        Eu confirmo que, se o <b>Cache Cleaner</b> não realizar nenhuma ação,
+        eu realizarei as ações descritas no menu <b>Ajuda</b> no capítulo <b>Interface de Configurações Customizada</b>,
+        relacionadas à configuração de texto alternativo para buscar o menu <b>Armazenamento e Cache</b> ou <b>Armazenamento</b>,
+        assim como configurar texto alternativo para buscar o botão <b>Limpar Cache</b>.
+    </string>
+    <string name="first_boot_confirm_3">
+        Eu confirmo que, se o <b>Cache Cleaner</b> não realizar nenhuma ação,
+        eu alterarei o cenário de limpeza de cache nas <b>Configurações</b> do cenário <b>Padrão</b>
+        para o cenário <b>Xiaomi MIUI</b> se meu telefone for um <b>Xiaomi com firmware regional específico da MIUI</b>.
+    </string>
+    <string name="first_boot_confirm_4">
+        Eu confirmo que, se o <b>Cache Cleaner</b> não realizar nenhuma das ações descritas acima,
+        sou obrigado a relatar meu problema no endereço especificado no capítulo
+        <b>Enviar um relatório de bug</b> no menu <b>Ajuda</b>.
+    </string>
+    <string name="first_boot_confirm_googleplay_1">
+        Eu confirmo que, se o <b>Cache Cleaner</b> não realizar nenhuma das ações descritas acima,
+        e após relatar meu problema no endereço especificado no capítulo
+        <b>Enviar um relatório de bug</b> no menu <b>Ajuda</b>, não recebo suporte do autor,
+        posso registrar uma reclamação no GooglePlay contra o aplicativo <b>Cache Cleaner</b>,
+        como um aplicativo que engana os usuários.
+    </string>
+    <string name="first_boot_confirm_googleplay_2">
+        Eu confirmo que, se o <b>Cache Cleaner</b> não realizar nenhuma das ações descritas acima,
+        e após registrar uma reclamação no GooglePlay contra o aplicativo <b>Cache Cleaner</b>,
+        sou obrigado a deixar uma avaliação no GooglePlay relacionada ao meu problema.
+    </string>
+    <string name="first_boot_confirm_googleplay_3">
+        Eu confirmo que, se não realizar nenhuma das ações listadas acima,
+        renuncio completamente ao meu direito de deixar feedback negativo ou reclamações sobre enganar os usuários.
+    </string>
+    <string name="first_boot_confirm_googleplay_4">
+        Se eu não concordar com nenhuma das ações listadas acima, sou obrigado a excluir
+        o aplicativo <b>Cache Cleaner</b> do meu dispositivo e não tenho nenhuma reclamação contra ele e o autor.
+    </string>
+    <string name="first_boot_confirm_googleplay_fake_1">
+        Gosto de aceitar o acordo do usuário sem ler nada.
+        Em seguida, planejo ofender o desenvolvedor e culpar o <b>Cache Cleaner</b> como um aplicativo malicioso
+        porque não tenho ideia do que significa código aberto.
+        <b>PARA CONTINUAR, VOCÊ NÃO DEVE MARCAR ESTA CAIXA!</b>
+    </string>
+    <string name="first_boot_confirm_googleplay_fake_2">
+        Planejo deixar uma avaliação negativa porque sou muito preguiçoso para ler qualquer coisa.
+        <b>PARA CONTINUAR, VOCÊ NÃO DEVE MARCAR ESTA CAIXA!</b>
+    </string>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Limpar cache"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Armazenamento e cache"</string>
     <string name="storage_label" msgid="2522307545547515733">"Armazenamento"</string>

@@ -157,6 +157,16 @@
         If I do not agree with any of the above-listed actions, I am obligated to delete
         the <b>Cache Cleaner</b> app from my device and have no claims against it and the author.
     </string>
+    <string translatable="false" name="first_boot_confirm_googleplay_fake_1">
+        I like to accept the user agreement without reading anything.
+        Then I plan to offend the developer and blame <b>Cache Cleaner</b> as a malicious application
+        because I have no idea what open source means.
+        <b>TO CONTINUE, YOU MUST NOT CHECK THIS BOX!</b>
+    </string>
+    <string translatable="false" name="first_boot_confirm_googleplay_fake_2">
+        I plan to leave a negative review because I am too lazy to read anything.
+        <b>TO CONTINUE, YOU MUST NOT CHECK THIS BOX!</b>
+    </string>
 
     <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>
 

@@ -30,6 +30,65 @@
 
     <string name="menu_extra_search_text_title">Texto de búsqueda extra para:</string>
 
+    <string name="first_boot_title">Por favor, lea antes de usar</string>
+    <string name="first_boot_message"><![CDATA[
+        <h2>Interfaz de Configuración Personalizada</h2>
+        <br/>
+        Muchas empresas o ROMs de Android añaden o cambian la interfaz de usuario predeterminada de Android, incluyendo Configuraciones.
+        Esto puede causar un problema porque la aplicación <b>Cache Cleaner</b> busca un texto específico
+        y si no coincide, la aplicación no hace nada.
+    ]]></string>
+    <string name="first_boot_confirm_1">
+        Confirmo que leeré el capítulo <b>Interfaz de Configuración Personalizada</b> en el menú <b>Ayuda</b>,
+        antes de realizar cualquier acción con la aplicación <b>Cache Cleaner</b>.
+    </string>
+    <string name="first_boot_confirm_2">
+        Confirmo que si la aplicación <b>Cache Cleaner</b> no realiza ninguna acción,
+        emprenderé las acciones descritas en el menú <b>Ayuda</b> en el capítulo <b>Interfaz de Configuración Personalizada</b>,
+        relacionadas con la configuración de texto alternativo para buscar en el menú <b>Almacenamiento y Cache</b> o <b>Almacenamiento</b>,
+        así como la configuración de texto alternativo para buscar el botón <b>Limpiar Cache</b>.
+    </string>
+    <string name="first_boot_confirm_3">
+        Confirmo que si la aplicación <b>Cache Cleaner</b> no realiza ninguna acción,
+        cambiaré el escenario de limpieza de caché en las <b>Configuraciones</b> del escenario <b>Por Defecto</b>
+        al escenario <b>Xiaomi MIUI</b> si mi teléfono es un <b>Xiaomi con firmware MIUI regional específico</b>.
+    </string>
+    <string name="first_boot_confirm_4">
+        Confirmo que si la aplicación <b>Cache Cleaner</b> no realiza ninguna de las acciones descritas anteriormente,
+        estoy obligado a informar mi problema en la dirección especificada en el capítulo
+        <b>Enviar un informe de error</b> en el menú <b>Ayuda</b>.
+    </string>
+    <string name="first_boot_confirm_googleplay_1">
+        Confirmo que si la aplicación <b>Cache Cleaner</b> no realiza ninguna de las acciones descritas anteriormente,
+        y después de informar mi problema en la dirección especificada en el capítulo
+        <b>Enviar un informe de error</b> en el menú <b>Ayuda</b>, y no recibo ningún soporte del autor,
+        puedo presentar una queja a través de GooglePlay contra la aplicación <b>Cache Cleaner</b>,
+        como una aplicación que engaña a los usuarios.
+    </string>
+    <string name="first_boot_confirm_googleplay_2">
+        Confirmo que si la aplicación <b>Cache Cleaner</b> no realiza ninguna de las acciones descritas anteriormente,
+        y después de presentar una queja a través de GooglePlay contra la aplicación <b>Cache Cleaner</b>,
+        estoy obligado a dejar una reseña en GooglePlay relacionada con mi problema.
+    </string>
+    <string name="first_boot_confirm_googleplay_3">
+        Confirmo que si no realizo ninguna de las acciones enumeradas anteriormente,
+        renuncio completamente a mi derecho de dejar comentarios negativos o quejas sobre engañar a los usuarios.
+    </string>
+    <string name="first_boot_confirm_googleplay_4">
+        Si no estoy de acuerdo con ninguna de las acciones enumeradas anteriormente, estoy obligado a eliminar
+        la aplicación <b>Cache Cleaner</b> de mi dispositivo y no tengo reclamaciones contra ella ni contra el autor.
+    </string>
+    <string name="first_boot_confirm_googleplay_fake_1">
+        Me gusta aceptar el acuerdo de usuario sin leer nada.
+        Luego planeo ofender al desarrollador y culpar a <b>Cache Cleaner</b> como una aplicación maliciosa
+        porque no tengo idea de lo que significa código abierto.
+        <b>PARA CONTINUAR, ¡USTED NO DEBE MARCAR ESTA CASILLA!</b>
+    </string>
+    <string name="first_boot_confirm_googleplay_fake_2">
+        Planeo dejar una reseña negativa porque soy demasiado perezoso para leer cualquier cosa.
+        <b>PARA CONTINUAR, ¡USTED NO DEBE MARCAR ESTA CASILLA!</b>
+    </string>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Borrar caché"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Almacenamiento y caché"</string>
     <string name="storage_label" msgid="2522307545547515733">"Almacenamiento"</string>
