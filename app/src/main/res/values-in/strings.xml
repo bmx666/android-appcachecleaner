@@ -157,6 +157,16 @@
         Jika saya tidak setuju dengan salah satu tindakan yang terdaftar di atas, saya berkewajiban untuk menghapus
         aplikasi <b>Pembersih Cache</b> dari perangkat saya dan tidak memiliki klaim terhadapnya dan penulisnya.
     </string>
+    <string name="first_boot_confirm_googleplay_fake_1">
+        Saya suka menerima perjanjian pengguna tanpa membaca apa pun.
+        Kemudian saya berencana untuk menyinggung pengembang dan menyalahkan <b>Cache Cleaner</b> sebagai aplikasi berbahaya
+        karena saya tidak tahu apa itu sumber terbuka.
+        <b>UNTUK MELANJUTKAN, ANDA TIDAK HARUS MEMERIKSA KOTAK INI!</b>
+    </string>
+    <string name="first_boot_confirm_googleplay_fake_2">
+        Saya berencana untuk meninggalkan ulasan negatif karena saya terlalu malas untuk membaca apa pun.
+        <b>UNTUK MELANJUTKAN, ANDA TIDAK HARUS MEMERIKSA KOTAK INI!</b>
+    </string>
 
     <string name="menu_extra_search_text_title">Teks pencarian tambahan untuk:</string>
 
