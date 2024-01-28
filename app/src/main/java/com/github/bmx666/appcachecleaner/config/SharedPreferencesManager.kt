@@ -245,12 +245,14 @@ class SharedPreferencesManager {
     class FirstBoot {
 
         companion object {
+
+            private const val FILENAME = "FirstBoot"
             private const val KEY_SHOW_FIRST_BOOT_CONFIRMATION =
                 "show_first_boot_confirmation"
 
             @JvmStatic
             private fun getDefaultSharedPref(context: Context): SharedPreferences {
-                return PreferenceManager.getDefaultSharedPreferences(context)
+                return context.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
             }
 
             @JvmStatic
