@@ -110,6 +110,38 @@
     ]]></string>
 
     <string translatable="false" name="first_boot_title">Please read before using</string>
+    <string translatable="false" name="first_boot_intro_googleplay"><![CDATA[
+        <h2>Welcome to <b>Cache Cleaner</b>: Free, Open-Source, No Ads</h2>
+        <br/>
+        Born from frustration with paid apps and ad-heavy alternatives,
+        <b>Cache Cleaner</b> is my way of offering a simpler, more transparent solution.
+        It is a free, open-source app, created by me in my spare time,
+        dedicated to improving your phone is performance without the hassle of ads.
+        <br/>
+        <br/>
+        <h3>Google Policy and Checkboxes</h3>
+        <br/>
+        The checkboxes you see below are not just a formality; they are crucial for complying with Google Policy.
+        This step helps prevent app suspension due to negative reviews and ensures a clear, honest user experience.
+        <br/>
+        <br/>
+        <h3>Open Source, Open Mind</h3>
+        <br/>
+        Thinking of labeling <b>Cache Cleaner</b> as <b>malicious</b> without peeking at the source code?
+        Hold that thought! It is all there on <a href="https://github.com/bmx666/android-appcachecleaner/">GitHub</a>.
+        Transparency is the most important thing.
+        <br/>
+        <br/>
+        <h3>Solo Development, Limited Resources</h3>
+        <br/>
+        As the sole developer, I face the challenge of limited testing capabilities, having access to only a few phone models.
+        Your feedback and bug reports on <a href="https://github.com/bmx666/android-appcachecleaner/issues/">GitHub</a>
+        are invaluable for enhancing the app is functionality across different devices.
+        <br/>
+        Your contributions and suggestions are more than welcome.
+        They are essential in making <b>Cache Cleaner</b> a tool that works well for a diverse range of users.
+        Thank you for helping to make the open source world a better place.
+    ]]></string>
     <string translatable="false" name="first_boot_message"><![CDATA[
         <h2>Customized Settings UI</h2>
         <br/>
@@ -156,16 +188,6 @@
     <string translatable="false" name="first_boot_confirm_googleplay_4">
         If I do not agree with any of the above-listed actions, I am obligated to delete
         the <b>Cache Cleaner</b> app from my device and have no claims against it and the author.
-    </string>
-    <string translatable="false" name="first_boot_confirm_googleplay_fake_1">
-        I like to accept the user agreement without reading anything.
-        Then I plan to offend the developer and blame <b>Cache Cleaner</b> as a malicious application
-        because I have no idea what open source means.
-        <b>TO CONTINUE, YOU MUST NOT CHECK THIS BOX!</b>
-    </string>
-    <string translatable="false" name="first_boot_confirm_googleplay_fake_2">
-        I plan to leave a negative review because I am too lazy to read anything.
-        <b>TO CONTINUE, YOU MUST NOT CHECK THIS BOX!</b>
     </string>
 
     <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>

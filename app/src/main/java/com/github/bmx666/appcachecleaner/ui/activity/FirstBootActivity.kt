@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.widget.NestedScrollView
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
@@ -44,6 +45,13 @@ class FirstBootActivity: AppCompatActivity() {
 
         // show extra confirmation for GooglePlay
         if (BuildConfig.GOOGLEPLAY) {
+            binding.textIntroGooglePlay.text = HtmlCompat.fromHtml(
+                resources.getString(R.string.first_boot_intro_googleplay),
+                HtmlCompat.FROM_HTML_MODE_COMPACT
+            )
+            binding.textIntroGooglePlay.movementMethod =
+                LinkMovementMethodCompat.getInstance()
+
             binding.textConfirm4.setOnCheckedChangeListener { _, _ ->
                 binding.textConfirmGooglePlay1.isEnabled = true
             }
@@ -57,24 +65,16 @@ class FirstBootActivity: AppCompatActivity() {
                 binding.textConfirmGooglePlay4.isEnabled = true
             }
             binding.textConfirmGooglePlay4.setOnCheckedChangeListener { _, _ ->
-                binding.textConfirmGooglePlayFake1.isEnabled = true
-                binding.textConfirmGooglePlayFake2.isEnabled = true
                 binding.btnOk.isEnabled = true
-            }
-            binding.textConfirmGooglePlayFake1.setOnCheckedChangeListener { _, isChecked ->
-                checkedFake(binding.textConfirmGooglePlayFake1, isChecked)
-            }
-            binding.textConfirmGooglePlayFake2.setOnCheckedChangeListener { _, isChecked ->
-                checkedFake(binding.textConfirmGooglePlayFake2, isChecked)
             }
 
             listOf(
+                binding.textIntroGooglePlay,
+                binding.dividerIntroGooglePlay,
                 binding.textConfirmGooglePlay1,
                 binding.textConfirmGooglePlay2,
                 binding.textConfirmGooglePlay3,
                 binding.textConfirmGooglePlay4,
-                binding.textConfirmGooglePlayFake1,
-                binding.textConfirmGooglePlayFake2,
             ).forEach {
                 it.visibility = View.VISIBLE
             }
@@ -120,10 +120,6 @@ class FirstBootActivity: AppCompatActivity() {
                 binding.textConfirmGooglePlay3,
                 binding.textConfirmGooglePlay4,
             ).all { verifyCheckbox(it, expected = true) }
-            && listOf(
-                binding.textConfirmGooglePlayFake1,
-                binding.textConfirmGooglePlayFake2,
-            ).all { verifyCheckbox(it, expected = false) }
         else
             return listOf(
                 binding.textConfirm1,
@@ -158,26 +154,5 @@ class FirstBootActivity: AppCompatActivity() {
         view.getLocationInWindow(coordinates)
         // Use the coordinates to scroll to the view
         scrollView.smoothScrollTo(0, coordinates[1])
-    }
-
-    private fun checkedFake(checkBox: AppCompatCheckBox, isChecked: Boolean) {
-        if (!isChecked)
-            return
-
-        listOf(
-            binding.textConfirm1,
-            binding.textConfirm2,
-            binding.textConfirm3,
-            binding.textConfirm4,
-            binding.textConfirmGooglePlay1,
-            binding.textConfirmGooglePlay2,
-            binding.textConfirmGooglePlay3,
-            binding.textConfirmGooglePlay4,
-        ).forEach {
-            it.isChecked = false
-        }
-        binding.btnOk.isEnabled = false
-
-        verifyCheckbox(checkBox, expected = false)
     }
 }
