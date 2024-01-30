@@ -34,6 +34,19 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textIntroGooglePlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="@string/first_boot_intro_googleplay"/>
+
+            <View
+                android:id="@+id/dividerIntroGooglePlay"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,37 +154,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:background="#FF0000"
-                android:layout_height="2dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/textConfirmGooglePlayFake1"
-                android:enabled="false"
-                android:checked="false"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_boot_confirm_googleplay_fake_1"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/textConfirmGooglePlayFake2"
-                android:enabled="false"
-                android:checked="false"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_boot_confirm_googleplay_fake_2"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

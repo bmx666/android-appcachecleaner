@@ -111,6 +111,38 @@
     ]]></string>
 
     <string name="first_boot_title">À lire avant utilisation</string>
+    <string name="first_boot_intro_googleplay"><![CDATA[
+        <h2>Bienvenue dans <b>Cache Cleaner</b> : Gratuit, Open-Source, Sans Publicités</h2>
+        <br/>
+        Né de la frustration face aux applications payantes et celles surchargées de publicités,
+        <b>Cache Cleaner</b> est ma façon d&apos;offrir une solution plus simple et transparente.
+        C&apos;est une application gratuite et open-source, créée par moi durant mon temps libre,
+        dédiée à améliorer les performances de votre téléphone sans les désagréments des publicités.
+        <br/>
+        <br/>
+        <h3>Politique de Google et Cases à Cocher</h3>
+        <br/>
+        Les cases à cocher que vous voyez ci-dessous ne sont pas juste une formalité ; elles sont cruciales pour respecter la Politique de Google.
+        Cette étape aide à prévenir la suspension de l&apos;application due aux avis négatifs et assure une expérience utilisateur claire et honnête.
+        <br/>
+        <br/>
+        <h3>Open Source, Esprit Ouvert</h3>
+        <br/>
+        Vous pensez étiqueter <b>Cache Cleaner</b> comme <b>malveillant</b> sans jeter un œil au code source ?
+        Attendez ! Tout est là sur <a href="https://github.com/bmx666/android-appcachecleaner/">GitHub</a>.
+        La transparence est la chose la plus importante.
+        <br/>
+        <br/>
+        <h3>Développement Solo, Ressources Limitées</h3>
+        <br/>
+        En tant que seul développeur, je fais face au défi de capacités de test limitées, n&apos;ayant accès qu&apos;à quelques modèles de téléphones.
+        Vos retours et rapports de bugs sur <a href="https://github.com/bmx666/android-appcachecleaner/issues/">GitHub</a>
+        sont inestimables pour améliorer la fonctionnalité de l&apos;application sur différents appareils.
+        <br/>
+        Vos contributions et suggestions sont plus que bienvenues.
+        Elles sont essentielles pour faire de <b>Cache Cleaner</b> un outil efficace pour une grande diversité d&apos;utilisateurs.
+        Merci de contribuer à rendre le monde de l&apos;open source meilleur.
+    ]]></string>
     <string name="first_boot_message"><![CDATA[
         <h2>Interface utilisateur personnalisée</h2>
         <br/>
@@ -159,16 +191,6 @@
         Si je ne suis pas d\'accord avec l\'une quelconque des actions énumérées ci-dessus, 
         je suis obligé de supprimer l\'appli <b>Cache Cleaner</b> de mon appareil et ne pourra faire aucune réclamation 
         contre elle-même et l\'auteur de cette dernière.
-    </string>
-    <string name="first_boot_confirm_googleplay_fake_1">
-        J\'aime accepter le contrat d\'utilisateur sans rien lire.
-        Ensuite, je prévois d\'offenser le développeur et d\'accuser <b>Cache Cleaner</b> d\'être une application malveillante
-        car je n\'ai aucune idée de ce que signifie le terme open source.
-        <b>POUR CONTINUER, VOUS NE DEVEZ PAS COCHER CETTE CASE!</b>
-    </string>
-    <string name="first_boot_confirm_googleplay_fake_2">
-        Je prévois de laisser un avis négatif parce que je suis trop paresseux pour lire quoi que ce soit.
-        <b>POUR CONTINUER, VOUS NE DEVEZ PAS COCHER CETTE CASE!</b>
     </string>
 
     <string name="menu_extra_search_text_title">Texte supplémentaire pour la recherche :</string>
