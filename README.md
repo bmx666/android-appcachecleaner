@@ -22,6 +22,16 @@ or get the APK from the [Releases Section](https://github.com/bmx666/android-app
 * Clear cache process unexpectedly stops -> please read the issue [#8](https://github.com/bmx666/android-appcachecleaner/issues/8)
 * **Clean Cache** does not anything -> please read the section [Customized Settings UI](#customized-settings-ui)
 
+## VirusTotal shows AhnLab-V3 - PUP/Android.Malct.1180336
+
+The official feedback from **AhnLab**:
+
+> The certificate of the app(SHA2: e83cb39246ba949df1205175cfba3fa6d9852af864a81411b537c7468e2e8aac) has a history of being used by malicious apps.
+>
+> Therefore, we are diagnosing the file as PUP/Android.Malct.1180336.
+>
+> Since the certificate is believed to have been leaked, we recommend using the app signed with the new certificate. 
+
 ## Warning ⚠️
 Since Android 13 Accessibility APIs is restricted for 3rd party apps, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
 
