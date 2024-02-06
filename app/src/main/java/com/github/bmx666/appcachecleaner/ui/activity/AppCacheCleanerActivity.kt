@@ -541,7 +541,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         // save current package list action
         currentPkgListAction = pkgListAction
-        updateActionBarPackageList()
+        updateActionBarPackageList(pkgListAction)
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -727,17 +727,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.layoutButton.visibility = View.GONE
     }
 
-    private fun updateActionBar(fragment: Fragment) {
-        when (fragment) {
-            is PackageListFragment -> updateActionBarPackageList()
-            is HelpFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_help)
-            is SettingsFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_settings)
-            else -> restoreActionBar()
-        }
-    }
-
-    private fun updateActionBarPackageList() {
-        when (currentPkgListAction) {
+    private fun updateActionBarPackageList(pkgListAction: Constant.PackageListAction?) {
+        when (pkgListAction) {
             Constant.PackageListAction.DEFAULT ->
                 updateActionBarFilter(R.string.clear_cache_btn_text)
             Constant.PackageListAction.CUSTOM_ADD_EDIT ->
@@ -746,6 +737,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 return
             Constant.PackageListAction.IGNORED_APPS_EDIT ->
                 updateActionBarSearch(R.string.text_list_ignored_apps)
+            // in case of undefined behavior
+            null ->
+                updateActionBarFilter(R.string.clear_cache_btn_text)
         }
     }
 
@@ -875,18 +869,55 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 hideFragmentViews()
                 hideMainViews()
                 binding.fragmentContainerView.visibility = View.VISIBLE
+
                 when (frag) {
                     is PackageListFragment -> {
-                        val isCustomList = frag.arguments?.getBoolean(
-                            Constant.Bundle.PackageFragment.KEY_IS_CUSTOM_LIST) ?: false
-                        binding.layoutFab.visibility =
-                            if (isCustomList) View.GONE else View.VISIBLE
-                        binding.layoutFabCustomList.visibility =
-                            if (isCustomList) View.VISIBLE else View.GONE
+                        val pkgListAction =
+                            try {
+                                frag.arguments?.getString(
+                                    Constant.Bundle.PackageFragment.KEY_PACKAGE_LIST_ACTION)
+                                    ?.let { enumStr ->
+                                        Constant.PackageListAction.valueOf(enumStr)
+                                    }
+                            } catch (e: Exception) {
+                                null
+                            }
+
+                        // restore current package list action for activity
+                        pkgListAction?.let {
+                            currentPkgListAction = it
+                        }
+
+                        // restore current custom list name for activity
+                        customListName =
+                            try {
+                                frag.arguments?.getString(
+                                    Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME)
+                            } catch (e: Exception) {
+                                null
+                            }
+
+                        binding.layoutFab.visibility = View.GONE
+                        binding.layoutFabCustomList.visibility = View.GONE
                         binding.layoutFabListOfIgnoredApps.visibility = View.GONE
+
+                        when (pkgListAction) {
+                            Constant.PackageListAction.DEFAULT ->
+                                binding.layoutFab.visibility = View.VISIBLE
+                            Constant.PackageListAction.CUSTOM_ADD_EDIT ->
+                                binding.layoutFabCustomList.visibility = View.VISIBLE
+                            Constant.PackageListAction.IGNORED_APPS_EDIT ->
+                                binding.layoutFabListOfIgnoredApps.visibility = View.VISIBLE
+                            else -> {}
+                        }
+
+                        updateActionBarPackageList(pkgListAction)
                     }
+
+                    is HelpFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_help)
+                    is SettingsFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_settings)
+                    else -> restoreActionBar()
                 }
-                updateActionBar(frag)
                 supportFragmentManager.beginTransaction()
                     .show(frag)
                     .commitNowAllowingStateLoss()
@@ -928,8 +959,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         val pkgFragment = PackageListFragment.newInstance()
         Bundle().apply {
-            putBoolean(Constant.Bundle.PackageFragment.KEY_IS_CUSTOM_LIST,
-                pkgListAction == Constant.PackageListAction.CUSTOM_ADD_EDIT)
+            putString(Constant.Bundle.PackageFragment.KEY_PACKAGE_LIST_ACTION,
+                pkgListAction.name)
+            putString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME,
+                customListName)
             putBoolean(Constant.Bundle.PackageFragment.KEY_HIDE_STATS,
                 pkgListAction != Constant.PackageListAction.DEFAULT)
             pkgFragment.arguments = this

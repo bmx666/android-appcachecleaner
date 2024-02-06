@@ -60,7 +60,8 @@ class Constant {
     class Bundle {
         class PackageFragment {
             companion object {
-                const val KEY_IS_CUSTOM_LIST = "is_custom_list"
+                const val KEY_PACKAGE_LIST_ACTION = "package_list_action"
+                const val KEY_CUSTOM_LIST_NAME = "custom_list_name"
                 const val KEY_HIDE_STATS = "hide_stats"
             }
         }
