@@ -49,6 +49,12 @@ object PlaceholderContent {
             } ?: return false
         }
 
+        fun isLabelAsPackageName(pkgInfo: PackageInfo): Boolean {
+            items.find { it.name == pkgInfo.packageName }?.let {
+                return it.label == pkgInfo.packageName
+            } ?: return false
+        }
+
         fun updateLabel(pkgInfo: PackageInfo, label: String, locale: Locale) {
             items.find { it.name == pkgInfo.packageName }?.let {
                 it.label = label; it.locale = locale; it.ignore = false
@@ -67,6 +73,13 @@ object PlaceholderContent {
 
         fun uncheckVisible() {
             items.filterNot { it.ignore }.filter { it.visible }.forEach { it.checked = false }
+        }
+
+        fun ignore(list: Set<String>) {
+            items.forEach {
+                if (list.contains(it.name))
+                    it.ignore = true
+            }
         }
 
         fun unignore(list: Set<String>) {

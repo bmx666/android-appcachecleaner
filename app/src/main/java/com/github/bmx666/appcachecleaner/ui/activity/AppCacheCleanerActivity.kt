@@ -55,6 +55,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.springframework.util.unit.DataSize
 import java.io.File
+import java.util.HashSet
 import java.util.Locale
 
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
@@ -65,8 +66,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private lateinit var binding: ActivityMainBinding
-    private var customListName: String? = null
     private var minCacheSizeStr: String? = null
+
+    private var customListName: String? = null
+    private var currentPkgListAction = Constant.PackageListAction.DEFAULT
 
     private lateinit var onMenuHideAll: () -> Unit
     private lateinit var onMenuShowMain: () -> Unit
@@ -109,7 +112,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     systemNotUpdated = false,
                     systemUpdated = true,
                     userOnly = true,
-                )
+                ),
+                pkgListAction = Constant.PackageListAction.DEFAULT,
             )
         }
 
@@ -122,7 +126,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     systemNotUpdated = true,
                     systemUpdated = false,
                     userOnly = false,
-                )
+                ),
+                pkgListAction = Constant.PackageListAction.DEFAULT,
             )
         }
 
@@ -135,7 +140,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
-                )
+                ),
+                pkgListAction = Constant.PackageListAction.DEFAULT,
             )
         }
 
@@ -202,6 +208,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     getString(R.string.toast_custom_list_has_been_saved, name),
                     Toast.LENGTH_SHORT).show()
             }
+
             handleOnBackPressed()
         }
 
@@ -225,13 +232,16 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             CustomListDialogBuilder.buildCleanCacheDialog(this) { name ->
                 name ?: return@buildCleanCacheDialog
 
+                customListName = name
+
+                val pkgList = SharedPreferencesManager.PackageList.get(this, name)
                 preparePackageList(
                     PackageManagerHelper.getCustomInstalledApps(
                         context = this,
-                        pkgList = SharedPreferencesManager.PackageList.get(this, name)
+                        pkgList = pkgList
                     ),
-                    customListName = name,
-                    isCustomListClearOnly = true,
+                    pkgListAction = Constant.PackageListAction.CUSTOM_CLEAN,
+                    checkedPkgList = pkgList,
                 )
             }.show()
         }
@@ -409,17 +419,17 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
-                                               isCustomListClearOnly: Boolean,
-                                               pkgListOfIgnoredApps: Set<String>?) {
+                                               pkgListAction: Constant.PackageListAction,
+                                               checkedPkgList: Set<String>) {
         val locale = LocaleHelper.getCurrentLocale(this)
         val hideDisabledApps = SharedPreferencesManager.Filter.getHideDisabledApps(this)
         val hideIgnoredApps = SharedPreferencesManager.Filter.getHideIgnoredApps(this)
         val listOfIgnoreApps = SharedPreferencesManager.Filter.getListOfIgnoredApps(this)
 
-        val isListOfIgnoredAppsOnly = pkgListOfIgnoredApps != null
-
         var progressApps = 0
         val totalApps = pkgInfoList.size
+
+        val skipPkgList = HashSet<String>()
 
         PlaceholderContent.All.reset()
 
@@ -427,27 +437,40 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             if (loadingPkgListJob?.isActive != true) return
 
-            val skipApp = (hideDisabledApps && !pkgInfo.applicationInfo.enabled)
-                    || (!isListOfIgnoredAppsOnly && hideIgnoredApps && listOfIgnoreApps.contains(pkgInfo.packageName))
+            val isDisabledAndHidden =
+                hideDisabledApps
+                && !pkgInfo.applicationInfo.enabled
 
-            if (!skipApp) {
+            val isIgnoredAndHidden =
+                hideIgnoredApps
+                && listOfIgnoreApps.contains(pkgInfo.packageName)
 
-                // skip getting stats if custom list is loaded
-                val stats = customListName?.let { null }
-                    ?: PackageManagerHelper.getStorageStats(this, pkgInfo)
+            if (isDisabledAndHidden || isIgnoredAndHidden)
+                skipPkgList.add(pkgInfo.packageName)
 
-                // update only stats if run cleaning process of custom list
-                if (isCustomListClearOnly) {
+            when (pkgListAction) {
+                Constant.PackageListAction.CUSTOM_CLEAN -> {
                     if (PlaceholderContent.All.contains(pkgInfo)) {
-                        PlaceholderContent.All.updateStats(pkgInfo, stats)
+                        PlaceholderContent.All.updateStats(pkgInfo, null)
                     } else {
                         // skip getting the label of app it can take a lot of time on old phones
-                        PlaceholderContent.All.add(pkgInfo, pkgInfo.packageName, locale, stats)
+                        PlaceholderContent.All.add(pkgInfo, pkgInfo.packageName, locale, null)
                     }
-                } else {
+                }
+                else -> {
+                    // skip getting cache size for custom list and list of ignored apps
+                    val stats =
+                        when (pkgListAction) {
+                            Constant.PackageListAction.DEFAULT ->
+                                PackageManagerHelper.getStorageStats(this, pkgInfo)
+                            else ->
+                                null
+                        }
+
                     if (PlaceholderContent.All.contains(pkgInfo)) {
                         PlaceholderContent.All.updateStats(pkgInfo, stats)
-                        if (!PlaceholderContent.All.isSameLabelLocale(pkgInfo, locale)) {
+                        if (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
+                            !PlaceholderContent.All.isSameLabelLocale(pkgInfo, locale)) {
                             val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
                             PlaceholderContent.All.updateLabel(pkgInfo, label, locale)
                         }
@@ -471,24 +494,26 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         if (loadingPkgListJob?.isActive != true) return
 
-        if (customListName == null && !isListOfIgnoredAppsOnly) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getFilteredByCacheSize(
-                        SharedPreferencesManager.Filter.getMinCacheSize(this))
-                )
-            else
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getSorted())
-        } else {
-            val checkedPkgList =
-                if (isListOfIgnoredAppsOnly)
-                    pkgListOfIgnoredApps!!
+        // hide ignored and disabled packages for default action only
+        if (pkgListAction == Constant.PackageListAction.DEFAULT)
+            PlaceholderContent.All.ignore(skipPkgList)
+
+        when (pkgListAction) {
+            Constant.PackageListAction.DEFAULT -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    PlaceholderContent.Current.update(
+                        PlaceholderContent.All.getFilteredByCacheSize(
+                            SharedPreferencesManager.Filter.getMinCacheSize(this))
+                    )
                 else
-                    SharedPreferencesManager.PackageList.get(this, customListName!!)
-            PlaceholderContent.All.check(checkedPkgList)
-            PlaceholderContent.Current.update(
-                PlaceholderContent.All.getSortedByLabel())
+                    PlaceholderContent.Current.update(
+                        PlaceholderContent.All.getSorted())
+            }
+            else -> {
+                PlaceholderContent.All.check(checkedPkgList)
+                PlaceholderContent.Current.update(
+                    PlaceholderContent.All.getSortedByLabel())
+            }
         }
 
         if (loadingPkgListJob?.isActive != true) return
@@ -496,31 +521,27 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         loadingPkgListJob?.invokeOnCompletion { throwable ->
             if (throwable == null) {
                 runOnUiThread {
-                    if (isCustomListClearOnly)
-                        startCleanCache(
-                            PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
-                    else
-                        showPackageFragment(
-                            isCustomListOnly = !customListName.isNullOrEmpty(),
-                            isListOfIgnoredAppsOnly = isListOfIgnoredAppsOnly)
+                    when (pkgListAction) {
+                        Constant.PackageListAction.CUSTOM_CLEAN ->
+                            startCleanCache(
+                                PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
+                        else ->
+                            showPackageFragment(pkgListAction)
+                    }
                 }
             }
         }
     }
 
     private fun preparePackageList(pkgInfoList: ArrayList<PackageInfo>,
-                                   customListName: String? = null,
-                                   isCustomListClearOnly: Boolean = false,
-                                   pkgListOfIgnoredApps: Set<String>? = null) {
-        this.customListName = customListName
-
+                                   pkgListAction: Constant.PackageListAction,
+                                   checkedPkgList: Set<String> = HashSet<String>()) {
         hideFragmentViews()
         hideMainViews()
 
-        if (pkgListOfIgnoredApps != null)
-            updateActionBarSearch(R.string.text_list_ignored_apps)
-        else
-            updateActionBarPackageList(showSearchOnly = !customListName.isNullOrEmpty())
+        // save current package list action
+        currentPkgListAction = pkgListAction
+        updateActionBarPackageList()
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -535,12 +556,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             CoroutineScope(Dispatchers.IO).launch {
                 addPackageToPlaceholderContent(
                     pkgInfoList,
-                    isCustomListClearOnly,
-                    pkgListOfIgnoredApps)
+                    pkgListAction,
+                    checkedPkgList)
             }
     }
 
     internal fun showCustomListPackageFragment(name: String) {
+        customListName = name
         preparePackageList(
             PackageManagerHelper.getInstalledApps(
                 context = this,
@@ -548,11 +570,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 systemUpdated = true,
                 userOnly = true,
             ),
-            customListName = name,
+            pkgListAction = Constant.PackageListAction.CUSTOM_ADD_EDIT,
+            checkedPkgList = SharedPreferencesManager.PackageList.get(this, name),
         )
     }
 
-    internal fun showIgnoredListPackageFragment(pkgList: Set<String>) {
+    internal fun showIgnoredListPackageFragment() {
         preparePackageList(
             PackageManagerHelper.getInstalledApps(
                 context = this,
@@ -560,7 +583,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 systemUpdated = true,
                 userOnly = true,
             ),
-            pkgListOfIgnoredApps = pkgList,
+            pkgListAction = Constant.PackageListAction.IGNORED_APPS_EDIT,
+            checkedPkgList = SharedPreferencesManager.Filter.getListOfIgnoredApps(this)
         )
     }
 
@@ -705,18 +729,24 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private fun updateActionBar(fragment: Fragment) {
         when (fragment) {
-            is PackageListFragment -> updateActionBarPackageList(showSearchOnly = !customListName.isNullOrEmpty())
+            is PackageListFragment -> updateActionBarPackageList()
             is HelpFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_help)
             is SettingsFragment -> updateActionBarTextAndHideMenu(R.string.menu_item_settings)
             else -> restoreActionBar()
         }
     }
 
-    private fun updateActionBarPackageList(showSearchOnly: Boolean) {
-        if (showSearchOnly)
-            updateActionBarSearch(customListName)
-        else
-            updateActionBarFilter(R.string.clear_cache_btn_text)
+    private fun updateActionBarPackageList() {
+        when (currentPkgListAction) {
+            Constant.PackageListAction.DEFAULT ->
+                updateActionBarFilter(R.string.clear_cache_btn_text)
+            Constant.PackageListAction.CUSTOM_ADD_EDIT ->
+                updateActionBarSearch(customListName)
+            Constant.PackageListAction.CUSTOM_CLEAN ->
+                return
+            Constant.PackageListAction.IGNORED_APPS_EDIT ->
+                updateActionBarSearch(R.string.text_list_ignored_apps)
+        }
     }
 
     private fun updateActionBarTextAndHideMenu(@StringRes resId: Int) {
@@ -734,6 +764,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private fun updateActionBarSearch(title: String?) {
         supportActionBar?.title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        onMenuShowSearch()
     }
 
     private fun updateActionBarSearch(@StringRes resId: Int) {
@@ -846,19 +877,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 binding.fragmentContainerView.visibility = View.VISIBLE
                 when (frag) {
                     is PackageListFragment -> {
-                        customListName = frag.arguments?.getString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME)
-                        when (customListName) {
-                            null -> {
-                                binding.layoutFab.visibility = View.VISIBLE
-                                binding.layoutFabCustomList.visibility = View.GONE
-                                binding.layoutFabListOfIgnoredApps.visibility = View.GONE
-                            }
-                            else -> {
-                                binding.layoutFab.visibility = View.GONE
-                                binding.layoutFabCustomList.visibility = View.VISIBLE
-                                binding.layoutFabListOfIgnoredApps.visibility = View.GONE
-                            }
-                        }
+                        val isCustomList = frag.arguments?.getBoolean(
+                            Constant.Bundle.PackageFragment.KEY_IS_CUSTOM_LIST) ?: false
+                        binding.layoutFab.visibility =
+                            if (isCustomList) View.GONE else View.VISIBLE
+                        binding.layoutFabCustomList.visibility =
+                            if (isCustomList) View.VISIBLE else View.GONE
+                        binding.layoutFabListOfIgnoredApps.visibility = View.GONE
                     }
                 }
                 updateActionBar(frag)
@@ -869,9 +894,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun handleOnBackPressed() {
-        // always reset custom list name to avoid undefined behavior
         minCacheSizeStr = null
-        customListName = null
+        // always reset to default package list type to avoid undefined behavior
+        currentPkgListAction = Constant.PackageListAction.DEFAULT
 
         hideFragmentViews()
         supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
@@ -881,28 +906,32 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         showMainViews()
     }
 
-    private fun showPackageFragment(isCustomListOnly: Boolean,
-                                    isListOfIgnoredAppsOnly: Boolean) {
+    private fun showPackageFragment(pkgListAction: Constant.PackageListAction) {
         binding.layoutProgress.visibility = View.GONE
         binding.fragmentContainerView.visibility = View.VISIBLE
         binding.layoutFab.visibility = View.GONE
         binding.layoutFabCustomList.visibility = View.GONE
         binding.layoutFabListOfIgnoredApps.visibility = View.GONE
 
-        when {
-            isCustomListOnly ->
-                binding.layoutFabCustomList.visibility = View.VISIBLE
-            isListOfIgnoredAppsOnly ->
-                binding.layoutFabListOfIgnoredApps.visibility = View.VISIBLE
-            else ->
+        when (pkgListAction) {
+            Constant.PackageListAction.DEFAULT ->
                 binding.layoutFab.visibility = View.VISIBLE
+            Constant.PackageListAction.CUSTOM_ADD_EDIT ->
+                binding.layoutFabCustomList.visibility = View.VISIBLE
+            Constant.PackageListAction.CUSTOM_CLEAN ->
+                { /* not valid */ }
+            Constant.PackageListAction.IGNORED_APPS_EDIT ->
+                binding.layoutFabListOfIgnoredApps.visibility = View.VISIBLE
         }
 
         binding.fabCheckAllApps.tag = "uncheck"
 
         val pkgFragment = PackageListFragment.newInstance()
         Bundle().apply {
-            putString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME, customListName)
+            putBoolean(Constant.Bundle.PackageFragment.KEY_IS_CUSTOM_LIST,
+                pkgListAction == Constant.PackageListAction.CUSTOM_ADD_EDIT)
+            putBoolean(Constant.Bundle.PackageFragment.KEY_HIDE_STATS,
+                pkgListAction != Constant.PackageListAction.DEFAULT)
             pkgFragment.arguments = this
         }
         supportFragmentManager.beginTransaction()

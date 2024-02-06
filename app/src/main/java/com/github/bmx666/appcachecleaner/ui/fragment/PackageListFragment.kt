@@ -26,8 +26,8 @@ class PackageListFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_package_list, container, false)
 
-        val hideStats = arguments?.getString(
-            Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME)?.let { true } ?: false
+        val hideStats = arguments?.getBoolean(
+            Constant.Bundle.PackageFragment.KEY_HIDE_STATS) ?: false
 
         // Set the adapter
         if (view is RecyclerView) {
