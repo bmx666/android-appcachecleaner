@@ -345,12 +345,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun initializeListOfIgnoredApps(editListPref: Preference?) {
         editListPref?.apply {
-            val pkgList = SharedPreferencesManager.Filter.getListOfIgnoredApps(requireContext())
-            pkgList.apply {
-                isVisible = isNotEmpty()
-            }
-
             setOnPreferenceClickListener {
+                val pkgList = SharedPreferencesManager.Filter.getListOfIgnoredApps(requireContext())
                 (activity as AppCacheCleanerActivity?)?.showIgnoredListPackageFragment(pkgList)
                 true
             }
