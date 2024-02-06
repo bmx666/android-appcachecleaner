@@ -1,0 +1,2 @@
+* add any app to the list of ignored apps
+* the custom list can clean disabled and ignored apps
