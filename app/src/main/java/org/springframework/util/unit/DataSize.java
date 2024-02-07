@@ -276,7 +276,7 @@ public final class DataSize implements Comparable<DataSize>, Serializable {
 
         private static DataUnit determineDataUnit(String suffix, @Nullable DataUnit defaultUnit) {
             DataUnit defaultUnitToUse = (defaultUnit != null ? defaultUnit : DataUnit.BYTES);
-            return ((suffix != null && !suffix.isEmpty()) ? DataUnit.fromSuffix(suffix) : defaultUnitToUse);
+            return ((suffix != null && !suffix.isEmpty()) ? DataUnit.fromSuffix(suffix.toUpperCase()) : defaultUnitToUse);
         }
 
     }
