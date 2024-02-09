@@ -107,8 +107,7 @@ fun HelpScreen(navController: NavHostController) {
                     .padding(horizontal = 16.dp)
             ) {
                 CreateHtmlTextView(text = stringResource(R.string.help_about))
-                if (!BuildConfig.GOOGLEPLAY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                    CreateHtmlTextView(text = stringResource(R.string.help_android13_accessibility_permission))
+                CreateHtmlTextView(text = stringResource(R.string.help_android13_accessibility_permission))
                 CreateHtmlTextView(text = stringResource(R.string.help_how_to_use))
                 CreateHtmlTextView(text = stringResource(R.string.help_customized_settings_ui))
                 CreateHtmlTextView(text = stringResource(R.string.help_icon_copyright))
