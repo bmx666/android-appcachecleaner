@@ -161,6 +161,11 @@ fun FirstBootScreen(navController: NavHostController,
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
+                if (BuildConfig.GOOGLEPLAY) {
+                    CreateHtmlTextView(text = stringResource(id = R.string.first_boot_intro_googleplay))
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+
                 CreateHtmlTextView(text = stringResource(id = R.string.first_boot_message))
                 Spacer(modifier = Modifier.height(10.dp))
 
