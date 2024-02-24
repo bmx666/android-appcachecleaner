@@ -28,6 +28,7 @@ import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.const.Constant.Bundle.AppCacheCleanerActivity.Companion.KEY_SKIP_FIRST_RUN
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
@@ -249,21 +250,29 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         if (calculationCleanedCacheJob?.isActive != true)
             updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
 
-        checkRequestAddTileService()
+        val skipFirstRun = savedInstanceState?.getBoolean(KEY_SKIP_FIRST_RUN) == true
+        if (!skipFirstRun) {
+            checkRequestAddTileService()
 
-        // Show bugs
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            if (SharedPreferencesManager.BugWarning.showBug322519674(this)) {
-                AlertDialogBuilder(this)
-                    .setTitle(R.string.title_bug_322519674)
-                    .setMessage(R.string.message_bug_322519674)
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
-                        // SharedPreferencesManager.BugWarning.hideBug322519674(this)
-                    }
-                    .create()
-                    .show()
+            // Show bugs
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                if (SharedPreferencesManager.BugWarning.showBug322519674(this)) {
+                    AlertDialogBuilder(this)
+                        .setTitle(R.string.title_bug_322519674)
+                        .setMessage(R.string.message_bug_322519674)
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            // SharedPreferencesManager.BugWarning.hideBug322519674(this)
+                        }
+                        .create()
+                        .show()
+                }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(KEY_SKIP_FIRST_RUN, true)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -58,6 +58,12 @@ class Constant {
     }
 
     class Bundle {
+        class AppCacheCleanerActivity {
+            companion object {
+                const val KEY_SKIP_FIRST_RUN = "skip_first_run"
+            }
+        }
+
         class PackageFragment {
             companion object {
                 const val KEY_PACKAGE_LIST_ACTION = "package_list_action"
