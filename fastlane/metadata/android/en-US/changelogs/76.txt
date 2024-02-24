@@ -1,0 +1,1 @@
+* no longer show dialogs after locale or night mode update
