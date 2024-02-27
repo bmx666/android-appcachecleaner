@@ -11,7 +11,7 @@ object PlaceholderContent {
     object All {
         internal val items by lazy { mutableListOf<PlaceholderPackage>() }
 
-        fun reset() {
+        suspend fun reset() {
             items.forEach {
                 it.ignore = true
                 it.visible = true
@@ -19,11 +19,11 @@ object PlaceholderContent {
             }
         }
 
-        fun contains(pkgInfo: PackageInfo): Boolean {
+        suspend fun contains(pkgInfo: PackageInfo): Boolean {
             return items.any { it.name == pkgInfo.packageName }
         }
 
-        fun add(pkgInfo: PackageInfo, label: String, locale: Locale,
+        suspend fun add(pkgInfo: PackageInfo, label: String, locale: Locale,
                     stats: StorageStats?) {
             items.add(
                 PlaceholderPackage(
@@ -37,59 +37,59 @@ object PlaceholderContent {
                     ignore = false))
         }
 
-        fun updateStats(pkgInfo: PackageInfo, stats: StorageStats?) {
+        suspend fun updateStats(pkgInfo: PackageInfo, stats: StorageStats?) {
             items.find { it.name == pkgInfo.packageName }?.let {
                 it.stats = stats; it.ignore = false
             }
         }
 
-        fun isSameLabelLocale(pkgInfo: PackageInfo, locale: Locale): Boolean {
+        suspend fun isSameLabelLocale(pkgInfo: PackageInfo, locale: Locale): Boolean {
             items.find { it.name == pkgInfo.packageName }?.let {
                 return it.locale == locale
             } ?: return false
         }
 
-        fun isLabelAsPackageName(pkgInfo: PackageInfo): Boolean {
+        suspend fun isLabelAsPackageName(pkgInfo: PackageInfo): Boolean {
             items.find { it.name == pkgInfo.packageName }?.let {
                 return it.label == pkgInfo.packageName
             } ?: return false
         }
 
-        fun updateLabel(pkgInfo: PackageInfo, label: String, locale: Locale) {
+        suspend fun updateLabel(pkgInfo: PackageInfo, label: String, locale: Locale) {
             items.find { it.name == pkgInfo.packageName }?.let {
                 it.label = label; it.locale = locale; it.ignore = false
             }
         }
 
-        fun check(list: Set<String>) {
+        suspend fun check(list: Set<String>) {
             items.forEach {
                 it.checked = list.contains(it.name)
             }
         }
 
-        fun checkVisible() {
+        suspend fun checkVisible() {
             items.filterNot { it.ignore }.filter { it.visible }.forEach { it.checked = true }
         }
 
-        fun uncheckVisible() {
+        suspend fun uncheckVisible() {
             items.filterNot { it.ignore }.filter { it.visible }.forEach { it.checked = false }
         }
 
-        fun ignore(list: Set<String>) {
+        suspend fun ignore(list: Set<String>) {
             items.forEach {
                 if (list.contains(it.name))
                     it.ignore = true
             }
         }
 
-        fun unignore(list: Set<String>) {
+        suspend fun unignore(list: Set<String>) {
             items.forEach {
                 if (list.contains(it.name))
                     it.ignore = false
             }
         }
 
-        fun getSorted(): List<PlaceholderPackage> {
+        suspend fun getSorted(): List<PlaceholderPackage> {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     getSortedByCacheSize()
                 else
@@ -97,7 +97,7 @@ object PlaceholderContent {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        private fun getSortedByCacheSize(): List<PlaceholderPackage> {
+        private suspend fun getSortedByCacheSize(): List<PlaceholderPackage> {
             return items.filterNot { it.ignore }
                 .onEach { it.visible = true }
                 .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
@@ -105,7 +105,7 @@ object PlaceholderContent {
                     .thenBy { it.label })
         }
 
-        fun getSortedByLabel(): List<PlaceholderPackage> {
+        suspend fun getSortedByLabel(): List<PlaceholderPackage> {
             return items.filterNot { it.ignore }
                 .onEach { it.visible = true }
                 .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
@@ -113,7 +113,7 @@ object PlaceholderContent {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        fun getFilteredByCacheSize(minCacheBytes: Long): List<PlaceholderPackage> {
+        suspend fun getFilteredByCacheSize(minCacheBytes: Long): List<PlaceholderPackage> {
             val compareCacheBytes: (cacheBytes: Long?) -> Boolean = { cacheBytes ->
                 cacheBytes?.let { v -> v >= minCacheBytes } ?: false
             }
@@ -125,7 +125,7 @@ object PlaceholderContent {
                     .thenBy { it.label })
         }
 
-        fun getFilteredByName(text: String): List<PlaceholderPackage> {
+        suspend fun getFilteredByName(text: String): List<PlaceholderPackage> {
             val finalText = text.trim().lowercase()
             val finalTextIsNotEmpty = finalText.isNotEmpty()
             val compareLabel: (label: String) -> Boolean = { label ->
@@ -144,35 +144,35 @@ object PlaceholderContent {
     object Current {
         internal var items: List<PlaceholderPackage> = ArrayList()
 
-        fun update(list: List<PlaceholderPackage>) {
+        suspend fun update(list: List<PlaceholderPackage>) {
             items = list
         }
 
-        fun getVisible(): List<PlaceholderPackage> {
+        suspend fun getVisible(): List<PlaceholderPackage> {
             return items.filter { it.visible }
         }
 
-        fun getChecked(): List<PlaceholderPackage> {
+        suspend fun getChecked(): List<PlaceholderPackage> {
             return items.filter { it.checked }
         }
 
-        fun getPackageNames(): List<String> {
+        suspend fun getPackageNames(): List<String> {
             return items.map { it.name }
         }
 
-        fun getCheckedPackageNames(): List<String> {
+        suspend fun getCheckedPackageNames(): List<String> {
             return items.filter { it.checked }.map { it.name }
         }
 
-        fun isAllVisibleChecked(): Boolean {
+        suspend fun isAllVisibleChecked(): Boolean {
             return items.filter { it.visible }.all { it.checked }
         }
 
-        fun isAllVisibleUnchecked(): Boolean {
+        suspend fun isAllVisibleUnchecked(): Boolean {
             return items.filter { it.visible }.none { it.checked }
         }
 
-        fun find(pkgName: String): PlaceholderPackage? {
+        suspend fun find(pkgName: String): PlaceholderPackage? {
             return items.firstOrNull{ it.name == pkgName }
         }
     }
