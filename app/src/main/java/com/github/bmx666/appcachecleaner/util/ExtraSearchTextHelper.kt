@@ -9,7 +9,7 @@ class ExtraSearchTextHelper {
     companion object {
 
         @JvmStatic
-        fun getTextForOk(context: Context): Array<String> {
+        suspend fun getTextForOk(context: Context): Array<String> {
             val list = ArrayList<String>()
 
             when (SharedPreferencesManager.Settings.getScenario(context)) {
@@ -31,7 +31,7 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
-        fun getTextForClearCache(context: Context): Array<String> {
+        suspend fun getTextForClearCache(context: Context): Array<String> {
             val locale = LocaleHelper.getCurrentLocale(context)
 
             val list = ArrayList<String>()
@@ -70,7 +70,7 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
-        fun getTextForClearData(context: Context): Array<String> {
+        suspend fun getTextForClearData(context: Context): Array<String> {
             val list = ArrayList<String>()
 
             when (SharedPreferencesManager.Settings.getScenario(context)) {
@@ -92,7 +92,7 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
-        fun getTextForStorage(context: Context): Array<String> {
+        suspend fun getTextForStorage(context: Context): Array<String> {
             val locale = LocaleHelper.getCurrentLocale(context)
 
             val list = ArrayList<String>()
