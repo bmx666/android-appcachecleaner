@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.bmx666.appcachecleaner.R
@@ -69,15 +70,10 @@ class PackageRecyclerViewAdapter(
         }
 
         val showStats = item.stats != null && !hideStats
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && showStats) {
-            val ctx = holder.cacheSizeView.context
-            holder.cacheSizeView.text = ctx.getString(
-                R.string.text_cache_size_fmt,
-                DataSize.ofBytes(item.stats!!.cacheBytes).toFormattedString(ctx)
-            )
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && showStats)
+            holder.loadCacheSize(item.stats!!.cacheBytes)
+        else
             holder.cacheSizeView.visibility = View.GONE
-        }
     }
 
     override fun getItemCount(): Int = values.size
@@ -97,6 +93,7 @@ class PackageRecyclerViewAdapter(
         val cacheSizeView: TextView = binding.cacheSize
 
         private var loadIconJob: Job? = null
+        private var cacheSizeJob: Job? = null
 
         fun loadIcon(pkgInfo: PackageInfo) {
             loadIconJob?.cancel()
@@ -116,8 +113,24 @@ class PackageRecyclerViewAdapter(
                 }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun loadCacheSize(cacheBytes: Long) {
+            cacheSizeJob?.cancel()
+            cacheSizeJob =
+                CoroutineScope(Dispatchers.IO).launch {
+                    val sizeStr = DataSize.ofBytes(cacheBytes).toFormattedString(cacheSizeView.context)
+                    withContext(Dispatchers.Main) {
+                        cacheSizeView.text = cacheSizeView.context.getString(
+                            R.string.text_cache_size_fmt,
+                            sizeStr
+                        )
+                    }
+                }
+        }
+
         fun clear() {
             loadIconJob?.cancel()
+            cacheSizeJob?.cancel()
         }
 
         override fun toString(): String {
