@@ -17,7 +17,7 @@ class PermissionChecker {
         // method to check is the user has permitted the accessibility permission
         // if not then prompt user to the system's Settings activity
         @JvmStatic
-        fun checkAccessibilityPermission(context: Context): Boolean {
+        suspend fun checkAccessibilityPermission(context: Context): Boolean {
             try {
                 val accessibilityEnabled =
                     Settings.Secure.getInt(
@@ -51,7 +51,7 @@ class PermissionChecker {
         }
 
         @JvmStatic
-        fun checkUsageStatsPermission(context: Context): Boolean {
+        suspend fun checkUsageStatsPermission(context: Context): Boolean {
             try {
                 val applicationInfo = context.packageManager.getApplicationInfo(context.packageName, 0)
                 val appOpsManager = context.getSystemService(AppCompatActivity.APP_OPS_SERVICE) as AppOpsManager
@@ -74,13 +74,13 @@ class PermissionChecker {
         }
 
         @JvmStatic
-        fun checkWriteExternalStoragePermission(context: Context): Boolean {
+        suspend fun checkWriteExternalStoragePermission(context: Context): Boolean {
             return context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                         PackageManager.PERMISSION_GRANTED
         }
 
         @JvmStatic
-        fun checkAllRequiredPermissions(context: Context): Boolean {
+        suspend fun checkAllRequiredPermissions(context: Context): Boolean {
             var result = checkAccessibilityPermission(context)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 result = result and checkUsageStatsPermission(context)
