@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.ui.view
 
+import android.content.pm.PackageInfo
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,11 @@ import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.toFormattedString
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.springframework.util.unit.DataSize
 
 
@@ -47,14 +53,8 @@ class PackageRecyclerViewAdapter(
             item.checked = checked
         }
 
-        Glide.with(holder.packageIconView.context)
-            .load(
-                PackageManagerHelper.getApplicationIcon(
-                    holder.packageIconView.context,
-                    item.pkgInfo
-                )
-            )
-            .into(holder.packageIconView)
+        holder.loadIcon(item.pkgInfo)
+
         holder.packageIconView.setOnClickListener {
             Toast.makeText(holder.packageIconView.context,
                 R.string.toast_package_list_item_long_click,
@@ -82,6 +82,11 @@ class PackageRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        holder.clear()
+    }
+
     inner class ViewHolder(binding: FragmentPackageBinding) :
         RecyclerView.ViewHolder(binding.root)
     {
@@ -90,6 +95,30 @@ class PackageRecyclerViewAdapter(
         val packageLabelView: CheckBox = binding.packageLabel
         val packageNameView: TextView = binding.packageName
         val cacheSizeView: TextView = binding.cacheSize
+
+        private var loadIconJob: Job? = null
+
+        fun loadIcon(pkgInfo: PackageInfo) {
+            loadIconJob?.cancel()
+            loadIconJob =
+                CoroutineScope(Dispatchers.IO).launch {
+                    val icon =
+                        PackageManagerHelper.getApplicationIcon(
+                            packageIconView.context,
+                            pkgInfo
+                        )
+
+                    withContext(Dispatchers.Main) {
+                        Glide.with(packageIconView.context)
+                            .load(icon)
+                            .into(packageIconView)
+                    }
+                }
+        }
+
+        fun clear() {
+            loadIconJob?.cancel()
+        }
 
         override fun toString(): String {
             return super.toString() + " '" + packageNameView.text + "'"
