@@ -17,7 +17,7 @@ class PackageManagerHelper {
     companion object {
 
         @JvmStatic
-        fun getInstalledApps(context: Context,
+        suspend fun getInstalledApps(context: Context,
                              systemNotUpdated: Boolean,
                              systemUpdated: Boolean,
                              userOnly: Boolean): ArrayList<PackageInfo> {
@@ -39,7 +39,7 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
-        fun getCustomInstalledApps(context: Context,
+        suspend fun getCustomInstalledApps(context: Context,
                                    pkgList: Set<String>): ArrayList<PackageInfo> {
             val list = context.packageManager.getInstalledPackages(0)
             val pkgInfoList = ArrayList<PackageInfo>()
@@ -53,12 +53,12 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
-        fun getApplicationIcon(context: Context, pkgInfo: PackageInfo): Drawable? {
+        suspend fun getApplicationIcon(context: Context, pkgInfo: PackageInfo): Drawable? {
             return context.packageManager.getApplicationIcon(pkgInfo.packageName)
         }
 
         @JvmStatic
-        fun getApplicationResourceString(context: Context, pkgName: String,
+        suspend fun getApplicationResourceString(context: Context, pkgName: String,
                                          resourceName: String): String? {
             context.packageManager?.let { pm ->
                 try {
@@ -79,7 +79,7 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
-        fun getApplicationLabel(context: Context, pkgInfo: PackageInfo): String {
+        suspend fun getApplicationLabel(context: Context, pkgInfo: PackageInfo): String {
             var localizedLabel: String? = null
             context.packageManager?.let { pm ->
                 try {
@@ -102,7 +102,7 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
-        fun getStorageStats(context: Context, pkgInfo: PackageInfo): StorageStats? {
+        suspend fun getStorageStats(context: Context, pkgInfo: PackageInfo): StorageStats? {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null
 
             try {
