@@ -10,7 +10,7 @@ import java.math.RoundingMode
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun DataSize.toFormattedString(context: Context): String {
+suspend fun DataSize.toFormattedString(context: Context): String {
     return this.toFormattedString(LocaleHelper.getCurrentLocale(context))
 }
 
