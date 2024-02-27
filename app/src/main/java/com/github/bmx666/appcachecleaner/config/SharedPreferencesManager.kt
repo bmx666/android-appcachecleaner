@@ -21,18 +21,18 @@ class SharedPreferencesManager {
             private const val KEY_STORAGE = "storage"
 
             @JvmStatic
-            private fun getExtraSearchTextSharedPref(context: Context): SharedPreferences {
+            private suspend fun getExtraSearchTextSharedPref(context: Context): SharedPreferences {
                 return context.getSharedPreferences(FILENAME, AppCompatActivity.MODE_PRIVATE)
             }
 
             @JvmStatic
-            fun getClearCache(context: Context, locale: Locale): String? {
+            suspend fun getClearCache(context: Context, locale: Locale): String? {
                 return getExtraSearchTextSharedPref(context)
                     .getString("$locale,$KEY_CLEAR_CACHE", null)
             }
 
             @JvmStatic
-            fun saveClearCache(context: Context, locale: Locale, value: CharSequence?) {
+            suspend fun saveClearCache(context: Context, locale: Locale, value: CharSequence?) {
                 if (value.isNullOrEmpty() or value!!.trim().isEmpty()) return
 
                 getExtraSearchTextSharedPref(context)
@@ -42,7 +42,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun removeClearCache(context: Context, locale: Locale) {
+            suspend fun removeClearCache(context: Context, locale: Locale) {
                 getExtraSearchTextSharedPref(context)
                     .edit()
                     .remove("$locale,$KEY_CLEAR_CACHE")
@@ -50,13 +50,13 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getStorage(context: Context, locale: Locale): String? {
+            suspend fun getStorage(context: Context, locale: Locale): String? {
                 return getExtraSearchTextSharedPref(context)
                     .getString("$locale,$KEY_STORAGE", null)
             }
 
             @JvmStatic
-            fun saveStorage(context: Context, locale: Locale, value: CharSequence?) {
+            suspend fun saveStorage(context: Context, locale: Locale, value: CharSequence?) {
                 if (value.isNullOrEmpty() or value!!.trim().isEmpty()) return
 
                 getExtraSearchTextSharedPref(context)
@@ -66,7 +66,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun removeStorage(context: Context, locale: Locale) {
+            suspend fun removeStorage(context: Context, locale: Locale) {
                 getExtraSearchTextSharedPref(context)
                     .edit()
                     .remove("$locale,$KEY_STORAGE")
@@ -83,23 +83,23 @@ class SharedPreferencesManager {
             private const val LIST_NAMES = "list_names"
 
             @JvmStatic
-            private fun getCheckedPackagesListSharedPref(context: Context): SharedPreferences {
+            private suspend fun getCheckedPackagesListSharedPref(context: Context): SharedPreferences {
                 return context.getSharedPreferences(FILENAME, AppCompatActivity.MODE_PRIVATE)
             }
 
-            fun getNames(context: Context): Set<String> {
+            suspend fun getNames(context: Context): Set<String> {
                 return getCheckedPackagesListSharedPref(context)
                     .getStringSet(LIST_NAMES, HashSet()) ?: HashSet()
             }
 
             @JvmStatic
-            fun get(context: Context, name: String): Set<String> {
+            suspend fun get(context: Context, name: String): Set<String> {
                 return getCheckedPackagesListSharedPref(context)
                     .getStringSet(name, HashSet()) ?: HashSet()
             }
 
             @JvmStatic
-            fun save(context: Context, name: String, checkedPkgList: Set<String>) {
+            suspend fun save(context: Context, name: String, checkedPkgList: Set<String>) {
                 val names = getNames(context) as MutableSet<String>
                 names.add(name)
                 getCheckedPackagesListSharedPref(context)
@@ -110,7 +110,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun remove(context: Context, name: String) {
+            suspend fun remove(context: Context, name: String) {
                 val names = getNames(context) as MutableSet<String>
                 names.remove(name)
                 getCheckedPackagesListSharedPref(context)
@@ -126,12 +126,12 @@ class SharedPreferencesManager {
 
         companion object {
             @JvmStatic
-            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
             }
 
             @JvmStatic
-            fun getShowStartStopService(context: Context): Boolean {
+            suspend fun getShowStartStopService(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_show_button_start_stop_service),
@@ -139,7 +139,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getShowCloseApp(context: Context): Boolean {
+            suspend fun getShowCloseApp(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_show_button_close_app),
@@ -147,7 +147,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getAfterClearingCacheStopService(context: Context): Boolean {
+            suspend fun getAfterClearingCacheStopService(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_extra_action_stop_service),
@@ -155,7 +155,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getAfterClearingCacheCloseApp(context: Context): Boolean {
+            suspend fun getAfterClearingCacheCloseApp(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_extra_action_close_app),
@@ -171,20 +171,20 @@ class SharedPreferencesManager {
             private const val KEY_MIN_CACHE_SIZE_BYTES = "filter_min_cache_size_bytes"
 
             @JvmStatic
-            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
             }
 
             @JvmStatic
             @RequiresApi(Build.VERSION_CODES.O)
-            fun getMinCacheSize(context: Context): Long {
+            suspend fun getMinCacheSize(context: Context): Long {
                 return getDefaultSharedPref(context)
                     .getLong(KEY_MIN_CACHE_SIZE_BYTES, 0L)
             }
 
             @JvmStatic
             @RequiresApi(Build.VERSION_CODES.O)
-            fun saveMinCacheSize(context: Context, value: Long) {
+            suspend fun saveMinCacheSize(context: Context, value: Long) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putLong(KEY_MIN_CACHE_SIZE_BYTES, value)
@@ -193,7 +193,7 @@ class SharedPreferencesManager {
 
             @JvmStatic
             @RequiresApi(Build.VERSION_CODES.O)
-            fun removeMinCacheSize(context: Context) {
+            suspend fun removeMinCacheSize(context: Context) {
                 getDefaultSharedPref(context)
                     .edit()
                     .remove(KEY_MIN_CACHE_SIZE_BYTES)
@@ -201,7 +201,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getHideDisabledApps(context: Context): Boolean {
+            suspend fun getHideDisabledApps(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_filter_hide_disabled_apps),
@@ -209,7 +209,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getHideIgnoredApps(context: Context): Boolean {
+            suspend fun getHideIgnoredApps(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_filter_hide_ignored_apps),
@@ -217,7 +217,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getShowDialogToIgnoreApp(context: Context): Boolean {
+            suspend fun getShowDialogToIgnoreApp(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(
                         context.getString(R.string.prefs_key_filter_show_dialog_to_ignore_app),
@@ -225,14 +225,14 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getListOfIgnoredApps(context: Context): Set<String> {
+            suspend fun getListOfIgnoredApps(context: Context): Set<String> {
                 val key = context.getString(R.string.prefs_key_filter_list_of_ignored_apps)
                 return getDefaultSharedPref(context)
                     .getStringSet(key, HashSet()) ?: HashSet()
             }
 
             @JvmStatic
-            fun setListOfIgnoredApps(context: Context, pkgList: Set<String>) {
+            suspend fun setListOfIgnoredApps(context: Context, pkgList: Set<String>) {
                 val key = context.getString(R.string.prefs_key_filter_list_of_ignored_apps)
                 getDefaultSharedPref(context)
                     .edit()
@@ -251,18 +251,18 @@ class SharedPreferencesManager {
                 "show_first_boot_confirmation"
 
             @JvmStatic
-            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return context.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
             }
 
             @JvmStatic
-            fun showFirstBootConfirmation(context: Context): Boolean {
+            suspend fun showFirstBootConfirmation(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(KEY_SHOW_FIRST_BOOT_CONFIRMATION, true)
             }
 
             @JvmStatic
-            fun hideFirstBootConfirmation(context: Context) {
+            suspend fun hideFirstBootConfirmation(context: Context) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putBoolean(KEY_SHOW_FIRST_BOOT_CONFIRMATION, false)
@@ -278,18 +278,18 @@ class SharedPreferencesManager {
                 "bug_322519674"
 
             @JvmStatic
-            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
             }
 
             @JvmStatic
-            fun showBug322519674(context: Context): Boolean {
+            suspend fun showBug322519674(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(KEY_BUG_322519674, true)
             }
 
             @JvmStatic
-            fun hideBug322519674(context: Context) {
+            suspend fun hideBug322519674(context: Context) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putBoolean(KEY_BUG_322519674, false)
@@ -301,12 +301,12 @@ class SharedPreferencesManager {
     class UI {
         companion object {
             @JvmStatic
-            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
             }
 
             @JvmStatic
-            fun getNightMode(context: Context): Boolean {
+            suspend fun getNightMode(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(context.getString(R.string.prefs_key_ui_night_mode), false)
             }
@@ -316,19 +316,19 @@ class SharedPreferencesManager {
     class Settings {
         companion object {
             @JvmStatic
-            private fun getDefaultSharedPref(context: Context): SharedPreferences {
+            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
                 return PreferenceManager.getDefaultSharedPreferences(context)
             }
 
             @JvmStatic
-            fun getDelayForNextAppTimeout(context: Context): Int {
+            suspend fun getDelayForNextAppTimeout(context: Context): Int {
                 return getDefaultSharedPref(context)
                     .getInt(context.getString(R.string.prefs_key_settings_delay_for_next_app_timeout),
                         Constant.Settings.CacheClean.DEFAULT_DELAY_FOR_NEXT_APP_MS / 1000)
             }
 
             @JvmStatic
-            fun setDelayForNextAppTimeout(context: Context, timeout: Int) {
+            suspend fun setDelayForNextAppTimeout(context: Context, timeout: Int) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putInt(context.getString(R.string.prefs_key_settings_delay_for_next_app_timeout), timeout)
@@ -336,14 +336,14 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getMaxWaitAppTimeout(context: Context): Int {
+            suspend fun getMaxWaitAppTimeout(context: Context): Int {
                 return getDefaultSharedPref(context)
                     .getInt(context.getString(R.string.prefs_key_settings_max_wait_app_timeout),
                         Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
             }
 
             @JvmStatic
-            fun setMaxWaitAppTimeout(context: Context, timeout: Int) {
+            suspend fun setMaxWaitAppTimeout(context: Context, timeout: Int) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putInt(context.getString(R.string.prefs_key_settings_max_wait_app_timeout), timeout)
@@ -351,14 +351,14 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getMaxWaitClearCacheButtonTimeout(context: Context): Int {
+            suspend fun getMaxWaitClearCacheButtonTimeout(context: Context): Int {
                 return getDefaultSharedPref(context)
                     .getInt(context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout),
                         Constant.Settings.CacheClean.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
             }
 
             @JvmStatic
-            fun setMaxWaitClearCacheButtonTimeout(context: Context, timeout: Int) {
+            suspend fun setMaxWaitClearCacheButtonTimeout(context: Context, timeout: Int) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putInt(context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout), timeout)
@@ -366,7 +366,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun getScenario(context: Context): Constant.Scenario {
+            suspend fun getScenario(context: Context): Constant.Scenario {
                 try {
                     val value = getDefaultSharedPref(context)
                         .getString(context.getString(R.string.prefs_key_settings_scenario),
