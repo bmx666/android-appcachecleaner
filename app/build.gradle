@@ -23,8 +23,8 @@ android {
         applicationId "com.github.bmx666.appcachecleaner"
         minSdk 23
         targetSdk 34
-        versionCode 76
-        versionName "1.10.10"
+        versionCode 77
+        versionName "1.10.11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
