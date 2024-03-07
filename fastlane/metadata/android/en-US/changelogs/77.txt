@@ -1,0 +1,1 @@
+* show filter menu icon after completion
