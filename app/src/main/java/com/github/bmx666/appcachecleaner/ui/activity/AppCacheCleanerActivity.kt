@@ -534,8 +534,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                         Constant.PackageListAction.CUSTOM_CLEAN ->
                             startCleanCache(
                                 PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
-                        else ->
+                        else -> {
                             showPackageFragment(pkgListAction)
+                            onMenuShowFilter()
+                        }
                     }
                 }
             }
@@ -551,6 +553,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // save current package list action
         currentPkgListAction = pkgListAction
         updateActionBarPackageList(pkgListAction)
+        onMenuHideAll()
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
