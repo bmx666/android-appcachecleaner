@@ -15,6 +15,9 @@ import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.databinding.ActivityFirstBootBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FirstBootActivity: AppCompatActivity() {
 
@@ -97,7 +100,10 @@ class FirstBootActivity: AppCompatActivity() {
         if (!verifyAllConfirmations())
             return
 
-        SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(this@FirstBootActivity)
+        }
+
         val intent = Intent(this, AppCacheCleanerActivity::class.java)
         startActivity(intent)
         finishAfterTransition()
