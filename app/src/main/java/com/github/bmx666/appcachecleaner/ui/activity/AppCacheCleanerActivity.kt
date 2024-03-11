@@ -230,7 +230,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.btnCleanCustomListAppCache.setOnClickListener {
             if (!checkAndShowPermissionDialogs()) return@setOnClickListener
 
-            CustomListDialogBuilder.buildCleanCacheDialog(this) { name ->
+            val names = SharedPreferencesManager.PackageList.getNames(this).sorted()
+            CustomListDialogBuilder.buildCleanCacheDialog(this, names) { name ->
                 name ?: return@buildCleanCacheDialog
 
                 customListName = name

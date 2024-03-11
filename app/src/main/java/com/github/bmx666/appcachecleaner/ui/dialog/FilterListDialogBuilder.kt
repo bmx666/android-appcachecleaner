@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Build
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.annotation.UiContext
+import androidx.annotation.UiThread
 import com.github.bmx666.appcachecleaner.R
 
 class FilterListDialogBuilder {
@@ -12,6 +14,8 @@ class FilterListDialogBuilder {
     companion object {
 
         @JvmStatic
+        @UiContext
+        @UiThread
         @RequiresApi(Build.VERSION_CODES.O)
         fun buildMinCacheSizeDialog(context: Context,
                                     minCacheSizeStr: String?,
