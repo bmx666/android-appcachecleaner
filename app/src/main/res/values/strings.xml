@@ -419,6 +419,9 @@
     <string translatable="false" name="prefs_key_settings_max_wait_clear_cache_btn_timeout">settings_max_wait_clear_cache_btn_timeout</string>
     <string translatable="false" name="prefs_key_settings_scenario">settings_scenario</string>
 
+    <!-- Snackbar -->
+    <string translatable="false" name="snackbar_processing">Processing, please wait…</string>
+
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="clear_user_data_text">Clear storage</string>
     <string name="storage_settings_for_app" >Storage &amp; cache</string>
