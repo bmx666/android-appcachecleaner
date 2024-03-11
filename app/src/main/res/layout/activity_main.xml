@@ -212,4 +212,10 @@
             android:text="@string/btn_close_app" />
     </LinearLayout>
 
+    <com.github.bmx666.appcachecleaner.ui.view.OverlayView
+        android:id="@+id/overlayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
