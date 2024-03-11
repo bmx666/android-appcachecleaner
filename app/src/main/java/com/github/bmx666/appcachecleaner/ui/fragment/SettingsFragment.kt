@@ -310,8 +310,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         editPref?.apply {
             setOnPreferenceClickListener {
+                val names = SharedPreferencesManager.PackageList.getNames(requireContext()).sorted()
                 // show dialog from Settings Fragment for better UX
-                CustomListDialogBuilder.buildEditDialog(context) { name ->
+                CustomListDialogBuilder.buildEditDialog(context, names) { name ->
                     name ?: return@buildEditDialog
 
                     // check if entered name already exists
@@ -325,8 +326,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         removePref?.apply {
             setOnPreferenceClickListener {
+                val names = SharedPreferencesManager.PackageList.getNames(requireContext()).sorted()
                 // show dialog from Settings Fragment for better UX
-                CustomListDialogBuilder.buildRemoveDialog(context) { name ->
+                CustomListDialogBuilder.buildRemoveDialog(context, names) { name ->
                     name?.let {
                         SharedPreferencesManager.PackageList.remove(context, name)
                         SharedPreferencesManager.PackageList.getNames(context).apply {

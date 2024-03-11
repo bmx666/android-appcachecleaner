@@ -5,13 +5,20 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.UiContext
+import androidx.annotation.UiThread
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PermissionDialogBuilder {
     companion object {
         @JvmStatic
+        @UiContext
+        @UiThread
         fun buildAccessibilityPermissionDialog(context: Context): Dialog {
             return AlertDialogBuilder(context)
                 .setTitle(R.string.text_enable_accessibility_title)
@@ -29,6 +36,8 @@ class PermissionDialogBuilder {
         }
 
         @JvmStatic
+        @UiContext
+        @UiThread
         fun buildUsageStatsPermissionDialog(context: Context): Dialog {
             return AlertDialogBuilder(context)
                 .setTitle(R.string.text_enable_usage_stats_title)
@@ -42,14 +51,20 @@ class PermissionDialogBuilder {
         }
 
         @JvmStatic
+        @UiContext
+        @UiThread
         fun buildWriteExternalStoragePermissionDialog(context: Context,
             requestPermissionLauncher: ActivityResultLauncher<String>): Dialog {
             return AlertDialogBuilder(context)
                 .setTitle(R.string.debug_text_enable_write_external_storage_permission)
                 .setPositiveButton(R.string.allow) { _, _ ->
-                    if (PermissionChecker.checkWriteExternalStoragePermission(context))
-                        return@setPositiveButton
-                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (PermissionChecker.checkWriteExternalStoragePermission(context))
+                            return@launch
+                        CoroutineScope(Dispatchers.Main).launch {
+                            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        }
+                    }
                 }
                 .create()
         }
