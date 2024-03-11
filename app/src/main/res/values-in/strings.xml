@@ -390,6 +390,9 @@
         <item>1</item>
     </string-array>
 
+    <!-- Snackbar -->
+    <string name="snackbar_processing">Sedang diproses, mohon tunggu…</string>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Hapus cache"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Penyimpanan amp; cache"</string>
     <string name="storage_label" msgid="2522307545547515733">"Penyimpanan"</string>
