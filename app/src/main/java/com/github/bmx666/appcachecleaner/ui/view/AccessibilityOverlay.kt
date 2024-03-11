@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.util.getDayNightModeContext
+import kotlinx.coroutines.runBlocking
 
 
 class AccessibilityOverlay(
@@ -49,7 +50,8 @@ class AccessibilityOverlay(
 
         hide(context)
         try {
-            getOverlayLayout(context.getDayNightModeContext())?.apply {
+            val nightModeContext = runBlocking { context.getDayNightModeContext() }
+            getOverlayLayout(nightModeContext)?.apply {
                 findViewById<ImageButton>(R.id.overlayButton)?.apply {
                     setOnClickListener { callbackClick.invoke() }
                 }
