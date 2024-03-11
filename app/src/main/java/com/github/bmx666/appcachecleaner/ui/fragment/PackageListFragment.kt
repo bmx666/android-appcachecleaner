@@ -12,13 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.view.PackageRecyclerViewAdapter
+
 
 class PackageListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var onSwapAdapter: () -> Unit
-    private lateinit var onRefreshAdapter: () -> Unit
+    private lateinit var onSwapAdapter: (List<PlaceholderContent.PlaceholderPackage>) -> Unit
+    private lateinit var onRefreshAdapter: (List<PlaceholderContent.PlaceholderPackage>) -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,46 +37,68 @@ class PackageListFragment : Fragment() {
             with(view) {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context.applicationContext)
-                val visiblePkgList = PlaceholderContent.Current.getVisible()
-                adapter = PackageRecyclerViewAdapter(visiblePkgList, hideStats)
+                addOverlayJob(
+                    suspendCallback = {
+                        PlaceholderContent.Current.getVisible()
+                    },
+                    postUiCallback = { pkgList ->
+                        adapter = PackageRecyclerViewAdapter(pkgList, hideStats)
+                    },
+                )
             }
-            onSwapAdapter = {
-                try {
-                    val visiblePkgList = PlaceholderContent.Current.getVisible()
-                    view.swapAdapter(
-                        PackageRecyclerViewAdapter(visiblePkgList, hideStats),
-                        true)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+
+            onSwapAdapter = { pkgList ->
+                view.swapAdapter(
+                    PackageRecyclerViewAdapter(pkgList, hideStats),
+                    true)
             }
-            onRefreshAdapter = {
-                try {
-                    val visiblePkgList = PlaceholderContent.Current.getVisible()
-                    view.adapter?.notifyItemRangeChanged(0, visiblePkgList.size)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+
+            onRefreshAdapter = { pkgList ->
+                view.adapter?.notifyItemRangeChanged(0, pkgList.size)
             }
         }
         return view
     }
 
     fun refreshAdapter() {
-        onRefreshAdapter()
+        addOverlayJob(
+            suspendCallback = {
+                PlaceholderContent.Current.getVisible()
+            },
+            postUiCallback = onRefreshAdapter
+        )
     }
 
     fun swapAdapterFilterByName(text: String) {
-        PlaceholderContent.Current.update(
-            PlaceholderContent.All.getFilteredByName(text))
-        onSwapAdapter()
+        addOverlayJob(
+            suspendCallback = {
+                PlaceholderContent.Current.update(
+                    PlaceholderContent.All.getFilteredByName(text))
+                PlaceholderContent.Current.getVisible()
+            },
+            postUiCallback = onSwapAdapter
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun swapAdapterFilterByCacheBytes(minCacheBytes: Long) {
-        PlaceholderContent.Current.update(
-            PlaceholderContent.All.getFilteredByCacheSize(minCacheBytes))
-        onSwapAdapter()
+        addOverlayJob(
+            suspendCallback = {
+                PlaceholderContent.Current.update(
+                    PlaceholderContent.All.getFilteredByCacheSize(minCacheBytes)
+                )
+                PlaceholderContent.Current.getVisible()
+            },
+            postUiCallback = onSwapAdapter
+        )
+    }
+
+    private fun addOverlayJob(
+        suspendCallback: suspend () -> List<PlaceholderContent.PlaceholderPackage>,
+        postUiCallback: ((List<PlaceholderContent.PlaceholderPackage>) -> Unit)? = null
+    ) {
+        (activity as AppCacheCleanerActivity?)
+            ?.addOverlayJob(suspendCallback, postUiCallback)
     }
 
     companion object {
