@@ -534,10 +534,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                         Constant.PackageListAction.CUSTOM_CLEAN ->
                             startCleanCache(
                                 PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
-                        else -> {
+                        else ->
                             showPackageFragment(pkgListAction)
-                            onMenuShowFilter()
-                        }
                     }
                 }
             }
@@ -957,14 +955,20 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.layoutFabListOfIgnoredApps.visibility = View.GONE
 
         when (pkgListAction) {
-            Constant.PackageListAction.DEFAULT ->
+            Constant.PackageListAction.DEFAULT -> {
                 binding.layoutFab.visibility = View.VISIBLE
-            Constant.PackageListAction.CUSTOM_ADD_EDIT ->
+                onMenuShowFilter()
+            }
+            Constant.PackageListAction.CUSTOM_ADD_EDIT -> {
                 binding.layoutFabCustomList.visibility = View.VISIBLE
+                onMenuShowSearch()
+            }
             Constant.PackageListAction.CUSTOM_CLEAN ->
                 { /* not valid */ }
-            Constant.PackageListAction.IGNORED_APPS_EDIT ->
+            Constant.PackageListAction.IGNORED_APPS_EDIT -> {
                 binding.layoutFabListOfIgnoredApps.visibility = View.VISIBLE
+                onMenuShowSearch()
+            }
         }
 
         binding.fabCheckAllApps.tag = "uncheck"
