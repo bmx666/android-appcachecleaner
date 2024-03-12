@@ -1,0 +1,1 @@
+* improve to avoid UI freeze on slow devices
