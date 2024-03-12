@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
@@ -50,13 +51,13 @@ import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.PermissionChecker
 import com.github.bmx666.appcachecleaner.util.TileRequestResult
 import com.github.bmx666.appcachecleaner.util.toFormattedString
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.springframework.util.unit.DataSize
 import java.io.File
-import java.util.HashSet
 import java.util.Locale
 
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
@@ -79,6 +80,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
+    private lateinit var snackbar: Snackbar
+
     private var calculationCleanedCacheJob: Job? = null
     private var loadingPkgListJob: Job? = null
 
@@ -93,7 +96,27 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        snackbar = Snackbar.make(binding.root,
+            getString(R.string.snackbar_processing),
+            Snackbar.LENGTH_INDEFINITE)
+
         setSupportActionBar(binding.toolbar)
+
+        binding.overlayView.setShowOverlayCallback {
+            runOnUiThread {
+                binding.overlayView.visibility = View.VISIBLE
+                binding.appBarLayout.isEnabled = false
+                snackbar.show()
+            }
+        }
+
+        binding.overlayView.setHideOverlayCallback {
+            runOnUiThread {
+                snackbar.dismiss()
+                binding.appBarLayout.isEnabled = true
+                binding.overlayView.visibility = View.GONE
+            }
+        }
 
         onBackPressedDispatcher.addCallback(
             this,
@@ -1123,6 +1146,18 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     DataSize.ofBytes(cleanCacheBytes).toFormattedString(this))
 
                 updateMainText(displayText)
+            }
+        }
+    }
+
+    internal fun <T> addOverlayJob(
+        suspendCallback: suspend () -> T,
+        postUiCallback: ((T) -> Unit)? = null
+    ) {
+        binding.overlayView.addJob {
+            val result = suspendCallback()
+            runOnUiThread {
+                postUiCallback?.invoke(result)
             }
         }
     }
