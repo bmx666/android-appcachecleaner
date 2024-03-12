@@ -570,7 +570,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     val stats =
                         when (pkgListAction) {
                             Constant.PackageListAction.DEFAULT ->
-                                PackageManagerHelper.getStorageStats(this, pkgInfo)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                                    PackageManagerHelper.getStorageStats(this, pkgInfo)
+                                else
+                                    null
                             else ->
                                 null
                         }

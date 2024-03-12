@@ -10,6 +10,7 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.storage.StorageManager
+import androidx.annotation.RequiresApi
 
 
 class PackageManagerHelper {
@@ -102,9 +103,8 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
+        @RequiresApi(Build.VERSION_CODES.O)
         suspend fun getStorageStats(context: Context, pkgInfo: PackageInfo): StorageStats? {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null
-
             try {
                 val storageStatsManager =
                     context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
