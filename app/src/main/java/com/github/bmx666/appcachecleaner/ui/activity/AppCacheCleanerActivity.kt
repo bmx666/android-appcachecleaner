@@ -19,11 +19,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.annotation.UiContext
+import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
@@ -56,9 +56,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.springframework.util.unit.DataSize
 import java.io.File
 import java.util.Locale
+
 
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
@@ -87,9 +89,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (SharedPreferencesManager.UI.getNightMode(this))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         localBroadcastManager = LocalBroadcastManagerActivityHelper(this, this)
 
@@ -128,112 +127,173 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         )
 
         binding.btnCleanUserAppCache.setOnClickListener {
-            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
-
-            preparePackageList(
-                PackageManagerHelper.getInstalledApps(
-                    context = this,
-                    systemNotUpdated = false,
-                    systemUpdated = true,
-                    userOnly = true,
-                ),
-                pkgListAction = Constant.PackageListAction.DEFAULT,
+            addOverlayJob(
+                suspendCallback = {
+                    if (checkAndShowPermissionDialogs())
+                        PackageManagerHelper.getInstalledApps(
+                            context = this,
+                            systemNotUpdated = false,
+                            systemUpdated = true,
+                            userOnly = true,
+                        )
+                    else
+                        null
+                },
+                postUiCallback = { pkgInfoList ->
+                    pkgInfoList ?: return@addOverlayJob
+                    preparePackageList(
+                        pkgInfoList,
+                        Constant.PackageListAction.DEFAULT,
+                    )
+                }
             )
         }
 
         binding.btnCleanSystemAppCache.setOnClickListener {
-            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
-
-            preparePackageList(
-                PackageManagerHelper.getInstalledApps(
-                    context = this,
-                    systemNotUpdated = true,
-                    systemUpdated = false,
-                    userOnly = false,
-                ),
-                pkgListAction = Constant.PackageListAction.DEFAULT,
+            addOverlayJob(
+                suspendCallback = {
+                    if (checkAndShowPermissionDialogs())
+                        PackageManagerHelper.getInstalledApps(
+                            context = this,
+                            systemNotUpdated = true,
+                            systemUpdated = false,
+                            userOnly = false,
+                        )
+                    else
+                        null
+                },
+                postUiCallback = { pkgInfoList ->
+                    pkgInfoList ?: return@addOverlayJob
+                    preparePackageList(
+                        pkgInfoList,
+                        Constant.PackageListAction.DEFAULT,
+                    )
+                }
             )
         }
 
         binding.btnCleanAllAppCache.setOnClickListener {
-            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
-
-            preparePackageList(
-                PackageManagerHelper.getInstalledApps(
-                    context = this,
-                    systemNotUpdated = true,
-                    systemUpdated = true,
-                    userOnly = true,
-                ),
-                pkgListAction = Constant.PackageListAction.DEFAULT,
+            addOverlayJob(
+                suspendCallback = {
+                    if (checkAndShowPermissionDialogs())
+                        PackageManagerHelper.getInstalledApps(
+                            context = this,
+                            systemNotUpdated = true,
+                            systemUpdated = true,
+                            userOnly = true,
+                        )
+                    else
+                        null
+                },
+                postUiCallback = { pkgInfoList ->
+                    pkgInfoList ?: return@addOverlayJob
+                    preparePackageList(
+                        pkgInfoList,
+                        Constant.PackageListAction.DEFAULT,
+                    )
+                }
             )
         }
 
         binding.btnStartStopService.setOnClickListener {
-            if (PermissionChecker.checkAccessibilityPermission(this))
-                localBroadcastManager.disableAccessibilityService()
-            else
-                PermissionDialogBuilder.buildAccessibilityPermissionDialog(this).show()
+            addOverlayJob(
+                suspendCallback = {
+                    PermissionChecker.checkAccessibilityPermission(this)
+                },
+                postUiCallback = { hasAccessibilityPermission ->
+                    if (hasAccessibilityPermission)
+                        localBroadcastManager.disableAccessibilityService()
+                    else
+                        PermissionDialogBuilder.buildAccessibilityPermissionDialog(this).show()
+                }
+            )
         }
 
         binding.btnCloseApp.setOnClickListener {
-            if (PermissionChecker.checkAccessibilityPermission(this))
-                localBroadcastManager.disableAccessibilityService()
-            finish()
+            addOverlayJob(
+                suspendCallback = {
+                    PermissionChecker.checkAccessibilityPermission(this)
+                },
+                postUiCallback = { hasAccessibilityPermission ->
+                    if (hasAccessibilityPermission)
+                        localBroadcastManager.disableAccessibilityService()
+                    finish()
+                }
+            )
         }
 
         binding.fabCleanCache.setOnClickListener {
-            val pkgList = PlaceholderContent.Current.getCheckedPackageNames().toMutableList()
-            startCleanCache(pkgList)
+            addOverlayJob(
+                suspendCallback = {
+                    PlaceholderContent.Current.getCheckedPackageNames().toMutableList()
+                },
+                postUiCallback = { pkgList ->
+                    startCleanCache(pkgList)
+                }
+            )
         }
 
         binding.fabCheckAllApps.setOnClickListener {
-            when (
-                if (PlaceholderContent.Current.isAllVisibleChecked())
-                    "uncheck"
-                else if (PlaceholderContent.Current.isAllVisibleUnchecked())
-                    "check"
-                else
-                    binding.fabCheckAllApps.tag
-            ) {
-                "uncheck" -> {
-                    binding.fabCheckAllApps.tag = "check"
-                    binding.fabCheckAllApps.contentDescription =
-                        getString(R.string.description_apps_all_check)
-                    PlaceholderContent.All.uncheckVisible()
-                }
-                "check" -> {
-                    binding.fabCheckAllApps.tag = "uncheck"
-                    binding.fabCheckAllApps.contentDescription =
-                        getString(R.string.description_apps_all_uncheck)
-                    PlaceholderContent.All.checkVisible()
-                }
-            }
+            addOverlayJob(
+                suspendCallback = {
+                    val state =
+                        if (PlaceholderContent.Current.isAllVisibleChecked())
+                            "uncheck"
+                        else if (PlaceholderContent.Current.isAllVisibleUnchecked())
+                            "check"
+                        else
+                            binding.fabCheckAllApps.tag
 
-            supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
-                ?.let { fragment ->
-                    if (fragment is PackageListFragment)
-                        fragment.refreshAdapter()
+                    when (state) {
+                        "uncheck" -> {
+                            PlaceholderContent.All.uncheckVisible()
+                            binding.fabCheckAllApps.tag = "check"
+                        }
+                        "check" -> {
+                            PlaceholderContent.All.checkVisible()
+                            binding.fabCheckAllApps.tag = "uncheck"
+                        }
+                    }
+                    state
+                },
+                postUiCallback = { state ->
+                    when (state) {
+                        "uncheck" ->
+                            binding.fabCheckAllApps.contentDescription =
+                                getString(R.string.description_apps_all_check)
+                        "check" ->
+                            binding.fabCheckAllApps.contentDescription =
+                                getString(R.string.description_apps_all_uncheck)
+                    }
+                    supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                        ?.let { fragment ->
+                            if (fragment is PackageListFragment)
+                                fragment.refreshAdapter()
+                        }
                 }
+            )
         }
 
         binding.fabCustomListOk.setOnClickListener {
-            val checkedPkgList = PlaceholderContent.Current.getCheckedPackageNames().toSet()
-            if (checkedPkgList.isEmpty()) {
-                Toast.makeText(this,
-                    R.string.toast_custom_list_add_list_empty,
-                    Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            val currentListName = customListName
 
-            customListName?.let { name ->
-                SharedPreferencesManager.PackageList.save(this, name, checkedPkgList)
-                Toast.makeText(this,
-                    getString(R.string.toast_custom_list_has_been_saved, name),
-                    Toast.LENGTH_SHORT).show()
-            }
-
-            handleOnBackPressed()
+            addOverlayJob(
+                suspendCallback = {
+                    val checkedPkgList = PlaceholderContent.Current.getCheckedPackageNames().toSet()
+                    if (checkedPkgList.isEmpty()) {
+                        showToast(R.string.toast_custom_list_add_list_empty)
+                    } else {
+                        currentListName?.let { name ->
+                            SharedPreferencesManager.PackageList.save(
+                                this, name, checkedPkgList)
+                            showToast(R.string.toast_custom_list_has_been_saved, name)
+                        }
+                    }
+                },
+                postUiCallback = {
+                    handleOnBackPressed()
+                }
+            )
         }
 
         binding.fabCustomListCancel.setOnClickListener {
@@ -241,9 +301,16 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.fabListOfIgnoredAppsOk.setOnClickListener {
-            val checkedPkgList = PlaceholderContent.Current.getCheckedPackageNames().toSet()
-            SharedPreferencesManager.Filter.setListOfIgnoredApps(this, checkedPkgList)
-            handleOnBackPressed()
+            addOverlayJob(
+                suspendCallback = {
+                    val checkedPkgList = PlaceholderContent.Current.getCheckedPackageNames().toSet()
+                    SharedPreferencesManager.Filter.setListOfIgnoredApps(
+                        this, checkedPkgList)
+                },
+                postUiCallback = {
+                    handleOnBackPressed()
+                }
+            )
         }
 
         binding.fabListOfIgnoredAppsCancel.setOnClickListener {
@@ -251,24 +318,18 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
 
         binding.btnCleanCustomListAppCache.setOnClickListener {
-            if (!checkAndShowPermissionDialogs()) return@setOnClickListener
-
-            val names = SharedPreferencesManager.PackageList.getNames(this).sorted()
-            CustomListDialogBuilder.buildCleanCacheDialog(this, names) { name ->
-                name ?: return@buildCleanCacheDialog
-
-                customListName = name
-
-                val pkgList = SharedPreferencesManager.PackageList.get(this, name)
-                preparePackageList(
-                    PackageManagerHelper.getCustomInstalledApps(
-                        context = this,
-                        pkgList = pkgList
-                    ),
-                    pkgListAction = Constant.PackageListAction.CUSTOM_CLEAN,
-                    checkedPkgList = pkgList,
-                )
-            }.show()
+            addOverlayJob(
+                suspendCallback = {
+                    if (checkAndShowPermissionDialogs())
+                        SharedPreferencesManager.PackageList.getNames(this).sorted()
+                    else
+                        null
+                },
+                postUiCallback = { pkgListNames ->
+                    pkgListNames ?: return@addOverlayJob
+                    showCustomListDialog(pkgListNames)
+                }
+            )
         }
 
         if (calculationCleanedCacheJob?.isActive != true)
@@ -280,16 +341,26 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             // Show bugs
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                if (SharedPreferencesManager.BugWarning.showBug322519674(this)) {
-                    AlertDialogBuilder(this)
-                        .setTitle(R.string.title_bug_322519674)
-                        .setMessage(R.string.message_bug_322519674)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            // SharedPreferencesManager.BugWarning.hideBug322519674(this)
-                        }
-                        .create()
-                        .show()
-                }
+                addOverlayJob(
+                    suspendCallback = {
+                        SharedPreferencesManager.BugWarning.showBug322519674(this)
+                    },
+                    postUiCallback = { showBug ->
+                        if (!showBug)
+                            return@addOverlayJob
+
+                        AlertDialogBuilder(this)
+                            .setTitle(R.string.title_bug_322519674)
+                            .setMessage(R.string.message_bug_322519674)
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                addOverlayJob(suspendCallback = {
+                                    // SharedPreferencesManager.BugWarning.hideBug322519674(this)
+                                })
+                            }
+                            .create()
+                            .show()
+                    }
+                )
             }
         }
     }
@@ -376,11 +447,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 }
             })
             setOnCloseListener {
-                // unset ignore flag for all packages in the current list
-                PlaceholderContent.All.unignore(
-                    PlaceholderContent.Current.getPackageNames().toSet())
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getSortedByLabel())
+                addOverlayJob(suspendCallback = {
+                    // unset ignore flag for all packages in the current list
+                    PlaceholderContent.All.unignore(
+                        PlaceholderContent.Current.getPackageNames().toSet())
+                    PlaceholderContent.Current.update(
+                        PlaceholderContent.All.getSortedByLabel())
+                })
                 false
             }
         }
@@ -425,6 +498,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         super.onDestroy()
     }
 
+    @UiContext
+    @UiThread
     private fun startCleanCache(pkgList: MutableList<String>) {
         setSettings()
 
@@ -451,7 +526,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
     }
 
-    private fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
+    private suspend fun addPackageToPlaceholderContent(pkgInfoList: ArrayList<PackageInfo>,
                                                pkgListAction: Constant.PackageListAction,
                                                checkedPkgList: Set<String>) {
         val locale = LocaleHelper.getCurrentLocale(this)
@@ -553,19 +628,26 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         loadingPkgListJob?.invokeOnCompletion { throwable ->
             if (throwable == null) {
-                runOnUiThread {
-                    when (pkgListAction) {
-                        Constant.PackageListAction.CUSTOM_CLEAN ->
-                            startCleanCache(
-                                PlaceholderContent.Current.getCheckedPackageNames().toMutableList())
-                        else ->
-                            showPackageFragment(pkgListAction)
+                when (pkgListAction) {
+                    Constant.PackageListAction.CUSTOM_CLEAN -> {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val pkgList = PlaceholderContent.Current.getCheckedPackageNames().toMutableList()
+                            runOnUiThread {
+                                startCleanCache(pkgList)
+                            }
+                        }
                     }
+                    else ->
+                        runOnUiThread {
+                            showPackageFragment(pkgListAction)
+                        }
                 }
             }
         }
     }
 
+    @UiThread
+    @UiContext
     private fun preparePackageList(pkgInfoList: ArrayList<PackageInfo>,
                                    pkgListAction: Constant.PackageListAction,
                                    checkedPkgList: Set<String> = HashSet<String>()) {
@@ -597,77 +679,108 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     internal fun showCustomListPackageFragment(name: String) {
         customListName = name
-        preparePackageList(
-            PackageManagerHelper.getInstalledApps(
-                context = this,
-                systemNotUpdated = true,
-                systemUpdated = true,
-                userOnly = true,
-            ),
-            pkgListAction = Constant.PackageListAction.CUSTOM_ADD_EDIT,
-            checkedPkgList = SharedPreferencesManager.PackageList.get(this, name),
+
+        addOverlayJob(
+            suspendCallback = {
+                val pkgInfoList =
+                    PackageManagerHelper.getInstalledApps(
+                        context = this,
+                        systemNotUpdated = true,
+                        systemUpdated = true,
+                        userOnly = true,
+                    )
+                val checkedPkgList =
+                    SharedPreferencesManager.PackageList.get(this, name)
+
+                Pair(pkgInfoList, checkedPkgList)
+            },
+            postUiCallback = { (pkgInfoList, checkedPkgList) ->
+                preparePackageList(
+                    pkgInfoList = pkgInfoList,
+                    pkgListAction = Constant.PackageListAction.CUSTOM_ADD_EDIT,
+                    checkedPkgList = checkedPkgList,
+                )
+            }
         )
     }
 
     internal fun showIgnoredListPackageFragment() {
-        preparePackageList(
-            PackageManagerHelper.getInstalledApps(
-                context = this,
-                systemNotUpdated = true,
-                systemUpdated = true,
-                userOnly = true,
-            ),
-            pkgListAction = Constant.PackageListAction.IGNORED_APPS_EDIT,
-            checkedPkgList = SharedPreferencesManager.Filter.getListOfIgnoredApps(this)
+        addOverlayJob(
+            suspendCallback = {
+                val pkgInfoList =
+                    PackageManagerHelper.getInstalledApps(
+                        context = this,
+                        systemNotUpdated = true,
+                        systemUpdated = true,
+                        userOnly = true,
+                    )
+                val checkedPkgList =
+                    SharedPreferencesManager.Filter.getListOfIgnoredApps(this)
+
+                Pair(pkgInfoList, checkedPkgList)
+            },
+            postUiCallback = { (pkgInfoList, checkedPkgList) ->
+                preparePackageList(
+                    pkgInfoList = pkgInfoList,
+                    pkgListAction = Constant.PackageListAction.IGNORED_APPS_EDIT,
+                    checkedPkgList = checkedPkgList
+                )
+            }
         )
     }
 
     private fun setSettings() {
-        val intent = Intent(Constant.Intent.Settings.ACTION)
+        addOverlayJob(
+            suspendCallback = {
+                val intent = Intent(Constant.Intent.Settings.ACTION)
 
-        ExtraSearchTextHelper.getTextForClearCache(this).let { list ->
-            if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.Settings.NAME_CLEAR_CACHE_TEXT_LIST, list)
-        }
+                ExtraSearchTextHelper.getTextForClearCache(this).let { list ->
+                    if (list.isNotEmpty())
+                        intent.putExtra(Constant.Intent.Settings.NAME_CLEAR_CACHE_TEXT_LIST, list)
+                }
 
-        ExtraSearchTextHelper.getTextForClearData(this).let { list ->
-            if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.Settings.NAME_CLEAR_DATA_TEXT_LIST, list)
-        }
+                ExtraSearchTextHelper.getTextForClearData(this).let { list ->
+                    if (list.isNotEmpty())
+                        intent.putExtra(Constant.Intent.Settings.NAME_CLEAR_DATA_TEXT_LIST, list)
+                }
 
-        ExtraSearchTextHelper.getTextForStorage(this).let { list ->
-            if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.Settings.NAME_STORAGE_TEXT_LIST, list)
-        }
+                ExtraSearchTextHelper.getTextForStorage(this).let { list ->
+                    if (list.isNotEmpty())
+                        intent.putExtra(Constant.Intent.Settings.NAME_STORAGE_TEXT_LIST, list)
+                }
 
-        ExtraSearchTextHelper.getTextForOk(this).let { list ->
-            if (list.isNotEmpty())
-                intent.putExtra(Constant.Intent.Settings.NAME_OK_TEXT_LIST, list)
-        }
+                ExtraSearchTextHelper.getTextForOk(this).let { list ->
+                    if (list.isNotEmpty())
+                        intent.putExtra(Constant.Intent.Settings.NAME_OK_TEXT_LIST, list)
+                }
 
-        intent.putExtra(
-            Constant.Intent.Settings.NAME_SCENARIO,
-            SharedPreferencesManager.Settings.getScenario(this))
+                intent.putExtra(
+                    Constant.Intent.Settings.NAME_SCENARIO,
+                    SharedPreferencesManager.Settings.getScenario(this))
 
-        intent.putExtra(
-            Constant.Intent.Settings.NAME_DELAY_FOR_NEXT_APP_TIMEOUT,
-            SharedPreferencesManager.Settings.getDelayForNextAppTimeout(this))
+                intent.putExtra(
+                    Constant.Intent.Settings.NAME_DELAY_FOR_NEXT_APP_TIMEOUT,
+                    SharedPreferencesManager.Settings.getDelayForNextAppTimeout(this))
 
-        intent.putExtra(
-            Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
-            SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this))
+                intent.putExtra(
+                    Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
+                    SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this))
 
-        intent.putExtra(
-            Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
-            SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(this))
+                intent.putExtra(
+                    Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
+                    SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(this))
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+            }
+        )
     }
 
-    private fun checkAndShowPermissionDialogs(): Boolean {
+    private suspend fun checkAndShowPermissionDialogs(): Boolean {
         val hasAccessibilityPermission = PermissionChecker.checkAccessibilityPermission(this)
         if (!hasAccessibilityPermission) {
-            PermissionDialogBuilder.buildAccessibilityPermissionDialog(this).show()
+            runOnUiThread {
+                PermissionDialogBuilder.buildAccessibilityPermissionDialog(this).show()
+            }
             return false
         }
 
@@ -675,7 +788,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val hasUsageStatsPermission = PermissionChecker.checkUsageStatsPermission(this)
             if (!hasUsageStatsPermission) {
-                PermissionDialogBuilder.buildUsageStatsPermissionDialog(this).show()
+                runOnUiThread {
+                    PermissionDialogBuilder.buildUsageStatsPermissionDialog(this).show()
+                }
                 return false
             }
         }
@@ -686,10 +801,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     PermissionChecker.checkWriteExternalStoragePermission(this)
 
                 if (!hasWriteExternalStoragePermission) {
-                    PermissionDialogBuilder.buildWriteExternalStoragePermissionDialog(
-                        this,
-                        requestPermissionLauncher
-                    ).show()
+                    runOnUiThread {
+                        PermissionDialogBuilder.buildWriteExternalStoragePermissionDialog(
+                            this,
+                            requestPermissionLauncher
+                        ).show()
+                    }
                     return false
                 }
             }
@@ -739,6 +856,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         requestSaveLogFileLauncher.launch(intent)
     }
 
+    @UiContext
+    @UiThread
     private fun hideFragmentViews() {
         // interrupt package list preparation
         loadingPkgListJob?.cancel()
@@ -750,6 +869,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.layoutProgress.visibility = View.GONE
     }
 
+    @UiContext
+    @UiThread
     private fun showMainViews() {
         binding.layoutButton.visibility = View.VISIBLE
         updateExtraButtonsVisibility()
@@ -757,10 +878,14 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         restoreActionBar()
     }
 
+    @UiContext
+    @UiThread
     private fun hideMainViews() {
         binding.layoutButton.visibility = View.GONE
     }
 
+    @UiContext
+    @UiThread
     private fun updateActionBarPackageList(pkgListAction: Constant.PackageListAction?) {
         when (pkgListAction) {
             Constant.PackageListAction.DEFAULT ->
@@ -777,36 +902,48 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
     }
 
+    @UiContext
+    @UiThread
     private fun updateActionBarTextAndHideMenu(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuHideAll()
     }
 
+    @UiContext
+    @UiThread
     private fun updateActionBarFilter(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowFilter()
     }
 
+    @UiContext
+    @UiThread
     private fun updateActionBarSearch(title: String?) {
         supportActionBar?.title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowSearch()
     }
 
+    @UiContext
+    @UiThread
     private fun updateActionBarSearch(@StringRes resId: Int) {
         supportActionBar?.setTitle(resId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         onMenuShowSearch()
     }
 
+    @UiContext
+    @UiThread
     private fun restoreActionBar() {
         supportActionBar?.setTitle(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         onMenuShowMain()
     }
 
+    @UiContext
+    @UiThread
     private fun showMenuFragment(fragment: Fragment, @StringRes title: Int) {
         hideFragmentViews()
         hideMainViews()
@@ -823,69 +960,85 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showFilterDialog() {
-        minCacheSizeStr ?: run {
-            val minCacheSizeBytes = SharedPreferencesManager.Filter.getMinCacheSize(this)
-            minCacheSizeStr =
+        addOverlayJob(
+            suspendCallback = {
+                val minCacheSizeBytes = SharedPreferencesManager.Filter.getMinCacheSize(this)
                 if (minCacheSizeBytes >= 0L)
                     DataSize.ofBytes(minCacheSizeBytes).toFormattedString(this)
                 else
                     null
-        }
-
-        FilterListDialogBuilder.buildMinCacheSizeDialog(this, minCacheSizeStr) { str ->
-            try {
-                val dataSize = DataSize.parse(str)
-                val minCacheSizeBytes = dataSize.toBytes()
-                minCacheSizeStr =
-                    if (minCacheSizeBytes >= 0L)
-                        DataSize.ofBytes(minCacheSizeBytes).toFormattedString(this)
-                    else
-                        null
-
-                supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
-                    ?.let { fragment ->
-                        if (fragment is PackageListFragment)
-                            fragment.swapAdapterFilterByCacheBytes(minCacheSizeBytes)
+            },
+            postUiCallback = { minCacheSizeStr ->
+                FilterListDialogBuilder.buildMinCacheSizeDialog(this, minCacheSizeStr) { str ->
+                    try {
+                        val dataSize = DataSize.parse(str)
+                        val minCacheSizeBytes = dataSize.toBytes()
+                        supportFragmentManager.findFragmentByTag(FRAGMENT_CONTAINER_VIEW_TAG)
+                            ?.let { fragment ->
+                                if (fragment is PackageListFragment)
+                                    fragment.swapAdapterFilterByCacheBytes(minCacheSizeBytes)
+                            }
+                    } catch (e: Exception) {
+                        showToast(R.string.toast_error_filter_min_cache_size)
                     }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this,
-                    getText(R.string.toast_error_filter_min_cache_size),
-                    Toast.LENGTH_SHORT)
-                    .show()
+                }.show()
             }
-        }.show()
+        )
     }
 
     private fun updateExtraButtonsVisibility() {
-        binding.btnStartStopService.visibility =
-            when (SharedPreferencesManager.Extra.getShowStartStopService(this)) {
-                true -> View.VISIBLE
-                else -> View.GONE
+        addOverlayJob(
+            suspendCallback = {
+                SharedPreferencesManager.Extra.getShowStartStopService(this)
+            },
+            postUiCallback = { showStartStopService ->
+                binding.btnStartStopService.visibility =
+                    when (showStartStopService) {
+                        true -> View.VISIBLE
+                        else -> View.GONE
+                    }
             }
+        )
 
-        binding.btnCloseApp.visibility =
-            when (SharedPreferencesManager.Extra.getShowCloseApp(this)) {
-                true -> View.VISIBLE
-                else -> View.GONE
+        addOverlayJob(
+            suspendCallback = {
+                SharedPreferencesManager.Extra.getShowCloseApp(this)
+            },
+            postUiCallback = { closeApp ->
+                binding.btnCloseApp.visibility =
+                    when (closeApp) {
+                        true -> View.VISIBLE
+                        else -> View.GONE
+                    }
             }
+        )
 
-        binding.btnCleanCustomListAppCache.visibility =
-            when (SharedPreferencesManager.PackageList.getNames(this).isNotEmpty()) {
-                true -> View.VISIBLE
-                else -> View.GONE
+        addOverlayJob(
+            suspendCallback = {
+                SharedPreferencesManager.PackageList.getNames(this).isNotEmpty()
+            },
+            postUiCallback = { hasCustomList ->
+                binding.btnCleanCustomListAppCache.visibility =
+                    when (hasCustomList) {
+                        true -> View.VISIBLE
+                        else -> View.GONE
+                    }
             }
+        )
     }
 
     private fun updateStartStopServiceButton() {
-        val hasPermission = PermissionChecker.checkAccessibilityPermission(this)
-        val resId = when (hasPermission) {
-            true -> R.string.btn_stop_accessibility_service
-            else -> R.string.btn_start_accessibility_service
-        }
-        runOnUiThread {
-            binding.btnStartStopService.setText(resId)
-        }
+        addOverlayJob(
+            suspendCallback = {
+                when (PermissionChecker.checkAccessibilityPermission(this)) {
+                    true -> R.string.btn_stop_accessibility_service
+                    else -> R.string.btn_start_accessibility_service
+                }
+            },
+            postUiCallback = { resId ->
+                binding.btnStartStopService.setText(resId)
+            }
+        )
     }
 
     private fun updateMainText(text: CharSequence?) {
@@ -894,6 +1047,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         }
     }
 
+    @UiContext
+    @UiThread
     private fun restoreUI() {
         // interrupt package list preparation if user has rotated screen
         loadingPkgListJob?.cancel()
@@ -958,8 +1113,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             } ?: restoreActionBar()
     }
 
+    @UiContext
+    @UiThread
     private fun handleOnBackPressed() {
-        minCacheSizeStr = null
         // always reset to default package list type to avoid undefined behavior
         currentPkgListAction = Constant.PackageListAction.DEFAULT
 
@@ -971,6 +1127,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         showMainViews()
     }
 
+    @UiContext
+    @UiThread
     private fun showPackageFragment(pkgListAction: Constant.PackageListAction) {
         binding.layoutProgress.visibility = View.GONE
         binding.fragmentContainerView.visibility = View.VISIBLE
@@ -1016,6 +1174,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             .commitNowAllowingStateLoss()
     }
 
+    @UiContext
+    @UiThread
     override fun onCleanCacheFinish(interrupted: Boolean,
                                     interruptedByUser: Boolean,
                                     pkgName: String?) {
@@ -1042,7 +1202,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         val displayText = getString(resId)
 
         updateMainText(displayText)
-        updateStartStopServiceButton()
 
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this,
@@ -1051,22 +1210,46 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         if (BuildConfig.DEBUG)
             saveLogFile()
 
-        // Automatically disable service
-        if (SharedPreferencesManager.Extra.getAfterClearingCacheStopService(this)) {
-            if (PermissionChecker.checkAccessibilityPermission(this))
-                localBroadcastManager.disableAccessibilityService()
-        }
+        updateStartStopServiceButton()
 
-        // Automatically close app
-        if (SharedPreferencesManager.Extra.getAfterClearingCacheCloseApp(this)) {
-            finish()
-            return
-        }
+        addOverlayJob(
+            suspendCallback = {
+                // Automatically disable service
+                if (SharedPreferencesManager.Extra.getAfterClearingCacheStopService(this)) {
+                    if (PermissionChecker.checkAccessibilityPermission(this))
+                        localBroadcastManager.disableAccessibilityService()
+                }
 
-        // Show dialog to ignore app
-        if (SharedPreferencesManager.Filter.getShowDialogToIgnoreApp(this)) {
-            pkgName?.takeIf { interrupted }?.let {
-                val label = PlaceholderContent.Current.find(pkgName)?.label
+                // Automatically close app
+                if (SharedPreferencesManager.Extra.getAfterClearingCacheCloseApp(this)) {
+                    finish()
+                    return@addOverlayJob
+                }
+
+                showDialogToIgnoreApp(pkgName, interrupted)
+            }
+        )
+    }
+
+    override fun onStopAccessibilityServiceFeedback() {
+        updateStartStopServiceButton()
+    }
+
+    private fun showDialogToIgnoreApp(pkgName: String?,
+                                      interrupted: Boolean) {
+        addOverlayJob(
+            suspendCallback = {
+                if (!interrupted)
+                    Pair(null, null)
+                else if (!SharedPreferencesManager.Filter.getShowDialogToIgnoreApp(this))
+                    Pair(null, null)
+                else if (pkgName.isNullOrEmpty())
+                    Pair(null, null)
+                else
+                    Pair(pkgName, PlaceholderContent.Current.find(pkgName)?.label)
+            },
+            postUiCallback = { (pkgName, label) ->
+                pkgName ?: return@addOverlayJob
                 IgnoreAppDialogBuilder.buildIgnoreAppDialog(
                     context = this,
                     pkgName = pkgName,
@@ -1076,11 +1259,36 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     }
                 ).show()
             }
-        }
+        )
     }
 
-    override fun onStopAccessibilityServiceFeedback() {
-        updateStartStopServiceButton()
+    @UiContext
+    @UiThread
+    private fun showCustomListDialog(pkgListNames: List<String>) {
+        CustomListDialogBuilder.buildCleanCacheDialog(this, pkgListNames) { name ->
+            name ?: return@buildCleanCacheDialog
+
+            customListName = name
+
+            addOverlayJob(
+                suspendCallback = {
+                    val pkgList = SharedPreferencesManager.PackageList.get(this, name)
+                    val pkgInfoList =
+                        PackageManagerHelper.getCustomInstalledApps(
+                            context = this,
+                            pkgList = pkgList
+                        )
+                    Pair(pkgList, pkgInfoList)
+                },
+                postUiCallback = { (pkgList, pkgInfoList) ->
+                    preparePackageList(
+                        pkgInfoList = pkgInfoList,
+                        pkgListAction = Constant.PackageListAction.CUSTOM_CLEAN,
+                        checkedPkgList = pkgList,
+                    )
+                }
+            )
+        }.show()
     }
 
     private fun checkRequestAddTileService() {
@@ -1126,7 +1334,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun calculateCleanedCache(interrupted: Boolean) {
+    private suspend fun calculateCleanedCache(interrupted: Boolean) {
         val cleanCacheBytes =
             PlaceholderContent.Current.getChecked().sumOf {
                 PackageManagerHelper.getCacheSizeDiff(
@@ -1142,11 +1350,17 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     else -> R.string.text_clean_cache_finish_display_size
                 }
 
-                val displayText = getString(resId,
-                    DataSize.ofBytes(cleanCacheBytes).toFormattedString(this))
+                val sizeStr = runBlocking { DataSize.ofBytes(cleanCacheBytes).toFormattedString(this@AppCacheCleanerActivity) }
+                val displayText = getString(resId, sizeStr)
 
                 updateMainText(displayText)
             }
+        }
+    }
+
+    private fun showToast(@StringRes resId: Int, vararg formatArgs: Any?) {
+        runOnUiThread {
+            Toast.makeText(this, getString(resId, *formatArgs), Toast.LENGTH_SHORT).show()
         }
     }
 
