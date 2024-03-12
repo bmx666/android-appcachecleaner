@@ -5,7 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -17,6 +19,8 @@ import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import com.github.bmx666.appcachecleaner.util.toFormattedString
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.springframework.util.unit.DataSize
 import java.util.Locale
 
@@ -24,8 +28,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
-
         val context = requireContext()
+        lifecycleScope.launch {
+            initialize(context)
+        }
+    }
+
+    private suspend fun initialize(context: Context) {
         val locale = LocaleHelper.getCurrentLocale(context)
 
         initializeUiNightMode(
@@ -66,11 +75,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         else
                             SharedPreferencesManager.Filter.removeMinCacheSize(context)
                     } catch (e: Exception) {
-                        Toast.makeText(
-                            context,
-                            context.getText(R.string.prefs_error_convert_filter_min_cache_size),
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast(R.string.prefs_error_convert_filter_min_cache_size)
                     }
                 }
             )
@@ -128,28 +133,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
         pref?.apply {
             onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val context = requireContext()
-                val nightMode =
-                    if (SharedPreferencesManager.UI.getNightMode(context))
-                        AppCompatDelegate.MODE_NIGHT_YES
-                    else
-                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                AppCompatDelegate.setDefaultNightMode(nightMode)
+                lifecycleScope.launch {
+                    val nightMode =
+                        if (SharedPreferencesManager.UI.getNightMode(context))
+                            AppCompatDelegate.MODE_NIGHT_YES
+                        else
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    AppCompatDelegate.setDefaultNightMode(nightMode)
+                }
                 true
             }
         }
     }
 
-    private fun initializeSettingsMaxWaitTimeout(
+    private suspend fun initializeSettingsMaxWaitTimeout(
         prefDelayForNextAppTimeout: SeekBarPreference?,
         prefMaxWaitAppTimeout: SeekBarPreference?,
         prefMaxWaitClearCacheButtonTimeout: SeekBarPreference?,
         context: Context,
-        getDelayForNextAppTimeout: () -> Int,
-        setDelayForNextAppTimeout: (Int) -> Unit,
-        getMaxWaitAppTimeout: () -> Int,
-        setMaxWaitAppTimeout: (Int) -> Unit,
-        getMaxWaitClearCacheButtonTimeout: () -> Int,
-        setMaxWaitClearCacheButtonTimeout: (Int) -> Unit)
+        getDelayForNextAppTimeout: suspend () -> Int,
+        setDelayForNextAppTimeout: suspend (Int) -> Unit,
+        getMaxWaitAppTimeout: suspend () -> Int,
+        setMaxWaitAppTimeout: suspend (Int) -> Unit,
+        getMaxWaitClearCacheButtonTimeout: suspend () -> Int,
+        setMaxWaitClearCacheButtonTimeout: suspend (Int) -> Unit)
     {
         prefDelayForNextAppTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_DELAY_FOR_NEXT_APP_MS / 1000
@@ -162,7 +169,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             title = context.getString(R.string.prefs_title_delay_for_next_app_timeout, value)
             setOnPreferenceChangeListener { _, newValue ->
                 title = context.getString(R.string.prefs_title_delay_for_next_app_timeout, newValue as Int)
-                setDelayForNextAppTimeout(newValue)
+                lifecycleScope.launch {
+                    setDelayForNextAppTimeout(newValue)
+                }
                 true
             }
         }
@@ -178,14 +187,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             title = context.getString(R.string.prefs_title_max_wait_app_timeout, value)
             setOnPreferenceChangeListener { _, newValue ->
                 title = context.getString(R.string.prefs_title_max_wait_app_timeout, newValue as Int)
-                setMaxWaitAppTimeout(newValue)
-                // shift Clear Cache button timeout
-                if (newValue < getMaxWaitClearCacheButtonTimeout())
-                    setMaxWaitClearCacheButtonTimeout(newValue - 1)
-                prefMaxWaitClearCacheButtonTimeout?.apply {
-                    max = getMaxWaitAppTimeout() - 1
-                    value = getMaxWaitClearCacheButtonTimeout()
-                    title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, value)
+                lifecycleScope.launch {
+                    setMaxWaitAppTimeout(newValue)
+                    // shift Clear Cache button timeout
+                    if (newValue < getMaxWaitClearCacheButtonTimeout())
+                        setMaxWaitClearCacheButtonTimeout(newValue - 1)
+                    prefMaxWaitClearCacheButtonTimeout?.apply {
+                        max = getMaxWaitAppTimeout() - 1
+                        value = getMaxWaitClearCacheButtonTimeout()
+                        title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, value)
+                    }
                 }
                 true
             }
@@ -202,23 +213,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
             title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, value)
             setOnPreferenceChangeListener { _, newValue ->
                 title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, newValue as Int)
-                setMaxWaitClearCacheButtonTimeout(newValue)
+                lifecycleScope.launch {
+                    setMaxWaitClearCacheButtonTimeout(newValue)
+                }
                 true
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initializeFilterMinCacheSize(pref: EditTextPreference?,
+    private suspend fun initializeFilterMinCacheSize(pref: EditTextPreference?,
                                           context: Context,
-                                          getMinCacheSize: () -> Long,
-                                          onChangeMinCacheSize: (String) -> Unit) {
+                                          getMinCacheSize: suspend () -> Long,
+                                          onChangeMinCacheSize: suspend (String) -> Unit) {
         val showSummary = {
-            val minCacheSize = getMinCacheSize()
-            if (minCacheSize > 0L)
-                context.getString(R.string.prefs_summary_filter_min_cache_size,
-                    DataSize.ofBytes(minCacheSize).toFormattedString(context))
-            else
+            val minCacheSize = runBlocking { getMinCacheSize() }
+            if (minCacheSize > 0L) {
+                val sizeStr = runBlocking { DataSize.ofBytes(minCacheSize).toFormattedString(context) }
+                context.getString(R.string.prefs_summary_filter_min_cache_size, sizeStr)
+            } else
                 null
         }
 
@@ -229,30 +242,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 showSummary()
             }
             setOnBindEditTextListener { editText ->
-                val value = getMinCacheSize()
-                editText.apply {
-                    hint = "0 KB"
-                    setText(
+                (activity as AppCacheCleanerActivity?)?.addOverlayJob(
+                    suspendCallback = {
+                        val value = getMinCacheSize()
                         if (value > 0L)
                             DataSize.ofBytes(value).toFormattedString(context)
                         else
                             null
-                    )
-                }
-
+                    },
+                    postUiCallback = { text ->
+                        editText.apply {
+                            hint = "0 KB"
+                            setText(text)
+                        }
+                    }
+                )
             }
             setOnPreferenceChangeListener { _, newValue ->
-                onChangeMinCacheSize(newValue as String)
+                lifecycleScope.launch {
+                    onChangeMinCacheSize(newValue as String)
+                }
                 true
             }
         }
     }
 
-    private fun initializeExtraSearchText(pref: EditTextPreference?,
+    private suspend fun initializeExtraSearchText(pref: EditTextPreference?,
                                           context: Context, locale: Locale,
                                           extraText: CharSequence,
-                                          getExtraText: () -> String?,
-                                          onChangeExtraText: (String) -> Unit) {
+                                          getExtraText: suspend () -> String?,
+                                          onChangeExtraText: suspend (String) -> Unit) {
         pref?.apply {
             dialogTitle = context.getString(
                 R.string.dialog_extra_search_text_message,
@@ -260,10 +279,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 extraText)
             summary = getExtraText()
             setSummaryProvider {
-                getExtraText()
+                runBlocking { getExtraText() }
             }
             setOnBindEditTextListener { editText ->
-                val value = getExtraText()
+                val value = runBlocking { getExtraText() }
                 if (value?.isNotEmpty() == true) {
                     editText.setText(value)
                     editText.hint = null
@@ -273,13 +292,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             setOnPreferenceChangeListener { _, newValue ->
-                onChangeExtraText(newValue as String)
+                lifecycleScope.launch {
+                    onChangeExtraText(newValue as String)
+                }
                 true
             }
         }
     }
 
-    private fun initializeCustomList(context: Context,
+    private suspend fun initializeCustomList(context: Context,
                                      addPref: Preference?,
                                      editPref: Preference?,
                                      removePref: Preference?) {
@@ -294,15 +315,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 CustomListDialogBuilder.buildAddDialog(context) { name ->
                     name ?: return@buildAddDialog
 
-                    // check if entered name already exists
-                    val names = SharedPreferencesManager.PackageList.getNames(context)
-                    if (names.contains(name)) {
-                        Toast.makeText(context,
-                            R.string.toast_custom_list_add_already_exists,
-                            Toast.LENGTH_SHORT).show()
-                        return@buildAddDialog
-                    }
-                    (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
+                    (activity as AppCacheCleanerActivity?)?.addOverlayJob(
+                        suspendCallback = {
+                            // check if entered name already exists
+                            val names = SharedPreferencesManager.PackageList.getNames(context)
+                            if (names.contains(name))
+                                showToast(R.string.toast_custom_list_add_already_exists)
+                            else
+                                (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
+                        }
+                    )
                 }.show()
                 true
             }
@@ -310,36 +332,57 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         editPref?.apply {
             setOnPreferenceClickListener {
-                val names = SharedPreferencesManager.PackageList.getNames(requireContext()).sorted()
-                // show dialog from Settings Fragment for better UX
-                CustomListDialogBuilder.buildEditDialog(context, names) { name ->
-                    name ?: return@buildEditDialog
+                (activity as AppCacheCleanerActivity?)?.addOverlayJob(
+                    suspendCallback = {
+                        SharedPreferencesManager.PackageList.getNames(context).sorted()
+                    },
+                    postUiCallback = { names ->
+                        // show dialog from Settings Fragment for better UX
+                        CustomListDialogBuilder.buildEditDialog(context, names) { name ->
+                            name ?: return@buildEditDialog
 
-                    // check if entered name already exists
-                    val names = SharedPreferencesManager.PackageList.getNames(context)
-                    if (names.contains(name))
-                        (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
-                }.show()
+                            (activity as AppCacheCleanerActivity?)?.addOverlayJob(
+                                suspendCallback = {
+                                    SharedPreferencesManager.PackageList.getNames(context).contains(name)
+                                },
+                                postUiCallback = { contains ->
+                                    if (contains)
+                                        (activity as AppCacheCleanerActivity?)?.showCustomListPackageFragment(name)
+                                }
+                            )
+                        }.show()
+                    }
+                )
                 true
             }
         }
 
         removePref?.apply {
             setOnPreferenceClickListener {
-                val names = SharedPreferencesManager.PackageList.getNames(requireContext()).sorted()
-                // show dialog from Settings Fragment for better UX
-                CustomListDialogBuilder.buildRemoveDialog(context, names) { name ->
-                    name?.let {
-                        SharedPreferencesManager.PackageList.remove(context, name)
-                        SharedPreferencesManager.PackageList.getNames(context).apply {
-                            editPref?.isVisible = isNotEmpty()
-                            removePref?.isVisible = isNotEmpty()
-                        }
-                        Toast.makeText(context,
-                            getString(R.string.toast_custom_list_has_been_removed, name),
-                            Toast.LENGTH_SHORT).show()
+                (activity as AppCacheCleanerActivity?)?.addOverlayJob(
+                    suspendCallback = {
+                        SharedPreferencesManager.PackageList.getNames(context).sorted()
+                    },
+                    postUiCallback = { names ->
+                        // show dialog from Settings Fragment for better UX
+                        CustomListDialogBuilder.buildRemoveDialog(context, names) { name ->
+                            name ?: return@buildRemoveDialog
+
+                            (activity as AppCacheCleanerActivity?)?.addOverlayJob(
+                                suspendCallback = {
+                                    SharedPreferencesManager.PackageList.remove(context, name)
+                                    SharedPreferencesManager.PackageList.getNames(context).apply {
+                                        (activity as AppCacheCleanerActivity?)?.runOnUiThread {
+                                            editPref?.isVisible = isNotEmpty()
+                                            removePref?.isVisible = isNotEmpty()
+                                        }
+                                    }
+                                    showToast(R.string.toast_custom_list_has_been_removed, name)
+                                }
+                            )
+                        }.show()
                     }
-                }.show()
+                )
                 true
             }
         }
@@ -351,6 +394,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 (activity as AppCacheCleanerActivity?)?.showIgnoredListPackageFragment()
                 true
             }
+        }
+    }
+
+    private fun showToast(@StringRes resId: Int, vararg formatArgs: Any?) {
+        requireActivity().runOnUiThread {
+            Toast.makeText(requireContext(), getString(resId, *formatArgs), Toast.LENGTH_SHORT).show()
         }
     }
 
