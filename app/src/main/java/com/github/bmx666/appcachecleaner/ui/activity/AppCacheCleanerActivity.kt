@@ -70,7 +70,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private lateinit var binding: ActivityMainBinding
-    private var minCacheSizeStr: String? = null
 
     private var customListName: String? = null
     private var currentPkgListAction = Constant.PackageListAction.DEFAULT
