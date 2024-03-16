@@ -71,7 +71,7 @@ class PackageRecyclerViewAdapter(
 
         val showStats = item.stats != null && !hideStats
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && showStats)
-            holder.loadCacheSize(item.stats!!.cacheBytes)
+            holder.loadCacheSize(item.getCacheSize())
         else
             holder.cacheSizeView.visibility = View.GONE
     }
