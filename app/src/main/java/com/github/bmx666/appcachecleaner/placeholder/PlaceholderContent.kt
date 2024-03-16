@@ -176,6 +176,11 @@ object PlaceholderContent {
         suspend fun find(pkgName: String): PlaceholderPackage? {
             return items.firstOrNull{ it.name == pkgName }
         }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        suspend fun getCheckedTotalCacheSize(): Long {
+            return All.items.filter { it.checked }.sumOf { it.getCacheSize() }
+        }
     }
 
     data class PlaceholderPackage(val pkgInfo: PackageInfo, val name: String,
