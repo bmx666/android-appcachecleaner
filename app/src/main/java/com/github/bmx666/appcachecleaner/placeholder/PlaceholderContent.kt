@@ -4,6 +4,7 @@ import android.app.usage.StorageStats
 import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.github.bmx666.appcachecleaner.util.getInternalCacheSize
 import java.util.Locale
 
 object PlaceholderContent {
@@ -182,5 +183,8 @@ object PlaceholderContent {
                                   var stats: StorageStats?, var visible: Boolean,
                                   var checked: Boolean, var ignore: Boolean) {
         override fun toString(): String = name
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getCacheSize(): Long = stats?.getInternalCacheSize() ?: 0L
     }
 }
