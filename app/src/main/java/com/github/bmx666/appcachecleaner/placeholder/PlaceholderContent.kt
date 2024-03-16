@@ -102,7 +102,7 @@ object PlaceholderContent {
             return items.filterNot { it.ignore }
                 .onEach { it.visible = true }
                 .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
-                    .thenByDescending { it.stats?.cacheBytes ?: 0 }
+                    .thenByDescending { it.getCacheSize() }
                     .thenBy { it.label })
         }
 
@@ -120,9 +120,9 @@ object PlaceholderContent {
             }
 
             return items.filterNot { it.ignore }
-                .onEach { it.visible = compareCacheBytes(it.stats?.cacheBytes) }
+                .onEach { it.visible = compareCacheBytes(it.getCacheSize()) }
                 .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
-                    .thenByDescending { it.stats?.cacheBytes ?: 0 }
+                    .thenByDescending { it.getCacheSize() }
                     .thenBy { it.label })
         }
 
