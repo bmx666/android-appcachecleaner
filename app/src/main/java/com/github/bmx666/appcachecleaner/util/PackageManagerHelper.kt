@@ -125,8 +125,10 @@ class PackageManagerHelper {
             if (old == null || new == null) return 0
 
             try {
-                return if (new.cacheBytes >= old.cacheBytes) 0
-                    else old.cacheBytes - new.cacheBytes
+                val newCacheSize = new.getInternalCacheSize()
+                val oldCacheSize = old.getInternalCacheSize()
+                return if (newCacheSize >= oldCacheSize) 0
+                    else oldCacheSize - newCacheSize
             } catch (e: Exception) {
                 e.printStackTrace()
             }
