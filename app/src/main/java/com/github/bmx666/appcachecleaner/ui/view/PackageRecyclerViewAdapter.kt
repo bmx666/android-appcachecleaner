@@ -29,7 +29,8 @@ import org.springframework.util.unit.DataSize
 
 class PackageRecyclerViewAdapter(
     private val values: List<PlaceholderContent.PlaceholderPackage>,
-    private val hideStats: Boolean
+    private val hideStats: Boolean,
+    private val onChecked: (() -> Unit)?,
 ) : RecyclerView.Adapter<PackageRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,6 +53,7 @@ class PackageRecyclerViewAdapter(
         holder.packageLabelView.isChecked = item.checked
         holder.packageLabelView.setOnCheckedChangeListener { _, checked ->
             item.checked = checked
+            onChecked?.invoke()
         }
 
         holder.loadIcon(item.pkgInfo)

@@ -31,6 +31,15 @@ class PackageListFragment : Fragment() {
         val hideStats = arguments?.getBoolean(
             Constant.Bundle.PackageFragment.KEY_HIDE_STATS) ?: false
 
+        val onChecked: (() -> Unit)? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                {
+                    (activity as AppCacheCleanerActivity?)?.showTotalCacheSizeOfCheckedPackages()
+                }
+            } else {
+                null
+            }
+
         // Set the adapter
         if (view is RecyclerView) {
             recyclerView = view
@@ -42,14 +51,14 @@ class PackageListFragment : Fragment() {
                         PlaceholderContent.Current.getVisible()
                     },
                     postUiCallback = { pkgList ->
-                        adapter = PackageRecyclerViewAdapter(pkgList, hideStats)
+                        adapter = PackageRecyclerViewAdapter(pkgList, hideStats, onChecked)
                     },
                 )
             }
 
             onSwapAdapter = { pkgList ->
                 view.swapAdapter(
-                    PackageRecyclerViewAdapter(pkgList, hideStats),
+                    PackageRecyclerViewAdapter(pkgList, hideStats, onChecked),
                     true)
             }
 
