@@ -1,0 +1,2 @@
+* show only internal cache size for Android S and later
+* show total cache size of selected apps in title
