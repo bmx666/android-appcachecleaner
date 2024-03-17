@@ -1377,4 +1377,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    internal fun showTotalCacheSizeOfCheckedPackages() {
+        addOverlayJob(
+            suspendCallback = {
+                val totalCacheBytes = PlaceholderContent.Current.getCheckedTotalCacheSize()
+                if (totalCacheBytes > 0L)
+                    DataSize.ofBytes(totalCacheBytes).toFormattedString(this)
+                else
+                    null
+            },
+            postUiCallback = { sizeStr ->
+            }
+        )
+    }
 }
