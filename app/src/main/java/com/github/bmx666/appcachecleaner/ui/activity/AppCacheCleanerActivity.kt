@@ -269,6 +269,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                             if (fragment is PackageListFragment)
                                 fragment.refreshAdapter()
                         }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        showTotalCacheSizeOfCheckedPackages()
                 }
             )
         }
@@ -1389,6 +1391,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     null
             },
             postUiCallback = { sizeStr ->
+                val title = getString(R.string.clear_cache_btn_text)
+                sizeStr?.let {
+                    supportActionBar?.title = String.format("%s (%s)", title, sizeStr)
+                } ?: run {
+                    supportActionBar?.title = title
+                }
             }
         )
     }
