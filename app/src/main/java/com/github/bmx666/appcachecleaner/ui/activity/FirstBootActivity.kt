@@ -45,46 +45,8 @@ class FirstBootActivity: AppCompatActivity() {
         binding.textConfirm3.setOnCheckedChangeListener { _, _ ->
             binding.textConfirm4.isEnabled = true
         }
-
-        // show extra confirmation for GooglePlay
-        if (BuildConfig.GOOGLEPLAY) {
-            binding.textIntroGooglePlay.text = HtmlCompat.fromHtml(
-                resources.getString(R.string.first_boot_intro_googleplay),
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
-            binding.textIntroGooglePlay.movementMethod =
-                LinkMovementMethodCompat.getInstance()
-
-            binding.textConfirm4.setOnCheckedChangeListener { _, _ ->
-                binding.textConfirmGooglePlay1.isEnabled = true
-            }
-            binding.textConfirmGooglePlay1.setOnCheckedChangeListener { _, _ ->
-                binding.textConfirmGooglePlay2.isEnabled = true
-            }
-            binding.textConfirmGooglePlay2.setOnCheckedChangeListener { _, _ ->
-                binding.textConfirmGooglePlay3.isEnabled = true
-            }
-            binding.textConfirmGooglePlay3.setOnCheckedChangeListener { _, _ ->
-                binding.textConfirmGooglePlay4.isEnabled = true
-            }
-            binding.textConfirmGooglePlay4.setOnCheckedChangeListener { _, _ ->
-                binding.btnOk.isEnabled = true
-            }
-
-            listOf(
-                binding.textIntroGooglePlay,
-                binding.dividerIntroGooglePlay,
-                binding.textConfirmGooglePlay1,
-                binding.textConfirmGooglePlay2,
-                binding.textConfirmGooglePlay3,
-                binding.textConfirmGooglePlay4,
-            ).forEach {
-                it.visibility = View.VISIBLE
-            }
-        } else {
-            binding.textConfirm4.setOnCheckedChangeListener { _, _ ->
-                binding.btnOk.isEnabled = true
-            }
+        binding.textConfirm4.setOnCheckedChangeListener { _, _ ->
+            binding.btnOk.isEnabled = true
         }
 
         binding.btnOk.setOnClickListener {
@@ -115,24 +77,12 @@ class FirstBootActivity: AppCompatActivity() {
     }
 
     private fun verifyAllConfirmations(): Boolean {
-        if (BuildConfig.GOOGLEPLAY)
-            return listOf(
-                binding.textConfirm1,
-                binding.textConfirm2,
-                binding.textConfirm3,
-                binding.textConfirm4,
-                binding.textConfirmGooglePlay1,
-                binding.textConfirmGooglePlay2,
-                binding.textConfirmGooglePlay3,
-                binding.textConfirmGooglePlay4,
-            ).all { verifyCheckbox(it, expected = true) }
-        else
-            return listOf(
-                binding.textConfirm1,
-                binding.textConfirm2,
-                binding.textConfirm3,
-                binding.textConfirm4,
-            ).all { verifyCheckbox(it, expected = true) }
+        return listOf(
+            binding.textConfirm1,
+            binding.textConfirm2,
+            binding.textConfirm3,
+            binding.textConfirm4,
+        ).all { verifyCheckbox(it, expected = true) }
     }
 
     private fun verifyCheckbox(checkBox: AppCompatCheckBox, expected: Boolean): Boolean {
