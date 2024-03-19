@@ -111,38 +111,6 @@
     ]]></string>
 
     <string name="first_boot_title">À lire avant utilisation</string>
-    <string name="first_boot_intro_googleplay"><![CDATA[
-        <h2>Bienvenue dans <b>Cache Cleaner</b> : Gratuit, Open-Source, Sans Publicités</h2>
-        <br/>
-        Né de la frustration face aux applications payantes et celles surchargées de publicités,
-        <b>Cache Cleaner</b> est ma façon d&apos;offrir une solution plus simple et transparente.
-        C&apos;est une application gratuite et open-source, créée par moi durant mon temps libre,
-        dédiée à améliorer les performances de votre téléphone sans les désagréments des publicités.
-        <br/>
-        <br/>
-        <h3>Politique de Google et Cases à Cocher</h3>
-        <br/>
-        Les cases à cocher que vous voyez ci-dessous ne sont pas juste une formalité ; elles sont cruciales pour respecter la Politique de Google.
-        Cette étape aide à prévenir la suspension de l&apos;application due aux avis négatifs et assure une expérience utilisateur claire et honnête.
-        <br/>
-        <br/>
-        <h3>Open Source, Esprit Ouvert</h3>
-        <br/>
-        Vous pensez étiqueter <b>Cache Cleaner</b> comme <b>malveillant</b> sans jeter un œil au code source ?
-        Attendez ! Tout est là sur <a href="https://github.com/bmx666/android-appcachecleaner/">GitHub</a>.
-        La transparence est la chose la plus importante.
-        <br/>
-        <br/>
-        <h3>Développement Solo, Ressources Limitées</h3>
-        <br/>
-        En tant que seul développeur, je fais face au défi de capacités de test limitées, n&apos;ayant accès qu&apos;à quelques modèles de téléphones.
-        Vos retours et rapports de bugs sur <a href="https://github.com/bmx666/android-appcachecleaner/issues/">GitHub</a>
-        sont inestimables pour améliorer la fonctionnalité de l&apos;application sur différents appareils.
-        <br/>
-        Vos contributions et suggestions sont plus que bienvenues.
-        Elles sont essentielles pour faire de <b>Cache Cleaner</b> un outil efficace pour une grande diversité d&apos;utilisateurs.
-        Merci de contribuer à rendre le monde de l&apos;open source meilleur.
-    ]]></string>
     <string name="first_boot_message"><![CDATA[
         <h2>Interface utilisateur personnalisée</h2>
         <br/>
@@ -169,28 +137,6 @@
         Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action
         décrit ci-dessus, je m\'engage à signaler mon problème à l\'adresse indiquée dans le chapitre
         <b>Signaler une erreur</b> dans le menu <b>Aide</b>.
-    </string>
-    <string name="first_boot_confirm_googleplay_1">
-        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action
-        décrit ci-dessus, et après avoir signalé mon problème à l\'adresse dans le chapitre
-        <b>Envoyer un rapport d\'erreur</b> dans le menu <b>Aide</b>, je ne recevrais aucune aide de l\'auteur de l\'appli.
-        Je peux déposer une plainte auprès de Google Play contre l\'appli <b>Cache Cleaner</b>,
-        comme une application qui induit les utilisateurs en erreur.
-    </string>
-    <string name="first_boot_confirm_googleplay_2">
-        Je confirme que si <b>Cache Cleaner</b> n\'a effectué aucune action
-        décrit ci-dessus, et après avoir déposé une plainte via Google Play sur l\'application <b>Cache Cleaner</b>
-        j\'accepte de laisser un avis sur Google Play lié à mon problème.
-    </string>
-    <string name="first_boot_confirm_googleplay_3">
-        Je confirme que si je ne respecte pas l\'un des points ci-dessus, 
-        je renonce totalement à mon droit de laisser des commentaires négatifs 
-        ou de me plaindre d\'utilisateurs trompeurs.
-    </string>
-    <string name="first_boot_confirm_googleplay_4">
-        Si je ne suis pas d\'accord avec l\'une quelconque des actions énumérées ci-dessus, 
-        je suis obligé de supprimer l\'appli <b>Cache Cleaner</b> de mon appareil et ne pourra faire aucune réclamation 
-        contre elle-même et l\'auteur de cette dernière.
     </string>
 
     <string name="menu_extra_search_text_title">Texte supplémentaire pour la recherche :</string>
