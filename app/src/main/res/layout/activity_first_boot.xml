@@ -34,19 +34,6 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textIntroGooglePlay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="@string/first_boot_intro_googleplay"/>
-
-            <View
-                android:id="@+id/dividerIntroGooglePlay"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,58 +85,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/first_boot_confirm_4"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/textConfirmGooglePlay1"
-                android:enabled="false"
-                android:checked="false"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_boot_confirm_googleplay_1"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/textConfirmGooglePlay2"
-                android:enabled="false"
-                android:checked="false"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_boot_confirm_googleplay_2"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/textConfirmGooglePlay3"
-                android:enabled="false"
-                android:checked="false"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_boot_confirm_googleplay_3"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/textConfirmGooglePlay4"
-                android:enabled="false"
-                android:checked="false"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_boot_confirm_googleplay_4"/>
 
             <View
                 android:layout_width="match_parent"
