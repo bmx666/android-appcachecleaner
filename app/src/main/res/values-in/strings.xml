@@ -110,38 +110,6 @@
     ]]></string>
 
     <string name="first_boot_title">Silakan baca sebelum menggunakan</string>
-    <string name="first_boot_intro_googleplay"><![CDATA[
-        <h2>Selamat Datang di <b>Cache Cleaner</b>: Gratis, Open-Source, Tanpa Iklan</h2>
-        <br/>
-        Lahir dari frustrasi dengan aplikasi berbayar dan alternatif yang penuh iklan,
-        <b>Cache Cleaner</b> adalah cara saya menawarkan solusi yang lebih sederhana dan transparan.
-        Ini adalah aplikasi gratis dan open-source, dibuat oleh saya di waktu luang,
-        didedikasikan untuk meningkatkan kinerja ponsel Anda tanpa repotnya iklan.
-        <br/>
-        <br/>
-        <h3>Kebijakan Google dan Kotak Centang</h3>
-        <br/>
-        Kotak centang yang Anda lihat di bawah ini bukan hanya formalitas; mereka sangat penting untuk mematuhi Kebijakan Google.
-        Langkah ini membantu mencegah penangguhan aplikasi karena ulasan negatif dan memastikan pengalaman pengguna yang jelas dan jujur.
-        <br/>
-        <br/>
-        <h3>Open Source, Pikiran Terbuka</h3>
-        <br/>
-        Berpikir untuk menandai <b>Cache Cleaner</b> sebagai <b>malicious</b> tanpa melihat kode sumbernya?
-        Tahan dulu pikiran itu! Semuanya ada di <a href="https://github.com/bmx666/android-appcachecleaner/">GitHub</a>.
-        Transparansi adalah hal yang paling penting.
-        <br/>
-        <br/>
-        <h3>Pengembangan Solo, Sumber Daya Terbatas</h3>
-        <br/>
-        Sebagai satu-satunya pengembang, saya menghadapi tantangan kemampuan pengujian yang terbatas, hanya memiliki akses ke beberapa model ponsel.
-        Umpan balik dan laporan bug Anda di <a href="https://github.com/bmx666/android-appcachecleaner/issues/">GitHub</a>
-        sangat berharga untuk meningkatkan fungsionalitas aplikasi di berbagai perangkat.
-        <br/>
-        Kontribusi dan saran Anda sangat diterima.
-        Mereka sangat penting dalam membuat <b>Cache Cleaner</b> menjadi alat yang berfungsi baik untuk berbagai pengguna.
-        Terima kasih telah membantu membuat dunia open source menjadi tempat yang lebih baik.
-    ]]></string>
     <string name="first_boot_message"><![CDATA[
         <h2>Pengaturan UI yang Disesuaikan</h2>
         <br/>
@@ -168,26 +136,6 @@
         Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan salah satu tindakan yang dijelaskan di atas,
         saya berkewajiban untuk melaporkan masalah saya di alamat yang ditentukan di bab
         <b>Kirim laporan bug</b> di menu <b>Bantuan</b>.
-    </string>
-    <string name="first_boot_confirm_googleplay_1">
-        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan salah satu tindakan yang dijelaskan di atas,
-        dan setelah melaporkan masalah saya di alamat yang ditentukan di bab
-        <b>Kirim laporan bug</b> di menu <b>Bantuan</b>, saya tidak menerima dukungan apa pun dari penulis,
-        saya dapat mengajukan keluhan melalui GooglePlay terhadap aplikasi <b>Pembersih Cache</b>,
-        sebagai aplikasi yang menyesatkan pengguna.
-    </string>
-    <string name="first_boot_confirm_googleplay_2">
-        Saya mengonfirmasi bahwa jika <b>Pembersih Cache</b> tidak melakukan salah satu tindakan yang dijelaskan di atas,
-        dan setelah mengajukan keluhan melalui GooglePlay terhadap aplikasi <b>Pembersih Cache</b>,
-        saya berkewajiban untuk meninggalkan ulasan di GooglePlay terkait dengan masalah saya.
-    </string>
-    <string name="first_boot_confirm_googleplay_3">
-        Saya mengonfirmasi bahwa jika saya tidak melakukan salah satu tindakan yang terdaftar di atas,
-        saya sepenuhnya melepaskan hak saya untuk meninggalkan umpan balik negatif atau keluhan tentang menyesatkan pengguna.
-    </string>
-    <string name="first_boot_confirm_googleplay_4">
-        Jika saya tidak setuju dengan salah satu tindakan yang terdaftar di atas, saya berkewajiban untuk menghapus
-        aplikasi <b>Pembersih Cache</b> dari perangkat saya dan tidak memiliki klaim terhadapnya dan penulisnya.
     </string>
 
     <string name="menu_extra_search_text_title">Teks pencarian tambahan untuk:</string>
