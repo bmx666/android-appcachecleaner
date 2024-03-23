@@ -125,7 +125,7 @@ fun FirstBootScreen(navController: NavHostController,
                     onCancel: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    val numberOfCheckboxes = if (BuildConfig.GOOGLEPLAY) 8 else 4
+    val numberOfCheckboxes = 4
     val checkboxStates = remember { List(numberOfCheckboxes) { false }.toMutableStateList() }
 
     val isButtonOKEnabled = checkboxStates.all { it }
@@ -161,11 +161,6 @@ fun FirstBootScreen(navController: NavHostController,
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                if (BuildConfig.GOOGLEPLAY) {
-                    CreateHtmlTextView(text = stringResource(id = R.string.first_boot_intro_googleplay))
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
                 CreateHtmlTextView(text = stringResource(id = R.string.first_boot_message))
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -176,10 +171,6 @@ fun FirstBootScreen(navController: NavHostController,
                         1 -> R.string.first_boot_confirm_2
                         2 -> R.string.first_boot_confirm_3
                         3 -> R.string.first_boot_confirm_4
-                        4 -> R.string.first_boot_confirm_googleplay_1
-                        5 -> R.string.first_boot_confirm_googleplay_2
-                        6 -> R.string.first_boot_confirm_googleplay_3
-                        7 -> R.string.first_boot_confirm_googleplay_4
                         else -> 0
                     }
                 }
