@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "AppCacheCleaner"
-include ':app'
+include(":app")
