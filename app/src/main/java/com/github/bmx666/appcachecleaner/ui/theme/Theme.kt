@@ -4,17 +4,16 @@ import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 
 
 private val LightColorScheme = lightColorScheme(
@@ -84,19 +83,22 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun AppTheme(
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    forceNightMode: Boolean?,
+    dynamicColor: Boolean?,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val darkTheme = isSystemInDarkTheme() || SharedPreferencesManager.UI.getNightMode(context)
+    val isDarkTheme = forceNightMode == true || isSystemInDarkTheme()
+    val isDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && dynamicColor == true
 
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        isDynamicColor -> {
+            when (isDarkTheme) {
+                true -> dynamicDarkColorScheme(context)
+                else -> dynamicLightColorScheme(context)
+            }
         }
-
-        darkTheme -> DarkColorScheme
+        isDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
@@ -105,7 +107,7 @@ fun AppTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = isDarkTheme
         }
     }
 

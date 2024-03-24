@@ -10,6 +10,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
+        android:name=".ui.CacheCleanerApp"
         android:allowBackup="true"
         android:fullBackupContent="@xml/full_backup_rules"
         android:dataExtractionRules="@xml/data_extraction_rules"

@@ -74,6 +74,12 @@ class Constant {
     }
 
     class Settings {
+        class BugWarning {
+            companion object {
+                const val DEFAULT_SHOW_BUG_322519674 = true
+            }
+        }
+
         class CacheClean {
             companion object {
                 @IntRange(from = 250)
@@ -92,6 +98,39 @@ class Constant {
                 const val MAX_DELAY_FOR_NEXT_APP_MS = 10000
                 @IntRange(from = 0)
                 const val DEFAULT_DELAY_FOR_NEXT_APP_MS = 1000
+            }
+        }
+
+        class Extra {
+            companion object {
+                const val DEFAULT_SHOW_BUTTON_START_STOP_SERVICE = false
+                const val DEFAULT_SHOW_BUTTON_CLOSE_APP = false
+                const val DEFAULT_ACTION_STOP_SERVICE = false
+                const val DEFAULT_ACTION_CLOSE_APP = false
+            }
+        }
+
+        class Filter {
+            companion object {
+                const val DEFAULT_HIDE_DISABLED_APPS = false
+                const val DEFAULT_HIDE_IGNORED_APPS = false
+                const val DEFAULT_SHOW_DIALOG_TO_IGNORE_APP = true
+            }
+        }
+
+        class FirstBoot {
+            companion object {
+                // enable first boot by default
+                const val DEFAULT_FIRST_BOOT = true
+            }
+        }
+
+        class UI {
+            companion object {
+                // disable force Dark theme by default
+                const val DEFAULT_FORCE_NIGHT_MODE = false
+                // enable dynamic color by default
+                const val DEFAULT_DYNAMIC_COLOR = true
             }
         }
     }
