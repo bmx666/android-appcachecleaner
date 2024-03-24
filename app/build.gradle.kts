@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -107,4 +108,14 @@ dependencies {
 
     implementation("androidx.datastore:datastore-core:1.1.1")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-paging:2.6.1")
+
+    implementation("com.google.dagger:hilt-android:2.49")
+    ksp("com.google.dagger:dagger-compiler:2.49")
+    ksp("com.google.dagger:hilt-compiler:2.49")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }
