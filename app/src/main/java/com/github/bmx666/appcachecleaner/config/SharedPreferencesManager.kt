@@ -312,7 +312,7 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            fun setNightMode(context: Context, value: Boolean) {
+            suspend fun setNightMode(context: Context, value: Boolean) {
                 getDefaultSharedPref(context)
                     .edit()
                     .putBoolean(context.getString(R.string.prefs_key_ui_night_mode), value)

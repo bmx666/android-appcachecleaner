@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
+import kotlinx.coroutines.runBlocking
 
 
 private val LightColorScheme = lightColorScheme(
@@ -89,7 +90,9 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val darkTheme = isSystemInDarkTheme() || SharedPreferencesManager.UI.getNightMode(context)
+    val darkTheme = isSystemInDarkTheme() || runBlocking {
+        SharedPreferencesManager.UI.getNightMode(context)
+    }
 
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

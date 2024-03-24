@@ -343,7 +343,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         val startDestination: String
 
-        if (SharedPreferencesManager.FirstBoot.showFirstBootConfirmation(this)) {
+        val isFirstBoot = runBlocking {
+            SharedPreferencesManager.FirstBoot.showFirstBootConfirmation(this@AppCacheCleanerActivity)
+        }
+
+        if (isFirstBoot) {
             startDestination = Constant.Navigation.FIRST_BOOT.name
         } else {
             startDestination = Constant.Navigation.HOME.name
@@ -386,7 +390,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                         FirstBootScreen(
                             navController = navController,
                             onConfirm = {
-                                SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(this@AppCacheCleanerActivity)
+                                runBlocking {
+                                    SharedPreferencesManager.FirstBoot.hideFirstBootConfirmation(this@AppCacheCleanerActivity)
+                                }
                             },
                             onCancel = {
                                 finish()
@@ -690,7 +696,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // save current package list action
         currentPkgListAction = pkgListAction
         updateActionBarPackageList(pkgListAction)
-        onMenuHideAll()
+        // onMenuHideAll()
 
         binding.textProgressPackageList.text = String.format(
             Locale.getDefault(),
@@ -1175,17 +1181,17 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         when (pkgListAction) {
             Constant.PackageListAction.DEFAULT -> {
                 binding.layoutFab.visibility = View.VISIBLE
-                onMenuShowFilter()
+                // onMenuShowFilter()
             }
             Constant.PackageListAction.CUSTOM_ADD_EDIT -> {
                 binding.layoutFabCustomList.visibility = View.VISIBLE
-                onMenuShowSearch()
+                // onMenuShowSearch()
             }
             Constant.PackageListAction.CUSTOM_CLEAN ->
                 { /* not valid */ }
             Constant.PackageListAction.IGNORED_APPS_EDIT -> {
                 binding.layoutFabListOfIgnoredApps.visibility = View.VISIBLE
-                onMenuShowSearch()
+                // onMenuShowSearch()
             }
         }
 
