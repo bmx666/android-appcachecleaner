@@ -1,0 +1,1 @@
+* get cache size for apps in the custom list
