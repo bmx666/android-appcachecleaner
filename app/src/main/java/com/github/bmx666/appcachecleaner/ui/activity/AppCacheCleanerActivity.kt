@@ -557,40 +557,40 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             if (isDisabledAndHidden || isIgnoredAndHidden)
                 skipPkgList.add(pkgInfo.packageName)
 
-            when (pkgListAction) {
-                Constant.PackageListAction.CUSTOM_CLEAN -> {
-                    if (PlaceholderContent.All.contains(pkgInfo)) {
-                        PlaceholderContent.All.updateStats(pkgInfo, null)
-                    } else {
-                        // skip getting the label of app it can take a lot of time on old phones
-                        PlaceholderContent.All.add(pkgInfo, pkgInfo.packageName, locale, null)
-                    }
-                }
-                else -> {
-                    // skip getting cache size for custom list and list of ignored apps
-                    val stats =
-                        when (pkgListAction) {
-                            Constant.PackageListAction.DEFAULT ->
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                                    PackageManagerHelper.getStorageStats(this, pkgInfo)
-                                else
-                                    null
-                            else ->
-                                null
-                        }
+            // skip getting cache size when add/edit custom list or for the list of ignored apps
+            val requestStats = pkgListAction !in setOf(
+                Constant.PackageListAction.CUSTOM_ADD_EDIT,
+                Constant.PackageListAction.IGNORED_APPS_EDIT
+            )
 
-                    if (PlaceholderContent.All.contains(pkgInfo)) {
-                        PlaceholderContent.All.updateStats(pkgInfo, stats)
-                        if (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
-                            !PlaceholderContent.All.isSameLabelLocale(pkgInfo, locale)) {
-                            val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                            PlaceholderContent.All.updateLabel(pkgInfo, label, locale)
-                        }
-                    } else {
+            // skip getting the label of app, it can take a lot of time on old phones
+            val requestLabel = pkgListAction !in setOf(
+                Constant.PackageListAction.CUSTOM_CLEAN
+            )
+
+            val stats =
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && requestStats)
+                    PackageManagerHelper.getStorageStats(this, pkgInfo)
+                else
+                    null
+
+            if (PlaceholderContent.All.contains(pkgInfo)) {
+                PlaceholderContent.All.updateStats(pkgInfo, stats)
+                if (requestLabel) {
+                    if (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
+                        !PlaceholderContent.All.isSameLabelLocale(pkgInfo, locale)) {
                         val label = PackageManagerHelper.getApplicationLabel(this, pkgInfo)
-                        PlaceholderContent.All.add(pkgInfo, label, locale, stats)
+                        PlaceholderContent.All.updateLabel(pkgInfo, label, locale)
                     }
                 }
+            } else {
+                val label =
+                    if (requestLabel)
+                        PackageManagerHelper.getApplicationLabel(this, pkgInfo)
+                    else
+                        pkgInfo.packageName
+
+                PlaceholderContent.All.add(pkgInfo, label, locale, stats)
             }
 
             progressApps += 1
