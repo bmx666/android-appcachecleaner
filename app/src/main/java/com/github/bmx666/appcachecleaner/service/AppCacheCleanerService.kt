@@ -1,6 +1,7 @@
 package com.github.bmx666.appcachecleaner.service
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
@@ -28,23 +29,28 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     override fun onCreate() {
         super.onCreate()
-
         if (BuildConfig.DEBUG)
             logger.onCreate(cacheDir)
+    }
 
+    override fun onServiceConnected() {
+        super.onServiceConnected()
         localBroadcastManager = LocalBroadcastManagerServiceHelper(this, this)
-
         accessibilityOverlay = AccessibilityOverlay {
             accessibilityClearCacheManager.interrupt()
         }
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        accessibilityOverlay.hide(this)
+        accessibilityClearCacheManager.interrupt()
+        localBroadcastManager.onDestroy()
+        return super.onUnbind(intent)
+    }
+
     override fun onDestroy() {
         if (BuildConfig.DEBUG)
             logger.onDestroy()
-
-        localBroadcastManager.onDestroy()
-
         super.onDestroy()
     }
 
