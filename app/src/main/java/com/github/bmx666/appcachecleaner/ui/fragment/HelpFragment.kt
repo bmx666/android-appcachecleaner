@@ -31,6 +31,8 @@ class HelpFragment: Fragment() {
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
             binding.textHelpAndroid13AccessibilityPermission.visibility = View.VISIBLE
+            binding.textHelpAndroid13AccessibilityPermission.movementMethod =
+                LinkMovementMethodCompat.getInstance()
         }
 
         binding.textHelpHowToUse.text = HtmlCompat.fromHtml(

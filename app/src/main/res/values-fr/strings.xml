@@ -162,27 +162,39 @@
         Suivez les étapes décrites ci-dessous pour activer le service d&apos;accessibilité pour l&apos;appli 
         <b>Cache Cleaner</b>.
         <br/><br/>
-        <h3>Autorisez les paramètres restreints</h3>
-        <br/>
-        Lorsque vous activez les paramètres restreints, vous autorisez les applications à accéder 
-        à des informations sensibles qui pourraient mettre vos données personnelles en danger. Nous 
-        ne recommandons pas que vous autorisiez les paramètres restreints à moins que vous ne faisiez 
-        confiance au développeur de l&apos;application.
+        Important! Lors du premier lancement, vous devez aller dans <b>Accessibilité</b> et
+        cliquer sur <b>Cache Cleaner</b> pour activer la restriction, sinon Android n&apos;affichera
+        pas <b>Autoriser les paramètres restreints</b>.
         <br/><br/>
-        Certaines applications consciencieuses demandent également l&apos;accès à certains paramètres. 
-        Par exemple, une demande pour les personnes handicapées peut vous demander d&apos;inclure des 
-        caractéristiques spéciales Paramètres. De cette façon, il pourra accéder au contenu sur l&apos;écran 
-        de l&apos;appareil et interagir avec d&apos;autres applications en votre nom.
+        ▶️ <a href="https://www.youtube.com/watch?v=UiCr33gYZiI">Regardez le <b>TUTORIEL</b> sur YouTube</a>
         <br/><br/>
-        1. Appuyez sur le bouton <b>Ouvrir les paramètres de l&apos;appli</b> en dessous
+        <h3>Autoriser les paramètres restreints</h3>
         <br/>
-        2. Allez dans le menu <b>Plus</b> <b>⋮</b> (en haut à droite)
-        <br/>
-        3. Allez dans <b>Autoriser les paramètres restreints</b>
-        <br/>
-        4. Suivez les instructions à l&apos;écran
+        En activant les paramètres restreints, vous autorisez les applications à accéder à des
+        informations sensibles susceptibles de compromettre vos données personnelles.
+        Nous vous recommandons de ne pas autoriser les paramètres restreints,
+        sauf si vous faites confiance au développeur de l&apos;application.
         <br/><br/>
-        <b>Source</b> - https://support.google.com/android/answer/12623953
+        Certaines applications légitimes peuvent vous demander d&apos;activer des paramètres restreints.
+        Par exemple, une application conçue pour aider les personnes ayant un handicap peut vous
+        demander d&apos;activer les paramètres d&apos;accessibilité, ce qui lui permettra de lire le
+        contenu à l&apos;écran et d&apos;interagir avec des applications en votre nom.
+        <br/><br/>
+        1. Sur votre appareil Android, ouvrez l&apos;application <b>Paramètres</b>
+        <br/>
+        2. Appuyez sur <b>Applications</b>
+        <br/>
+        3. Appuyez sur <b>Toutes les applications</b>
+        <br/>
+        4. Trouvez et appuyez sur <b>Cache Cleaner</b>
+        <br/>
+        5. Allez dans le menu <b>Plus</b> <b>⋮</b> (en haut à droite)
+        <br/>
+        6. Allez dans <b>Autoriser les paramètres restreints</b>
+        <br/>
+        7. Suivez les instructions à l&apos;écran
+        <br/><br/>
+        <b>Aide Android</b> - <a href="https://support.google.com/android/answer/12623953?hl=fr">En savoir plus sur les paramètres restreints</a>
     ]]></string>
 
     <string name="help_how_to_use"><![CDATA[
