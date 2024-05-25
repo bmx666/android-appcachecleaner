@@ -157,8 +157,14 @@
         <br/>
         <h2>Warning ⚠️</h2>
         <br/>
-        Since Android 13 Accessibility APIs is restricted for 3rd party apps.
-        Please follow the steps below to enable Accessibility for <b>Cache Cleaner</b> app.
+        Since Android 13 Accessibility APIs are restricted for 3rd party apps,
+        please follow the steps below to enable Accessibility for the <b>Cache Cleaner</b> app.
+        <br/><br/>
+        Important! On the first launch, you must go to <b>Accessibility</b> and
+        click on <b>Cache Cleaner</b> to activate the restriction; otherwise, Android will not show
+        <b>Allow restricted settings</b>.
+        <br/><br/>
+        ▶️ <a href="https://www.youtube.com/watch?v=UiCr33gYZiI">Watch <b>TUTORIAL</b> on YouTube</a>
         <br/><br/>
         <h3>Allow restricted settings</h3>
         <br/>
@@ -171,15 +177,21 @@
         With access to accessibility settings, the app can read content on your screen and interact
         with apps on your behalf.
         <br/><br/>
-        1. Click <b>Open App Settings</b> button below
+        1. On your Android device, open the <b>Settings</b> app
         <br/>
-        2. Tap menu <b>More</b> <b>⋮</b> (top right corner)
+        2. Tap <b>Apps</b>
         <br/>
-        3. Tap <b>Allow restricted settings</b>
+        3. Tap <b>All Apps</b>
         <br/>
-        4. Follow the on-screen instructions
+        4. Find and tap <b>Cache Cleaner</b>
+        <br/>
+        5. Tap menu <b>More</b> <b>⋮</b> (top right corner)
+        <br/>
+        6. Tap <b>Allow restricted settings</b>
+        <br/>
+        7. Follow the on-screen instructions
         <br/><br/>
-        <b>Source</b> - https://support.google.com/android/answer/12623953
+        <b>Android Help</b> - <a href="https://support.google.com/android/answer/12623953?hl=en">Learn about restricted settings</a>
     ]]></string>
 
     <string translatable="false" name="help_how_to_use"><![CDATA[

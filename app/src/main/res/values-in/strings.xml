@@ -158,28 +158,41 @@
         <h2>Peringatan ⚠️</h2>
         <br/>
         Sejak Android 13 API Aksesibilitas dibatasi untuk aplikasi pihak ketiga.
-        Silakan ikuti langkah-langkah di bawah ini untuk mengaktifkan Aksesibilitas untuk aplikasi <b>Pembersih Cache</b>.
+        Silakan ikuti langkah-langkah di bawah ini untuk mengaktifkan Aksesibilitas untuk aplikasi
+        <b>Pembersih Cache</b>.
+        <br/><br/>
+        Penting! Pada peluncuran pertama, Anda harus masuk ke <b>Aksesibilitas</b> dan klik
+        <b>Pembersih Cache</b> untuk mengaktifkan pembatasan, jika tidak,
+        Android tidak akan menampilkan <b>Izinkan setelan terbatas</b>.
+        <br/><br/>
+        ▶️ <a href="https://www.youtube.com/watch?v=UiCr33gYZiI">Tonton <b>TUTORIAL</b> di YouTube</a>
         <br/><br/>
         <h3>Izinkan pengaturan terbatas</h3>
         <br/>
-        Ketika Anda mengaktifkan pengaturan terbatas, Anda mengizinkan aplikasi untuk mengakses informasi sensitif yang
-        dapat membahayakan data pribadi Anda. Kami tidak menyarankan Anda untuk mengizinkan pengaturan terbatas
-        kecuali Anda mempercayai pengembang aplikasi.
+        Jika Anda mengaktifkan setelan terbatas, Anda mengizinkan aplikasi mendapatkan akses ke info
+        sensitif yang dapat membahayakan data pribadi Anda. Sebaiknya Anda tidak mengizinkan setelan
+        terbatas, kecuali jika Anda memercayai developer aplikasi tersebut.
         <br/><br/>
-        Beberapa aplikasi sah mungkin meminta Anda untuk mengaktifkan pengaturan terbatas. Misalnya, aplikasi yang
-        dirancang untuk mendukung orang dengan disabilitas mungkin meminta Anda untuk mengaktifkan pengaturan aksesibilitas.
-        Dengan akses ke pengaturan aksesibilitas, aplikasi dapat membaca konten di layar Anda dan berinteraksi
-        dengan aplikasi atas nama Anda.
+        Beberapa aplikasi yang sah mungkin meminta Anda mengaktifkan setelan terbatas.
+        Misalnya, aplikasi yang didesain untuk mendukung difabel mungkin meminta Anda mengaktifkan
+        setelan aksesibilitas. Dengan akses ke setelan aksesibilitas, aplikasi dapat membaca konten
+        di layar dan berinteraksi dengan aplikasi untuk Anda.
         <br/><br/>
-        1. Klik tombol <b>Buka Pengaturan Aplikasi</b> di bawah ini
+        1. Di perangkat Android Anda, buka aplikasi <b>Setelan</b>
         <br/>
-        2. Ketuk menu <b>Lainnya</b> <b>⋮</b> (pojok kanan atas)
+        2. Ketuk <b>Aplikasi</b>
         <br/>
-        3. Ketuk <b>Izinkan pengaturan terbatas</b>
+        3. Ketuk <b>Semua Aplikasi</b>
         <br/>
-        4. Ikuti instruksi di layar
+        4. Temukan dan ketuk <b>Pembersih Cache</b>
+        <br/>
+        5. Ketuk menu <b>Lainnya</b> <b>⋮</b> (pojok kanan atas)
+        <br/>
+        6. Ketuk <b>Izinkan setelan terbatas</b>
+        <br/>
+        7. Ikuti petunjuk di layar
         <br/><br/>
-        <b>Sumber</b> - https://support.google.com/android/answer/12623953
+        <b>Bantuan Android</b> - <a href="https://support.google.com/android/answer/12623953?hl=id">Mempelajari setelan terbatas</a>
     ]]></string>
 
     <string name="help_how_to_use"><![CDATA[
