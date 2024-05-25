@@ -32,6 +32,8 @@ The official feedback from **AhnLab**:
 ## Warning ⚠️
 Since Android 13 Accessibility APIs is restricted for 3rd party apps, the solution can be found [here](https://support.google.com/android/answer/12623953) at the paragraph **Allow restricted settings**.
 
+▶️ [Watch **TUTORIAL** on YouTube](https://www.youtube.com/watch?v=UiCr33gYZiI)
+
 ## screenshots
 
 |Main Screen|Package list|Cache cleaning process|
