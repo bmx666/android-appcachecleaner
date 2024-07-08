@@ -21,7 +21,7 @@ android {
     defaultConfig {
         applicationId = "com.github.bmx666.appcachecleaner"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 83
         versionName = "1.11.3"
 
