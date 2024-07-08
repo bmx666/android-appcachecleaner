@@ -9,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.widget.NestedScrollView
-import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.databinding.ActivityFirstBootBinding
