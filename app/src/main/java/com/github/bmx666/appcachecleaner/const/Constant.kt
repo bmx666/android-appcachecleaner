@@ -16,6 +16,7 @@ class Constant {
                 const val NAME_DELAY_FOR_NEXT_APP_TIMEOUT = "delay_for_next_app_timeout"
                 const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
                 const val NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT = "max_wait_clear_cache_button_timeout"
+                const val NAME_MAX_WAIT_ACCESSIBILITY_EVENT_TIMEOUT = "max_wait_accessibility_event_timeout"
 
                 const val NAME_SCENARIO = "scenario"
             }
@@ -52,6 +53,7 @@ class Constant {
                 const val ACTION = "CleanCacheFinish"
                 const val NAME_INTERRUPTED = "interrupted"
                 const val NAME_INTERRUPTED_BY_USER = "interrupted_by_user"
+                const val NAME_INTERRUPTED_BY_ACCESSIBILITY_EVENT = "interrupted_by_accessibility_event"
                 const val NAME_PACKAGE_NAME = "package_name"
             }
         }
@@ -92,6 +94,12 @@ class Constant {
                 const val MAX_DELAY_FOR_NEXT_APP_MS = 10000
                 @IntRange(from = 0)
                 const val DEFAULT_DELAY_FOR_NEXT_APP_MS = 1000
+                @IntRange(from = 0)
+                const val DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS = 2000
+                @IntRange(from = 0)
+                const val MIN_WAIT_ACCESSIBILITY_EVENT_MS = 250
+                @IntRange(from = 0)
+                const val MAX_WAIT_ACCESSIBILITY_EVENT_MS = 10000
             }
         }
     }

@@ -5,11 +5,14 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.clearcache.scenario.state.IStateMachine
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_DELAY_FOR_NEXT_APP_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MAX_DELAY_FOR_NEXT_APP_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MAX_WAIT_ACCESSIBILITY_EVENT_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_FOR_NEXT_APP_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_ACCESSIBILITY_EVENT_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_CLEAR_CACHE_BUTTON_MS
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.performClick
@@ -30,6 +33,8 @@ internal abstract class BaseClearCacheScenario {
         DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS
     protected var maxPerformClickCountTries =
         (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
+    protected var maxWaitAccessibilityEventMs =
+        DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS
 
     abstract suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo)
     abstract fun processState()
@@ -81,6 +86,16 @@ internal abstract class BaseClearCacheScenario {
 
         if (maxWaitClearCacheButtonTimeoutMs < MIN_WAIT_CLEAR_CACHE_BUTTON_MS)
             maxWaitClearCacheButtonTimeoutMs = MIN_WAIT_CLEAR_CACHE_BUTTON_MS
+    }
+
+    fun setMaxWaitAccessibilityEvent(timeout: Int) {
+        maxWaitAccessibilityEventMs = timeout * 1000
+
+        if (maxWaitAccessibilityEventMs >= MAX_WAIT_ACCESSIBILITY_EVENT_MS)
+            maxWaitAccessibilityEventMs = MAX_WAIT_ACCESSIBILITY_EVENT_MS
+
+        if (maxWaitAccessibilityEventMs < MIN_WAIT_ACCESSIBILITY_EVENT_MS)
+            maxWaitAccessibilityEventMs = MIN_WAIT_ACCESSIBILITY_EVENT_MS
     }
 
     protected suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,
@@ -135,5 +150,12 @@ internal abstract class BaseClearCacheScenario {
         }
 
         return null
+    }
+
+    fun processAccessibilityEvent() {
+        if (!stateMachine.waitAccessibilityEvent(maxWaitAccessibilityEventMs.toLong())) {
+            stateMachine.setInterruptedByAccessibilityEvent()
+            stateMachine.setInterrupted()
+        }
     }
 }

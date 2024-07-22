@@ -40,7 +40,8 @@ abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 }
 
 interface IIntentActivityCallback {
-    fun onCleanCacheFinish(interrupted: Boolean, interruptedByUser: Boolean, pkgName: String?)
+    fun onCleanCacheFinish(interrupted: Boolean, interruptedByUser: Boolean,
+                           interruptedByAccessibilityEvent: Boolean, pkgName: String?)
     fun onStopAccessibilityServiceFeedback()
 }
 
@@ -70,14 +71,19 @@ class LocalBroadcastManagerActivityHelper(
                         Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_USER,
                         false
                     )
+                    val interruptedByAccessibilityEvent = intent.getBooleanExtra(
+                        Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_ACCESSIBILITY_EVENT,
+                        false
+                    )
                     val pkgName = intent.getStringExtra(
                         Constant.Intent.CleanCacheFinish.NAME_PACKAGE_NAME)
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Activity] CleanCacheFinish: interrupted = $interrupted")
                         Logger.d("[Activity] CleanCacheFinish: interruptedByUser = $interruptedByUser")
+                        Logger.d("[Activity] CleanCacheFinish: interruptedByAccessibilityEvent = $interruptedByAccessibilityEvent")
                         Logger.d("[Activity] CleanCacheFinish: pkgName = $pkgName")
                     }
-                    callback.onCleanCacheFinish(interrupted, interruptedByUser, pkgName)
+                    callback.onCleanCacheFinish(interrupted, interruptedByUser, interruptedByAccessibilityEvent, pkgName)
                 }
                 Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
                     if (BuildConfig.DEBUG)
@@ -139,6 +145,7 @@ data class IntentSettings(
     val delayForNextAppTimeout: Int?,
     val maxWaitAppTimeout: Int?,
     val maxWaitClearCacheButtonTimeout: Int?,
+    val maxWaitAccessibilityEventTimeout: Int?,
 )
 
 class LocalBroadcastManagerServiceHelper(
@@ -185,6 +192,10 @@ class LocalBroadcastManagerServiceHelper(
                         intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
                             Constant.Settings.CacheClean.DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS / 1000)
 
+                    val maxWaitAccessibilityEventTimeout =
+                        intent.getIntExtra(Constant.Intent.Settings.NAME_MAX_WAIT_ACCESSIBILITY_EVENT_TIMEOUT,
+                            Constant.Settings.CacheClean.DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS / 1000)
+
                     if (BuildConfig.DEBUG) {
                         Logger.d("[Service] ExtraSearchText")
                         clearCacheTextList?.forEach {
@@ -203,6 +214,7 @@ class LocalBroadcastManagerServiceHelper(
                         Logger.d("[Service] Scenario: delay for next app timeout = $delayForNextAppTimeout")
                         Logger.d("[Service] Scenario: max wait app timeout = $maxWaitAppTimeout")
                         Logger.d("[Service] Scenario: max wait clear cache button timeout = $maxWaitClearCacheButtonTimeout")
+                        Logger.d("[Service] Scenario: max wait accessibility wait timeout = $maxWaitAccessibilityEventTimeout")
                     }
 
                     callback.onSetSettings(
@@ -215,6 +227,7 @@ class LocalBroadcastManagerServiceHelper(
                             delayForNextAppTimeout = delayForNextAppTimeout,
                             maxWaitAppTimeout = maxWaitAppTimeout,
                             maxWaitClearCacheButtonTimeout = maxWaitClearCacheButtonTimeout,
+                            maxWaitAccessibilityEventTimeout = maxWaitAccessibilityEventTimeout,
                         )
                     )
                 }
@@ -259,14 +272,26 @@ class LocalBroadcastManagerServiceHelper(
         )
     }
 
-    fun sendFinish(interrupted: Boolean, interruptedByUser: Boolean, pkgName: String?) {
+    fun sendFinish(interrupted: Boolean,
+                   interruptedByUser: Boolean,
+                   interruptedByAccessibilityEvent: Boolean,
+                   pkgName: String?) {
         if (BuildConfig.DEBUG)
             Logger.d("[Service] sendFinish: interrupted = $interrupted")
         sendBroadcast(
             Intent(Constant.Intent.CleanCacheFinish.ACTION).apply {
-                putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED, interrupted)
-                putExtra(Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_USER, interruptedByUser)
-                putExtra(Constant.Intent.CleanCacheFinish.NAME_PACKAGE_NAME, pkgName)
+                putExtra(
+                    Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED,
+                    interrupted)
+                putExtra(
+                    Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_USER,
+                    interruptedByUser)
+                putExtra(
+                    Constant.Intent.CleanCacheFinish.NAME_INTERRUPTED_BY_ACCESSIBILITY_EVENT,
+                    interruptedByAccessibilityEvent)
+                putExtra(
+                    Constant.Intent.CleanCacheFinish.NAME_PACKAGE_NAME,
+                    pkgName)
             }
         )
     }

@@ -96,7 +96,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                     },
                 delayForNextAppTimeout = intentSettings.delayForNextAppTimeout,
                 maxWaitAppTimeout = intentSettings.maxWaitAppTimeout,
-                maxWaitClearCacheButtonTimeout = intentSettings.maxWaitClearCacheButtonTimeout
+                maxWaitClearCacheButtonTimeout = intentSettings.maxWaitClearCacheButtonTimeout,
+                maxWaitAccessibilityEventTimeout = intentSettings.maxWaitAccessibilityEventTimeout,
             )
         )
     }
@@ -119,6 +120,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
             }
         } ?: localBroadcastManager.sendFinish(true,
             accessibilityClearCacheManager.isInterruptedByUser(),
+            accessibilityClearCacheManager.isInterruptedByAccessibilityEvent(),
             null)
     }
 

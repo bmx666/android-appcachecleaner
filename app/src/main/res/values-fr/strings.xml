@@ -345,6 +345,8 @@
     <string name="prefs_summary_max_wait_app_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
     <string name="prefs_title_max_wait_clear_cache_btn_timeout">Temps d\'attente max. pour le bouton "Vider le cache" - %dsec.</string>
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Temps d\'attente max. pour l\'événement - %dsec.</string>
+    <string name="prefs_summary_max_wait_accessibility_event_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car l\'événement d\'accessibilité peut prendre beaucoup plus de temps</string>
     <string name="prefs_title_scenario">Scénario du nettoyage du cache</string>
     <string-array name="settings_scenario_entries">
         <item>Par défaut</item>
