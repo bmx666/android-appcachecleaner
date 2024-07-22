@@ -355,6 +355,8 @@
     <string name="prefs_summary_max_wait_app_timeout">Для старых смартфонов вам необходимо увеличить время ожидания на каждое приложение, т.к. вычисление кэша требует больше времени</string>
     <string name="prefs_title_max_wait_clear_cache_btn_timeout">Макс. время ожидания кнопки "Очистить кэш" - %dc</string>
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Для старых смартфонов вам необходимо увеличить время ожидания, т.к. вычисление кэша требует больше времени</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Макс. время ожидания события спец. возм. - %ds</string>
+    <string name="prefs_summary_max_wait_accessibility_event_timeout">Для старых смартфонов вам необходимо увеличить время ожидания, т.к. отклик на события сцеп. возможностей требует больше времени</string>
     <string name="prefs_title_scenario">Сценарий очистки кэша</string>
     <string-array name="settings_scenario_entries">
         <item>По умолчанию</item>

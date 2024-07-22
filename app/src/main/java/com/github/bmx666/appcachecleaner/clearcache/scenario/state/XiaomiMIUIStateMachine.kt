@@ -45,6 +45,7 @@ class XiaomiMIUIStateMachine: IStateMachine {
     private enum class STATE {
         INIT,
         OPEN_APP_INFO,
+        ACCESSIBILITY_EVENT,
         OPEN_CLEAR_DATA_DIALOG,
         OPEN_CLEAR_CACHE_DIALOG,
         FINISH_CLEAN_APP,
@@ -53,8 +54,15 @@ class XiaomiMIUIStateMachine: IStateMachine {
     }
 
     private var state = STATE.INIT
+    private val condVarWaitEvent = ConditionVariable()
     private val condVarWaitState = ConditionVariable()
     private var interruptedByUser = false
+    private var interruptedByAccessibilityEvent = false
+
+    override fun waitAccessibilityEvent(timeoutMs: Long): Boolean {
+        condVarWaitEvent.close()
+        return condVarWaitEvent.block(timeoutMs)
+    }
 
     override fun waitState(timeoutMs: Long): Boolean {
         condVarWaitState.close()
@@ -71,10 +79,20 @@ class XiaomiMIUIStateMachine: IStateMachine {
         condVarWaitState.open()
     }
 
+    override fun setAccessibilityEvent() {
+        if (!isInterrupted() && isOpenAppInfo())
+            state = STATE.ACCESSIBILITY_EVENT
+        condVarWaitEvent.open()
+    }
+
     override fun setOpenAppInfo() {
         if (!isInterrupted())
             state = STATE.OPEN_APP_INFO
         condVarWaitState.open()
+    }
+
+    override fun isOpenAppInfo(): Boolean {
+        return state == STATE.OPEN_APP_INFO
     }
 
     override fun setFinishCleanApp() {
@@ -102,6 +120,14 @@ class XiaomiMIUIStateMachine: IStateMachine {
 
     override fun isInterruptedByUser(): Boolean {
         return interruptedByUser
+    }
+
+    override fun setInterruptedByAccessibilityEvent() {
+        interruptedByAccessibilityEvent = true
+    }
+
+    override fun isInterruptedByAccessibilityEvent(): Boolean {
+        return interruptedByAccessibilityEvent
     }
 
     override fun isDone(): Boolean {

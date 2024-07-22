@@ -366,6 +366,21 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
+            suspend fun getMaxWaitAccessibilityEventTimeout(context: Context): Int {
+                return getDefaultSharedPref(context)
+                    .getInt(context.getString(R.string.prefs_key_settings_max_wait_accessibility_event_timeout),
+                        Constant.Settings.CacheClean.DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS / 1000)
+            }
+
+            @JvmStatic
+            suspend fun setMaxWaitAccessibilityEventTimeout(context: Context, timeout: Int) {
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putInt(context.getString(R.string.prefs_key_settings_max_wait_accessibility_event_timeout), timeout)
+                    .apply()
+            }
+
+            @JvmStatic
             suspend fun getScenario(context: Context): Constant.Scenario {
                 try {
                     val value = getDefaultSharedPref(context)

@@ -3,6 +3,7 @@ package com.github.bmx666.appcachecleaner.ui.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -49,13 +50,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context.getString(R.string.prefs_key_settings_max_wait_app_timeout)),
             preferenceManager.findPreference(
                 context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout)),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_settings_max_wait_accessibility_event_timeout)),
             context,
             { SharedPreferencesManager.Settings.getDelayForNextAppTimeout(context) },
             { timeout -> SharedPreferencesManager.Settings.setDelayForNextAppTimeout(context, timeout) },
             { SharedPreferencesManager.Settings.getMaxWaitAppTimeout(context) },
             { timeout -> SharedPreferencesManager.Settings.setMaxWaitAppTimeout(context, timeout) },
             { SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(context) },
-            { timeout -> SharedPreferencesManager.Settings.setMaxWaitClearCacheButtonTimeout(context, timeout) }
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitClearCacheButtonTimeout(context, timeout) },
+            { SharedPreferencesManager.Settings.getMaxWaitAccessibilityEventTimeout(context) },
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAccessibilityEventTimeout(context, timeout) }
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -150,13 +155,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         prefDelayForNextAppTimeout: SeekBarPreference?,
         prefMaxWaitAppTimeout: SeekBarPreference?,
         prefMaxWaitClearCacheButtonTimeout: SeekBarPreference?,
+        prefMaxWaitAccessibilityEventTimeout: SeekBarPreference?,
         context: Context,
         getDelayForNextAppTimeout: suspend () -> Int,
         setDelayForNextAppTimeout: suspend (Int) -> Unit,
         getMaxWaitAppTimeout: suspend () -> Int,
         setMaxWaitAppTimeout: suspend (Int) -> Unit,
         getMaxWaitClearCacheButtonTimeout: suspend () -> Int,
-        setMaxWaitClearCacheButtonTimeout: suspend (Int) -> Unit)
+        setMaxWaitClearCacheButtonTimeout: suspend (Int) -> Unit,
+        getMaxWaitAccessibilityEventTimeout: suspend () -> Int,
+        setMaxWaitAccessibilityEventTimeout: suspend (Int) -> Unit)
     {
         prefDelayForNextAppTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_DELAY_FOR_NEXT_APP_MS / 1000
@@ -215,6 +223,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 title = context.getString(R.string.prefs_title_max_wait_clear_cache_btn_timeout, newValue as Int)
                 lifecycleScope.launch {
                     setMaxWaitClearCacheButtonTimeout(newValue)
+                }
+                true
+            }
+        }
+
+        prefMaxWaitAccessibilityEventTimeout?.apply {
+            min = Constant.Settings.CacheClean.MIN_WAIT_ACCESSIBILITY_EVENT_MS / 1000
+            max = Constant.Settings.CacheClean.MAX_WAIT_ACCESSIBILITY_EVENT_MS / 1000
+            setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS / 1000)
+            value = getMaxWaitAccessibilityEventTimeout()
+            showSeekBarValue = true
+            title = context.getString(R.string.prefs_title_max_wait_accessibility_event_timeout, value)
+            setOnPreferenceChangeListener { _, newValue ->
+                title = context.getString(R.string.prefs_title_max_wait_accessibility_event_timeout, newValue as Int)
+                lifecycleScope.launch {
+                    setMaxWaitAccessibilityEventTimeout(newValue)
                 }
                 true
             }

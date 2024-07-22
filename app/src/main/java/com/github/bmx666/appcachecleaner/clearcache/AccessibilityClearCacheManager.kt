@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
-import kotlin.reflect.KFunction3
 
 class AccessibilityClearCacheManager {
 
@@ -24,6 +23,7 @@ class AccessibilityClearCacheManager {
         val delayForNextAppTimeout: Int?,
         val maxWaitAppTimeout: Int?,
         val maxWaitClearCacheButtonTimeout: Int?,
+        val maxWaitAccessibilityEventTimeout: Int?,
     )
 
     fun setSettings(scenario: Constant.Scenario?, settings: Settings) {
@@ -52,12 +52,16 @@ class AccessibilityClearCacheManager {
         settings.delayForNextAppTimeout?.let {
             cacheCleanScenario.setDelayForNextAppTimeout(it)
         }
+
+        settings.maxWaitAccessibilityEventTimeout?.let {
+            cacheCleanScenario.setMaxWaitAccessibilityEvent(it)
+        }
     }
 
     fun clearCacheApp(pkgList: ArrayList<String>,
                       updatePosition: (Int) -> Unit,
                       openAppInfo: KFunction1<String, Unit>,
-                      finish: KFunction3<Boolean, Boolean, String?, Unit>) {
+                      finish: (Boolean, Boolean, Boolean, String?) -> Unit) {
 
         cacheCleanScenario.stateMachine.init()
 
@@ -82,6 +86,8 @@ class AccessibilityClearCacheManager {
                 Logger.d("clearCacheApp: open AppInfo")
             openAppInfo(pkg)
 
+            cacheCleanScenario.processAccessibilityEvent()
+
             // state not changes, something goes wrong...
             if (cacheCleanScenario.stateMachine.isInterrupted()) break
 
@@ -94,8 +100,15 @@ class AccessibilityClearCacheManager {
         val interrupted = cacheCleanScenario.stateMachine.isInterrupted()
         cacheCleanScenario.stateMachine.init()
 
-        finish(interrupted, isInterruptedByUser(),
-            currentPkg.takeIf { interrupted && !isInterruptedByUser() })
+        finish(
+            interrupted,
+            isInterruptedByUser(),
+            isInterruptedByAccessibilityEvent(),
+            currentPkg.takeIf {
+                interrupted
+                && !isInterruptedByUser()
+                && !isInterruptedByAccessibilityEvent()
+            })
     }
 
     fun checkEvent(event: AccessibilityEvent) {
@@ -106,6 +119,8 @@ class AccessibilityClearCacheManager {
             cacheCleanScenario.stateMachine.setFinishCleanApp()
             return
         }
+
+        cacheCleanScenario.stateMachine.setAccessibilityEvent()
 
         val nodeInfo = event.source!!
 
@@ -128,6 +143,10 @@ class AccessibilityClearCacheManager {
 
     fun isInterruptedByUser(): Boolean {
         return cacheCleanScenario.stateMachine.isInterruptedByUser()
+    }
+
+    fun isInterruptedByAccessibilityEvent(): Boolean {
+        return cacheCleanScenario.stateMachine.isInterruptedByAccessibilityEvent()
     }
 
     companion object {

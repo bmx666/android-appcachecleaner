@@ -1182,6 +1182,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     @UiThread
     override fun onCleanCacheFinish(interrupted: Boolean,
                                     interruptedByUser: Boolean,
+                                    interruptedByAccessibilityEvent: Boolean,
                                     pkgName: String?) {
         val resId: Int
 
