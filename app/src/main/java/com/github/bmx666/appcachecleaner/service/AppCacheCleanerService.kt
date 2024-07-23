@@ -12,9 +12,6 @@ import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
 import com.github.bmx666.appcachecleaner.util.IntentSettings
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerServiceHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
@@ -37,13 +34,13 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         super.onServiceConnected()
         localBroadcastManager = LocalBroadcastManagerServiceHelper(this, this)
         accessibilityOverlay = AccessibilityOverlay {
-            accessibilityClearCacheManager.interrupt()
+            accessibilityClearCacheManager.interruptByUser()
         }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         accessibilityOverlay.hide(this)
-        accessibilityClearCacheManager.interrupt()
+        accessibilityClearCacheManager.interruptBySystem()
         localBroadcastManager.onDestroy()
         return super.onUnbind(intent)
     }
@@ -98,6 +95,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                 maxWaitAppTimeout = intentSettings.maxWaitAppTimeout,
                 maxWaitClearCacheButtonTimeout = intentSettings.maxWaitClearCacheButtonTimeout,
                 maxWaitAccessibilityEventTimeout = intentSettings.maxWaitAccessibilityEventTimeout,
+                goBackAfterApps = intentSettings.goBackAfterApps,
             )
         )
     }
@@ -109,19 +107,17 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         pkgList?.let{
             accessibilityOverlay.show(this)
             val pkgListSize = pkgList.size
-            CoroutineScope(Dispatchers.IO).launch {
-                accessibilityClearCacheManager.clearCacheApp(
-                    pkgList,
-                    { index: Int ->
-                        accessibilityOverlay.updateCounter(index, pkgListSize)
-                    },
-                    localBroadcastManager::sendAppInfo,
-                    localBroadcastManager::sendFinish)
-            }
-        } ?: localBroadcastManager.sendFinish(true,
-            accessibilityClearCacheManager.isInterruptedByUser(),
-            accessibilityClearCacheManager.isInterruptedByAccessibilityEvent(),
-            null)
+            accessibilityClearCacheManager.clearCacheApp(
+                pkgList,
+                { index: Int ->
+                    accessibilityOverlay.updateCounter(index, pkgListSize)
+                },
+                {
+                    performGlobalAction(GLOBAL_ACTION_BACK)
+                },
+                localBroadcastManager::sendAppInfo,
+                localBroadcastManager::sendFinish)
+        } ?: localBroadcastManager.sendFinish(null, null)
     }
 
     override fun onCleanCacheFinish() {

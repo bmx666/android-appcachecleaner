@@ -102,16 +102,9 @@
     <string name="dialog_filter_min_cache_size_message">Masukkan ukuran cache min. untuk penyaringan aplikasi (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Silakan masukkan ukuran cache min. dalam KB,MB,GB,TB ATAU 0 untuk mereset standar</string>
 
-    <string name="dialog_interrupted_by_accessibility_event_title">Terganggu</string>
-    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+    <string name="dialog_interrupted_by_system_title">Terganggu</string>
+    <string name="dialog_interrupted_by_system_messages"><![CDATA[
         <b>Pembersih Cache</b> terganggu oleh Sistem Android saat membersihkan aplikasi.
-    ]]></string>
-
-    <string name="dialog_ignore_app_title">Abaikan aplikasi</string>
-    <string name="dialog_ignore_app_messages"><![CDATA[
-        <b>Pembersih Cache</b> terganggu oleh Sistem Android saat membersihkan aplikasi <b>%s</b>.
-        Apakah Anda ingin menambahkan aplikasi ini ke daftar aplikasi yang diabaikan untuk mencegahnya dimasukkan dalam proses pembersihan di masa depan?
-        Anda selalu dapat menghapus aplikasi ini dari daftar aplikasi yang diabaikan di Pengaturan.
     ]]></string>
 
     <string name="first_boot_title">Silakan baca sebelum menggunakan</string>
@@ -348,6 +341,10 @@
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena perhitungan ukuran cache bisa memakan waktu lebih lama</string>
     <string name="prefs_title_max_wait_accessibility_event_timeout">Maks. waktu tunggu untuk acara - %ds</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Untuk smartphone lama, Anda harus meningkatkan waktu tunggu karena acara Aksesibilitas bisa memakan waktu lebih lama</string>
+    <string name="prefs_title_go_back_after_apps">Kembali setelah membersihkan %d aplikasi</string>
+    <string name="prefs_title_go_back_after_apps_never">Jangan pernah kembali setelah membersihkan aplikasi</string>
+    <string name="prefs_summary_go_back_after_apps">Kembali untuk menghindari penumpukan tumpukan jendela di Android, nilai yang lebih tinggi dapat mengurangi waktu tunggu, 0 - jangan pernah kembali</string>
+    <string name="prefs_summary_go_back_after_apps_for_api_34">Kembali untuk menghindari penumpukan tumpukan jendela di Android, nilai yang lebih tinggi dapat mengurangi waktu tunggu</string>
     <string name="prefs_title_scenario">Skenario menghapus cache</string>
     <string-array name="settings_scenario_entries">
         <item>Bawaan</item>

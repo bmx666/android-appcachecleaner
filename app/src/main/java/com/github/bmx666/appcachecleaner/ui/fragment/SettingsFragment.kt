@@ -3,7 +3,6 @@ package com.github.bmx666.appcachecleaner.ui.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -52,6 +51,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context.getString(R.string.prefs_key_settings_max_wait_clear_cache_btn_timeout)),
             preferenceManager.findPreference(
                 context.getString(R.string.prefs_key_settings_max_wait_accessibility_event_timeout)),
+            preferenceManager.findPreference(
+                context.getString(R.string.prefs_key_settings_go_back_after_apps)),
             context,
             { SharedPreferencesManager.Settings.getDelayForNextAppTimeout(context) },
             { timeout -> SharedPreferencesManager.Settings.setDelayForNextAppTimeout(context, timeout) },
@@ -60,7 +61,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             { SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(context) },
             { timeout -> SharedPreferencesManager.Settings.setMaxWaitClearCacheButtonTimeout(context, timeout) },
             { SharedPreferencesManager.Settings.getMaxWaitAccessibilityEventTimeout(context) },
-            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAccessibilityEventTimeout(context, timeout) }
+            { timeout -> SharedPreferencesManager.Settings.setMaxWaitAccessibilityEventTimeout(context, timeout) },
+            { SharedPreferencesManager.Settings.getGoBackAfterApps(context) },
+            { value -> SharedPreferencesManager.Settings.setGoBackAfterApps(context, value) },
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -156,6 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         prefMaxWaitAppTimeout: SeekBarPreference?,
         prefMaxWaitClearCacheButtonTimeout: SeekBarPreference?,
         prefMaxWaitAccessibilityEventTimeout: SeekBarPreference?,
+        prefGoBackAfterApps: SeekBarPreference?,
         context: Context,
         getDelayForNextAppTimeout: suspend () -> Int,
         setDelayForNextAppTimeout: suspend (Int) -> Unit,
@@ -164,7 +168,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         getMaxWaitClearCacheButtonTimeout: suspend () -> Int,
         setMaxWaitClearCacheButtonTimeout: suspend (Int) -> Unit,
         getMaxWaitAccessibilityEventTimeout: suspend () -> Int,
-        setMaxWaitAccessibilityEventTimeout: suspend (Int) -> Unit)
+        setMaxWaitAccessibilityEventTimeout: suspend (Int) -> Unit,
+        getGoBackAfterApps: suspend () -> Int,
+        setGoBackAfterApps: suspend (Int) -> Unit)
     {
         prefDelayForNextAppTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_DELAY_FOR_NEXT_APP_MS / 1000
@@ -239,6 +245,45 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 title = context.getString(R.string.prefs_title_max_wait_accessibility_event_timeout, newValue as Int)
                 lifecycleScope.launch {
                     setMaxWaitAccessibilityEventTimeout(newValue)
+                }
+                true
+            }
+        }
+
+        prefGoBackAfterApps?.apply {
+            min =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                    Constant.Settings.CacheClean.MIN_GO_BACK_AFTER_APPS_FOR_API_34
+                else
+                    Constant.Settings.CacheClean.MIN_GO_BACK_AFTER_APPS
+            max = Constant.Settings.CacheClean.MAX_GO_BACK_AFTER_APPS
+            setDefaultValue(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                    Constant.Settings.CacheClean.DEFAULT_GO_BACK_AFTER_APPS
+                else
+                    Constant.Settings.CacheClean.MIN_GO_BACK_AFTER_APPS
+            )
+            value = getGoBackAfterApps()
+            showSeekBarValue = true
+            title =
+                if (value > 0)
+                    context.getString(R.string.prefs_title_go_back_after_apps, value)
+                else
+                    context.getString(R.string.prefs_title_go_back_after_apps_never)
+            summary =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                    context.getString(R.string.prefs_summary_go_back_after_apps_for_api_34)
+                else
+                    context.getString(R.string.prefs_summary_go_back_after_apps)
+            setOnPreferenceChangeListener { _, newValue ->
+                val intValue = newValue as Int
+                title =
+                    if (intValue > 0)
+                        context.getString(R.string.prefs_title_go_back_after_apps, intValue)
+                    else
+                        context.getString(R.string.prefs_title_go_back_after_apps_never)
+                lifecycleScope.launch {
+                    setGoBackAfterApps(intValue)
                 }
                 true
             }

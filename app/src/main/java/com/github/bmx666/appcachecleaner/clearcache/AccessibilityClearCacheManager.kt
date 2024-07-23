@@ -1,19 +1,45 @@
 package com.github.bmx666.appcachecleaner.clearcache
 
+import android.os.ConditionVariable
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.clearcache.scenario.BaseClearCacheScenario
 import com.github.bmx666.appcachecleaner.clearcache.scenario.DefaultClearCacheScenario
 import com.github.bmx666.appcachecleaner.clearcache.scenario.XiaomiMIUIClearCacheScenario
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_IGNORE
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INIT
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_SYSTEM
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.showTree
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
 
 class AccessibilityClearCacheManager {
+
+    private val ioScope = CoroutineScope(Dispatchers.IO)
+    // main job that starts and finish cache clean process of all packages
+    private var mainJob: Job? = null
+    // package job that starts and finish for one package
+    private var packageJob: Job? = null
+    // accessibility event job that starts when Accessibility service got event
+    private var accessibilityJob: Job? = null
+    // wait accessibility event job
+    private var waitAccessibilityJob: Job? = null
+    // wait for the next app job
+    private var waitNextAppJob: Job? = null
+    // For Android 14 and later need go back to reduce windows stack
+    private var goBackJob: Job? = null
+    private val needGoBack = ConditionVariable()
 
     data class Settings(
         val clearCacheTextList: ArrayList<CharSequence>,
@@ -24,6 +50,7 @@ class AccessibilityClearCacheManager {
         val maxWaitAppTimeout: Int?,
         val maxWaitClearCacheButtonTimeout: Int?,
         val maxWaitAccessibilityEventTimeout: Int?,
+        val goBackAfterApps: Int?,
     )
 
     fun setSettings(scenario: Constant.Scenario?, settings: Settings) {
@@ -42,107 +69,183 @@ class AccessibilityClearCacheManager {
             settings.okTextList)
 
         settings.maxWaitAppTimeout?.let {
-            cacheCleanScenario.setMaxWaitAppTimeout(it)
+            cacheCleanScenario.maxWaitAppTimeoutMs = it * 1000
         }
 
         settings.maxWaitClearCacheButtonTimeout?.let {
-            cacheCleanScenario.setMaxWaitClearCacheButtonTimeout(it)
+            cacheCleanScenario.maxWaitClearCacheButtonTimeoutMs = it * 1000
         }
 
         settings.delayForNextAppTimeout?.let {
-            cacheCleanScenario.setDelayForNextAppTimeout(it)
+            cacheCleanScenario.delayForNextAppTimeoutMs = it * 1000
         }
 
         settings.maxWaitAccessibilityEventTimeout?.let {
-            cacheCleanScenario.setMaxWaitAccessibilityEvent(it)
+            cacheCleanScenario.maxWaitAccessibilityEventMs = it * 1000
+        }
+
+        settings.goBackAfterApps?.let {
+            cacheCleanScenario.goBackAfterApps = it
         }
     }
 
     fun clearCacheApp(pkgList: ArrayList<String>,
                       updatePosition: (Int) -> Unit,
+                      performBack: () -> Boolean,
                       openAppInfo: KFunction1<String, Unit>,
-                      finish: (Boolean, Boolean, Boolean, String?) -> Unit) {
+                      finish: (String?, String?) -> Unit) {
 
-        cacheCleanScenario.stateMachine.init()
+        accessibilityJob?.cancel(CANCEL_INIT)
+        packageJob?.cancel(CANCEL_INIT)
+        mainJob?.cancel(CANCEL_INIT)
 
-        var currentPkg: String? = null
+        mainJob = ioScope.launch {
+            var currentPkg: String? = null
 
-        for ((index, pkg) in pkgList.withIndex()) {
-            if (BuildConfig.DEBUG)
-                Logger.d("clearCacheApp: package name = $pkg")
+            try {
 
-            currentPkg = pkg
+                for ((index, pkg) in pkgList.withIndex()) {
+                    if (BuildConfig.DEBUG)
+                        Logger.d("clearCacheApp: package name = $pkg")
 
-            updatePosition(index)
+                    currentPkg = pkg
 
-            // everything is possible...
-            if (pkg.trim().isEmpty()) continue
+                    updatePosition(index)
 
-            // state not changes, something goes wrong...
-            if (cacheCleanScenario.stateMachine.isInterrupted()) break
+                    if (pkg.trim().isEmpty())
+                        continue
 
-            cacheCleanScenario.stateMachine.setOpenAppInfo()
-            if (BuildConfig.DEBUG)
-                Logger.d("clearCacheApp: open AppInfo")
-            openAppInfo(pkg)
+                    cacheCleanScenario.resetInternalState()
 
-            cacheCleanScenario.processAccessibilityEvent()
+                    if (index > 0) {
+                        waitNextAppJob?.cancel(CANCEL_IGNORE)
+                        waitNextAppJob = ioScope.launch {
+                            val timeoutMs = cacheCleanScenario.delayForNextAppTimeoutMs.toLong()
+                            delay(timeoutMs)
+                        }
+                        waitNextAppJob?.join()
+                    }
 
-            // state not changes, something goes wrong...
-            if (cacheCleanScenario.stateMachine.isInterrupted()) break
+                    if (BuildConfig.DEBUG)
+                        Logger.d("clearCacheApp: open AppInfo of $pkg")
+                    openAppInfo(pkg)
 
-            cacheCleanScenario.processState()
+                    // wait cache clean process
+                    packageJob = ioScope.launch {
+                        // wait first Accessibility Event - open AppInfo
+                        waitAccessibilityJob = ioScope.launch {
+                            val timeoutMs = cacheCleanScenario.maxWaitAccessibilityEventMs.toLong()
+                            delay(timeoutMs)
+                            Logger.w("Accessibility Event timeout")
+                        }
+                        waitAccessibilityJob?.join()
+                        // got first Accessibility Event
+                        if (waitAccessibilityJob?.isCancelled == true) {
+                            val timeoutMs = cacheCleanScenario.maxWaitAppTimeoutMs.toLong()
+                            delay(timeoutMs)
+                        }
+                    }
+                    packageJob?.join()
 
-            // something goes wrong...
-            if (cacheCleanScenario.stateMachine.isInterrupted()) break
+                    // timeout, no accessibility events, move to the next app
+                    accessibilityJob?.cancel(CANCEL_IGNORE)
+
+                    // got first Accessibility event, need go back
+                    if (waitAccessibilityJob?.isCancelled == true) {
+                        val goBackAfterApps = cacheCleanScenario.goBackAfterApps
+                        if (goBackAfterApps > 0) {
+                            // go back after each Nth apps and for the last app
+                            if ((index % goBackAfterApps == 0 && index != 0) or (index == pkgList.size - 1))
+                                doGoBack(performBack)
+                        }
+                    }
+                }
+
+                finish(null, null)
+
+            } catch (e: CancellationException) {
+                when (e.message) {
+                    CANCEL_IGNORE.message, CANCEL_INIT.message -> {}
+                    else -> finish(e.message, currentPkg)
+                }
+            }
         }
-
-        val interrupted = cacheCleanScenario.stateMachine.isInterrupted()
-        cacheCleanScenario.stateMachine.init()
-
-        finish(
-            interrupted,
-            isInterruptedByUser(),
-            isInterruptedByAccessibilityEvent(),
-            currentPkg.takeIf { interrupted })
     }
 
     fun checkEvent(event: AccessibilityEvent) {
+        // do cache clean only if processing package
+        if (mainJob?.isActive == true) {
+            if (goBackJob?.isActive == true) {
+                needGoBack.open()
+            } else if (packageJob?.isActive == true) {
+                if (event.source == null)
+                    return
 
-        if (cacheCleanScenario.stateMachine.isDone()) return
+                val nodeInfo = event.source!!
 
-        if (event.source == null) {
-            cacheCleanScenario.stateMachine.setFinishCleanApp()
-            return
-        }
+                if (BuildConfig.DEBUG) {
+                    Logger.d("===>>> TREE BEGIN <<<===")
+                    nodeInfo.showTree(0)
+                    Logger.d("===>>> TREE END <<<===")
+                }
 
-        cacheCleanScenario.stateMachine.setAccessibilityEvent()
-
-        val nodeInfo = event.source!!
-
-        if (BuildConfig.DEBUG) {
-            Logger.d("===>>> TREE BEGIN <<<===")
-            nodeInfo.showTree(0)
-            Logger.d("===>>> TREE END <<<===")
-        }
-
-        CoroutineScope(Dispatchers.IO).launch {
-            cacheCleanScenario.doCacheClean(nodeInfo)
+                doAccessibilityEvent(nodeInfo)
+            }
         }
     }
 
-    fun interrupt() {
-        cacheCleanScenario.stateMachine.setInterruptedByUser()
-        if (cacheCleanScenario.stateMachine.isDone()) return
-        cacheCleanScenario.stateMachine.setInterrupted()
+    fun interruptByUser() {
+        accessibilityJob?.cancel(CANCEL_INTERRUPTED_BY_USER)
+        packageJob?.cancel(CANCEL_INTERRUPTED_BY_USER)
+        mainJob?.cancel(CANCEL_INTERRUPTED_BY_USER)
+
+        waitAccessibilityJob?.cancel(CANCEL_IGNORE)
+        waitNextAppJob?.cancel(CANCEL_IGNORE)
+        goBackJob?.cancel(CANCEL_IGNORE)
     }
 
-    fun isInterruptedByUser(): Boolean {
-        return cacheCleanScenario.stateMachine.isInterruptedByUser()
+    fun interruptBySystem() {
+        accessibilityJob?.cancel(CANCEL_INTERRUPTED_BY_SYSTEM)
+        packageJob?.cancel(CANCEL_INTERRUPTED_BY_SYSTEM)
+        mainJob?.cancel(CANCEL_INTERRUPTED_BY_SYSTEM)
+
+        waitAccessibilityJob?.cancel(CANCEL_IGNORE)
+        waitNextAppJob?.cancel(CANCEL_IGNORE)
+        goBackJob?.cancel(CANCEL_IGNORE)
     }
 
-    fun isInterruptedByAccessibilityEvent(): Boolean {
-        return cacheCleanScenario.stateMachine.isInterruptedByAccessibilityEvent()
+    private suspend fun doGoBack(performBack: () -> Boolean) {
+        goBackJob?.cancel(CANCEL_IGNORE)
+        goBackJob = ioScope.launch {
+            val timeoutMs = cacheCleanScenario.maxWaitAccessibilityEventMs.toLong()
+            while (true) {
+                performBack()
+                needGoBack.close()
+                // need more go back
+                if (needGoBack.block(timeoutMs))
+                    continue
+                break
+            }
+        }
+        goBackJob?.join()
+    }
+
+    private fun doAccessibilityEvent(nodeInfo: AccessibilityNodeInfo) {
+        accessibilityJob?.cancel(CANCEL_IGNORE)
+        accessibilityJob = ioScope.launch {
+            try {
+                waitAccessibilityJob?.cancel()
+                val result = cacheCleanScenario.doCacheClean(nodeInfo)
+                when (result?.message) {
+                    PACKAGE_FINISH.message,
+                    PACKAGE_FINISH_FAILED.message,
+                    -> { packageJob?.cancel(result) }
+                    else -> {}
+                }
+            } catch (e: CancellationException) {
+                // TODO: process exceptions
+            }
+        }
     }
 
     companion object {
