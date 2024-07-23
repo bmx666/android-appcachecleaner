@@ -1,0 +1,3 @@
+* support Android 15
+* use foreground service for Android 14 and later
+* use notification channel for Android 14 and later
