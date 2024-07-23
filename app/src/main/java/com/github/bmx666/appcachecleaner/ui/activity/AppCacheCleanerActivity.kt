@@ -23,6 +23,7 @@ import androidx.annotation.UiContext
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
@@ -1216,6 +1217,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             saveLogFile()
 
         updateStartStopServiceButton()
+
+        if (interruptedByAccessibilityEvent) {
+            val message = HtmlCompat.fromHtml(
+                getString(R.string.dialog_interrupted_by_accessibility_event_messages),
+                HtmlCompat.FROM_HTML_MODE_COMPACT)
+            AlertDialogBuilder(this)
+                .setTitle(R.string.dialog_interrupted_by_accessibility_event_title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok) { _, _ -> }
+                .create()
+                .show()
+            return
+        }
 
         addOverlayJob(
             suspendCallback = {
