@@ -1236,6 +1236,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         addOverlayJob(
             suspendCallback = {
+                if (interrupted) {
+                    showDialogToIgnoreApp(pkgName)
+                    return@addOverlayJob
+                }
+
                 // Automatically disable service
                 if (SharedPreferencesManager.Extra.getAfterClearingCacheStopService(this)) {
                     if (PermissionChecker.checkAccessibilityPermission(this))
@@ -1247,9 +1252,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     finish()
                     return@addOverlayJob
                 }
-
-                if (interrupted)
-                    showDialogToIgnoreApp(pkgName)
             }
         )
     }
