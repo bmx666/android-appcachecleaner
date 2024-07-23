@@ -7,7 +7,7 @@ plugins {
 android {
     namespace = "com.github.bmx666.appcachecleaner"
 
-    compileSdk = 34
+    compileSdk = 35
 
     signingConfigs {
         create("release") {

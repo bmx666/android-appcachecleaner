@@ -26,7 +26,7 @@ class PackageManagerHelper {
             val pkgInfoList = ArrayList<PackageInfo>()
             for (i in list.indices) {
                 val packageInfo = list[i]
-                val flags = packageInfo!!.applicationInfo.flags
+                val flags = packageInfo!!.applicationInfo?.flags ?: 0
                 val isSystemApp = (flags and ApplicationInfo.FLAG_SYSTEM) != 0
                 val isUpdatedSystemApp = (flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
                 val addPkg = (systemNotUpdated && (isSystemApp and !isUpdatedSystemApp)) or
@@ -84,21 +84,23 @@ class PackageManagerHelper {
             var localizedLabel: String? = null
             context.packageManager?.let { pm ->
                 try {
-                    val res = pm.getResourcesForApplication(pkgInfo.applicationInfo)
-                    val resId = pkgInfo.applicationInfo.labelRes
-                    if (resId != 0)
-                        try {
-                            localizedLabel = res.getString(resId)
-                        } catch (e: Resources.NotFoundException) {
-                            e.printStackTrace()
-                        }
+                    pkgInfo.applicationInfo?.let { applicationInfo ->
+                        val res = pm.getResourcesForApplication(applicationInfo)
+                        val resId = applicationInfo.labelRes
+                        if (resId != 0)
+                            try {
+                                localizedLabel = res.getString(resId)
+                            } catch (e: Resources.NotFoundException) {
+                                e.printStackTrace()
+                            }
+                    }
                 } catch (e: PackageManager.NameNotFoundException) {
                     e.printStackTrace()
                 }
             }
 
             return localizedLabel
-                ?: pkgInfo.applicationInfo.nonLocalizedLabel?.toString()
+                ?: pkgInfo.applicationInfo?.nonLocalizedLabel?.toString()
                 ?: pkgInfo.packageName
         }
 

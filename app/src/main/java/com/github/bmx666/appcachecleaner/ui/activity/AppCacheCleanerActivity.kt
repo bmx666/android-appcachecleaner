@@ -549,7 +549,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
             val isDisabledAndHidden =
                 hideDisabledApps
-                && !pkgInfo.applicationInfo.enabled
+                && (pkgInfo.applicationInfo?.enabled == false)
 
             val isIgnoredAndHidden =
                 hideIgnoredApps
