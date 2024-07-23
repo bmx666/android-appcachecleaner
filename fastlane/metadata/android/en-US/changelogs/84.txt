@@ -1,0 +1,3 @@
+* add timeout for Accessibility events in Settings
+* display a message if the Android System interrupts the cache cleaning process
+* enable automatic stopping of the service and closing of the app only on a successful cache cleaning process
