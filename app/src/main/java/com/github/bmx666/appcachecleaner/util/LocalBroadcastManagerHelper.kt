@@ -5,10 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.Logger
+import com.github.bmx666.appcachecleaner.service.AppInfoService
+
 
 abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 
@@ -54,13 +57,27 @@ class LocalBroadcastManagerActivityHelper(
             when (intent?.action) {
                 Constant.Intent.CleanCacheAppInfo.ACTION -> {
                     val pkgName = intent.getStringExtra(
-                        Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME)
+                        Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME
+                    )
                     if (BuildConfig.DEBUG)
                         Logger.d("[Activity] CleanCacheAppInfo: package name = $pkgName")
-                    ActivityHelper.startApplicationDetailsActivity(
-                        this@LocalBroadcastManagerActivityHelper.context,
-                        pkgName
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        val serviceIntent = Intent(
+                            this@LocalBroadcastManagerActivityHelper.context,
+                            AppInfoService::class.java).apply {
+                            putExtra(
+                                Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME,
+                                pkgName)
+                        }
+                        ContextCompat.startForegroundService(
+                            this@LocalBroadcastManagerActivityHelper.context,
+                            serviceIntent)
+                    } else {
+                        ActivityHelper.startApplicationDetailsActivity(
+                            this@LocalBroadcastManagerActivityHelper.context,
+                            pkgName
+                        )
+                    }
                 }
                 Constant.Intent.CleanCacheFinish.ACTION -> {
                     val interrupted = intent.getBooleanExtra(
