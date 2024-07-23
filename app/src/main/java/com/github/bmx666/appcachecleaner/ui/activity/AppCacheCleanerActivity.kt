@@ -1258,11 +1258,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                                       interrupted: Boolean) {
         addOverlayJob(
             suspendCallback = {
-                if (!interrupted)
+                if (pkgName.isNullOrEmpty())
+                    Pair(null, null)
+                else if (!interrupted)
                     Pair(null, null)
                 else if (!SharedPreferencesManager.Filter.getShowDialogToIgnoreApp(this))
-                    Pair(null, null)
-                else if (pkgName.isNullOrEmpty())
                     Pair(null, null)
                 else
                     Pair(pkgName, PlaceholderContent.Current.find(pkgName)?.label)
