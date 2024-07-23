@@ -1,6 +1,7 @@
 package com.github.bmx666.appcachecleaner.const
 
 import androidx.annotation.IntRange
+import kotlin.coroutines.cancellation.CancellationException
 
 class Constant {
     class Intent {
@@ -17,6 +18,7 @@ class Constant {
                 const val NAME_MAX_WAIT_APP_TIMEOUT = "max_wait_app_timeout"
                 const val NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT = "max_wait_clear_cache_button_timeout"
                 const val NAME_MAX_WAIT_ACCESSIBILITY_EVENT_TIMEOUT = "max_wait_accessibility_event_timeout"
+                const val NAME_GO_BACK_AFTER_APPS = "go_back_after_apps"
 
                 const val NAME_SCENARIO = "scenario"
             }
@@ -51,9 +53,7 @@ class Constant {
         class CleanCacheFinish {
             companion object {
                 const val ACTION = "CleanCacheFinish"
-                const val NAME_INTERRUPTED = "interrupted"
-                const val NAME_INTERRUPTED_BY_USER = "interrupted_by_user"
-                const val NAME_INTERRUPTED_BY_ACCESSIBILITY_EVENT = "interrupted_by_accessibility_event"
+                const val NAME_MESSAGE = "message"
                 const val NAME_PACKAGE_NAME = "package_name"
             }
         }
@@ -84,6 +84,8 @@ class Constant {
                 const val MIN_WAIT_APP_PERFORM_CLICK_MS = 8 * MIN_DELAY_PERFORM_CLICK_MS
                 @IntRange(from = 8 * 250)
                 const val DEFAULT_WAIT_APP_PERFORM_CLICK_MS = 30000
+                @IntRange(from = 1)
+                const val DEFAULT_PERFORM_CLICK_COUNT_TRIES = (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
                 @IntRange(from = 0)
                 const val MIN_WAIT_CLEAR_CACHE_BUTTON_MS = 0
                 @IntRange(from = 0)
@@ -100,7 +102,36 @@ class Constant {
                 const val MIN_WAIT_ACCESSIBILITY_EVENT_MS = 250
                 @IntRange(from = 0)
                 const val MAX_WAIT_ACCESSIBILITY_EVENT_MS = 10000
+                @IntRange(from = 0)
+                const val DEFAULT_GO_BACK_AFTER_APPS = 25
+                @IntRange(from = 0)
+                const val MIN_GO_BACK_AFTER_APPS = 0
+                @IntRange(from = 1)
+                const val MIN_GO_BACK_AFTER_APPS_FOR_API_34 = 1
+                @IntRange(from = 0)
+                const val MAX_GO_BACK_AFTER_APPS = 50
             }
+        }
+    }
+
+    class CancellationJobMessage {
+        companion object {
+            val CANCEL_IGNORE =
+                CancellationException("cancel_ignore")
+            val CANCEL_INIT =
+                CancellationException("cancel_init")
+            val CANCEL_INTERRUPTED_BY_SYSTEM =
+                CancellationException("cancel_interrupted_by_system")
+            val CANCEL_INTERRUPTED_BY_USER =
+                CancellationException("cancel_interrupted_by_user")
+
+            // valid only for package jobs
+            val PACKAGE_WAIT_NEXT_STEP =
+                CancellationException("package_wait_next_step")
+            val PACKAGE_FINISH =
+                CancellationException("package_finish")
+            val PACKAGE_FINISH_FAILED =
+                CancellationException("package_finish_failed")
         }
     }
 

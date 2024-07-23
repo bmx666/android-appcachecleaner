@@ -103,16 +103,9 @@
     <string name="dialog_filter_min_cache_size_message">Entrez la taille minimale du cache pour filtrer les applications (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Veuillez entrer la taille minimale du cache en KB,MB,GB,TB ou 0 pour réinitialiser par défaut</string>
 
-    <string name="dialog_interrupted_by_accessibility_event_title">Interrompu</string>
-    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+    <string name="dialog_interrupted_by_system_title">Interrompu</string>
+    <string name="dialog_interrupted_by_system_messages"><![CDATA[
         <b>Cache Cleaner</b> a été interrompu par le Système Android lors du nettoyage des applications.
-    ]]></string>
-
-    <string name="dialog_ignore_app_title">Ignorer l\'application</string>
-    <string name="dialog_ignore_app_messages"><![CDATA[
-        <b>Cache Cleaner</b> a été interrompu par le système Android lors du nettoyage de l\'application <b>%s</b>.
-        Souhaitez-vous ajouter cette application à la liste des applications ignorées pour éviter qu\'elle soit incluse dans les futurs processus de nettoyage?
-        Vous pouvez toujours retirer cette application de la liste des applications ignorées dans les paramètres.
     ]]></string>
 
     <string name="first_boot_title">À lire avant utilisation</string>
@@ -352,6 +345,10 @@
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car le calcul de la taille du cache peut prendre beaucoup plus de temps</string>
     <string name="prefs_title_max_wait_accessibility_event_timeout">Temps d\'attente max. pour l\'événement - %dsec.</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Pour les anciens smartphones, vous devriez augmenter le temps d\'attente car l\'événement d\'accessibilité peut prendre beaucoup plus de temps</string>
+    <string name="prefs_title_go_back_after_apps">Revenir après avoir nettoyé %d apps</string>
+    <string name="prefs_title_go_back_after_apps_never">Ne jamais revenir après avoir nettoyé les apps</string>
+    <string name="prefs_summary_go_back_after_apps">Revenez en arrière pour éviter le débordement de la pile de fenêtres sur Android, des valeurs plus élevées peuvent réduire le temps d\'attente, 0 - ne jamais revenir</string>
+    <string name="prefs_summary_go_back_after_apps_for_api_34">Revenez en arrière pour éviter le débordement de la pile de fenêtres sur Android, des valeurs plus élevées peuvent réduire le temps d\'attente</string>
     <string name="prefs_title_scenario">Scénario du nettoyage du cache</string>
     <string-array name="settings_scenario_entries">
         <item>Par défaut</item>

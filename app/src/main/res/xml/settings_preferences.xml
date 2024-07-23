@@ -140,6 +140,12 @@
             app:title="@string/prefs_title_max_wait_accessibility_event_timeout"
             app:summary="@string/prefs_summary_max_wait_accessibility_event_timeout"/>
 
+        <SeekBarPreference
+            app:singleLineTitle="false"
+            app:key="@string/prefs_key_settings_go_back_after_apps"
+            app:title="@string/prefs_title_go_back_after_apps"
+            app:summary="@string/prefs_summary_go_back_after_apps"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

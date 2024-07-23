@@ -1,121 +1,147 @@
 package com.github.bmx666.appcachecleaner.clearcache.scenario
 
 import android.view.accessibility.AccessibilityNodeInfo
-import com.github.bmx666.appcachecleaner.clearcache.scenario.state.XiaomiMIUIStateMachine
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
 import com.github.bmx666.appcachecleaner.util.getAllChild
 import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
+import kotlinx.coroutines.CancellationException
+
+/***
+ * Steps to clean app cache:
+ *
+ * 1. open "App Info" settings for specific package
+ * 2. if Accessibility event timeout has been expired, goto #7
+ * 3. If "Clear Data Dialog" state:
+ *    3.1. "Clear Cache" Menu Item" not found, goto #7
+ *    3.2. "Clear Cache" Menu Item" found:
+ *       3.2.1. if menu item is enabled, click it:
+ *          3.2.1.1. if perform click was success, switched on "Clear Cache Dialog" and goto #2
+ *          3.2.1.2. if perform click failed, goto #8
+ *       3.2.2. if menu item is disabled, goto #7
+ * 4. If "Clear Cache Dialog" state:
+ *    4.1. "OK" button" not found, goto #7
+ *    4.2. "OK" button" found:
+ *       4.2.1. if button is enabled, click it:
+ *          4.2.1.1. if perform click was success, goto #7
+ *          4.2.1.2. if perform click failed, goto #8
+ *       4.2.2. if button is disabled, goto #7
+ * 5. find "clear cache button":
+ *    NOTE: some Settings UI can have it on "App Info" settings
+ *    5.1. "Clear Cache Button" not found, goto #6
+ *    5.2. "Clear Cache Button" found:
+ *       5.2.1. if button is enabled, click it:
+ *          5.2.1.1. if perform click was success, switched on "Clear Cache Dialog" and goto #2
+ *          5.2.1.2. if perform click failed, goto #8
+ *       5.2.2. if button is disabled, goto #6
+ * 6. find "Clear Data Button":
+ *    6.1. "Clear Data Button" not found, goto #7
+ *    6.2. "Clear Data Button" found:
+ *       6.2.1. if menu is enabled, click it:
+ *          6.2.1.1. if perform click was success, switched on "Clear Data Dialog" and goto #2
+ *          6.2.1.2. if perform click failed, goto #8
+ *       6.2.2. if menu was disabled, goto #7
+ * 7. finish app clean process and move to the next
+ * 8. interrupt clean process and halt
+ ***/
 
 internal class XiaomiMIUIClearCacheScenario: BaseClearCacheScenario() {
 
-    override val stateMachine = XiaomiMIUIStateMachine()
+    private enum class State {
+        INIT,
+        OPEN_CLEAR_DATA_DIALOG,
+        OPEN_CLEAR_CACHE_DIALOG,
+    }
 
-    private suspend fun findClearDataButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private var state = State.INIT
+
+    override fun resetInternalState() {
+        state = State.INIT
+    }
+
+    private suspend fun findClearDataButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         nodeInfo.findMenuItemText(arrayTextClearDataButton)?.let { clearDataButton ->
-            when (doPerformClick(clearDataButton, "Xiaomi MIUI - clear data button")) {
+            return when (doPerformClick(clearDataButton, "Xiaomi MIUI - clear data button")) {
                 // clear data button was found and it's enabled but perform click was failed
-                false -> stateMachine.setInterrupted()
+                false -> {
+                    state = State.INIT
+                    PACKAGE_FINISH_FAILED
+                }
                 // move to the next step
-                else -> stateMachine.setOpenClearDataDialog()
+                else -> {
+                    state = State.OPEN_CLEAR_DATA_DIALOG
+                    PACKAGE_WAIT_NEXT_STEP
+                }
             }
-            return true
         }
-        return false
+        return null
     }
 
-    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         nodeInfo.findMenuItemText(arrayTextClearCacheButton)?.let { clearCacheButton ->
-            when (doPerformClick(clearCacheButton, "Xiaomi MIUI - clear cache button")) {
+            return when (doPerformClick(clearCacheButton, "Xiaomi MIUI - clear cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
-                false -> stateMachine.setInterrupted()
-                // move to the next app
-                else -> stateMachine.setOpenClearCacheDialog()
+                false -> {
+                    state = State.INIT
+                    PACKAGE_FINISH_FAILED
+                }
+                // move to the next step
+                else -> {
+                    state = State.OPEN_CLEAR_CACHE_DIALOG
+                    PACKAGE_WAIT_NEXT_STEP
+                }
             }
-            return true
         }
-        return false
+        return null
     }
 
-    private suspend fun findClearDataDialogClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private suspend fun findClearDataDialogClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         nodeInfo.findDialogText(arrayTextClearCacheButton)?.let { clearCacheDialogButton ->
-            when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear data dialog - clear cache button")) {
+            return when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear data dialog - clear cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
-                false -> stateMachine.setInterrupted()
-                // move to the next app
-                else -> stateMachine.setOpenClearCacheDialog()
+                false -> {
+                    state = State.INIT
+                    PACKAGE_FINISH_FAILED
+                }
+                // move to the next step
+                else -> {
+                    state = State.OPEN_CLEAR_CACHE_DIALOG
+                    PACKAGE_WAIT_NEXT_STEP
+                }
             }
-            return true
         }
-        return false
+        return null
     }
 
-    private suspend fun findClearCacheDialogOkButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private suspend fun findClearCacheDialogOkButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         nodeInfo.findDialogButton(arrayTextOkButton)?.let { clearCacheDialogButton ->
-            when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear cache dialog - ok button")) {
+            return when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear cache dialog - ok button")) {
                 // clean cache button was found and it's enabled but perform click was failed
-                false -> stateMachine.setInterrupted()
+                false -> {
+                    state = State.INIT
+                    PACKAGE_FINISH_FAILED
+                }
                 // move to the next app
-                else -> stateMachine.setFinishCleanApp()
+                else -> {
+                    state = State.INIT
+                    PACKAGE_FINISH
+                }
             }
-            return true
         }
-        return false
+        return null
     }
 
-    override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo) {
-        if (stateMachine.isOpenClearDataDialog()) {
-            if (findClearDataDialogClearCacheButton(nodeInfo))
-                return
-        } else if (stateMachine.isOpenClearCacheDialog()) {
-            if (findClearCacheDialogOkButton(nodeInfo))
-                return
-        } else {
-            if (findClearCacheButton(nodeInfo))
-                return
-            if (findClearDataButton(nodeInfo))
-                return
+    override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        if (state == State.OPEN_CLEAR_DATA_DIALOG)
+            findClearDataDialogClearCacheButton(nodeInfo)?.let { return it }
+        else if (state == State.OPEN_CLEAR_CACHE_DIALOG)
+            findClearCacheDialogOkButton(nodeInfo)?.let { return it }
+        else {
+            findClearCacheButton(nodeInfo)?.let { return it }
+            findClearDataButton(nodeInfo)?.let { return it }
         }
-
-        stateMachine.setFinishCleanApp()
-    }
-
-    override fun processState() {
-        // find "Clear data" or "Clear cache" button and do perform click
-        if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-            stateMachine.setInterrupted()
-
-        // 1. nothing found, sometimes it displays "Manage space" button
-        // that mean - 0 bytes of cache and only clear user data available
-        // 2. nothing is enabled, skip
-        if (stateMachine.isFinishCleanApp())
-            return
-
-        // state not changes, something goes wrong...
-        if (stateMachine.isInterrupted())
-            return
-
-        // find "Clear data" or "Clear cache" dialog and do perform click
-        if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-            stateMachine.setInterrupted()
-
-        // 1. found "Clear data" dialog and "Clear cache" perform clicked
-        // 2. found "Clear cache" dialog and "OK" perform clicked
-        // 3. nothing is enabled, skip
-        if (stateMachine.isFinishCleanApp())
-            return
-
-        // state not changes, something goes wrong...
-        if (stateMachine.isInterrupted())
-            return
-
-        // "Clear cache" dialog and do perform click
-        if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-            stateMachine.setInterrupted()
-
-        // wait before to move to the next app
-        if (delayForNextAppTimeoutMs > 0) {
-            stateMachine.setDelayForNextApp()
-            stateMachine.waitState(delayForNextAppTimeoutMs.toLong())
-        }
+        return null
     }
 }
 

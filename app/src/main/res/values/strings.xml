@@ -102,16 +102,9 @@
     <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the min. cache size for application filtering (KB,MB,GB,TB)</string>
     <string translatable="false" name="toast_error_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset default</string>
 
-    <string translatable="false" name="dialog_interrupted_by_accessibility_event_title">Interrupted</string>
-    <string translatable="false" name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+    <string translatable="false" name="dialog_interrupted_by_system_title">Interrupted</string>
+    <string translatable="false" name="dialog_interrupted_by_system_messages"><![CDATA[
         <b>Cache Cleaner</b> was interrupted by the Android System while cleaning apps.
-    ]]></string>
-
-    <string translatable="false" name="dialog_ignore_app_title">Ignore app</string>
-    <string translatable="false" name="dialog_ignore_app_messages"><![CDATA[
-        <b>Cache Cleaner</b> was interrupted by the Android System while cleaning the <b>%s</b> app.
-        Would you like to add this app to the list of ignored apps to prevent it from being included in future cleaning processes?
-        You can always remove this app from the list of ignored apps in the Settings.
     ]]></string>
 
     <string translatable="false" name="first_boot_title">Please read before using</string>
@@ -295,14 +288,6 @@
 
     <string translatable="false" name="description_accessibility_overlay_button_interrupt">Interrupt cache cleaning process</string>
 
-    <!-- Bugs -->
-    <string translatable="false" name="title_bug_322519674">Android 14 bug 322519674</string>
-    <string translatable="false" name="message_bug_322519674">
-        Opening AppInfo of any app causes an error in Android 14.
-        After opening too many AppInfo instances, the Android system goes into undefined behavior.
-        Sorry, but this dialog will be shown until Google fixes the bug in Android 14.
-    </string>
-
     <!-- Custom package lists -->
     <string translatable="false" name="btn_clean_custom_list_cache">Clean cache of custom list</string>
     <string translatable="false" name="dialog_title_custom_list_add">Add custom list</string>
@@ -355,6 +340,10 @@
     <string translatable="false" name="prefs_summary_max_wait_clear_cache_btn_timeout">For old smartphones, you should increase the timeout because the cache size calculation can take much longer</string>
     <string translatable="false" name="prefs_title_max_wait_accessibility_event_timeout">Max. timeout for event - %ds</string>
     <string translatable="false" name="prefs_summary_max_wait_accessibility_event_timeout">For old smartphones, you should increase the timeout because the Accessibility event can take much longer</string>
+    <string translatable="false" name="prefs_title_go_back_after_apps">Go back after cleaning %d apps</string>
+    <string translatable="false" name="prefs_title_go_back_after_apps_never">Never go back after cleaning apps</string>
+    <string translatable="false" name="prefs_summary_go_back_after_apps">Go back to avoid overflow windows stack in Android, a higher value could reduce wait time, 0 - never go back</string>
+    <string translatable="false" name="prefs_summary_go_back_after_apps_for_api_34">Go back to avoid overflow windows stack in Android, a higher value could reduce wait time</string>
     <string translatable="false" name="prefs_title_scenario">Clear cache scenario</string>
     <string-array translatable="false" name="settings_scenario_entries">
         <item>Default</item>
@@ -385,6 +374,7 @@
     <string translatable="false" name="prefs_key_settings_max_wait_app_timeout">settings_max_wait_app_timeout</string>
     <string translatable="false" name="prefs_key_settings_max_wait_accessibility_event_timeout">settings_max_wait_accessibility_event_timeout</string>
     <string translatable="false" name="prefs_key_settings_max_wait_clear_cache_btn_timeout">settings_max_wait_clear_cache_btn_timeout</string>
+    <string translatable="false" name="prefs_key_settings_go_back_after_apps">settings_go_back_after_apps</string>
     <string translatable="false" name="prefs_key_settings_scenario">settings_scenario</string>
 
     <!-- Snackbar -->

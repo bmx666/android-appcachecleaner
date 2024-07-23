@@ -31,6 +31,8 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.Bundle.AppCacheCleanerActivity.Companion.KEY_SKIP_FIRST_RUN
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_SYSTEM
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
 import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
@@ -38,7 +40,6 @@ import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
 import com.github.bmx666.appcachecleaner.ui.dialog.AlertDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.FilterListDialogBuilder
-import com.github.bmx666.appcachecleaner.ui.dialog.IgnoreAppDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.dialog.PermissionDialogBuilder
 import com.github.bmx666.appcachecleaner.ui.fragment.HelpFragment
 import com.github.bmx666.appcachecleaner.ui.fragment.PackageListFragment
@@ -338,33 +339,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             updateMainText(intent.getCharSequenceExtra(ARG_DISPLAY_TEXT))
 
         val skipFirstRun = savedInstanceState?.getBoolean(KEY_SKIP_FIRST_RUN) == true
-        if (!skipFirstRun) {
+        if (!skipFirstRun)
             checkRequestAddTileService()
-
-            // Show bugs
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                addOverlayJob(
-                    suspendCallback = {
-                        SharedPreferencesManager.BugWarning.showBug322519674(this)
-                    },
-                    postUiCallback = { showBug ->
-                        if (!showBug)
-                            return@addOverlayJob
-
-                        AlertDialogBuilder(this)
-                            .setTitle(R.string.title_bug_322519674)
-                            .setMessage(R.string.message_bug_322519674)
-                            .setPositiveButton(android.R.string.ok) { _, _ ->
-                                addOverlayJob(suspendCallback = {
-                                    // SharedPreferencesManager.BugWarning.hideBug322519674(this)
-                                })
-                            }
-                            .create()
-                            .show()
-                    }
-                )
-            }
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -779,6 +755,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     Constant.Intent.Settings.NAME_MAX_WAIT_ACCESSIBILITY_EVENT_TIMEOUT,
                     SharedPreferencesManager.Settings.getMaxWaitAccessibilityEventTimeout(this))
 
+                intent.putExtra(
+                    Constant.Intent.Settings.NAME_GO_BACK_AFTER_APPS,
+                    SharedPreferencesManager.Settings.getGoBackAfterApps(this))
+
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             }
         )
@@ -1185,11 +1165,15 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @UiContext
     @UiThread
-    override fun onCleanCacheFinish(interrupted: Boolean,
-                                    interruptedByUser: Boolean,
-                                    interruptedByAccessibilityEvent: Boolean,
+    override fun onCleanCacheFinish(message: String?,
                                     pkgName: String?) {
         val resId: Int
+        val interrupted: Boolean =
+            when (message) {
+                CANCEL_INTERRUPTED_BY_USER.message -> true
+                CANCEL_INTERRUPTED_BY_SYSTEM.message -> true
+                else -> false
+            }
 
         // run job to calculate cleaned cache on Android 8 and later
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1222,16 +1206,16 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         updateStartStopServiceButton()
 
-        if (interruptedByUser)
+        if (message == CANCEL_INTERRUPTED_BY_USER.message)
             return
 
-        if (interruptedByAccessibilityEvent) {
-            val message = HtmlCompat.fromHtml(
-                getString(R.string.dialog_interrupted_by_accessibility_event_messages),
+        if (message == CANCEL_INTERRUPTED_BY_SYSTEM.message) {
+            val msg = HtmlCompat.fromHtml(
+                getString(R.string.dialog_interrupted_by_system_messages),
                 HtmlCompat.FROM_HTML_MODE_COMPACT)
             AlertDialogBuilder(this)
-                .setTitle(R.string.dialog_interrupted_by_accessibility_event_title)
-                .setMessage(message)
+                .setTitle(R.string.dialog_interrupted_by_system_title)
+                .setMessage(msg)
                 .setPositiveButton(android.R.string.ok) { _, _ -> }
                 .create()
                 .show()
@@ -1240,11 +1224,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         addOverlayJob(
             suspendCallback = {
-                if (interrupted) {
-                    showDialogToIgnoreApp(pkgName)
-                    return@addOverlayJob
-                }
-
                 // Automatically disable service
                 if (SharedPreferencesManager.Extra.getAfterClearingCacheStopService(this)) {
                     if (PermissionChecker.checkAccessibilityPermission(this))
@@ -1262,30 +1241,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     override fun onStopAccessibilityServiceFeedback() {
         updateStartStopServiceButton()
-    }
-
-    private fun showDialogToIgnoreApp(pkgName: String?) {
-        addOverlayJob(
-            suspendCallback = {
-                if (pkgName.isNullOrEmpty())
-                    Pair(null, null)
-                else if (!SharedPreferencesManager.Filter.getShowDialogToIgnoreApp(this))
-                    Pair(null, null)
-                else
-                    Pair(pkgName, PlaceholderContent.Current.find(pkgName)?.label)
-            },
-            postUiCallback = { (pkgName, label) ->
-                pkgName ?: return@addOverlayJob
-                IgnoreAppDialogBuilder.buildIgnoreAppDialog(
-                    context = this,
-                    pkgName = pkgName,
-                    fullPkgName = when {
-                        label.isNullOrEmpty() -> "$pkgName"
-                        else -> "$label ($pkgName)"
-                    }
-                ).show()
-            }
-        )
     }
 
     @UiContext

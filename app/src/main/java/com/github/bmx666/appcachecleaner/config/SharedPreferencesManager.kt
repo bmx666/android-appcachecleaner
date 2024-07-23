@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.util.clamp
 import java.util.Locale
 
 class SharedPreferencesManager {
@@ -271,33 +272,6 @@ class SharedPreferencesManager {
         }
     }
 
-    class BugWarning {
-
-        companion object {
-            private const val KEY_BUG_322519674 =
-                "bug_322519674"
-
-            @JvmStatic
-            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
-                return PreferenceManager.getDefaultSharedPreferences(context)
-            }
-
-            @JvmStatic
-            suspend fun showBug322519674(context: Context): Boolean {
-                return getDefaultSharedPref(context)
-                    .getBoolean(KEY_BUG_322519674, true)
-            }
-
-            @JvmStatic
-            suspend fun hideBug322519674(context: Context) {
-                getDefaultSharedPref(context)
-                    .edit()
-                    .putBoolean(KEY_BUG_322519674, false)
-                    .apply()
-            }
-        }
-    }
-
     class UI {
         companion object {
             @JvmStatic
@@ -377,6 +351,35 @@ class SharedPreferencesManager {
                 getDefaultSharedPref(context)
                     .edit()
                     .putInt(context.getString(R.string.prefs_key_settings_max_wait_accessibility_event_timeout), timeout)
+                    .apply()
+            }
+
+            @JvmStatic
+            suspend fun getGoBackAfterApps(context: Context): Int {
+                return getDefaultSharedPref(context)
+                    .getInt(context.getString(R.string.prefs_key_settings_go_back_after_apps),
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                            Constant.Settings.CacheClean.DEFAULT_GO_BACK_AFTER_APPS
+                        else
+                            Constant.Settings.CacheClean.MIN_GO_BACK_AFTER_APPS
+                    )
+            }
+
+            @JvmStatic
+            suspend fun setGoBackAfterApps(context: Context, value: Int) {
+                val updatedValue =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                        clamp(value,
+                            Constant.Settings.CacheClean.MIN_GO_BACK_AFTER_APPS_FOR_API_34,
+                            Constant.Settings.CacheClean.MAX_GO_BACK_AFTER_APPS)
+                    else
+                        clamp(value,
+                            Constant.Settings.CacheClean.MIN_GO_BACK_AFTER_APPS,
+                            Constant.Settings.CacheClean.MAX_GO_BACK_AFTER_APPS)
+
+                getDefaultSharedPref(context)
+                    .edit()
+                    .putInt(context.getString(R.string.prefs_key_settings_go_back_after_apps), updatedValue)
                     .apply()
             }
 

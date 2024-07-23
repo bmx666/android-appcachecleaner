@@ -3,19 +3,57 @@ package com.github.bmx666.appcachecleaner.clearcache.scenario
 import android.os.Build
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
-import com.github.bmx666.appcachecleaner.clearcache.scenario.state.DefaultStateMachine
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.getAllChild
 import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
 import com.github.bmx666.appcachecleaner.util.showTree
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
+
+/***
+ * Steps to clean app cache:
+ *
+ * 1. open "App Info" settings for specific package
+ * 2. if Accessibility event timeout has been expired, goto #6
+ * 3. find "clear cache button":
+ *    NOTE: some Settings UI can have it on "App Info" settings
+ *    3.1. "clear cache button" not found, goto #4
+ *    3.2. "clear cache button" found:
+ *       3.2.1. if button is enabled, click it:
+ *          3.2.1.1. if perform click was success, goto #6
+ *          3.2.1.2. if perform click failed, goto #7
+ *       3.2.2. if button is disabled (cache not calculated yet or 0 bytes), goto #6
+ * 4. find "storage menu":
+ *    4.1. "storage menu" not found, goto #6
+ *    4.2. "storage menu" found:
+ *       4.2.1. if menu is enabled, click it:
+ *          4.2.1.1. if perform click was success, switched on "Storage Info" and goto #2
+ *          4.2.1.2. if perform click failed, goto #7
+ *       4.2.2. if menu was disabled, goto #6
+ * 5. find RecyclerView:
+ *    5.1. RecyclerView not found, goto #6
+ *    5.2. RecyclerView found:
+ *       5.2.1. if RecyclerView is enabled, scroll forward it:
+ *          5.2.1.1. if perform scroll forward was success:
+ *             5.2.1.1.1. wait minimal timeout for perform action
+ *             5.2.1.1.2. if RecyclerView refresh failed, goto #6
+ *             5.2.1.1.3. wait minimal timeout for perform action and goto #4
+ *          5.2.1.2. if perform scroll forward failed, goto #6
+ * 6. finish app clean process and move to the next
+ * 7. interrupt clean process and halt
+ ***/
 
 internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
 
-    override val stateMachine = DefaultStateMachine()
+    override fun resetInternalState() {
+        // ignore
+    }
 
-    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
 
             // Android 7.1 and early does not support this feature
@@ -37,8 +75,7 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
                     Logger.d("===>>> findClearCacheButton: loop: refresh, BEGIN <<<===")
                     if (!clearCacheButton.refresh()) {
                         Logger.d("===>>> findClearCacheButton: loop: refresh, FAIL <<<===")
-                        stateMachine.setInterrupted()
-                        return true
+                        return PACKAGE_FINISH_FAILED
                     }
                     Logger.d("===>>> findClearCacheButton: loop: refresh, END <<<===")
 
@@ -46,66 +83,85 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
                 }
             }
 
-            when (doPerformClick(clearCacheButton, "clean cache button")) {
+            return when (doPerformClick(clearCacheButton, "clean cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
-                false -> stateMachine.setInterrupted()
+                false -> {
+                    if (!nodeInfo.refresh()) {
+                        Logger.w("clearCacheButton (no perform click): failed to refresh parent node")
+                        return PACKAGE_FINISH_FAILED
+                    }
+
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    return findClearCacheButton(nodeInfo)
+                }
+                true -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+                        // something goes wrong...
+                        if (!clearCacheButton.refresh()) {
+                            Logger.w("clearCacheButton (perform click): failed to refresh")
+                            return PACKAGE_FINISH_FAILED
+                        }
+
+                        // BUG: even after perform click nothing happens, do perform click again
+                        if (clearCacheButton.isEnabled) {
+                            Logger.w("clearCacheButton (perform click): still enabled")
+                            if (!nodeInfo.refresh()) {
+                                Logger.w("clearCacheButton (perform click): failed to refresh parent node")
+                                return PACKAGE_FINISH_FAILED
+                            }
+
+                            Logger.w("clearCacheButton (perform click): try perform click again")
+                            return findClearCacheButton(nodeInfo)
+                        }
+                    }
+
+                    return PACKAGE_FINISH
+                }
                 // move to the next app
-                else -> stateMachine.setFinishCleanApp()
+                null -> PACKAGE_FINISH
             }
-            return true
         }
-        return false
+        return null
     }
 
-    private suspend fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): Boolean {
-        suspend fun fn(storageAndCacheMenu: AccessibilityNodeInfo): Boolean {
-            when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
-                // move to the next app
-                null -> stateMachine.setFinishCleanApp()
-                // storage & cache button was found and it's enabled but perform click was failed
-                false -> stateMachine.setInterrupted()
+    private suspend fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        suspend fun fn(storageAndCacheMenu: AccessibilityNodeInfo): CancellationException? {
+            return when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
                 // open App Storage Activity
-                true -> stateMachine.setOpenStorageInfo()
+                true -> PACKAGE_WAIT_NEXT_STEP
+                // move to the next app, storage & cache button disabled
+                null -> PACKAGE_FINISH
+                // storage & cache button was found and it's enabled but perform click was failed
+                false -> {
+                    if (!nodeInfo.refresh())
+                        return PACKAGE_FINISH_FAILED
+
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    return findStorageAndCacheMenu(nodeInfo)
+                }
             }
-            return true
         }
 
         nodeInfo.findStorageAndCacheMenu(arrayTextStorageAndCacheMenu)?.let { return fn(it) }
 
-        return false
+        return null
     }
 
-    override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo) {
-        Logger.d("===>>> doCacheClean BEGIN <<<===")
-        if (cacheClean(nodeInfo)) {
-            Logger.d("===>>> doCacheClean: cacheClean END <<<===")
-            return
-        }
-
-        if (!stateMachine.isOpenStorageInfo()) {
-            if (!stateMachine.isInterrupted())
-                stateMachine.setFinishCleanApp()
-            Logger.d("===>>> doCacheClean: !stateMachine.isOpenStorageInfo END <<<===")
-            return
-        }
-
-        Logger.d("===>>> nodeInfo refresh BEGIN <<<===")
-        nodeInfo.refresh()
-        Logger.d("===>>> nodeInfo.refresh END <<<===")
-        Logger.d("===>>> doCacheClean END <<<===")
+    override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        return cacheClean(nodeInfo)
     }
 
-    private suspend fun cacheClean(nodeInfo: AccessibilityNodeInfo): Boolean {
-        if (findClearCacheButton(nodeInfo))
-            return true
+    private suspend fun cacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        findClearCacheButton(nodeInfo)?.let { return it }
 
         var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
 
         while (recyclerViewNodeInfo != null) {
 
             // first use "nodeInfo", then refreshed RecyclerView
-            if (findStorageAndCacheMenu(recyclerViewNodeInfo))
-                return true
+            findStorageAndCacheMenu(recyclerViewNodeInfo)?.let { return it }
 
             // re-assign RecyclerView nodeInfo
             recyclerViewNodeInfo = nodeInfo.findRecyclerView() ?: break
@@ -128,32 +184,7 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
             }
         }
 
-        return false
-    }
-
-    override fun processState() {
-        // find "Storage & cache" or "Clean cache" and do perform click
-        if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-            stateMachine.setInterrupted()
-
-        // found "clear cache" and perform clicked
-        // OR "Storage & cache" is disabled
-        if (stateMachine.isFinishCleanApp())
-            return
-
-        // state not changes, something goes wrong...
-        if (stateMachine.isInterrupted())
-            return
-
-        // find "Clean cache" and do perform click
-        if (!stateMachine.waitState(maxWaitAppTimeoutMs.toLong()))
-            stateMachine.setInterrupted()
-
-        // wait before to move to the next app
-        if (delayForNextAppTimeoutMs > 0) {
-            stateMachine.setDelayForNextApp()
-            stateMachine.waitState(delayForNextAppTimeoutMs.toLong())
-        }
+        return null
     }
 }
 

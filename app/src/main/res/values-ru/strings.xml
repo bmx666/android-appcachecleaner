@@ -103,16 +103,9 @@
     <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша для фильтрации приложений (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса настройки по умолчанию</string>
 
-    <string name="dialog_interrupted_by_accessibility_event_title">Прервано</string>
-    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+    <string name="dialog_interrupted_by_system_title">Прервано</string>
+    <string name="dialog_interrupted_by_system_messages"><![CDATA[
         <b>Очиститель кэша</b> был прерван системой Андроид в процессе очистки приложений.
-    ]]></string>
-
-    <string name="dialog_ignore_app_title">Игнорировать приложение</string>
-    <string name="dialog_ignore_app_messages"><![CDATA[
-        <b>Очиститель кэша</b> был прерван системой Андроид в процессе очистки приложения <b>%s</b>.
-        Хотите добавить это приложение в список игнорируемых приложений, чтобы предотвратить его включение в будущие процессы очистки?
-        Вы всегда можете удалить это приложение из списка игнорируемых приложений в настройках.
     ]]></string>
 
     <string name="first_boot_title">Прочтите перед использованием</string>
@@ -302,14 +295,6 @@
 
     <string name="description_accessibility_overlay_button_interrupt">Прервать процесс очистки кеша</string>
 
-    <!-- Bugs -->
-    <string name="title_bug_322519674">Android 14 ошибка 322519674</string>
-    <string name="message_bug_322519674">
-        Открытие "О приложении" для любого приложения вызывает ошибку в Android 14.
-        После открытия большого количества "О приложении", система Android переходит в неопределенное состояние.
-        Извините, но это сообщение будет отображаться до тех пор, пока Google не исправит ошибку в Android 14.
-    </string>
-
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Очистка кэша из собств. списка</string>
     <string name="dialog_title_custom_list_add">Добавить собств. список</string>
@@ -362,6 +347,10 @@
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Для старых смартфонов вам необходимо увеличить время ожидания, т.к. вычисление кэша требует больше времени</string>
     <string name="prefs_title_max_wait_accessibility_event_timeout">Макс. время ожидания события спец. возм. - %ds</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Для старых смартфонов вам необходимо увеличить время ожидания, т.к. отклик на события сцеп. возможностей требует больше времени</string>
+    <string name="prefs_title_go_back_after_apps">Вернуться назад после очистки %d приложений</string>
+    <string name="prefs_title_go_back_after_apps_never">Никогда не возвращаться после очистки приложений</string>
+    <string name="prefs_summary_go_back_after_apps">Вернуться назад, чтобы избежать переполения окон в Android, большие значения могут сократить время ожидания, 0 - никогда не возвращаться</string>
+    <string name="prefs_summary_go_back_after_apps_for_api_34">Вернуться назад, чтобы избежать переполения окон в Android, большие значения могут сократить время ожидания</string>
     <string name="prefs_title_scenario">Сценарий очистки кэша</string>
     <string-array name="settings_scenario_entries">
         <item>По умолчанию</item>

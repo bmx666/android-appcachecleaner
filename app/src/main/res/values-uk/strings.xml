@@ -103,16 +103,9 @@
     <string name="dialog_filter_min_cache_size_message">Введіть мінімальний розмір кешу для фільтрації додатків (КБ, МБ, ГБ, ТБ)</string>
     <string name="toast_error_filter_min_cache_size">Будь ласка, введіть мінімальний розмір кешу в КБ, МБ, ГБ, ТБ або 0 для скидання за замовчуванням</string>
 
-    <string name="dialog_interrupted_by_accessibility_event_title">Перервано</string>
-    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+    <string name="dialog_interrupted_by_system_title">Перервано</string>
+    <string name="dialog_interrupted_by_system_messages"><![CDATA[
         <b>Очищувач кешу</b> був перерваний системою Android під час очищення додатків.
-    ]]></string>
-
-    <string name="dialog_ignore_app_title">Ігнорувати додаток</string>
-    <string name="dialog_ignore_app_messages"><![CDATA[
-        <b>Очищувач кешу</b> було перервано системою Android під час очищення додатку <b>%s</b>.
-        Хочете додати цей додаток до списку ігнорованих, щоб уникнути його включення в майбутні процеси очищення?
-        Ви завжди можете видалити цей додаток зі списку ігнорованих у Налаштуваннях.
     ]]></string>
 
     <string name="first_boot_title">Будь ласка, прочитайте перед використанням</string>
@@ -295,14 +288,6 @@
 
     <string name="description_accessibility_overlay_button_interrupt">Перервати процес очищення кешу</string>
 
-    <!-- Bugs -->
-    <string name="title_bug_322519674">Помилка Android 14 №322519674</string>
-    <string name="message_bug_322519674">
-        Відкриття Інформації про додаток будь-якого додатку викликає помилку в Android 14.
-        Після відкриття занадто великої кількості Інформацій про додаток, система Android переходить у невизначений стан.
-        Вибачте, але цей діалог буде показуватись, поки Google не виправить помилку в Android 14.
-    </string>
-
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Очистити кеш користувацького списку</string>
     <string name="dialog_title_custom_list_add">Додати користувацький список</string>
@@ -355,6 +340,10 @@
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Для старих смартфонів необхідно збільшити час очікування, бо обчислення кешу потребує більше часу</string>
     <string name="prefs_title_max_wait_accessibility_event_timeout">Макс.  час очікування служби Спец.  можливості  - %ds</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Для старих смартфонів необхідно збільшити час очікування, бо відгук на службу Спец. можливості потребує більше часу</string>
+    <string name="prefs_title_go_back_after_apps">Повернутися після очищення %d додатків</string>
+    <string name="prefs_title_go_back_after_apps_never">Ніколи не повертатися після очищення додатків</string>
+    <string name="prefs_summary_go_back_after_apps">Поверніться назад, щоб уникнути переповнення вікон в Android, більші значення можуть зменшити час очікування, 0 - ніколи не повертатися</string>
+    <string name="prefs_summary_go_back_after_apps_for_api_34">Поверніться назад, щоб уникнути переповнення вікон в Android, більші значення можуть зменшити час очікування</string>
     <string name="prefs_title_scenario">Сценарій очищення кешу</string>
     <string-array name="settings_scenario_entries">
         <item>За замовчуванням</item>
