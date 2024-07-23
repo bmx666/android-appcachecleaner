@@ -104,11 +104,7 @@ class AccessibilityClearCacheManager {
             interrupted,
             isInterruptedByUser(),
             isInterruptedByAccessibilityEvent(),
-            currentPkg.takeIf {
-                interrupted
-                && !isInterruptedByUser()
-                && !isInterruptedByAccessibilityEvent()
-            })
+            currentPkg.takeIf { interrupted })
     }
 
     fun checkEvent(event: AccessibilityEvent) {

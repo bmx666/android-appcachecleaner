@@ -1218,6 +1218,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         updateStartStopServiceButton()
 
+        if (interruptedByUser)
+            return
+
         if (interruptedByAccessibilityEvent) {
             val message = HtmlCompat.fromHtml(
                 getString(R.string.dialog_interrupted_by_accessibility_event_messages),
@@ -1245,7 +1248,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                     return@addOverlayJob
                 }
 
-                showDialogToIgnoreApp(pkgName, interrupted)
+                if (interrupted)
+                    showDialogToIgnoreApp(pkgName)
             }
         )
     }
@@ -1254,13 +1258,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         updateStartStopServiceButton()
     }
 
-    private fun showDialogToIgnoreApp(pkgName: String?,
-                                      interrupted: Boolean) {
+    private fun showDialogToIgnoreApp(pkgName: String?) {
         addOverlayJob(
             suspendCallback = {
                 if (pkgName.isNullOrEmpty())
-                    Pair(null, null)
-                else if (!interrupted)
                     Pair(null, null)
                 else if (!SharedPreferencesManager.Filter.getShowDialogToIgnoreApp(this))
                     Pair(null, null)
