@@ -103,6 +103,11 @@
     <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша для фильтрации приложений (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса настройки по умолчанию</string>
 
+    <string name="dialog_interrupted_by_accessibility_event_title">Прервано</string>
+    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+        <b>Очиститель кэша</b> был прерван системой Андроид в процессе очистки приложений.
+    ]]></string>
+
     <string name="dialog_ignore_app_title">Игнорировать приложение</string>
     <string name="dialog_ignore_app_messages"><![CDATA[
         <b>Очиститель кэша</b> был прерван системой Андроид в процессе очистки приложения <b>%s</b>.

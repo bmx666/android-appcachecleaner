@@ -102,6 +102,11 @@
     <string name="dialog_filter_min_cache_size_message">Masukkan ukuran cache min. untuk penyaringan aplikasi (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Silakan masukkan ukuran cache min. dalam KB,MB,GB,TB ATAU 0 untuk mereset standar</string>
 
+    <string name="dialog_interrupted_by_accessibility_event_title">Terganggu</string>
+    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+        <b>Pembersih Cache</b> terganggu oleh Sistem Android saat membersihkan aplikasi.
+    ]]></string>
+
     <string name="dialog_ignore_app_title">Abaikan aplikasi</string>
     <string name="dialog_ignore_app_messages"><![CDATA[
         <b>Pembersih Cache</b> terganggu oleh Sistem Android saat membersihkan aplikasi <b>%s</b>.

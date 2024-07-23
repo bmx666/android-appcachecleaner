@@ -103,6 +103,11 @@
     <string name="dialog_filter_min_cache_size_message">Entrez la taille minimale du cache pour filtrer les applications (KB,MB,GB,TB)</string>
     <string name="toast_error_filter_min_cache_size">Veuillez entrer la taille minimale du cache en KB,MB,GB,TB ou 0 pour réinitialiser par défaut</string>
 
+    <string name="dialog_interrupted_by_accessibility_event_title">Interrompu</string>
+    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+        <b>Cache Cleaner</b> a été interrompu par le Système Android lors du nettoyage des applications.
+    ]]></string>
+
     <string name="dialog_ignore_app_title">Ignorer l\'application</string>
     <string name="dialog_ignore_app_messages"><![CDATA[
         <b>Cache Cleaner</b> a été interrompu par le système Android lors du nettoyage de l\'application <b>%s</b>.
