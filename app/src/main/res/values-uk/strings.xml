@@ -1,5 +1,369 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Очищувач кешу</string>
+    <string name="service_name">Очищувач кешу</string>
+    <string name="tile_name">Очищувач кешу</string>
+    <string name="text_enable_accessibility_title">Увімкнути службу Спеціальні можливості</string>
+    <string name="text_enable_accessibility_message">
+        Для належного функціонування <b>Очищувач кешу</b> потребує вашого дозволу.
+        Перейдіть до Налаштувань, щоб надати дозвіл для <b>Спеціальні можливості</b>.
+        \n\n
+        1. Перейдіть до <b>Спеціальні можливості</b> у Налаштуваннях.
+        \n
+        2. Знайдіть <b>Очищувач кешу</b> і натисніть на нього.
+        \n
+        3. Надати дозвіл.
+        \n\n
+        <u><b>Заява про службу Спеціальні можливості:</b></u>
+        \n
+        - Цей додаток потребує доступ до Спеціальні можливості API для виконання основних функцій, таких як клацання, змахування та інші основні функції.
+        \n
+        - Дозвіл на доступність потрібен для Android 6 і вище.
+        \n
+        - Цей додаток не збирає та/або не ділиться особистими чи конфіденційними даними за допомогою можливостей доступності.
+    </string>
+    <string name="text_enable_accessibility_message_api33">
+        Для належного функціонування <b>Очищувач кешу</b> потребує вашого дозволу.
+        Перейдіть до Налаштувань, щоб надати дозвіл для <b>Спеціальні можливості</b>.
+        \n\n
+        1. Перейдіть до <b>Спеціальні можливості</b> у Налаштуваннях.
+        \n
+        2. Знайдіть <b>Очищувач кешу</b> і натисніть на нього.
+        \n
+        3. Надати дозвіл.
+        \n\n
+        <u><b>Заява про службу Спеціальні можливості:</b></u>
+        \n
+        - Цей додаток потребує доступу до служби Спеціальні можливості API для виконання основних функцій, таких як клацання, змахування та інші основні функції.
+        \n
+        - Дозвіл на доступність потрібен для Android 6 і вище.
+        \n
+        - Цей додаток не збирає та/або не ділиться особистими чи конфіденційними даними за допомогою можливостей доступності.
+        \n\n
+        <u><b>Дозволити обмежені налаштування:</b></u>
+        \n
+        - Оскільки в Android 13 Accessibility APIs обмежено для сторонніх додатків, будь ласка, прочитайте
+        <b>Попередження ⚠️</b> у меню <b>Довідка</b>.
+    </string>
+    <string name="text_accessibility_description">
+        "Очищувач кешу" потребує доступ до Спеціальних можливостей API для виконання основних функцій, таких як клацання, змахування та інші основні функції.
+        "Очищувач кешу" не збирає та/або не ділиться особистими чи конфіденційними даними за допомогою можливостей доступності.
+    </string>
+    <string name="text_enable_usage_stats_title">Увімкнути статистику використання</string>
+    <string name="text_enable_usage_stats_message">
+        Для належного функціонування <b>Очищувач кешу</b> потребує вашого дозволу.
+        Перейдіть до Налаштувань, щоб надати дозвіл на використання статистики.
+        \n\n
+        1. Перейдіть до <b>Додатки</b> у Налаштуваннях.
+        \n
+        2. Знайдіть <b>Спеціальні доступ</b> і натисніть на нього.
+        \n
+        3. Знайдіть <b>Доступ до Історії використання</b> і натисніть на нього.
+        \n
+        4. Знайдіть <b>Очищувач кешу</b> і натисніть на нього.
+        \n
+        5. Надати дозвіл.
+        \n\n
+        <u><b>Заява про Історію використання:</b></u>
+        \n
+        - Цей додаток потребує Історію використання для виконання основних функцій, таких як отримання розміру кешу встановлених додатків.
+        \n
+        - Дозвіл на Історію використання потрібен для Android 8 і вище.
+        \n
+        - Цей додаток не збирає та/або не ділиться особистими чи конфіденційними даними за допомогою Історії використання.
+    </string>
+    <string name="text_clean_cache_left">залишилося додатків</string>
+    <string name="text_clean_cache_finish">Очищення кешу завершено</string>
+    <string name="text_clean_cache_finish_display_size">Очищення кешу завершено\nОчищено %1$s</string>
+    <string name="text_clean_cache_finish_processing">Очищення кешу завершено\nОбробка…</string>
+    <string name="text_clean_cache_interrupt">Очищення кешу перервано</string>
+    <string name="text_clean_cache_interrupt_display_size">Очищення кешу перервано\nОчищено %1$s</string>
+    <string name="text_clean_cache_interrupt_processing">Очищення кешу перервано\nОбробка…</string>
+    <string name="btn_open_accessibility">Відкрити налаштування Спец. можлив.</string>
+    <string name="btn_open_usage_stats">Відкрити налаштування Історії використання</string>
+    <string name="btn_clean_all_cache">Очистити кеш усіх додатків</string>
+    <string name="btn_clean_system_cache">Очистити кеш системних додатків</string>
+    <string name="btn_clean_user_cache">Очистити кеш додатків користувача</string>
+    <string name="btn_close_app">Закрити додаток</string>
+    <string name="btn_start_accessibility_service">Запустити службу Спец. можлив.</string>
+    <string name="btn_stop_accessibility_service">Зупинити службу Спец. можлив.</string>
+    <string name="btn_add_extra_search_text">Додати додатковий текст пошуку</string>
+    <string name="description_apps_all_check">Позначити всі додатки</string>
+    <string name="description_apps_all_uncheck">Зняти позначення з усіх додатків</string>
+    <string name="text_cache_size_fmt">Кеш: %1$s</string>
+    <string name="toast_package_list_item_long_click">Утримуйте значок додатка, щоб відкрити &lt;Інформацію про додаток&gt;</string>
+    <string name="text_list_ignored_apps">Проігноровані додатки</string>
+
+    <string name="dialog_extra_search_text_title">Додати додатковий текст пошуку</string>
+    <string name="dialog_extra_search_text_message">%1$s (%2$s)\nзамість \"%3$s\"</string>
+    <string name="dialog_extra_search_text_btn_ok">OK</string>
+    <string name="dialog_extra_search_text_btn_remove">Видалити</string>
+
+    <string name="dialog_filter_min_cache_size_title">Фільтрувати за розміром кешу</string>
+    <string name="dialog_filter_min_cache_size_message">Введіть мінімальний розмір кешу для фільтрації додатків (КБ, МБ, ГБ, ТБ)</string>
+    <string name="toast_error_filter_min_cache_size">Будь ласка, введіть мінімальний розмір кешу в КБ, МБ, ГБ, ТБ або 0 для скидання за замовчуванням</string>
+
+    <string name="dialog_interrupted_by_accessibility_event_title">Перервано</string>
+    <string name="dialog_interrupted_by_accessibility_event_messages"><![CDATA[
+        <b>Очищувач кешу</b> був перерваний системою Android під час очищення додатків.
+    ]]></string>
+
+    <string name="dialog_ignore_app_title">Ігнорувати додаток</string>
+    <string name="dialog_ignore_app_messages"><![CDATA[
+        <b>Очищувач кешу</b> було перервано системою Android під час очищення додатку <b>%s</b>.
+        Хочете додати цей додаток до списку ігнорованих, щоб уникнути його включення в майбутні процеси очищення?
+        Ви завжди можете видалити цей додаток зі списку ігнорованих у Налаштуваннях.
+    ]]></string>
+
+    <string name="first_boot_title">Будь ласка, прочитайте перед використанням</string>
+    <string name="first_boot_message"><![CDATA[
+        <h2>Змінений інтерфейс Налаштувань</h2>
+        <br/>
+        Багато компаній або Android ROM додають або змінюють стандартний інтерфейс Android, включаючи Налаштування.
+        Це може спричинити проблему, оскільки додаток <b>Очищувач кешу</b> шукає конкретний текст,
+        і якщо він не збігається, додаток нічого не робить.
+    ]]></string>
+    <string name="first_boot_confirm_1">
+        Я підтверджую, що прочитаю розділ <b>Змінений інтерфейс Налаштувань</b> у меню <b>Допомога</b>,
+        перед тим як виконувати будь-які дії з додатком <b>Очищувач кешу</b>.
+    </string>
+    <string name="first_boot_confirm_2">
+        Я підтверджую, що якщо додаток <b>Очищувач кешу</b> не виконує жодних дій,
+        я виконаю дії, описані у меню <b>Допомога</b> у розділі <b>Змінений інтерфейс Налаштувань</b>,
+        пов\'язані з налаштуванням альтернативного тексту для пошуку меню <b>Сховище та кеш</b> або <b>Сховище</b>,
+        а також налаштуванням альтернативного тексту для пошуку кнопки <b>Очистити кеш</b>.
+    </string>
+    <string name="first_boot_confirm_3">
+        Я підтверджую, що якщо додаток <b>Очищувач кешу</b> не виконує жодних дій,
+        я зміню сценарій очищення кешу у <b>Налаштуваннях</b> з <b>Звичайного</b> сценарію
+        на сценарій <b>Xiaomi MIUI</b>, якщо мій телефон є <b>Xiaomi з регіональною прошивкою MIUI</b>.
+    </string>
+    <string name="first_boot_confirm_4">
+        Я підтверджую, що якщо додаток <b>Очищувач кешу</b> не виконує жодних із описаних вище дій,
+        я зобов\'язуюсь повідомити про свою проблему за адресою, зазначеною у розділі
+        <b>Надіслати звіт про помилку</b> у меню <b>Допомога</b>.
+    </string>
+
+    <string name="menu_extra_search_text_title">Додатковий текст для пошуку:</string>
+
+    <string name="help_about"><![CDATA[
+        <h2>Про додаток</h2>
+        <br/>
+        Починаючи з Android 6 (Marshmallow) більше не можна очистити кеш усіх додатків одночасно,
+        і Google перемістив цей дозвіл до системних додатків. Єдиний можливий шлях, що залишився -
+        вручну відкрити інформацію про додаток та знайти специфічне
+        меню <b>&quot;Сховище&quot;</b> і натиснути кнопку <b>&quot;Очистити кеш&quot;</b>.
+        <br/><br/>
+        Додаток <b>Очищувач кешу</b> може запитати всі встановлені користувацькі та системні додатки,
+        і він замінює всі ручні дії, пов\'язані з очищенням кешу, за допомогою служби Спеціальні можливості.
+    ]]></string>
+
+    <string name="help_android13_accessibility_permission"><![CDATA[
+        <br/>
+        <h2>Попередження ⚠️</h2>
+        <br/>
+        Починаючи з Android 13, Спеціальні можливості API обмежені для сторонніх додатків,
+        будь ласка, виконайте кроки нижче, щоб увімкнути Спеціальні можливості для додатка <b>Очищувач кешу</b>.
+        <br/><br/>
+        Важливо! При першому запуску, вам потрібно перейти до <b>Спеціальні можливості</b> та
+        натиснути на <b>Очищувач кешу</b>, щоб активувати обмеження; в іншому випадку, Android не покаже
+        <b>Дозволити обмежені налаштування</b>.
+        <br/><br/>
+        ▶️ <a href="https://www.youtube.com/watch?v=UiCr33gYZiI">Перегляньте <b>ІНСТРУКЦІЮ</b> на YouTube</a>
+        <br/><br/>
+        <h3>Дозволити обмежені налаштування</h3>
+        <br/>
+        Коли ви дозволяєте обмежені налаштування, ви дозволяєте додаткам отримувати доступ до чутливої інформації,
+        що може поставити ваші особисті дані під загрозу. Ми не рекомендуємо дозволяти обмежені налаштування,
+        якщо ви не довіряєте розробнику додатка.
+        <br/><br/>
+        Деякі легітимні додатки можуть попросити вас дозволити обмежені налаштування. Наприклад, додаток,
+        розроблений для підтримки людей з обмеженими можливостями, може попросити увімкнути налаштування Спеціальні можливості.
+        З доступом до налаштувань Спеціальні можливості додаток може читати вміст на вашому екрані та взаємодіяти
+        з додатками від вашого імені.
+        <br/><br/>
+        1. На вашому пристрої Android відкрийте додаток <b>Налаштування</b>
+        <br/>
+        2. Натисніть <b>Додатки</b>
+        <br/>
+        3. Натисніть <b>Усі додатки</b>
+        <br/>
+        4. Знайдіть та натисніть <b>Очищувач кешу</b>
+        <br/>
+        5. Натисніть меню <b>Ще</b> <b>⋮</b> (у верхньому правому куті)
+        <br/>
+        6. Натисніть <b>Дозволити обмежені налаштування</b>
+        <br/>
+        7. Виконайте інструкції на екрані
+        <br/><br/>
+        <b>Довідка Android</b> - <a href="https://support.google.com/android/answer/12623953?hl=uk">Дізнайтеся про обмежені налаштування</a>
+    ]]></string>
+
+    <string name="help_how_to_use"><![CDATA[
+        <br/>
+        <h2>Як використовувати</h2>
+        <br/>
+        1. Натисніть кнопку Очистити кеш <b>Додатки користувача</b>, <b>Системні додатки</b> АБО <b>Усі додатки</b>
+        <br/>
+        2. Увімкніть підтримку Історія використання для додатка <b>Очищувач кешу</b>, якщо це потрібно
+        <br/>
+        3. Увімкніть підтримку Спеціальні можливості для додатка <b>Очищувач кешу</b>, якщо це потрібно
+        <br/>
+        4. Перевірте потрібні додатки у списку (використовуйте плаваючу кнопку, щоб перевірити/зняти всі додатки)
+        <br/>
+        5. Натисніть <b>Плаваючу кнопку очищення кешу</b>, щоб запустити процес очищення кешу
+        <br/>
+        6. Натисніть <b>Плаваючу кнопку доступності</b>, щоб перервати процес АБО дочекайтесь завершення процесу
+        <br/>
+        7. <i>(необов\'язково)</i> Натисніть <b>Зупинити службу Спеціальні можливості</b>, щоб вимкнути службу доступності
+    ]]></string>
+
+    <string name="help_customized_settings_ui"><![CDATA[
+        <br/>
+        <h2>Змінений інтерфейс налаштувань</h2>
+        <br/>
+        Багато компаній або Android ROM додають або змінюють стандартний інтерфейс Android, включаючи Налаштування.
+        Це може спричинити проблему, тому що додаток <b>Очищувач кешу</b> шукає певний текст,
+        і якщо він не збігається, додаток нічого не робить.
+        <br/>
+        <br/>
+        Будь ласка, дотримуйтесь наступних кроків, щоб вирішити проблему очищення кешу:
+        <br/>
+        <br/>
+        1. Виберіть будь-який додаток та перейдіть до <b>&quot;Інформація про додаток&quot;</b>
+        <br/>
+        2. Запишіть текст для меню <b>&quot;Сховище&quot;</b>
+        <br/>
+        3. Перейдіть до меню <b>&quot;Сховище&quot;</b>
+        <br/>
+        4. Запишіть текст для кнопки <b>&quot;Очистити кеш&quot;</b>
+        <br/>
+        5. Відкрийте додаток <b>Очищувач кешу</b> з конкретною локаллю (змініть потрібну локаль в Налаштуваннях
+        та поверніться в додаток <b>Очищувач кешу</b>)
+        <br/>
+        6. Відкрийте меню <b>Налаштування</b> у верхньому правому куті та знайдіть розділ <b>Додати додатковий текст пошуку</b>
+        <br/>
+        7. Натисніть на <b>Очистити кеш</b>, введіть спеціальний текст для пошуку для кнопки <b>&quot;Очистити кеш&quot;</b>
+        в поле вводу та натисніть <b>&quot;ОК&quot;</b>, щоб зберегти його. Щоб видалити спеціальний текст пошуку
+        для кнопки <b>&quot;Очистити кеш&quot;</b>, просто видаліть весь текст в полі вводу та натисніть
+        <b>&quot;ОК&quot;</b>
+        <br/>
+        8. Натисніть на <b>Сховище</b>, введіть спеціальний текст для пошуку для меню <b>&quot;Сховище&quot;</b>
+        в поле вводу та натисніть <b>&quot;ОК&quot;</b>, щоб зберегти його. Щоб видалити спеціальний текст пошуку
+        для меню <b>&quot;Сховище&quot;</b>, просто видаліть весь текст в полі вводу та натисніть
+        <b>&quot;ОК&quot;</b>
+        <br/>
+        <br/>
+        <h4>Смартфони Xiaomi з конкретною регіональною прошивкою MIUI повинні використовувати інший сценарій очищення кешу:</h4>
+        1. Відкрийте меню <b>Налаштування</b> у верхньому правому куті та знайдіть розділ <b>Інше</b>
+        <br/>
+        2. Натисніть <b>Сценарій очищення кешу</b> та виберіть <b>Xiaomi MIUI</b>
+        <br/>
+        <br/>
+        <h4>УВАГА ⚠️: Смартфони Huawei та Xiaomi часто використовують агресивну оптимізацію батареї, що
+        може порушити зв’язок між <b>Очищувачем кешу</b> та службою доступності,
+        запобігаючи їх роботі як очікується. Будь ласка, дотримуйтесь наступних кроків:</h4>
+        1. Відкрийте меню <b>Налаштування</b> у верхньому правому куті та знайдіть розділ <b>Показати додаткові кнопки</b>
+        <br/>
+        2. Увімкніть опцію <b>Запустити/Зупинити службу доступності</b>
+        <br/>
+        3. Наступного разу, коли ви запустите <b>Очищувач кешу</b>, якщо служба доступності працює,
+        зупиніть її, натиснувши кнопку <b>Зупинити службу доступності</b>.
+        Потім увімкніть її знову, натиснувши кнопку <b>Запустити службу доступності</b>
+    ]]></string>
+
+    <string name="help_icon_copyright"><![CDATA[
+        <br/>
+        <h2>Авторське право на іконку</h2>
+        <br/>
+        <a href="https://www.flaticon.com/free-icon/broom_2954888"><b>Іконка Мітли</b> створена Smashicons - Flaticon</a>
+        <br/>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon.pdf">
+        Ліцензія Freepik на <b>Іконку Мітли</b></a>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon_monochrome.pdf">
+        Ліцензія Freepik на монохромну <b>Іконку Мітли</b></a>
+    ]]></string>
+
+    <string name="help_submit_bug_report"><![CDATA[
+        <br/>
+        <h2>Надіслати звіт про помилку</h2>
+        <br/>
+        <b><a href="https://github.com/bmx666/android-appcachecleaner/issues">Github</a></b>
+    ]]></string>
+
+    <string name="description_accessibility_overlay_button_interrupt">Перервати процес очищення кешу</string>
+
+    <!-- Bugs -->
+    <string name="title_bug_322519674">Помилка Android 14 №322519674</string>
+    <string name="message_bug_322519674">
+        Відкриття Інформації про додаток будь-якого додатку викликає помилку в Android 14.
+        Після відкриття занадто великої кількості Інформацій про додаток, система Android переходить у невизначений стан.
+        Вибачте, але цей діалог буде показуватись, поки Google не виправить помилку в Android 14.
+    </string>
+
+    <!-- Custom package lists -->
+    <string name="btn_clean_custom_list_cache">Очистити кеш користувацького списку</string>
+    <string name="dialog_title_custom_list_add">Додати користувацький список</string>
+    <string name="dialog_message_custom_list_add">Будь ласка, введіть нову назву:</string>
+    <string name="dialog_title_custom_list_edit">Редагувати користувацький список</string>
+    <string name="dialog_message_custom_list_edit">Будь ласка, виберіть список:</string>
+    <string name="dialog_title_custom_list_remove">Видалити користувацький список</string>
+    <string name="dialog_message_custom_list_remove">Будь ласка, виберіть список:</string>
+    <string name="dialog_title_custom_list_clean_cache">Очистити кеш користувацького списку</string>
+    <string name="dialog_message_custom_list_clean_cache">Будь ласка, виберіть список:</string>
+    <string name="toast_custom_list_add_already_exists">Введена назва вже існує, будь ласка, використайте іншу назву</string>
+    <string name="toast_custom_list_add_list_empty">Список порожній, додайте принаймні один додаток</string>
+    <string name="toast_custom_list_has_been_saved">Список %1$s збережено</string>
+    <string name="toast_custom_list_has_been_removed">Список %1$s видалено</string>
+
+    <!-- Preference -->
+    <string name="prefs_ui">Інтерфейс</string>
+    <string name="prefs_ui_night_mode">Темна тема</string>
+    <string name="prefs_title_filter_min_cache_size">Мін. розмір кешу для фільтрації додатків</string>
+    <string name="prefs_summary_filter_min_cache_size">Мін. %1$s</string>
+    <string name="prefs_error_convert_filter_min_cache_size">Будь ласка, введіть мін. розмір кешу в KB, MB, GB, TB АБО 0 для скидання фільтра</string>
+    <string name="prefs_title_filter_hide_disabled_apps">Приховати вимкнені додатки</string>
+    <string name="prefs_title_filter_hide_ignored_apps">Приховати ігноровані додатки</string>
+    <string name="prefs_title_filter_show_dialog_to_ignore_app">Показати діалог для ігнорування додатку</string>
+    <string name="prefs_title_filter_list_of_ignored_apps_edit">Список ігнорованих додатків</string>
+    <string name="prefs_summary_filter_list_of_ignored_apps_edit">Редагувати список ігнорованих додатків</string>
+    <string name="prefs_show_extra_buttons">Показати додаткові кнопки</string>
+    <string name="prefs_title_show_button_start_stop_service">Запустити/Зупинити службу Спец. можливості</string>
+    <string name="prefs_summary_show_button_start_stop_service">Для деяких смартфонів потрібно вручну запускати або зупиняти службу Спец. можливості</string>
+    <string name="prefs_title_show_button_close_app">Закрити додаток</string>
+    <string name="prefs_summary_show_button_close_app">Для деяких смартфонів потрібно вручну зупиняти службу Спец. можливості та закривати додаток</string>
+    <string name="prefs_extra_actions">Додаткові дії</string>
+    <string name="prefs_title_extra_action_stop_service">Автозупинка служби Спец. можливості</string>
+    <string name="prefs_summary_extra_action_stop_service">Автозупинка служби Спец. можливості після очищення кешу</string>
+    <string name="prefs_title_extra_action_close_app">Автозакриття додатку</string>
+    <string name="prefs_summary_extra_action_close_app">Автозакриття додатку після очищення кешу</string>
+    <string name="prefs_custom_lists">Користувацькі списки додатків</string>
+    <string name="prefs_title_custom_list_add">Додати</string>
+    <string name="prefs_summary_custom_list_add">Додати новий список додатків</string>
+    <string name="prefs_title_custom_list_edit">Редагувати</string>
+    <string name="prefs_summary_custom_list_edit">Редагувати існуючий список додатків</string>
+    <string name="prefs_title_custom_list_remove">Видалити</string>
+    <string name="prefs_summary_custom_list_remove">Видалити існуючий список додатків</string>
+    <string name="prefs_other">Інше</string>
+    <string name="prefs_title_delay_for_next_app_timeout">Затримка між додатками - %ds</string>
+    <string name="prefs_summary_delay_for_next_app_timeout">Для старих смартфонів необхідно збільшити час очікування між додатками, бо система Android може викликати переривання</string>
+    <string name="prefs_title_max_wait_app_timeout">Макс. час очікування для додатків - %dc</string>
+    <string name="prefs_summary_max_wait_app_timeout">Для старих смартфонів необхідно збільшити час очікування на кожен додаток,бо обчислення кешу потребує більше часу</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Макс.  час очікування кнопки "Очистити кеш" - %dc</string>
+    <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Для старих смартфонів необхідно збільшити час очікування, бо обчислення кешу потребує більше часу</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Макс.  час очікування служби Спец.  можливості  - %ds</string>
+    <string name="prefs_summary_max_wait_accessibility_event_timeout">Для старих смартфонів необхідно збільшити час очікування, бо відгук на службу Спец. можливості потребує більше часу</string>
+    <string name="prefs_title_scenario">Сценарій очищення кешу</string>
+    <string-array name="settings_scenario_entries">
+        <item>За замовчуванням</item>
+        <item>Xiaomi MIUI</item>
+    </string-array>
+
+    <!-- Snackbar -->
+    <string name="snackbar_processing">Обробка, будь ласка, зачекайте…</string>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистити кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Пам’ять і кеш"</string>
     <string name="storage_label" msgid="2522307545547515733">"Пам\'ять"</string>
