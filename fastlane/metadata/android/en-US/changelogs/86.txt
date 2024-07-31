@@ -1,0 +1,2 @@
+* add Ukrainian translation
+* disable single-line text to fit longer text in the Settings
