@@ -1,0 +1,6 @@
+* update cache clearing algorithm
+* force ignore all accessibility errors until user interrupts the process
+* add workaround for Android bug 322519674, remove dialog
+* go back after every 25 apps for Android 14 and later (value can be tuned in the settings)
+* enable never going back during cache clean process for Android 13 and earlier
+* remove dialog about ignored app
