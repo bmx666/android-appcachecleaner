@@ -83,6 +83,7 @@
     <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
     <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
+    <string translatable="false" name="btn_clean_cache_disabled_apps">Clean cache of disabled apps</string>
     <string translatable="false" name="btn_close_app">Close app</string>
     <string translatable="false" name="btn_start_accessibility_service">Start Accessibility service</string>
     <string translatable="false" name="btn_stop_accessibility_service">Stop Accessibility service</string>
@@ -315,6 +316,7 @@
     <string translatable="false" name="prefs_title_filter_list_of_ignored_apps_edit">List of ignored apps</string>
     <string translatable="false" name="prefs_summary_filter_list_of_ignored_apps_edit">Edit the list of ignored apps</string>
     <string translatable="false" name="prefs_show_extra_buttons">Show extra buttons</string>
+    <string translatable="false" name="prefs_title_show_button_clean_cache_disabled_apps">Clean cache of disabled apps</string>
     <string translatable="false" name="prefs_title_show_button_start_stop_service">Start/Stop Accessibility service</string>
     <string translatable="false" name="prefs_summary_show_button_start_stop_service">For some smartphones, you need to manually start or stop the accessibility service</string>
     <string translatable="false" name="prefs_title_show_button_close_app">Close app</string>
@@ -363,6 +365,7 @@
     <string translatable="false" name="prefs_key_filter_list_of_ignored_apps">filter_list_of_ignored_apps</string>
     <string translatable="false" name="prefs_key_clear_cache">clear_cache</string>
     <string translatable="false" name="prefs_key_storage">storage</string>
+    <string translatable="false" name="prefs_key_show_button_clean_cache_disabled_apps">show_button_clean_cache_disabled_apps</string>
     <string translatable="false" name="prefs_key_show_button_start_stop_service">show_button_start_stop_service</string>
     <string translatable="false" name="prefs_key_show_button_close_app">show_button_close_app</string>
     <string translatable="false" name="prefs_key_extra_action_stop_service">extra_action_stop_service</string>

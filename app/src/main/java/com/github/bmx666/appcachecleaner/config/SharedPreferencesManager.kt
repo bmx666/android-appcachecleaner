@@ -132,6 +132,14 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
+            suspend fun getShowCleanCacheDisabledApps(context: Context): Boolean {
+                return getDefaultSharedPref(context)
+                    .getBoolean(
+                        context.getString(R.string.prefs_key_show_button_clean_cache_disabled_apps),
+                        false)
+            }
+
+            @JvmStatic
             suspend fun getShowStartStopService(context: Context): Boolean {
                 return getDefaultSharedPref(context)
                     .getBoolean(

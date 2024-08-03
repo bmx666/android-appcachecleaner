@@ -84,6 +84,7 @@
     <string name="btn_clean_all_cache">Очистити кеш усіх додатків</string>
     <string name="btn_clean_system_cache">Очистити кеш системних додатків</string>
     <string name="btn_clean_user_cache">Очистити кеш додатків користувача</string>
+    <string name="btn_clean_cache_disabled_apps">Очистити кеш вимкнених додатків</string>
     <string name="btn_close_app">Закрити додаток</string>
     <string name="btn_start_accessibility_service">Запустити службу Спец. можлив.</string>
     <string name="btn_stop_accessibility_service">Зупинити службу Спец. можлив.</string>
@@ -315,6 +316,7 @@
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Список ігнорованих додатків</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Редагувати список ігнорованих додатків</string>
     <string name="prefs_show_extra_buttons">Показати додаткові кнопки</string>
+    <string name="prefs_title_show_button_clean_cache_disabled_apps">Очистити кеш вимкнених додатків</string>
     <string name="prefs_title_show_button_start_stop_service">Запустити/Зупинити службу Спец. можливості</string>
     <string name="prefs_summary_show_button_start_stop_service">Для деяких смартфонів потрібно вручну запускати або зупиняти службу Спец. можливості</string>
     <string name="prefs_title_show_button_close_app">Закрити додаток</string>

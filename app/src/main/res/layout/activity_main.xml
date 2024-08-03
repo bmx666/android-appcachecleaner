@@ -188,6 +188,13 @@
             android:text="@string/btn_clean_all_cache" />
 
         <Button
+            android:id="@+id/btnCleanCacheDisabledApps"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_clean_cache_disabled_apps" />
+
+        <Button
             android:id="@+id/btnCleanCustomListAppCache"
             android:visibility="gone"
             android:layout_width="match_parent"

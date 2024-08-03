@@ -61,6 +61,11 @@
 
         <SwitchPreferenceCompat
             app:singleLineTitle="false"
+            app:key="@string/prefs_key_show_button_clean_cache_disabled_apps"
+            app:title="@string/prefs_title_show_button_clean_cache_disabled_apps"/>
+
+        <SwitchPreferenceCompat
+            app:singleLineTitle="false"
             app:key="@string/prefs_key_show_button_start_stop_service"
             app:title="@string/prefs_title_show_button_start_stop_service"
             app:summary="@string/prefs_summary_show_button_start_stop_service"/>
