@@ -143,6 +143,7 @@ class Constant {
     enum class PackageListAction {
         DEFAULT,
         CUSTOM_ADD_EDIT,
+        DISABLED_CLEAN,
         CUSTOM_CLEAN,
         IGNORED_APPS_EDIT
     }

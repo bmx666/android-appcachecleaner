@@ -196,6 +196,26 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             )
         }
 
+        binding.btnCleanCacheDisabledApps.setOnClickListener {
+            addOverlayJob(
+                suspendCallback = {
+                    if (checkAndShowPermissionDialogs())
+                        PackageManagerHelper.getDisabledApps(
+                            context = this
+                        )
+                    else
+                        null
+                },
+                postUiCallback = { pkgInfoList ->
+                    pkgInfoList ?: return@addOverlayJob
+                    preparePackageList(
+                        pkgInfoList,
+                        Constant.PackageListAction.DISABLED_CLEAN,
+                    )
+                }
+            )
+        }
+
         binding.btnStartStopService.setOnClickListener {
             addOverlayJob(
                 suspendCallback = {
@@ -588,7 +608,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             PlaceholderContent.All.ignore(skipPkgList)
 
         when (pkgListAction) {
-            Constant.PackageListAction.DEFAULT -> {
+            Constant.PackageListAction.DEFAULT,
+            Constant.PackageListAction.DISABLED_CLEAN,
+            -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     PlaceholderContent.Current.update(
                         PlaceholderContent.All.getFilteredByCacheSize(
@@ -879,6 +901,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         when (pkgListAction) {
             Constant.PackageListAction.DEFAULT ->
                 updateActionBarFilter(R.string.clear_cache_btn_text)
+            Constant.PackageListAction.DISABLED_CLEAN ->
+                updateActionBarFilter(R.string.clear_cache_btn_text)
             Constant.PackageListAction.CUSTOM_ADD_EDIT ->
                 updateActionBarSearch(customListName)
             Constant.PackageListAction.CUSTOM_CLEAN ->
@@ -976,6 +1000,19 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     private fun updateExtraButtonsVisibility() {
+        addOverlayJob(
+            suspendCallback = {
+                SharedPreferencesManager.Extra.getShowCleanCacheDisabledApps(this)
+            },
+            postUiCallback = { showCleanCacheDisabledApps ->
+                binding.btnCleanCacheDisabledApps.visibility =
+                    when (showCleanCacheDisabledApps) {
+                        true -> View.VISIBLE
+                        else -> View.GONE
+                    }
+            }
+        )
+
         addOverlayJob(
             suspendCallback = {
                 SharedPreferencesManager.Extra.getShowStartStopService(this)
@@ -1126,7 +1163,9 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         binding.layoutFabListOfIgnoredApps.visibility = View.GONE
 
         when (pkgListAction) {
-            Constant.PackageListAction.DEFAULT -> {
+            Constant.PackageListAction.DEFAULT,
+            Constant.PackageListAction.DISABLED_CLEAN,
+            -> {
                 binding.layoutFab.visibility = View.VISIBLE
                 onMenuShowFilter()
             }
@@ -1151,7 +1190,12 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             putString(Constant.Bundle.PackageFragment.KEY_CUSTOM_LIST_NAME,
                 customListName)
             putBoolean(Constant.Bundle.PackageFragment.KEY_HIDE_STATS,
-                pkgListAction != Constant.PackageListAction.DEFAULT)
+                when (pkgListAction) {
+                    Constant.PackageListAction.DEFAULT,
+                    Constant.PackageListAction.DISABLED_CLEAN,
+                        -> false
+                    else -> true
+                })
             pkgFragment.arguments = this
         }
         supportFragmentManager.beginTransaction()

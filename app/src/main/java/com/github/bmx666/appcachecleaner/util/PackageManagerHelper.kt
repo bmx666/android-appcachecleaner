@@ -40,6 +40,19 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
+        suspend fun getDisabledApps(context: Context): ArrayList<PackageInfo> {
+            val list = context.packageManager.getInstalledPackages(0)
+            val pkgInfoList = ArrayList<PackageInfo>()
+            for (i in list.indices) {
+                val packageInfo = list[i]
+                if (packageInfo?.applicationInfo?.enabled == false)
+                    pkgInfoList.add(packageInfo)
+            }
+
+            return pkgInfoList
+        }
+
+        @JvmStatic
         suspend fun getCustomInstalledApps(context: Context,
                                    pkgList: Set<String>): ArrayList<PackageInfo> {
             val list = context.packageManager.getInstalledPackages(0)

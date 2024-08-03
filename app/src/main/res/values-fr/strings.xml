@@ -84,6 +84,7 @@
     <string name="btn_clean_all_cache">Vider le cache de toutes les applis</string>
     <string name="btn_clean_system_cache">Vider le cache des applis système</string>
     <string name="btn_clean_user_cache">Vider le cache des applis utilisateur</string>
+    <string name="btn_clean_cache_disabled_apps">Vider le cache des applis désactivées</string>
     <string name="btn_close_app">Fermer l\'appli</string>
     <string name="btn_start_accessibility_service">Démarrer le service d\'accessibilité</string>
     <string name="btn_stop_accessibility_service">Arrêter le service d\'accessibilité</string>
@@ -320,6 +321,7 @@
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Liste des applications ignorées</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Modifier la liste des applications ignorées</string>
     <string name="prefs_show_extra_buttons">Afficher des boutons supplémentaires</string>
+    <string name="prefs_title_show_button_clean_cache_disabled_apps">Vider le cache des applis désactivées</string>
     <string name="prefs_title_show_button_start_stop_service">Démarrer/arrêter le service d\'accessibilité</string>
     <string name="prefs_summary_show_button_start_stop_service">Pour certains smartphones, vous devez démarrer ou arrêter manuellement le service d\'accessibilité</string>
     <string name="prefs_title_show_button_close_app">Fermer l\'appli</string>

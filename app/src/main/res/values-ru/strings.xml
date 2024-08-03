@@ -84,6 +84,7 @@
     <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>
     <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
     <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
+    <string name="btn_clean_cache_disabled_apps">Очистка кэша отключенных приложений</string>
     <string name="btn_close_app">Выйти из приложения</string>
     <string name="btn_start_accessibility_service">Запустить сервис Спец. возможностей</string>
     <string name="btn_stop_accessibility_service">Остановить сервис Спец. возможностей</string>
@@ -322,6 +323,7 @@
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Список игнорируемых приложений</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Редактировать список игнорируемых приложожений</string>
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>
+    <string name="prefs_title_show_button_clean_cache_disabled_apps">Очистка кэша отключенных приложений</string>
     <string name="prefs_title_show_button_start_stop_service">Вкл/Выкл сервис Спец. возм.</string>
     <string name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>
     <string name="prefs_title_show_button_close_app">Выйти из приложения</string>

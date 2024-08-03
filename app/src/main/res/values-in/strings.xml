@@ -83,6 +83,7 @@
     <string name="btn_clean_all_cache">Bersihkan cache semua aplikasi</string>
     <string name="btn_clean_system_cache">Bersihkan cache aplikasi sistem</string>
     <string name="btn_clean_user_cache">Bersihkan cache aplikasi pengguna</string>
+    <string name="btn_clean_cache_disabled_apps">Bersihkan cache aplikasi yang dinonaktifkan</string>
     <string name="btn_close_app">Tutup aplikasi</string>
     <string name="btn_start_accessibility_service">Mulai layanan Aksesibilitas</string>
     <string name="btn_stop_accessibility_service">Hentikan layanan Aksesibilitas</string>
@@ -316,6 +317,7 @@
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Daftar aplikasi yang diabaikan</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Edit daftar aplikasi yang diabaikan</string>
     <string name="prefs_show_extra_buttons">Tampilkan tombol tambahan</string>
+    <string name="prefs_title_show_button_clean_cache_disabled_apps">Bersihkan cache aplikasi yang dinonaktifkan</string>
     <string name="prefs_title_show_button_start_stop_service">Mulai/Hentikan Layanan Aksesibilitas</string>
     <string name="prefs_summary_show_button_start_stop_service">Untuk beberapa smartphone, Anda perlu secara manual memulai atau menghentikan layanan aksesibilitas</string>
     <string name="prefs_title_show_button_close_app">Tutup aplikasi</string>
