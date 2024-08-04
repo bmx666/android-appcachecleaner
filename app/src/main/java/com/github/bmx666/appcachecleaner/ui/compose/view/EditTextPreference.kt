@@ -1,9 +1,9 @@
 package com.github.bmx666.appcachecleaner.ui.compose.view
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,11 +28,15 @@ fun EditTextPreference(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = title, style = MaterialTheme.typography.h6)
+        Text(
+            text = title,
+            //style = MaterialTheme.typography.h6,
+        )
         summary?.let {
             Text(text = it,
-                style = MaterialTheme.typography.body2,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f))
+                //style = MaterialTheme.typography.body2,
+                //color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
         BasicTextField(
@@ -43,7 +47,7 @@ fun EditTextPreference(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .border(BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.6f)))
+                //.border(BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.6f)))
                 .padding(8.dp)
         )
     }

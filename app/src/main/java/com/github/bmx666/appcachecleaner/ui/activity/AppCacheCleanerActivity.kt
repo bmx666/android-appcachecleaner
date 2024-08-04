@@ -8,10 +8,6 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import android.os.FileUtils
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.text.format.Formatter
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Toast
@@ -24,10 +20,8 @@ import androidx.annotation.StringRes
 import androidx.annotation.UiContext
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.core.text.HtmlCompat
-import androidx.compose.runtime.Composable
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -40,17 +34,6 @@ import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.Bundle.AppCacheCleanerActivity.Companion.KEY_SKIP_FIRST_RUN
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_SYSTEM
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
-import com.github.bmx666.appcachecleaner.databinding.ActivityMainBinding
-import com.github.bmx666.appcachecleaner.log.Logger
-import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
-import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
-import com.github.bmx666.appcachecleaner.ui.dialog.AlertDialogBuilder
-import com.github.bmx666.appcachecleaner.ui.theme.AppTheme
-import com.github.bmx666.appcachecleaner.ui.compose.ComposeHelp
-import com.github.bmx666.appcachecleaner.ui.compose.FirstBootScreen
-import com.github.bmx666.appcachecleaner.ui.compose.HelpScreen
-import com.github.bmx666.appcachecleaner.ui.compose.HomeScreen
-import com.github.bmx666.appcachecleaner.ui.compose.SettingsScreen
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
 import com.github.bmx666.appcachecleaner.service.CacheCleanerTileService
@@ -1074,11 +1057,11 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 SharedPreferencesManager.Extra.getShowCleanCacheDisabledApps(this)
             },
             postUiCallback = { showCleanCacheDisabledApps ->
-                binding.btnCleanCacheDisabledApps.visibility =
-                    when (showCleanCacheDisabledApps) {
-                        true -> View.VISIBLE
-                        else -> View.GONE
-                    }
+//                binding.btnCleanCacheDisabledApps.visibility =
+//                    when (showCleanCacheDisabledApps) {
+//                        true -> View.VISIBLE
+//                        else -> View.GONE
+//                    }
             }
         )
 

@@ -28,18 +28,24 @@ class UserPrefExtraManager @Inject constructor(
                 )
             }
         )
-        val KEY_SHOW_BUTTON_START_STOP_SERVICE =
+        private val KEY_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS =
+            booleanPreferencesKey("show_button_clean_cache_disabled_apps")
+        private val KEY_SHOW_BUTTON_START_STOP_SERVICE =
             booleanPreferencesKey("show_button_start_stop_service")
-        val KEY_SHOW_BUTTON_CLOSE_APP =
+        private val KEY_SHOW_BUTTON_CLOSE_APP =
             booleanPreferencesKey("show_button_close_app")
-        val KEY_ACTION_STOP_SERVICE =
+        private val KEY_ACTION_STOP_SERVICE =
             booleanPreferencesKey("action_stop_service")
-        val KEY_ACTION_CLOSE_APP =
+        private val KEY_ACTION_CLOSE_APP =
             booleanPreferencesKey("action_close_app")
     }
 
     private val dataStore = context.dataStore
 
+    val showButtonCleanCacheDisabledApps: Flow<Boolean> = dataStore.data.getValue(
+        KEY_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS,
+        Constant.Settings.Extra.DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS
+    )
     val showButtonStartStopService: Flow<Boolean> = dataStore.data.getValue(
         KEY_SHOW_BUTTON_START_STOP_SERVICE,
         Constant.Settings.Extra.DEFAULT_SHOW_BUTTON_START_STOP_SERVICE
@@ -55,6 +61,11 @@ class UserPrefExtraManager @Inject constructor(
 
     val actionCloseApp: Flow<Boolean> = dataStore.data.getValue(
         KEY_ACTION_CLOSE_APP, Constant.Settings.Extra.DEFAULT_ACTION_CLOSE_APP
+    )
+
+    suspend fun toggleShowCleanCacheDisabledApps() = dataStore.toggle(
+        KEY_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS,
+        Constant.Settings.Extra.DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS
     )
 
     suspend fun toggleShowButtonStartStopService() = dataStore.toggle(

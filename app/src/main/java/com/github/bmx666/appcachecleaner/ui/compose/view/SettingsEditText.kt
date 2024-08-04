@@ -147,7 +147,8 @@ private fun TextEditDialog(
                     onDismiss()
                     // disable / enable the button
                 }, enabled = isValid) {
-                    Text(stringResource(id = R.string.next))
+                    // TODO
+                    Text(stringResource(id = android.R.string.ok))
                 }
             }
         }

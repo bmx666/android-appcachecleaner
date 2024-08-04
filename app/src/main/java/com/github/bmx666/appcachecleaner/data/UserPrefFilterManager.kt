@@ -32,15 +32,15 @@ class UserPrefFilterManager @Inject constructor(
                 )
             }
         )
-        val KEY_MIN_CACHE_SIZE_BYTES =
+        private val KEY_MIN_CACHE_SIZE_BYTES =
             longPreferencesKey("min_cache_size_bytes")
-        val KEY_HIDE_DISABLED_APPS =
+        private val KEY_HIDE_DISABLED_APPS =
             booleanPreferencesKey("hide_disabled_apps")
-        val KEY_HIDE_IGNORED_APPS =
+        private val KEY_HIDE_IGNORED_APPS =
             booleanPreferencesKey("hide_ignored_apps")
-        val KEY_SHOW_DIALOG_TO_IGNORE_APP =
+        private val KEY_SHOW_DIALOG_TO_IGNORE_APP =
             booleanPreferencesKey("show_dialog_to_ignore_app")
-        val KEY_LIST_OF_IGNORED_APPS =
+        private val KEY_LIST_OF_IGNORED_APPS =
             stringSetPreferencesKey("list_of_ignored_apps")
     }
 

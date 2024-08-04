@@ -28,7 +28,7 @@ class UserPrefScenarioManager @Inject constructor(
                 )
             }
         )
-        val KEY_SCENARIO = stringPreferencesKey("scenario")
+        private val KEY_SCENARIO = stringPreferencesKey("scenario")
     }
 
     private val dataStore = context.dataStore

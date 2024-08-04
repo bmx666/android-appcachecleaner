@@ -27,7 +27,7 @@ class UserPrefCustomPackageListManager @Inject constructor(
                 )
             }
         )
-        val KEY_LIST_NAMES = stringSetPreferencesKey("list_names")
+        private val KEY_LIST_NAMES = stringSetPreferencesKey("list_names")
     }
 
     private val dataStore = context.dataStore

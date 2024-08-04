@@ -29,8 +29,8 @@ class UserPrefUiManager @Inject constructor(
                 )
             }
         )
-        val KEY_NIGHT_MODE = booleanPreferencesKey("night_mode")
-        val KEY_DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
+        private val KEY_NIGHT_MODE = booleanPreferencesKey("night_mode")
+        private val KEY_DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
     }
 
     private val dataStore = context.dataStore

@@ -28,7 +28,7 @@ class UserPrefFirstBootManager @Inject constructor(
                 )
             }
         )
-        val KEY_FIRST_BOOT = booleanPreferencesKey("first_boot")
+        private val KEY_FIRST_BOOT = booleanPreferencesKey("first_boot")
     }
 
     private val dataStore = context.dataStore

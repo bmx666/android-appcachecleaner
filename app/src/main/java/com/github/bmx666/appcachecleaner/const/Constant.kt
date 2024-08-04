@@ -123,6 +123,7 @@ class Constant {
 
         class Extra {
             companion object {
+                const val DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS = false
                 const val DEFAULT_SHOW_BUTTON_START_STOP_SERVICE = false
                 const val DEFAULT_SHOW_BUTTON_CLOSE_APP = false
                 const val DEFAULT_ACTION_STOP_SERVICE = false

@@ -37,11 +37,27 @@ class SettingsTimeoutViewModel @Inject constructor(
             null
         )
 
+    val maxWaitAccessibilityEventTimeout: StateFlow<Int?> =
+        userPrefTimeoutManager.maxWaitAccessibilityEventTimeout.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
+
+    val maxGoBackAfterApps: StateFlow<Int?> =
+        userPrefTimeoutManager.maxGoBackAfterApps.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
+
     val isReady: StateFlow<Boolean> = combineNonNull(
         viewModelScope,
         delayForNextAppTimeout as StateFlow<Any?>,
         maxWaitAppTimeout as StateFlow<Any?>,
         maxWaitClearCacheButtonTimeout as StateFlow<Any?>,
+        maxWaitAccessibilityEventTimeout as StateFlow<Any?>,
+        maxGoBackAfterApps as StateFlow<Any?>,
     )
 
     fun setDelayForNextAppTimeout(value: Int) {
@@ -59,6 +75,18 @@ class SettingsTimeoutViewModel @Inject constructor(
     fun setMaxWaitClearCacheButtonTimeout(value: Int) {
         viewModelScope.launch {
             userPrefTimeoutManager.setMaxWaitClearCacheButtonTimeout(value)
+        }
+    }
+
+    fun setMaxWaitAccessibilityEventTimeout(value: Int) {
+        viewModelScope.launch {
+            userPrefTimeoutManager.setMaxWaitAccessibilityEventTimeout(value)
+        }
+    }
+
+    fun setMaxGoBackAfterApps(value: Int) {
+        viewModelScope.launch {
+            userPrefTimeoutManager.setMaxGoBackAfterApps(value)
         }
     }
 }
