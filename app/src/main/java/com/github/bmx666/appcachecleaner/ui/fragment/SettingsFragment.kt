@@ -192,7 +192,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         prefMaxWaitAppTimeout?.apply {
             min = Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000
-            max = Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2 / 1000
+            max = Constant.Settings.CacheClean.MAX_WAIT_APP_PERFORM_CLICK_MS / 1000
             setDefaultValue(Constant.Settings.CacheClean.DEFAULT_WAIT_APP_PERFORM_CLICK_MS / 1000)
             value = getMaxWaitAppTimeout()
             if (value < Constant.Settings.CacheClean.MIN_WAIT_APP_PERFORM_CLICK_MS / 1000)

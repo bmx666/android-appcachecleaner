@@ -84,6 +84,8 @@ class Constant {
                 const val MIN_WAIT_APP_PERFORM_CLICK_MS = 8 * MIN_DELAY_PERFORM_CLICK_MS
                 @IntRange(from = 8 * 250)
                 const val DEFAULT_WAIT_APP_PERFORM_CLICK_MS = 30000
+                @IntRange(from = 8 * 250)
+                const val MAX_WAIT_APP_PERFORM_CLICK_MS = DEFAULT_WAIT_APP_PERFORM_CLICK_MS * 2
                 @IntRange(from = 1)
                 const val DEFAULT_PERFORM_CLICK_COUNT_TRIES = (DEFAULT_WAIT_APP_PERFORM_CLICK_MS - MIN_DELAY_PERFORM_CLICK_MS) / MIN_DELAY_PERFORM_CLICK_MS
                 @IntRange(from = 0)
