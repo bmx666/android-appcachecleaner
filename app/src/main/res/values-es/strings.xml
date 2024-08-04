@@ -12,9 +12,9 @@
     <string name="text_clean_cache_interrupt_processing">Se interrumpió la limpieza de caché\nProcesando…</string>
     <string name="btn_open_accessibility">Abrir configuración de accesibilidad</string>
     <string name="btn_open_usage_stats">Abrir configuración de estadísticas de uso</string>
-    <string name="btn_clean_all_cache">Limpiar caché de todas las aplicaciones</string>
-    <string name="btn_clean_system_cache">Limpiar caché de aplicaciones del sistema</string>
-    <string name="btn_clean_user_cache">Limpiar caché de aplicaciones de usuario</string>
+    <string name="btn_clean_cache_all_apps">Limpiar caché de todas las aplicaciones</string>
+    <string name="btn_clean_cache_system_apps">Limpiar caché de aplicaciones del sistema</string>
+    <string name="btn_clean_cache_user_apps">Limpiar caché de aplicaciones de usuario</string>
     <string name="btn_close_app">Cerrar la aplicación</string>
     <string name="btn_start_accessibility_service">Iniciar servicio de Accesibilidad</string>
     <string name="btn_stop_accessibility_service">Detener servicio de Accesibilidad</string>

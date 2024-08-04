@@ -81,9 +81,9 @@
     <string name="text_clean_cache_interrupt_processing">Очистка кэша была прервана\nОбработка…</string>
     <string name="btn_open_accessibility">Открыть настройки Спец. возможностей</string>
     <string name="btn_open_usage_stats">Открыть настройки Данные об Использ.</string>
-    <string name="btn_clean_all_cache">Очистка кэша всех приложений</string>
-    <string name="btn_clean_system_cache">Очистка кэша системных приложений</string>
-    <string name="btn_clean_user_cache">Очистка кэша польз. приложений</string>
+    <string name="btn_clean_cache_all_apps">Очистка кэша всех приложений</string>
+    <string name="btn_clean_cache_system_apps">Очистка кэша системных приложений</string>
+    <string name="btn_clean_cache_user_apps">Очистка кэша польз. приложений</string>
     <string name="btn_clean_cache_disabled_apps">Очистка кэша отключенных приложений</string>
     <string name="btn_close_app">Выйти из приложения</string>
     <string name="btn_start_accessibility_service">Запустить сервис Спец. возможностей</string>

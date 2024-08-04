@@ -80,9 +80,9 @@
     <string translatable="false" name="text_clean_cache_interrupt_processing">Clean cache was interrupted\nProcessing…</string>
     <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
     <string translatable="false" name="btn_open_usage_stats">Open Usage Stats Settings</string>
-    <string translatable="false" name="btn_clean_all_cache">Clean cache of all apps</string>
-    <string translatable="false" name="btn_clean_system_cache">Clean cache of system apps</string>
-    <string translatable="false" name="btn_clean_user_cache">Clean cache of user apps</string>
+    <string translatable="false" name="btn_clean_cache_all_apps">Clean cache of all apps</string>
+    <string translatable="false" name="btn_clean_cache_system_apps">Clean cache of system apps</string>
+    <string translatable="false" name="btn_clean_cache_user_apps">Clean cache of user apps</string>
     <string translatable="false" name="btn_clean_cache_disabled_apps">Clean cache of disabled apps</string>
     <string translatable="false" name="btn_close_app">Close app</string>
     <string translatable="false" name="btn_start_accessibility_service">Start Accessibility service</string>
