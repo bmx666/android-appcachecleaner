@@ -80,9 +80,9 @@
     <string name="text_clean_cache_interrupt_processing">Pembersihan cache terganggu\nSedang diproses…</string>
     <string name="btn_open_accessibility">Buka Pengaturan Aksesibilitas</string>
     <string name="btn_open_usage_stats">Buka Pengaturan Statistik Penggunaan</string>
-    <string name="btn_clean_all_cache">Bersihkan cache semua aplikasi</string>
-    <string name="btn_clean_system_cache">Bersihkan cache aplikasi sistem</string>
-    <string name="btn_clean_user_cache">Bersihkan cache aplikasi pengguna</string>
+    <string name="btn_clean_cache_all_apps">Bersihkan cache semua aplikasi</string>
+    <string name="btn_clean_cache_system_apps">Bersihkan cache aplikasi sistem</string>
+    <string name="btn_clean_cache_user_apps">Bersihkan cache aplikasi pengguna</string>
     <string name="btn_clean_cache_disabled_apps">Bersihkan cache aplikasi yang dinonaktifkan</string>
     <string name="btn_close_app">Tutup aplikasi</string>
     <string name="btn_start_accessibility_service">Mulai layanan Aksesibilitas</string>

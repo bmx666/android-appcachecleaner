@@ -81,9 +81,9 @@
     <string name="text_clean_cache_interrupt_processing">Le nettoyage du cache a été interrompu\nTraitement en cours…</string>
     <string name="btn_open_accessibility">Ouvrir les paramètres d\'accessibilités</string>
     <string name="btn_open_usage_stats">Ouvrir les paramètres des statistiques d\'utilisation.</string>
-    <string name="btn_clean_all_cache">Vider le cache de toutes les applis</string>
-    <string name="btn_clean_system_cache">Vider le cache des applis système</string>
-    <string name="btn_clean_user_cache">Vider le cache des applis utilisateur</string>
+    <string name="btn_clean_cache_all_apps">Vider le cache de toutes les applis</string>
+    <string name="btn_clean_cache_system_apps">Vider le cache des applis système</string>
+    <string name="btn_clean_cache_user_apps">Vider le cache des applis utilisateur</string>
     <string name="btn_clean_cache_disabled_apps">Vider le cache des applis désactivées</string>
     <string name="btn_close_app">Fermer l\'appli</string>
     <string name="btn_start_accessibility_service">Démarrer le service d\'accessibilité</string>

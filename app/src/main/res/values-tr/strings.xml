@@ -12,9 +12,9 @@
     <string name="text_clean_cache_interrupt_processing">Önbellek temizlemeye müdahale edildi\nİşleniyor…</string>
     <string name="btn_open_accessibility">Erişebilirlik Ayarlarını Aç</string>
     <string name="btn_open_usage_stats">Kullanım Erişim İzni Verin</string>
-    <string name="btn_clean_all_cache">Tüm uygulamaların önbelleğini temizle</string>
-    <string name="btn_clean_system_cache">Sistem uygulamalarının önbelleğini temizle</string>
-    <string name="btn_clean_user_cache">Kullanıcı uygulamalarının önbelleğini temizle</string>
+    <string name="btn_clean_cache_all_apps">Tüm uygulamaların önbelleğini temizle</string>
+    <string name="btn_clean_cache_system_apps">Sistem uygulamalarının önbelleğini temizle</string>
+    <string name="btn_clean_cache_user_apps">Kullanıcı uygulamalarının önbelleğini temizle</string>
     <string name="btn_close_app">Uygulamayı kapat</string>
     <string name="btn_start_accessibility_service">Erişilebilirlik hizmetini başlat</string>
     <string name="btn_stop_accessibility_service">Erişilebilirlik hizmetini durdur</string>

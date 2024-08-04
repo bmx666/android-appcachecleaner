@@ -173,19 +173,19 @@
             android:id="@+id/btnCleanUserAppCache"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_clean_user_cache" />
+            android:text="@string/btn_clean_cache_user_apps" />
 
         <Button
             android:id="@+id/btnCleanSystemAppCache"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_clean_system_cache" />
+            android:text="@string/btn_clean_cache_system_apps" />
 
         <Button
             android:id="@+id/btnCleanAllAppCache"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_clean_all_cache" />
+            android:text="@string/btn_clean_cache_all_apps" />
 
         <Button
             android:id="@+id/btnCleanCacheDisabledApps"
