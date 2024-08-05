@@ -76,12 +76,6 @@ class Constant {
     }
 
     class Settings {
-        class BugWarning {
-            companion object {
-                const val DEFAULT_SHOW_BUG_322519674 = true
-            }
-        }
-
         class CacheClean {
             companion object {
                 @IntRange(from = 250)
