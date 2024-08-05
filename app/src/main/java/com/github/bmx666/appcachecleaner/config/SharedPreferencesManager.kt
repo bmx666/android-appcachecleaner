@@ -251,58 +251,6 @@ class SharedPreferencesManager {
         }
     }
 
-    class FirstBoot {
-
-        companion object {
-
-            private const val FILENAME = "FirstBoot"
-            private const val KEY_SHOW_FIRST_BOOT_CONFIRMATION =
-                "show_first_boot_confirmation"
-
-            @JvmStatic
-            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
-                return context.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
-            }
-
-            @JvmStatic
-            suspend fun showFirstBootConfirmation(context: Context): Boolean {
-                return getDefaultSharedPref(context)
-                    .getBoolean(KEY_SHOW_FIRST_BOOT_CONFIRMATION, true)
-            }
-
-            @JvmStatic
-            suspend fun hideFirstBootConfirmation(context: Context) {
-                getDefaultSharedPref(context)
-                    .edit()
-                    .putBoolean(KEY_SHOW_FIRST_BOOT_CONFIRMATION, false)
-                    .apply()
-            }
-        }
-    }
-
-    class UI {
-        companion object {
-            @JvmStatic
-            private suspend fun getDefaultSharedPref(context: Context): SharedPreferences {
-                return PreferenceManager.getDefaultSharedPreferences(context)
-            }
-
-            @JvmStatic
-            suspend fun getNightMode(context: Context): Boolean {
-                return getDefaultSharedPref(context)
-                    .getBoolean(context.getString(R.string.prefs_key_ui_night_mode), false)
-            }
-
-            @JvmStatic
-            suspend fun setNightMode(context: Context, value: Boolean) {
-                getDefaultSharedPref(context)
-                    .edit()
-                    .putBoolean(context.getString(R.string.prefs_key_ui_night_mode), value)
-                    .apply()
-            }
-        }
-    }
-
     class Settings {
         companion object {
             @JvmStatic

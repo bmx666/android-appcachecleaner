@@ -15,10 +15,12 @@ import androidx.preference.SeekBarPreference
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.data.UserPrefUiManager
 import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import com.github.bmx666.appcachecleaner.util.toFormattedString
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.springframework.util.unit.DataSize
@@ -142,8 +144,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val context = requireContext()
                 lifecycleScope.launch {
+                    val userPrefUiManager = UserPrefUiManager(context.applicationContext)
                     val nightMode =
-                        if (SharedPreferencesManager.UI.getNightMode(context))
+                        if (userPrefUiManager.forceNightMode.first())
                             AppCompatDelegate.MODE_NIGHT_YES
                         else
                             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
