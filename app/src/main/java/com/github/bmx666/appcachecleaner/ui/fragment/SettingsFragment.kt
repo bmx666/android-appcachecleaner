@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.springframework.util.unit.DataSize
 import java.util.Locale
-
+/*
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -480,3 +480,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
         fun newInstance() = SettingsFragment()
     }
 }
+*/

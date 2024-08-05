@@ -533,12 +533,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
     */
 
-    override fun onResume() {
-        super.onResume()
-        updateExtraButtonsVisibility()
-        updateStartStopServiceButton()
-    }
-
     override fun onDestroy() {
         loadingPkgListJob?.cancel()
         calculationCleanedCacheJob?.cancel()
@@ -552,7 +546,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         setSettings()
 
         hideFragmentViews()
-        showMainViews()
 
         pkgList.apply {
             // ignore empty list and show main screen
@@ -809,27 +802,27 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
                 intent.putExtra(
                     Constant.Intent.Settings.NAME_SCENARIO,
-                    SharedPreferencesManager.Settings.getScenario(this))
+                    settingsScenarioViewModel.scenario.value)
 
                 intent.putExtra(
                     Constant.Intent.Settings.NAME_DELAY_FOR_NEXT_APP_TIMEOUT,
-                    SharedPreferencesManager.Settings.getDelayForNextAppTimeout(this))
+                    settingsTimeoutViewModel.delayForNextAppTimeout.value)
 
                 intent.putExtra(
                     Constant.Intent.Settings.NAME_MAX_WAIT_APP_TIMEOUT,
-                    SharedPreferencesManager.Settings.getMaxWaitAppTimeout(this))
+                    settingsTimeoutViewModel.maxWaitAppTimeout.value)
 
                 intent.putExtra(
                     Constant.Intent.Settings.NAME_MAX_WAIT_CLEAR_CACHE_BUTTON_TIMEOUT,
-                    SharedPreferencesManager.Settings.getMaxWaitClearCacheButtonTimeout(this))
+                    settingsTimeoutViewModel.maxWaitClearCacheButtonTimeout.value)
 
                 intent.putExtra(
                     Constant.Intent.Settings.NAME_MAX_WAIT_ACCESSIBILITY_EVENT_TIMEOUT,
-                    SharedPreferencesManager.Settings.getMaxWaitAccessibilityEventTimeout(this))
+                    settingsTimeoutViewModel.maxWaitAccessibilityEventTimeout.value)
 
                 intent.putExtra(
                     Constant.Intent.Settings.NAME_GO_BACK_AFTER_APPS,
-                    SharedPreferencesManager.Settings.getGoBackAfterApps(this))
+                    settingsTimeoutViewModel.maxGoBackAfterApps.value)
 
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             }
@@ -933,15 +926,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @UiContext
     @UiThread
-    private fun showMainViews() {
-//        binding.layoutButton.visibility = View.VISIBLE
-        updateExtraButtonsVisibility()
-        updateStartStopServiceButton()
-        restoreActionBar()
-    }
-
-    @UiContext
-    @UiThread
     private fun hideMainViews() {
 //        binding.layoutButton.visibility = View.GONE
     }
@@ -1000,15 +984,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @UiContext
     @UiThread
-    private fun restoreActionBar() {
-        //supportActionBar?.show()
-        //supportActionBar?.setTitle(R.string.app_name)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        //onMenuShowMain()
-    }
-
-    @UiContext
-    @UiThread
     private fun showMenuFragment(fragment: Fragment, @StringRes title: Int) {
         hideFragmentViews()
         hideMainViews()
@@ -1047,74 +1022,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                         showToast(R.string.toast_error_filter_min_cache_size)
                     }
                 }.show()
-            }
-        )
-    }
-
-    private fun updateExtraButtonsVisibility() {
-        addOverlayJob(
-            suspendCallback = {
-                SharedPreferencesManager.Extra.getShowCleanCacheDisabledApps(this)
-            },
-            postUiCallback = { showCleanCacheDisabledApps ->
-//                binding.btnCleanCacheDisabledApps.visibility =
-//                    when (showCleanCacheDisabledApps) {
-//                        true -> View.VISIBLE
-//                        else -> View.GONE
-//                    }
-            }
-        )
-
-        addOverlayJob(
-            suspendCallback = {
-                SharedPreferencesManager.Extra.getShowStartStopService(this)
-            },
-            postUiCallback = { showStartStopService ->
-//                binding.btnStartStopService.visibility =
-//                    when (showStartStopService) {
-//                        true -> View.VISIBLE
-//                        else -> View.GONE
-//                    }
-            }
-        )
-
-        addOverlayJob(
-            suspendCallback = {
-                SharedPreferencesManager.Extra.getShowCloseApp(this)
-            },
-            postUiCallback = { closeApp ->
-//                binding.btnCloseApp.visibility =
-//                    when (closeApp) {
-//                        true -> View.VISIBLE
-//                        else -> View.GONE
-//                    }
-            }
-        )
-
-        addOverlayJob(
-            suspendCallback = {
-                SharedPreferencesManager.PackageList.getNames(this).isNotEmpty()
-            },
-            postUiCallback = { hasCustomList ->
-//                binding.btnCleanCustomListAppCache.visibility =
-//                    when (hasCustomList) {
-//                        true -> View.VISIBLE
-//                        else -> View.GONE
-//                    }
-            }
-        )
-    }
-
-    private fun updateStartStopServiceButton() {
-        addOverlayJob(
-            suspendCallback = {
-                when (PermissionChecker.checkAccessibilityPermission(this)) {
-                    true -> R.string.btn_stop_accessibility_service
-                    else -> R.string.btn_start_accessibility_service
-                }
-            },
-            postUiCallback = { resId ->
-//                binding.btnStartStopService.setText(resId)
             }
         )
     }
@@ -1301,8 +1208,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         if (BuildConfig.DEBUG)
             saveLogFile()
 
-        updateStartStopServiceButton()
-
         if (message == CANCEL_INTERRUPTED_BY_USER.message)
             return
 
@@ -1322,13 +1227,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         addOverlayJob(
             suspendCallback = {
                 // Automatically disable service
-                if (SharedPreferencesManager.Extra.getAfterClearingCacheStopService(this)) {
+                if (settingsExtraViewModel.actionStopService.value == true) {
                     if (PermissionChecker.checkAccessibilityPermission(this))
                         localBroadcastManager.disableAccessibilityService()
                 }
 
                 // Automatically close app
-                if (SharedPreferencesManager.Extra.getAfterClearingCacheCloseApp(this)) {
+                if (settingsExtraViewModel.actionCloseApp.value == true) {
                     finish()
                     return@addOverlayJob
                 }
@@ -1337,7 +1242,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     }
 
     override fun onStopAccessibilityServiceFeedback() {
-        updateStartStopServiceButton()
+        //updateStartStopServiceButton()
     }
 
     @UiContext
