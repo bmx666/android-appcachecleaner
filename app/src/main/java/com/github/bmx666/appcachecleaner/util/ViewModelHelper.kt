@@ -15,3 +15,13 @@ fun combineNonNull(scope: CoroutineScope, vararg flows: StateFlow<Any?>): StateF
         false
     )
 }
+
+fun combineNull(scope: CoroutineScope, vararg flows: StateFlow<Any?>): StateFlow<Boolean> {
+    return combine(*flows) { _ ->
+        true
+    }.stateIn(
+        scope,
+        SharingStarted.Eagerly,
+        false
+    )
+}

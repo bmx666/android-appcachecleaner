@@ -33,7 +33,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.github.bmx666.appcachecleaner.R
 
 @Composable
 fun SettingsEditText(

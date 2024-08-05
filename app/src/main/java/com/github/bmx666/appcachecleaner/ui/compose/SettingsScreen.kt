@@ -1,7 +1,6 @@
 package com.github.bmx666.appcachecleaner.ui.compose
 
 import android.os.Build
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

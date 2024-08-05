@@ -381,14 +381,14 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         showSplashAndWaitSettings(
             isReady = {
-                settingsCustomPackageListViewModel.isReady.value &&
-                settingsExtraSearchTextViewModel.isReady.value &&
-                settingsExtraViewModel.isReady.value &&
-                settingsFilterViewModel.isReady.value &&
-                settingsScenarioViewModel.isReady.value &&
-                settingsTimeoutViewModel.isReady.value &&
-                settingsUiViewModel.isReady.value &&
-                firstBootViewModel.isReady.value
+                settingsCustomPackageListViewModel.isReady.value
+                && settingsExtraSearchTextViewModel.isReady.value
+                && settingsExtraViewModel.isReady.value
+                && settingsFilterViewModel.isReady.value
+                && settingsScenarioViewModel.isReady.value
+                && settingsTimeoutViewModel.isReady.value
+                && settingsUiViewModel.isReady.value
+                && firstBootViewModel.isReady.value
             })
     }
 

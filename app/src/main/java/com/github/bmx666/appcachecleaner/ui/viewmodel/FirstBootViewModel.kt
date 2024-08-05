@@ -16,11 +16,12 @@ class FirstBootViewModel @Inject constructor(
     private val userPrefFirstBootManager: UserPrefFirstBootManager,
 ) : ViewModel() {
 
-    val firstBoot: StateFlow<Boolean?> = userPrefFirstBootManager.firstBoot.stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        null
-    )
+    val firstBoot: StateFlow<Boolean?> =
+        userPrefFirstBootManager.firstBoot.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
 
     val isReady: StateFlow<Boolean> = combineNonNull(
         viewModelScope,
