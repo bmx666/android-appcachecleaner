@@ -36,10 +36,11 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun SettingsEditText(
-    @DrawableRes icon: Int,
-    @StringRes iconDesc: Int,
     @StringRes name: Int,
-    state: State<String>, // current value
+    @DrawableRes icon: Int? = null,
+    @StringRes iconDesc: Int? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    state: State<String?>, // current value
     onSave: (String) -> Unit, // method to save the new value
     onCheck: (String) -> Boolean // check if new value is valid to save
 ) {
@@ -54,7 +55,7 @@ fun SettingsEditText(
             // dismiss the dialog on touch outside
             isDialogShown = false
         }) {
-            TextEditDialog(name, state, onSave, onCheck) {
+            TextEditDialog(name, placeholder, state, onSave, onCheck) {
                 // to dismiss dialog from within
                 isDialogShown = false
             }
@@ -75,11 +76,15 @@ fun SettingsEditText(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Icon(
-                    painterResource(id = icon),
-                    contentDescription = stringResource(id = iconDesc),
-                    modifier = Modifier.size(24.dp)
-                )
+                icon?.let {
+                    Icon(
+                        painterResource(id = icon),
+                        contentDescription = iconDesc?.let {
+                            stringResource(id = iconDesc)
+                        },
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.padding(8.dp)) {
                     // setting text title
@@ -91,7 +96,7 @@ fun SettingsEditText(
                     Spacer(modifier = Modifier.height(8.dp))
                     // current value shown
                     Text(
-                        text = state.value,
+                        text = state.value ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Start,
                     )
@@ -105,20 +110,20 @@ fun SettingsEditText(
 @Composable
 private fun TextEditDialog(
     @StringRes name: Int,
-    storedValue: State<String>,
+    placeholder: @Composable (() -> Unit)?,
+    storedValue: State<String?>,
     onSave: (String) -> Unit,
     onCheck: (String) -> Boolean,
     onDismiss: () -> Unit // internal method to dismiss dialog from within
 ) {
-
     // storage for new input
     var currentInput by remember {
-        mutableStateOf(TextFieldValue(storedValue.value))
+        mutableStateOf(TextFieldValue(storedValue.value ?: ""))
     }
 
     // if the input is valid - run the method for current value
     var isValid by remember {
-        mutableStateOf(onCheck(storedValue.value))
+        mutableStateOf(onCheck(storedValue.value ?: ""))
     }
 
     Surface(
@@ -133,11 +138,15 @@ private fun TextEditDialog(
         ) {
             Text(stringResource(id = name))
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(currentInput, onValueChange = {
-                // check on change, if the value is valid
-                isValid = onCheck(it.text)
-                currentInput = it
-            })
+            TextField(
+                value = currentInput,
+                onValueChange = {
+                    // check on change, if the value is valid
+                    isValid = onCheck(it.text)
+                    currentInput = it
+                },
+                placeholder = placeholder,
+            )
             Row {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(onClick = {
@@ -146,7 +155,6 @@ private fun TextEditDialog(
                     onDismiss()
                     // disable / enable the button
                 }, enabled = isValid) {
-                    // TODO
                     Text(stringResource(id = android.R.string.ok))
                 }
             }

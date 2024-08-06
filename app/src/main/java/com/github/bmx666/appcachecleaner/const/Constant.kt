@@ -129,7 +129,6 @@ class Constant {
             companion object {
                 const val DEFAULT_HIDE_DISABLED_APPS = false
                 const val DEFAULT_HIDE_IGNORED_APPS = false
-                const val DEFAULT_SHOW_DIALOG_TO_IGNORE_APP = true
             }
         }
 

@@ -38,8 +38,6 @@ class UserPrefFilterManager @Inject constructor(
             booleanPreferencesKey("hide_disabled_apps")
         private val KEY_HIDE_IGNORED_APPS =
             booleanPreferencesKey("hide_ignored_apps")
-        private val KEY_SHOW_DIALOG_TO_IGNORE_APP =
-            booleanPreferencesKey("show_dialog_to_ignore_app")
         private val KEY_LIST_OF_IGNORED_APPS =
             stringSetPreferencesKey("list_of_ignored_apps")
     }
@@ -56,10 +54,6 @@ class UserPrefFilterManager @Inject constructor(
 
     val hideIgnoredApps: Flow<Boolean> = dataStore.data.getValue(
         KEY_HIDE_IGNORED_APPS, Constant.Settings.Filter.DEFAULT_HIDE_IGNORED_APPS
-    )
-
-    val showDialogToIgnoreApp: Flow<Boolean> = dataStore.data.getValue(
-        KEY_SHOW_DIALOG_TO_IGNORE_APP, Constant.Settings.Filter.DEFAULT_SHOW_DIALOG_TO_IGNORE_APP
     )
 
     val listOfIgnoredApps: Flow<Set<String>> = dataStore.data.getValue(
@@ -80,10 +74,6 @@ class UserPrefFilterManager @Inject constructor(
 
     suspend fun toggleHideIgnoredApps() = dataStore.toggle(
         KEY_HIDE_IGNORED_APPS, Constant.Settings.Filter.DEFAULT_HIDE_IGNORED_APPS
-    )
-
-    suspend fun toggleShowDialogToIgnoreApp() = dataStore.toggle(
-        KEY_SHOW_DIALOG_TO_IGNORE_APP, Constant.Settings.Filter.DEFAULT_SHOW_DIALOG_TO_IGNORE_APP
     )
 
     suspend fun setListOfIgnoredApps(value: Set<String>) = dataStore.setValue(

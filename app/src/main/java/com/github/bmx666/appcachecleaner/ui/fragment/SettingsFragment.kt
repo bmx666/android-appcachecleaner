@@ -1,30 +1,5 @@
 package com.github.bmx666.appcachecleaner.ui.fragment
 
-import android.content.Context
-import android.os.Build
-import android.os.Bundle
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.lifecycleScope
-import androidx.preference.EditTextPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SeekBarPreference
-import com.github.bmx666.appcachecleaner.R
-import com.github.bmx666.appcachecleaner.config.SharedPreferencesManager
-import com.github.bmx666.appcachecleaner.const.Constant
-import com.github.bmx666.appcachecleaner.data.UserPrefUiManager
-import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
-import com.github.bmx666.appcachecleaner.ui.dialog.CustomListDialogBuilder
-import com.github.bmx666.appcachecleaner.util.LocaleHelper
-import com.github.bmx666.appcachecleaner.util.toFormattedString
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.springframework.util.unit.DataSize
-import java.util.Locale
 /*
 class SettingsFragment : PreferenceFragmentCompat() {
 
