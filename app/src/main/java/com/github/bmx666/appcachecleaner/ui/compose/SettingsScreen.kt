@@ -127,7 +127,10 @@ fun SettingsScreen(navController: NavHostController) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         SettingsEditText(
                             name = R.string.prefs_title_filter_min_cache_size,
-                            placeholder = {
+                            dialogTextLabel = {
+                                Text(text = stringResource(R.string.dialog_filter_min_cache_size_message))
+                            },
+                            dialogTextPlaceholder = {
                                 Text(text = "0 KB")
                             },
                             state = settingsFilterViewModel.minCacheSizeString.collectAsState(),

@@ -39,7 +39,8 @@ fun SettingsEditText(
     @StringRes name: Int,
     @DrawableRes icon: Int? = null,
     @StringRes iconDesc: Int? = null,
-    placeholder: @Composable (() -> Unit)? = null,
+    dialogTextLabel: @Composable (() -> Unit)? = null,
+    dialogTextPlaceholder: @Composable (() -> Unit)? = null,
     state: State<String?>, // current value
     onSave: (String) -> Unit, // method to save the new value
     onCheck: (String) -> Boolean // check if new value is valid to save
@@ -55,7 +56,7 @@ fun SettingsEditText(
             // dismiss the dialog on touch outside
             isDialogShown = false
         }) {
-            TextEditDialog(name, placeholder, state, onSave, onCheck) {
+            TextEditDialog(name, dialogTextLabel, dialogTextPlaceholder, state, onSave, onCheck) {
                 // to dismiss dialog from within
                 isDialogShown = false
             }
@@ -110,6 +111,7 @@ fun SettingsEditText(
 @Composable
 private fun TextEditDialog(
     @StringRes name: Int,
+    label: @Composable (() -> Unit)?,
     placeholder: @Composable (() -> Unit)?,
     storedValue: State<String?>,
     onSave: (String) -> Unit,
@@ -145,6 +147,7 @@ private fun TextEditDialog(
                     isValid = onCheck(it.text)
                     currentInput = it
                 },
+                label = label,
                 placeholder = placeholder,
             )
             Row {
