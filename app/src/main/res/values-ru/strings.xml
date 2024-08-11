@@ -319,7 +319,6 @@
     <string name="prefs_error_convert_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса фильтра</string>
     <string name="prefs_title_filter_hide_disabled_apps">Скрыть отключенные приложения</string>
     <string name="prefs_title_filter_hide_ignored_apps">Скрыть игнорируемые приложения</string>
-    <string name="prefs_title_filter_show_dialog_to_ignore_app">Показывать диалог об игнор. приложения</string>
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Список игнорируемых приложений</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Редактировать список игнорируемых приложожений</string>
     <string name="prefs_show_extra_buttons">Показать доп. кнопки</string>

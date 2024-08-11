@@ -27,12 +27,6 @@
             app:key="@string/prefs_key_filter_hide_ignored_apps"
             app:title="@string/prefs_title_filter_hide_ignored_apps" />
 
-        <SwitchPreferenceCompat
-            app:singleLineTitle="false"
-            app:defaultValue="true"
-            app:key="@string/prefs_key_filter_show_dialog_to_ignore_app"
-            app:title="@string/prefs_title_filter_show_dialog_to_ignore_app" />
-
         <Preference
             app:singleLineTitle="false"
             app:key="@string/prefs_key_filter_list_of_ignored_apps"
