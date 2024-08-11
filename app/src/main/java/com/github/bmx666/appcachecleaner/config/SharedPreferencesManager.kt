@@ -226,14 +226,6 @@ class SharedPreferencesManager {
             }
 
             @JvmStatic
-            suspend fun getShowDialogToIgnoreApp(context: Context): Boolean {
-                return getDefaultSharedPref(context)
-                    .getBoolean(
-                        context.getString(R.string.prefs_key_filter_show_dialog_to_ignore_app),
-                        true)
-            }
-
-            @JvmStatic
             suspend fun getListOfIgnoredApps(context: Context): Set<String> {
                 val key = context.getString(R.string.prefs_key_filter_list_of_ignored_apps)
                 return getDefaultSharedPref(context)

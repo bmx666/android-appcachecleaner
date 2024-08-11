@@ -312,7 +312,6 @@
     <string translatable="false" name="prefs_error_convert_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset filter</string>
     <string translatable="false" name="prefs_title_filter_hide_disabled_apps">Hide disabled apps</string>
     <string translatable="false" name="prefs_title_filter_hide_ignored_apps">Hide ignored apps</string>
-    <string translatable="false" name="prefs_title_filter_show_dialog_to_ignore_app">Show dialog to ignore app</string>
     <string translatable="false" name="prefs_title_filter_list_of_ignored_apps_edit">List of ignored apps</string>
     <string translatable="false" name="prefs_summary_filter_list_of_ignored_apps_edit">Edit the list of ignored apps</string>
     <string translatable="false" name="prefs_show_extra_buttons">Show extra buttons</string>
@@ -361,7 +360,6 @@
     <string translatable="false" name="prefs_key_filter_min_cache_size">filter_min_cache_size</string>
     <string translatable="false" name="prefs_key_filter_hide_disabled_apps">filter_hide_disabled_apps</string>
     <string translatable="false" name="prefs_key_filter_hide_ignored_apps">filter_hide_ignored_apps</string>
-    <string translatable="false" name="prefs_key_filter_show_dialog_to_ignore_app">filter_show_dialog_to_ignore_app</string>
     <string translatable="false" name="prefs_key_filter_list_of_ignored_apps">filter_list_of_ignored_apps</string>
     <string translatable="false" name="prefs_key_clear_cache">clear_cache</string>
     <string translatable="false" name="prefs_key_storage">storage</string>

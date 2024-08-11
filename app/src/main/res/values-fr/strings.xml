@@ -317,7 +317,6 @@
     <string name="prefs_error_convert_filter_min_cache_size">Veuillez saisir la taille minimale du cache en KB,MB,GB,TB OU 0 pour réinitialiser le filtre</string>
     <string name="prefs_title_filter_hide_disabled_apps">Cacher les applications désactivées</string>
     <string name="prefs_title_filter_hide_ignored_apps">Cacher les applications ignorées</string>
-    <string name="prefs_title_filter_show_dialog_to_ignore_app">Afficher la boîte de dialogue pour ignorer l\'application</string>
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Liste des applications ignorées</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Modifier la liste des applications ignorées</string>
     <string name="prefs_show_extra_buttons">Afficher des boutons supplémentaires</string>

@@ -312,7 +312,6 @@
     <string name="prefs_error_convert_filter_min_cache_size">Будь ласка, введіть мін. розмір кешу в KB, MB, GB, TB АБО 0 для скидання фільтра</string>
     <string name="prefs_title_filter_hide_disabled_apps">Приховати вимкнені додатки</string>
     <string name="prefs_title_filter_hide_ignored_apps">Приховати ігноровані додатки</string>
-    <string name="prefs_title_filter_show_dialog_to_ignore_app">Показати діалог для ігнорування додатку</string>
     <string name="prefs_title_filter_list_of_ignored_apps_edit">Список ігнорованих додатків</string>
     <string name="prefs_summary_filter_list_of_ignored_apps_edit">Редагувати список ігнорованих додатків</string>
     <string name="prefs_show_extra_buttons">Показати додаткові кнопки</string>
