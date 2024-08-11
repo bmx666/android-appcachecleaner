@@ -1,0 +1,1 @@
+* if cleaning the cache of disabled apps, sort the list of disabled apps by label and skip filtering by minimum cache size
