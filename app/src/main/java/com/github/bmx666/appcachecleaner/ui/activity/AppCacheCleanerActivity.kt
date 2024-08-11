@@ -608,9 +608,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             PlaceholderContent.All.ignore(skipPkgList)
 
         when (pkgListAction) {
-            Constant.PackageListAction.DEFAULT,
-            Constant.PackageListAction.DISABLED_CLEAN,
-            -> {
+            Constant.PackageListAction.DEFAULT -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     PlaceholderContent.Current.update(
                         PlaceholderContent.All.getFilteredByCacheSize(
