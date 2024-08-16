@@ -333,13 +333,13 @@
     <string name="prefs_title_custom_list_remove">Видалити</string>
     <string name="prefs_summary_custom_list_remove">Видалити існуючий список додатків</string>
     <string name="prefs_other">Інше</string>
-    <string name="prefs_title_delay_for_next_app_timeout">Затримка між додатками - %ds</string>
+    <string name="prefs_title_delay_for_next_app_timeout">Затримка між додатками - %dс</string>
     <string name="prefs_summary_delay_for_next_app_timeout">Для старих смартфонів необхідно збільшити час очікування між додатками, бо система Android може викликати переривання</string>
-    <string name="prefs_title_max_wait_app_timeout">Макс. час очікування для додатків - %dc</string>
+    <string name="prefs_title_max_wait_app_timeout">Макс. час очікування для додатків - %dс</string>
     <string name="prefs_summary_max_wait_app_timeout">Для старих смартфонів необхідно збільшити час очікування на кожен додаток,бо обчислення кешу потребує більше часу</string>
-    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Макс.  час очікування кнопки "Очистити кеш" - %dc</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Макс.  час очікування кнопки "Очистити кеш" - %dс</string>
     <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Для старих смартфонів необхідно збільшити час очікування, бо обчислення кешу потребує більше часу</string>
-    <string name="prefs_title_max_wait_accessibility_event_timeout">Макс.  час очікування служби Спец.  можливості  - %ds</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Макс.  час очікування служби Спец.  можливості  - %dс</string>
     <string name="prefs_summary_max_wait_accessibility_event_timeout">Для старих смартфонів необхідно збільшити час очікування, бо відгук на службу Спец. можливості потребує більше часу</string>
     <string name="prefs_title_go_back_after_apps">Повернутися після очищення %d додатків</string>
     <string name="prefs_title_go_back_after_apps_never">Ніколи не повертатися після очищення додатків</string>
