@@ -9,4 +9,5 @@
     <string name="menu_item_help" msgid="4570953476186849841">"సహాయం"</string>
     <string name="filter" msgid="9039576690686251462">"ఫిల్టర్ చేయి"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"స్టోరేజ్‌ను క్లియర్ చేయండి"</string>
+    <string name="message_no_matches_found" msgid="6965828658999779258">"మ్యాచ్‌లు ఏవీ దొరకలేదు."</string>
 </resources>

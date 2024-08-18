@@ -9,4 +9,5 @@
     <string name="menu_item_help" msgid="4570953476186849841">"도움말"</string>
     <string name="filter" msgid="9039576690686251462">"필터"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"저장용량 비우기"</string>
+    <string name="message_no_matches_found" msgid="6965828658999779258">"일치하는 항목이 없습니다."</string>
 </resources>
