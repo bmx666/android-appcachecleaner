@@ -35,6 +35,10 @@ class CleanCacheResultViewModel @Inject constructor(
 
     var titleText by mutableStateOf("")
 
+    fun resetTitle() {
+        titleText = ""
+    }
+
     fun finish(context: Context, interrupted: Boolean) {
         val resId =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

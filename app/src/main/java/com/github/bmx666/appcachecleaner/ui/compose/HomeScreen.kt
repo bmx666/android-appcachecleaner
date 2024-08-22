@@ -236,6 +236,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
+                        cleanCacheResultViewModel.resetTitle()
                         if (onCheckPermission()) {
                             val root = Constant.Navigation.PACKAGE_LIST
                             val action = Constant.PackageListAction.USER_APPS
@@ -252,6 +253,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
+                        cleanCacheResultViewModel.resetTitle()
                         if (onCheckPermission()) {
                             val root = Constant.Navigation.PACKAGE_LIST
                             val action = Constant.PackageListAction.SYSTEM_APPS
@@ -268,6 +270,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
+                        cleanCacheResultViewModel.resetTitle()
                         if (onCheckPermission()) {
                             val root = Constant.Navigation.PACKAGE_LIST
                             val action = Constant.PackageListAction.ALL_APPS
@@ -286,6 +289,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
+                            cleanCacheResultViewModel.resetTitle()
                             if (onCheckPermission()) {
                                 val root = Constant.Navigation.PACKAGE_LIST
                                 val action = Constant.PackageListAction.DISABLED_APPS
@@ -304,6 +308,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
+                            cleanCacheResultViewModel.resetTitle()
                             if (onCheckPermission()) {
                                 isCustomListDialogShown = true
                             }
@@ -320,6 +325,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
+                            cleanCacheResultViewModel.resetTitle()
                             when (hasAccessibilityPermission) {
                                 true -> {
                                     localBroadcastManager.disableAccessibilityService()
