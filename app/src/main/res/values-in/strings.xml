@@ -307,6 +307,8 @@
     <!-- Preference -->
     <string name="prefs_ui">UI</string>
     <string name="prefs_ui_night_mode">Tema Gelap</string>
+    <string name="prefs_ui_contrast">Kontras</string>
+    <string name="prefs_ui_dynamic_color">Warna dinamis</string>
     <string name="prefs_title_filter_min_cache_size">Ukuran Cache Min. untuk menyaring aplikasi</string>
     <string name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
     <string name="prefs_error_convert_filter_min_cache_size">Silakan masukkan ukuran cache min. dalam KB,MB,GB,TB ATAU 0 untuk mereset penyaring</string>
@@ -321,6 +323,8 @@
     <string name="prefs_title_show_button_close_app">Tutup aplikasi</string>
     <string name="prefs_summary_show_button_close_app">Untuk beberapa smartphone, Anda perlu secara manual menghentikan layanan aksesibilitas dan menutup aplikasi</string>
     <string name="prefs_extra_actions">Tindakan tambahan</string>
+    <string name="prefs_title_extra_action_force_stop_apps">Paksa berhenti aplikasi</string>
+    <string name="prefs_summary_extra_action_force_stop_apps">Paksa berhenti aplikasi sebelum membersihkan cache</string>
     <string name="prefs_title_extra_action_stop_service">Hentikan otomatis Layanan Aksesibilitas</string>
     <string name="prefs_summary_extra_action_stop_service">Secara otomatis menghentikan Layanan Aksesibilitas setelah membersihkan cache</string>
     <string name="prefs_title_extra_action_close_app">Tutup otomatis aplikasi</string>
