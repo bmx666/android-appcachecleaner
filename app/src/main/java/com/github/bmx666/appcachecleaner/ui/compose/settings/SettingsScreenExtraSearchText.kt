@@ -5,6 +5,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,9 +31,14 @@ internal fun SettingsScreenExtraSearchText() {
     })
     val forceStopLabel = stringResource(id = R.string.force_stop)
 
+    val clearCacheSummary by settingsExtraSearchTextViewModel.getClearCache(locale = locale).collectAsState()
+    val storageSummary by settingsExtraSearchTextViewModel.getStorage(locale = locale).collectAsState()
+    val forceStopSummary by settingsExtraSearchTextViewModel.getForceStop(locale = locale).collectAsState()
+
     SettingsGroup(resId = R.string.btn_add_extra_search_text) {
         SettingsEditText(
             name = clearCacheLabel,
+            summary = clearCacheSummary,
             dialogTextLabel = stringResource(
                 id = R.string.dialog_extra_search_text_message,
                 locale.displayLanguage,
@@ -55,6 +61,7 @@ internal fun SettingsScreenExtraSearchText() {
         HorizontalDivider()
         SettingsEditText(
             name = storageLabel,
+            summary = storageSummary,
             dialogTextLabel = stringResource(
                 id = R.string.dialog_extra_search_text_message,
                 locale.displayLanguage,
@@ -77,6 +84,7 @@ internal fun SettingsScreenExtraSearchText() {
         HorizontalDivider()
         SettingsEditText(
             name = forceStopLabel,
+            summary = forceStopSummary,
             dialogTextLabel = stringResource(
                 id = R.string.dialog_extra_search_text_message,
                 locale.displayLanguage,
