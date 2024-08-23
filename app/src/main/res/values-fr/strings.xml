@@ -311,6 +311,8 @@
     <!-- Preference -->
     <string name="prefs_ui">Interface utilisateur</string>
     <string name="prefs_ui_night_mode">Thème sombre</string>
+    <string name="prefs_ui_contrast">Kontrast</string>
+    <string name="prefs_ui_dynamic_color">Couleurs dynamiques</string>
     <string name="prefs_title_filter_min_cache_size">Taille minimale du cache pour filtrer les applis</string>
     <string name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
     <string name="prefs_error_convert_filter_min_cache_size">Veuillez saisir la taille minimale du cache en KB,MB,GB,TB OU 0 pour réinitialiser le filtre</string>
@@ -325,6 +327,8 @@
     <string name="prefs_title_show_button_close_app">Fermer l\'appli</string>
     <string name="prefs_summary_show_button_close_app">Pour certains smartphones, vous devez arrêter manuellement le service d\'accessibilité et fermer l\'application</string>
     <string name="prefs_extra_actions">Actions supplémentaires</string>
+    <string name="prefs_title_extra_action_force_stop_apps">Forcer l\'arrêt des applis</string>
+    <string name="prefs_summary_extra_action_force_stop_apps">Forcer l\'arrêt des applis avant de vider le cache</string>
     <string name="prefs_title_extra_action_stop_service">AutoStop du Service d\'accessibilité </string>
     <string name="prefs_summary_extra_action_stop_service">Arrête automatique du service d\'accessibilité après avoir effacé le cache</string>
     <string name="prefs_title_extra_action_close_app">Fermeture automatique de l\'appli</string>

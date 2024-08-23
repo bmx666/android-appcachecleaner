@@ -306,6 +306,8 @@
     <!-- Preference -->
     <string name="prefs_ui">Інтерфейс</string>
     <string name="prefs_ui_night_mode">Темна тема</string>
+    <string name="prefs_ui_contrast">Контраст</string>
+    <string name="prefs_ui_dynamic_color">Динамічний колір</string>
     <string name="prefs_title_filter_min_cache_size">Мін. розмір кешу для фільтрації додатків</string>
     <string name="prefs_summary_filter_min_cache_size">Мін. %1$s</string>
     <string name="prefs_error_convert_filter_min_cache_size">Будь ласка, введіть мін. розмір кешу в KB, MB, GB, TB АБО 0 для скидання фільтра</string>
@@ -320,6 +322,8 @@
     <string name="prefs_title_show_button_close_app">Закрити додаток</string>
     <string name="prefs_summary_show_button_close_app">Для деяких смартфонів потрібно вручну зупиняти службу Спец. можливості та закривати додаток</string>
     <string name="prefs_extra_actions">Додаткові дії</string>
+    <string name="prefs_title_extra_action_force_stop_apps">Примусове зупинення додатків</string>
+    <string name="prefs_summary_extra_action_force_stop_apps">Примусово зупиняти додатки перед очищенням кешу</string>
     <string name="prefs_title_extra_action_stop_service">Автозупинка служби Спец. можливості</string>
     <string name="prefs_summary_extra_action_stop_service">Автозупинка служби Спец. можливості після очищення кешу</string>
     <string name="prefs_title_extra_action_close_app">Автозакриття додатку</string>

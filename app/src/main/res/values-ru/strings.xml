@@ -313,6 +313,8 @@
     <!-- Preference -->
     <string name="prefs_ui">Интерфейс</string>
     <string name="prefs_ui_night_mode">Тёмная тема</string>
+    <string name="prefs_ui_contrast">Контрастность</string>
+    <string name="prefs_ui_dynamic_color">Динамический цвет</string>
     <string name="prefs_title_filter_min_cache_size">Мин. размер кэша для фильтра приложений</string>
     <string name="prefs_summary_filter_min_cache_size">Мин. %1$s</string>
     <string name="prefs_error_convert_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса фильтра</string>
@@ -327,6 +329,8 @@
     <string name="prefs_title_show_button_close_app">Выйти из приложения</string>
     <string name="prefs_summary_show_button_close_app">Для некоторых смартфонов вам необходимо вручную остановить службу специальных возможностей и закрыть приложение</string>
     <string name="prefs_extra_actions">Доп. действия</string>
+    <string name="prefs_title_extra_action_force_stop_apps">Принудительная остановка приложений</string>
+    <string name="prefs_summary_extra_action_force_stop_apps">Принудительно останавливать приложения перед очисткой кэша</string>
     <string name="prefs_title_extra_action_stop_service">Автомат. выкл. сервис Спец. возм.</string>
     <string name="prefs_summary_extra_action_stop_service">Автоматически выключать службу специальных возможностей после очистки кэша</string>
     <string name="prefs_title_extra_action_close_app">Автомат. выйти из приложения</string>
