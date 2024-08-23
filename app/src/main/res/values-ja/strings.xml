@@ -10,4 +10,5 @@
     <string name="filter" msgid="9039576690686251462">"フィルタ"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"ストレージを消去"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"一致する項目は見つかりませんでした。"</string>
+    <string name="force_stop" msgid="2681771622136916280">"強制停止"</string>
 </resources>

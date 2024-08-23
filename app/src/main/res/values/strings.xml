@@ -369,6 +369,7 @@
     <string name="menu_item_help">Help</string>
     <string name="filter">Filter</string>
     <string name="message_no_matches_found">No matches found.</string>
+    <string name="force_stop">Force stop</string>
 
     <string translatable="false" name="debug_app_name">Cache Cleaner Debug</string>
     <string translatable="false" name="debug_service_name">Cache Cleaner Debug</string>
