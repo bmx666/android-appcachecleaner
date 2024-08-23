@@ -26,6 +26,13 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
+        private suspend fun getForceStop(context: Context): CharSequence? {
+            val locale = LocaleHelper.getCurrentLocale(context)
+            val manager = UserPrefExtraSearchTextManager(context.applicationContext)
+            return manager.getForceStop(locale).firstOrNull()
+        }
+
+        @JvmStatic
         private suspend fun getScenario(context: Context): Constant.Scenario {
             val manager = UserPrefScenarioManager(context.applicationContext)
             return manager.scenario.firstOrNull() ?: Constant.Scenario.DEFAULT
@@ -154,6 +161,11 @@ class ExtraSearchTextHelper {
         @JvmStatic
         suspend fun getTextForForceStop(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
+
+            getForceStop(context)?.let { value ->
+                if (value.isNotEmpty())
+                    list.add(value)
+            }
 
             when (getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {}
