@@ -10,4 +10,5 @@
     <string name="filter" msgid="9039576690686251462">"Filtra"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"Cancella dati archiviati"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Nessuna corrispondenza."</string>
+    <string name="force_stop" msgid="2681771622136916280">"Forza interruzione"</string>
 </resources>

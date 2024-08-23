@@ -10,4 +10,5 @@
     <string name="filter" msgid="9039576690686251462">"စီစစ်ရန်"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"သိုလှောင်ခန်း ရှင်းလင်းရန်"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"ကိုက်ညီမှု မတွေ့ပါ။"</string>
+    <string name="force_stop" msgid="2681771622136916280">"မဖြစ်မနေ ရပ်ခိုင်းရန်"</string>
 </resources>

@@ -10,4 +10,5 @@
     <string name="filter" msgid="9039576690686251462">"ফিল্টাৰ"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"ষ্ট’ৰেজ মচক"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"কোনো মিল পোৱা নগ’ল।"</string>
+    <string name="force_stop" msgid="2681771622136916280">"বলেৰে ৰখাওক"</string>
 </resources>

@@ -10,4 +10,5 @@
     <string name="filter" msgid="9039576690686251462">"ਫਿਲਟਰ"</string>
     <string name="clear_user_data_text" msgid="6773186434260397947">"ਸਟੋਰੇਜ ਕਲੀਅਰ ਕਰੋ"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"ਕੋਈ ਮੇਲ ਨਹੀਂ ਮਿਲਿਆ।"</string>
+    <string name="force_stop" msgid="2681771622136916280">"ਜ਼ਬਰਦਸਤੀ ਬੰਦ ਕਰੋ"</string>
 </resources>
