@@ -15,6 +15,12 @@ internal fun SettingsScreenExtraActions() {
 
     SettingsGroup(resId = R.string.prefs_extra_actions) {
         SettingsSwitch(
+            titleResId = R.string.prefs_title_extra_action_force_stop_apps,
+            summaryResId = R.string.prefs_summary_extra_action_force_stop_apps,
+            state = settingsExtraViewModel.actionForceStopApps.collectAsState(),
+            onClick = { settingsExtraViewModel.toggleActionForceStopApps() }
+        )
+        SettingsSwitch(
             titleResId = R.string.prefs_title_extra_action_stop_service,
             summaryResId = R.string.prefs_summary_extra_action_stop_service,
             state = settingsExtraViewModel.actionStopService.collectAsState(),

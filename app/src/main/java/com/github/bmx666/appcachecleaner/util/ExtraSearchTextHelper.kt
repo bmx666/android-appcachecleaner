@@ -150,5 +150,19 @@ class ExtraSearchTextHelper {
 
             return list
         }
+
+        @JvmStatic
+        suspend fun getTextForForceStop(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
+
+            when (getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {}
+            }
+
+            list.add(context.getText(R.string.force_stop))
+
+            return list
+        }
     }
 }

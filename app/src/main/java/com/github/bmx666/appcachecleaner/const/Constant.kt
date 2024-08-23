@@ -80,6 +80,8 @@ class Constant {
                     else MIN_GO_BACK_AFTER_APPS
                 @IntRange(from = 0)
                 const val MAX_GO_BACK_AFTER_APPS = 50
+                @IntRange(from = 1)
+                const val DEFAULT_FORCE_STOP_TRIES = 2
             }
         }
 
@@ -88,6 +90,7 @@ class Constant {
                 const val DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS = false
                 const val DEFAULT_SHOW_BUTTON_START_STOP_SERVICE = false
                 const val DEFAULT_SHOW_BUTTON_CLOSE_APP = false
+                const val DEFAULT_ACTION_FORCE_STOP_APPS = false
                 const val DEFAULT_ACTION_STOP_SERVICE = false
                 const val DEFAULT_ACTION_CLOSE_APP = false
             }

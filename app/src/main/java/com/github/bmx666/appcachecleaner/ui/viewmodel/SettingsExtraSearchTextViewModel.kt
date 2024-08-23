@@ -30,10 +30,15 @@ class SettingsExtraSearchTextViewModel @Inject constructor(
         runBlocking { LocaleHelper.getCurrentLocale(context) }
     )
 
+    val forceStop: StateFlow<String?> = getForceStop(
+        runBlocking { LocaleHelper.getCurrentLocale(context) }
+    )
+
     val isReady: StateFlow<Boolean> = combineNull(
         viewModelScope,
         clearCache as StateFlow<Any?>,
         storage as StateFlow<Any?>,
+        forceStop as StateFlow<Any?>,
     )
 
     fun getClearCache(locale: Locale): StateFlow<String?> {
@@ -73,6 +78,26 @@ class SettingsExtraSearchTextViewModel @Inject constructor(
     fun removeStorage(locale: Locale) {
         viewModelScope.launch {
             userPrefExtraSearchTextManager.removeStorage(locale)
+        }
+    }
+
+    fun getForceStop(locale: Locale): StateFlow<String?> {
+        return userPrefExtraSearchTextManager.getForceStop(locale).stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
+    }
+
+    fun setForceStop(locale: Locale, value: CharSequence?) {
+        viewModelScope.launch {
+            userPrefExtraSearchTextManager.setForceStop(locale, value)
+        }
+    }
+
+    fun removeForceStop(locale: Locale) {
+        viewModelScope.launch {
+            userPrefExtraSearchTextManager.removeForceStop(locale)
         }
     }
 }

@@ -3,6 +3,7 @@ package com.github.bmx666.appcachecleaner.clearcache.scenario
 import android.os.Bundle
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_DELAY_FOR_NEXT_APP_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_FORCE_STOP_TRIES
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_GO_BACK_AFTER_APPS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_PERFORM_CLICK_COUNT_TRIES
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_WAIT_ACCESSIBILITY_EVENT_MS
@@ -17,6 +18,7 @@ import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Comp
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_ACCESSIBILITY_EVENT_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_APP_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_WAIT_CLEAR_CACHE_BUTTON_MS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_ACTION_FORCE_STOP_APPS
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.clamp
 import com.github.bmx666.appcachecleaner.util.performClick
@@ -29,6 +31,7 @@ internal abstract class BaseClearCacheScenario {
     internal val arrayTextClearDataButton = ArrayList<CharSequence>()
     internal val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
     internal val arrayTextOkButton = ArrayList<CharSequence>()
+    internal val arrayTextForceStopButton = ArrayList<CharSequence>()
 
     internal var delayForNextAppTimeoutMs:
         Int = DEFAULT_DELAY_FOR_NEXT_APP_MS
@@ -79,6 +82,12 @@ internal abstract class BaseClearCacheScenario {
                 MAX_GO_BACK_AFTER_APPS
             )
         }
+
+    internal var forceStopApps:
+        Boolean = DEFAULT_ACTION_FORCE_STOP_APPS
+
+    internal var forceStopTries:
+        Int = DEFAULT_FORCE_STOP_TRIES
 
     abstract fun resetInternalState()
     abstract suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException?

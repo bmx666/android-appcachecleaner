@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_ACTION_CLOSE_APP
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_ACTION_FORCE_STOP_APPS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_ACTION_STOP_SERVICE
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_SHOW_BUTTON_CLOSE_APP
@@ -32,6 +33,8 @@ class UserPrefExtraManager @Inject constructor(
             booleanPreferencesKey("show_button_start_stop_service")
         private val KEY_SHOW_BUTTON_CLOSE_APP =
             booleanPreferencesKey("show_button_close_app")
+        private val KEY_ACTION_FORCE_STOP_APPS =
+            booleanPreferencesKey("action_force_stop_apps")
         private val KEY_ACTION_STOP_SERVICE =
             booleanPreferencesKey("action_stop_service")
         private val KEY_ACTION_CLOSE_APP =
@@ -119,6 +122,10 @@ class UserPrefExtraManager @Inject constructor(
         KEY_SHOW_BUTTON_CLOSE_APP, DEFAULT_SHOW_BUTTON_CLOSE_APP
     )
 
+    val actionForceStopApps: Flow<Boolean> = dataStore.data.getValue(
+        KEY_ACTION_FORCE_STOP_APPS, DEFAULT_ACTION_FORCE_STOP_APPS
+    )
+
     val actionStopService: Flow<Boolean> = dataStore.data.getValue(
         KEY_ACTION_STOP_SERVICE, DEFAULT_ACTION_STOP_SERVICE
     )
@@ -137,6 +144,10 @@ class UserPrefExtraManager @Inject constructor(
 
     suspend fun toggleShowButtonCloseApp() = dataStore.toggle(
         KEY_SHOW_BUTTON_CLOSE_APP, DEFAULT_SHOW_BUTTON_CLOSE_APP
+    )
+
+    suspend fun toggleActionForceStopApps() = dataStore.toggle(
+        KEY_ACTION_FORCE_STOP_APPS, DEFAULT_ACTION_FORCE_STOP_APPS
     )
 
     suspend fun toggleActionStopService() = dataStore.toggle(

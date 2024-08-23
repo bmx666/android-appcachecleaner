@@ -322,6 +322,8 @@
     <string translatable="false" name="prefs_title_show_button_close_app">Close app</string>
     <string translatable="false" name="prefs_summary_show_button_close_app">For some smartphones, you need to manually stop the accessibility service and close the app</string>
     <string translatable="false" name="prefs_extra_actions">Extra actions</string>
+    <string translatable="false" name="prefs_title_extra_action_force_stop_apps">Force stop apps</string>
+    <string translatable="false" name="prefs_summary_extra_action_force_stop_apps">Force stop apps before clearing the cache</string>
     <string translatable="false" name="prefs_title_extra_action_stop_service">AutoStop Accessibility service</string>
     <string translatable="false" name="prefs_summary_extra_action_stop_service">Automatically stop the Accessibility service after clearing the cache</string>
     <string translatable="false" name="prefs_title_extra_action_close_app">AutoClose app</string>

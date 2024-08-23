@@ -15,6 +15,7 @@ import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.C
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
+import com.github.bmx666.appcachecleaner.data.UserPrefExtraManager
 import com.github.bmx666.appcachecleaner.data.UserPrefScenarioManager
 import com.github.bmx666.appcachecleaner.data.UserPrefTimeoutManager
 import com.github.bmx666.appcachecleaner.log.Logger
@@ -50,6 +51,7 @@ class AccessibilityClearCacheManager {
     suspend fun setSettings(@ApplicationContext context: Context) {
         val userPrefScenarioManager = UserPrefScenarioManager(context)
         val userPrefTimeoutManager = UserPrefTimeoutManager(context)
+        val userPrefExtraManager = UserPrefExtraManager(context)
 
         val scenario = userPrefScenarioManager.scenario.first()
         cacheCleanScenario =
@@ -74,6 +76,10 @@ class AccessibilityClearCacheManager {
             ExtraSearchTextHelper.getTextForOk(context)
         )
 
+        cacheCleanScenario.arrayTextForceStopButton.addAll(
+            ExtraSearchTextHelper.getTextForForceStop(context)
+        )
+
         cacheCleanScenario.delayForNextAppTimeoutMs =
             userPrefTimeoutManager.delayForNextAppTimeout.first()
 
@@ -88,6 +94,9 @@ class AccessibilityClearCacheManager {
 
         cacheCleanScenario.goBackAfterApps =
             userPrefTimeoutManager.maxGoBackAfterApps.first()
+
+        cacheCleanScenario.forceStopApps =
+            userPrefExtraManager.actionForceStopApps.first()
     }
 
     fun clearCacheApp(pkgList: ArrayList<String>,
