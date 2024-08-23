@@ -1,0 +1,3 @@
+* add extra action - force stop apps before clearing cache for default scenario
+* add missing translations
+* fix display custom extra search text in the Settings
