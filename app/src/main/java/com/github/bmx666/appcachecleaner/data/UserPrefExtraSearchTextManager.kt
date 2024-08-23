@@ -25,6 +25,7 @@ class UserPrefExtraSearchTextManager @Inject constructor(
         )
         private const val KEY_CLEAR_CACHE = "clear_cache"
         private const val KEY_STORAGE = "storage"
+        private const val KEY_FORCE_STOP = "force_stop"
 
         // Migration section
         object Migration {
@@ -89,6 +90,24 @@ class UserPrefExtraSearchTextManager @Inject constructor(
     suspend fun removeStorage(locale: Locale) {
         dataStore.removeValue(
             stringPreferencesKey("$locale,$KEY_STORAGE")
+        )
+    }
+
+    fun getForceStop(locale: Locale): Flow<String?> =
+        dataStore.data.getValueOrNull(
+            stringPreferencesKey("$locale,$KEY_FORCE_STOP")
+        )
+
+    suspend fun setForceStop(locale: Locale, value: CharSequence?) {
+        if (value.isNullOrBlank()) return
+        dataStore.setValue(
+            stringPreferencesKey("$locale,$KEY_FORCE_STOP"), value.toString()
+        )
+    }
+
+    suspend fun removeForceStop(locale: Locale) {
+        dataStore.removeValue(
+            stringPreferencesKey("$locale,$KEY_FORCE_STOP")
         )
     }
 }

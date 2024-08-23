@@ -28,6 +28,7 @@ internal fun SettingsScreenExtraSearchText() {
         else ->
             R.string.storage_label
     })
+    val forceStopLabel = stringResource(id = R.string.force_stop)
 
     SettingsGroup(resId = R.string.btn_add_extra_search_text) {
         SettingsEditText(
@@ -70,6 +71,28 @@ internal fun SettingsScreenExtraSearchText() {
                     settingsExtraSearchTextViewModel.removeStorage(locale)
                 else
                     settingsExtraSearchTextViewModel.setStorage(locale, str)
+            },
+            onCheck = { _ -> true },
+        )
+        HorizontalDivider()
+        SettingsEditText(
+            name = forceStopLabel,
+            dialogTextLabel = stringResource(
+                id = R.string.dialog_extra_search_text_message,
+                locale.displayLanguage,
+                locale.displayCountry,
+                forceStopLabel
+            ),
+            dialogTextPlaceholder = {
+                Text(text = forceStopLabel)
+            },
+            state = settingsExtraSearchTextViewModel
+                .getForceStop(locale = locale).collectAsState(),
+            onSave = { str ->
+                if (str.isBlank())
+                    settingsExtraSearchTextViewModel.removeForceStop(locale)
+                else
+                    settingsExtraSearchTextViewModel.setForceStop(locale, str)
             },
             onCheck = { _ -> true },
         )

@@ -6,6 +6,7 @@ import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_FORCE_STOP_TRIES
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.getAllChild
@@ -50,7 +51,7 @@ import kotlinx.coroutines.delay
 internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
 
     override fun resetInternalState() {
-        // ignore
+        forceStopTries = DEFAULT_FORCE_STOP_TRIES
     }
 
     private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
@@ -149,11 +150,71 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
         return null
     }
 
+    private suspend fun findForceStopButton(nodeInfo: AccessibilityNodeInfo) {
+        nodeInfo.findForceStopButton(arrayTextForceStopButton)?.let { forceStopButton ->
+
+            when (doPerformClick(forceStopButton, "force stop button")) {
+                // force stop button was found and it's enabled but perform click was failed
+                false -> {
+                    if (!nodeInfo.refresh()) {
+                        Logger.w("forceStopButton (no perform click): failed to refresh parent node")
+                        return
+                    }
+
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    return findForceStopButton(nodeInfo)
+                }
+                true -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+                        // something goes wrong...
+                        if (!forceStopButton.refresh()) {
+                            Logger.w("forceStopButton (perform click): failed to refresh")
+                            return
+                        }
+
+                        // BUG: even after perform click nothing happens, do perform click again
+                        if (forceStopButton.isEnabled) {
+                            Logger.w("forceStopButton (perform click): still enabled")
+                            if (!nodeInfo.refresh()) {
+                                Logger.w("forceStopButton (perform click): failed to refresh parent node")
+                                return
+                            }
+
+                            Logger.w("forceStopButton (perform click): try perform click again")
+                            return findForceStopButton(nodeInfo)
+                        }
+                    }
+                }
+                null -> return
+            }
+        }
+    }
+
+    private suspend fun findForceStopDialogOkButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+        nodeInfo.findDialogButton(arrayTextOkButton)?.let { forceStopDialogOkButton ->
+            return when (doPerformClick(forceStopDialogOkButton, "force stop dialog - ok button")) {
+                // ok button was found and it's enabled but perform click was failed
+                false -> true
+                // move to the next app
+                else -> true
+            }
+        }
+        return false
+    }
+
     override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         return cacheClean(nodeInfo)
     }
 
     private suspend fun cacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        if (forceStopApps && forceStopTries > 0) {
+            if (!findForceStopDialogOkButton(nodeInfo))
+                findForceStopButton(nodeInfo)
+            forceStopTries--
+        }
+
         findClearCacheButton(nodeInfo)?.let { return it }
 
         var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
@@ -201,6 +262,19 @@ private fun AccessibilityNodeInfo.findClearCacheButton(
     }
 }
 
+private fun AccessibilityNodeInfo.findForceStopButton(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findForceStopButton(arrayText)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.viewIdResourceName?.matches("com.android.settings:id/.*button.*".toRegex()) == true
+                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
+    }
+}
+
 private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
     arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
 {
@@ -226,5 +300,18 @@ private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
 
     return this.takeIf { nodeInfo ->
         nodeInfo.viewIdResourceName?.contentEquals("com.android.settings:id/recycler_view") == true
+    }
+}
+
+private fun AccessibilityNodeInfo.findDialogButton(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findDialogButton(arrayText)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.viewIdResourceName?.matches("android:id/button.*".toRegex()) == true
+                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
     }
 }
