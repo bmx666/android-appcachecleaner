@@ -57,8 +57,8 @@ import com.github.bmx666.appcachecleaner.util.getEnumValueOrNull
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PackageListScreen(
-    localBroadcastManager: LocalBroadcastManagerActivityHelper,
     navController: NavHostController,
+    localBroadcastManager: LocalBroadcastManagerActivityHelper,
     action: String?,
     name: String?,
 ) {
