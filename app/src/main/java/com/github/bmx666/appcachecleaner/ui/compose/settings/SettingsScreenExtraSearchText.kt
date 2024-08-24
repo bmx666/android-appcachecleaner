@@ -6,20 +6,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsEditText
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsGroup
+import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraSearchTextViewModel
-import com.github.bmx666.appcachecleaner.util.LocaleHelper
-import kotlinx.coroutines.runBlocking
 
 @Composable
-internal fun SettingsScreenExtraSearchText() {
-    val context = LocalContext.current
-    val locale = runBlocking { LocaleHelper.getCurrentLocale(context) }
+internal fun SettingsScreenExtraSearchText(
+    localeViewModel: LocaleViewModel,
+) {
     val settingsExtraSearchTextViewModel: SettingsExtraSearchTextViewModel = hiltViewModel()
 
     val clearCacheLabel = stringResource(id = R.string.clear_cache_btn_text)
@@ -31,30 +29,47 @@ internal fun SettingsScreenExtraSearchText() {
     })
     val forceStopLabel = stringResource(id = R.string.force_stop)
 
-    val clearCacheSummary by settingsExtraSearchTextViewModel.getClearCache(locale = locale).collectAsState()
-    val storageSummary by settingsExtraSearchTextViewModel.getStorage(locale = locale).collectAsState()
-    val forceStopSummary by settingsExtraSearchTextViewModel.getForceStop(locale = locale).collectAsState()
+    val currentLocale by localeViewModel.currentLocale.collectAsState()
+    val displayLanguage = currentLocale.displayLanguage
+    val displayCountry = currentLocale.displayCountry
+
+    val clearCacheSummary by settingsExtraSearchTextViewModel.getClearCache(currentLocale).collectAsState()
+    val storageSummary by settingsExtraSearchTextViewModel.getStorage(currentLocale).collectAsState()
+    val forceStopSummary by settingsExtraSearchTextViewModel.getForceStop(currentLocale).collectAsState()
+
+    val clearCacheDialogLabel = stringResource(
+        id = R.string.dialog_extra_search_text_message,
+        displayLanguage,
+        displayCountry,
+        clearCacheLabel
+    )
+    val storageDialogLabel = stringResource(
+        id = R.string.dialog_extra_search_text_message,
+        displayLanguage,
+        displayCountry,
+        storageLabel
+    )
+    val forceStopDialogLabel = stringResource(
+        id = R.string.dialog_extra_search_text_message,
+        displayLanguage,
+        displayCountry,
+        forceStopLabel
+    )
 
     SettingsGroup(resId = R.string.btn_add_extra_search_text) {
         SettingsEditText(
             name = clearCacheLabel,
             summary = clearCacheSummary,
-            dialogTextLabel = stringResource(
-                id = R.string.dialog_extra_search_text_message,
-                locale.displayLanguage,
-                locale.displayCountry,
-                clearCacheLabel
-            ),
+            dialogTextLabel = clearCacheDialogLabel,
             dialogTextPlaceholder = {
                 Text(text = clearCacheLabel)
             },
-            state = settingsExtraSearchTextViewModel
-                .getClearCache(locale = locale).collectAsState(),
+            state = settingsExtraSearchTextViewModel.getClearCache(currentLocale).collectAsState(),
             onSave = { str ->
                 if (str.isBlank())
-                    settingsExtraSearchTextViewModel.removeClearCache(locale)
+                    settingsExtraSearchTextViewModel.removeClearCache(currentLocale)
                 else
-                    settingsExtraSearchTextViewModel.setClearCache(locale, str)
+                    settingsExtraSearchTextViewModel.setClearCache(currentLocale, str)
             },
             onCheck = { _ -> true },
         )
@@ -62,22 +77,16 @@ internal fun SettingsScreenExtraSearchText() {
         SettingsEditText(
             name = storageLabel,
             summary = storageSummary,
-            dialogTextLabel = stringResource(
-                id = R.string.dialog_extra_search_text_message,
-                locale.displayLanguage,
-                locale.displayCountry,
-                storageLabel
-            ),
+            dialogTextLabel = storageDialogLabel,
             dialogTextPlaceholder = {
                 Text(text = storageLabel)
             },
-            state = settingsExtraSearchTextViewModel
-                .getStorage(locale = locale).collectAsState(),
+            state = settingsExtraSearchTextViewModel.getStorage(currentLocale).collectAsState(),
             onSave = { str ->
                 if (str.isBlank())
-                    settingsExtraSearchTextViewModel.removeStorage(locale)
+                    settingsExtraSearchTextViewModel.removeStorage(currentLocale)
                 else
-                    settingsExtraSearchTextViewModel.setStorage(locale, str)
+                    settingsExtraSearchTextViewModel.setStorage(currentLocale, str)
             },
             onCheck = { _ -> true },
         )
@@ -85,22 +94,16 @@ internal fun SettingsScreenExtraSearchText() {
         SettingsEditText(
             name = forceStopLabel,
             summary = forceStopSummary,
-            dialogTextLabel = stringResource(
-                id = R.string.dialog_extra_search_text_message,
-                locale.displayLanguage,
-                locale.displayCountry,
-                forceStopLabel
-            ),
+            dialogTextLabel = forceStopDialogLabel,
             dialogTextPlaceholder = {
                 Text(text = forceStopLabel)
             },
-            state = settingsExtraSearchTextViewModel
-                .getForceStop(locale = locale).collectAsState(),
+            state = settingsExtraSearchTextViewModel.getForceStop(currentLocale).collectAsState(),
             onSave = { str ->
                 if (str.isBlank())
-                    settingsExtraSearchTextViewModel.removeForceStop(locale)
+                    settingsExtraSearchTextViewModel.removeForceStop(currentLocale)
                 else
-                    settingsExtraSearchTextViewModel.setForceStop(locale, str)
+                    settingsExtraSearchTextViewModel.setForceStop(currentLocale, str)
             },
             onCheck = { _ -> true },
         )

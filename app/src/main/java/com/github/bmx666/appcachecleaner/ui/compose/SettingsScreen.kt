@@ -28,10 +28,14 @@ import com.github.bmx666.appcachecleaner.ui.compose.settings.SettingsScreenOther
 import com.github.bmx666.appcachecleaner.ui.compose.settings.SettingsScreenUi
 import com.github.bmx666.appcachecleaner.ui.compose.view.CenterAlignedTopAppBar
 import com.github.bmx666.appcachecleaner.ui.compose.view.GoBackIconButton
+import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavHostController) {
+fun SettingsScreen(
+    navController: NavHostController,
+    localeViewModel: LocaleViewModel,
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -67,7 +71,7 @@ fun SettingsScreen(navController: NavHostController) {
                 HorizontalDivider()
                 SettingsScreenFilter(navController)
                 HorizontalDivider()
-                SettingsScreenExtraSearchText()
+                SettingsScreenExtraSearchText(localeViewModel)
                 HorizontalDivider()
                 SettingsScreenExtraButtons()
                 HorizontalDivider()

@@ -25,6 +25,7 @@ import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.C
 import com.github.bmx666.appcachecleaner.ui.compose.AppScreen
 import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanCacheResultViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.FirstBootViewModel
+import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.PermissionViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsCustomPackageListViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraSearchTextViewModel
@@ -53,6 +54,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private val settingsTimeoutViewModel: SettingsTimeoutViewModel by viewModels()
     private val settingsUiViewModel: SettingsUiViewModel by viewModels()
 
+    private val localeViewModel: LocaleViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
     private val cleanCacheResultViewModel: CleanCacheResultViewModel by viewModels()
 
@@ -72,13 +74,13 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             isReady = {
                 permissionViewModel.isReady.value
                 && settingsCustomPackageListViewModel.isReady.value
-                && settingsExtraSearchTextViewModel.isReady.value
                 && settingsExtraViewModel.isReady.value
                 && settingsFilterViewModel.isReady.value
                 && settingsScenarioViewModel.isReady.value
                 && settingsTimeoutViewModel.isReady.value
                 && settingsUiViewModel.isReady.value
                 && firstBootViewModel.isReady.value
+                && localeViewModel.isReady.value
             })
     }
 
@@ -94,6 +96,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                             CheckActions()
                             AppScreen(
                                 localBroadcastManager,
+                                localeViewModel,
                                 cleanCacheResultViewModel)
                         }
                         true

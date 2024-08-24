@@ -13,12 +13,14 @@ import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.ui.theme.AppTheme
 import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanCacheResultViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.FirstBootViewModel
+import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsUiViewModel
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelper
 
 @Composable
 fun AppScreen(
     localBroadcastManager: LocalBroadcastManagerActivityHelper,
+    localeViewModel: LocaleViewModel,
     cleanCacheResultViewModel: CleanCacheResultViewModel,
 ) {
     val settingsUiViewModel: SettingsUiViewModel = hiltViewModel()
@@ -48,9 +50,9 @@ fun AppScreen(
             }
             composable(Constant.Navigation.HOME.name) {
                 HomeScreen(
-                    cleanCacheResultViewModel = cleanCacheResultViewModel,
-                    localBroadcastManager = localBroadcastManager,
                     navController = navController,
+                    localBroadcastManager = localBroadcastManager,
+                    cleanCacheResultViewModel = cleanCacheResultViewModel,
                 )
             }
             composable(Constant.Navigation.HELP.name) {
@@ -61,6 +63,7 @@ fun AppScreen(
             composable(Constant.Navigation.SETTINGS.name) {
                 SettingsScreen(
                     navController = navController,
+                    localeViewModel = localeViewModel,
                 )
             }
             composable(
@@ -78,8 +81,8 @@ fun AppScreen(
                 val action = backStackEntry.arguments?.getString("action")
                 val name = backStackEntry.arguments?.getString("name")
                 PackageListScreen(
-                    localBroadcastManager = localBroadcastManager,
                     navController = navController,
+                    localBroadcastManager = localBroadcastManager,
                     action = action,
                     name = name,
                 )

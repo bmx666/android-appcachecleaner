@@ -66,9 +66,9 @@ import kotlinx.coroutines.flow.filterNotNull
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
-    cleanCacheResultViewModel: CleanCacheResultViewModel,
-    localBroadcastManager: LocalBroadcastManagerActivityHelper,
     navController: NavHostController,
+    localBroadcastManager: LocalBroadcastManagerActivityHelper,
+    cleanCacheResultViewModel: CleanCacheResultViewModel,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
