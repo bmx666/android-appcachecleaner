@@ -36,12 +36,6 @@ class SettingsCustomPackageListViewModel @Inject constructor(
         )
     }
 
-    fun setCustomPackageList(name: String, value: Set<String>) {
-        viewModelScope.launch {
-            userPrefCustomPackageListManager.setCustomList(name, value)
-        }
-    }
-
     fun removeCustomPackageList(name: String) {
         viewModelScope.launch {
             userPrefCustomPackageListManager.removeCustomList(name)
