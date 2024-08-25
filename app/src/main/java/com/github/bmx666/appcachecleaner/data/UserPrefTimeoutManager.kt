@@ -155,7 +155,7 @@ class UserPrefTimeoutManager @Inject constructor(
     val maxWaitClearCacheButtonTimeout: Flow<Int> = dataStore.data.getValue(
         KEY_MAX_WAIT_CLEAR_CACHE_BTN_TIMEOUT,
         DEFAULT_WAIT_CLEAR_CACHE_BUTTON_MS,
-        MIN_WAIT_APP_PERFORM_CLICK_MS,
+        MIN_WAIT_CLEAR_CACHE_BUTTON_MS,
         MAX_WAIT_APP_PERFORM_CLICK_MS,
     )
 
