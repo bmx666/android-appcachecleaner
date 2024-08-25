@@ -48,10 +48,14 @@ class AccessibilityClearCacheManager {
     private var goBackJob: Job? = null
     private val needGoBack = ConditionVariable()
 
+    private var selfPackageName: String? = null
+
     suspend fun setSettings(@ApplicationContext context: Context) {
         val userPrefScenarioManager = UserPrefScenarioManager(context)
         val userPrefTimeoutManager = UserPrefTimeoutManager(context)
         val userPrefExtraManager = UserPrefExtraManager(context)
+
+        selfPackageName = context.packageName
 
         val scenario = userPrefScenarioManager.scenario.first()
         cacheCleanScenario =
@@ -125,6 +129,9 @@ class AccessibilityClearCacheManager {
                         continue
 
                     cacheCleanScenario.resetInternalState()
+                    // avoid self force stop
+                    if (currentPkg == selfPackageName)
+                        cacheCleanScenario.forceStopTries = 0
 
                     if (index > 0) {
                         waitNextAppJob?.cancel(CANCEL_IGNORE)
