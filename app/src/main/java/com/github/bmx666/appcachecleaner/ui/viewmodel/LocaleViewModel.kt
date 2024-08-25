@@ -1,12 +1,10 @@
 package com.github.bmx666.appcachecleaner.ui.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bmx666.appcachecleaner.data.LocaleManager
 import com.github.bmx666.appcachecleaner.util.combineNonNull
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
 import javax.inject.Inject
