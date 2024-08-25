@@ -249,8 +249,7 @@ internal fun PackageListScreen(
                                 Icon(
                                     imageVector = Icons.Default.CleaningServices,
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    // TODO: contentDescription
-                                    contentDescription = null
+                                    contentDescription = stringResource(id = R.string.clear_cache_btn_text)
                                 )
                             }
                         }
