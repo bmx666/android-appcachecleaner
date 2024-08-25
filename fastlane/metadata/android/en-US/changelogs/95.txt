@@ -1,0 +1,3 @@
+* fix UI when change locale
+* improve search buttons
+* fix force stop on Android 14 and later
