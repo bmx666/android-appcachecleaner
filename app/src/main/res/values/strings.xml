@@ -377,6 +377,7 @@
     <string name="dlg_delete">Delete</string>
     <string name="save">Save</string>
     <string name="contrast_title">Contrast</string>
+    <string name="dark_theme_main_switch_title">Use Dark theme</string>
 
     <string translatable="false" name="debug_app_name">Cache Cleaner Debug</string>
     <string translatable="false" name="debug_service_name">Cache Cleaner Debug</string>

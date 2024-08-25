@@ -16,4 +16,5 @@
     <string name="dlg_delete" msgid="1790919205039397659">"Kustuta"</string>
     <string name="save" msgid="3125033126936493822">"Salvesta"</string>
     <string name="contrast_title" msgid="6885768151336508075">"Kontrastsus"</string>
+    <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"Kasuta tumedat teemat"</string>
 </resources>
