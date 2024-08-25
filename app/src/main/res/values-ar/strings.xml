@@ -13,4 +13,5 @@
     <string name="force_stop" msgid="2681771622136916280">"فرض الإيقاف"</string>
     <string name="clear_data_dlg_title" msgid="180446967743732410">"هل تريد حذف بيانات التطبيق؟"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ستُحذف نهائيًا بيانات هذا التطبيق من الجهاز، بما في ذلك الملفات والإعدادات."</string>
+    <string name="dlg_delete" msgid="1790919205039397659">"حذف"</string>
 </resources>

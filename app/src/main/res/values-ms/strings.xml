@@ -13,4 +13,5 @@
     <string name="force_stop" msgid="2681771622136916280">"Henti paksa"</string>
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Padamkan data aplikasi?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Data apl ini, termasuk fail dan tetapan, akan dipadamkan secara kekal daripada peranti ini"</string>
+    <string name="dlg_delete" msgid="1790919205039397659">"Padam"</string>
 </resources>

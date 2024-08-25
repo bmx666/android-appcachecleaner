@@ -13,4 +13,5 @@
     <string name="force_stop" msgid="2681771622136916280">"ਜ਼ਬਰਦਸਤੀ ਬੰਦ ਕਰੋ"</string>
     <string name="clear_data_dlg_title" msgid="180446967743732410">"ਕੀ ਐਪ ਡਾਟਾ ਮਿਟਾਉਣਾ ਹੈ?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ਫ਼ਾਈਲਾਂ ਅਤੇ ਸੈਟਿੰਗਾਂ ਸਮੇਤ ਇਸ ਐਪ ਦੇ ਡਾਟੇ ਨੂੰ ਇਸ ਡੀਵਾਈਸ ਤੋਂ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਇਆ ਜਾਵੇਗਾ"</string>
+    <string name="dlg_delete" msgid="1790919205039397659">"ਮਿਟਾਓ"</string>
 </resources>

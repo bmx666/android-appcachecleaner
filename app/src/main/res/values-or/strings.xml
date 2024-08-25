@@ -13,4 +13,5 @@
     <string name="force_stop" msgid="2681771622136916280">"ବାଧ୍ୟତାର ସହ ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="clear_data_dlg_title" msgid="180446967743732410">"ଆପର ଡାଟା ଡିଲିଟ କରିବେ?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ଫାଇଲ ଏବଂ ସେଟିଂସ ସମେତ ଏହି ଆପର ଡାଟା ଏଇ ଡିଭାଇସରୁ ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ ହୋଇଯିବ"</string>
+    <string name="dlg_delete" msgid="1790919205039397659">"ଡିଲିଟ କରନ୍ତୁ"</string>
 </resources>

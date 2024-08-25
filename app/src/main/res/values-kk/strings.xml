@@ -13,4 +13,5 @@
     <string name="force_stop" msgid="2681771622136916280">"Күштеп тоқтату"</string>
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Қолданба деректері жойылсын ба?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Осы қолданба деректері, соның ішінде файлдар мен параметрлер бұл құрылғыдан біржола жойылады."</string>
+    <string name="dlg_delete" msgid="1790919205039397659">"Жою"</string>
 </resources>
