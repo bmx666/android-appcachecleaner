@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Sula isitoreji"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Akukho okufanayo okutholiwe."</string>
     <string name="force_stop" msgid="2681771622136916280">"Phoqelela ukuma"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Ngabe ususa yonke imininingo yohlelo lokusebenza?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Le datha yale-app, ebandakanya amafayela namasethingi, izosuswa unaphakade kule divayisi"</string>
 </resources>

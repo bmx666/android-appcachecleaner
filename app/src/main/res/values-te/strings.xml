@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"స్టోరేజ్‌ను క్లియర్ చేయండి"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"మ్యాచ్‌లు ఏవీ దొరకలేదు."</string>
     <string name="force_stop" msgid="2681771622136916280">"ఫోర్స్ స్టాప్"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"యాప్ డేటాను తొలగించాలా?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ఫైల్స్, సెట్టింగ్‌లతో సహా ఈ యాప్ డేటా ఈ పరికరం నుండి శాశ్వతంగా తొలగించబడుతుంది"</string>
 </resources>

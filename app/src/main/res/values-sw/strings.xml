@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Futa data ya hifadhi"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Hakuna vipengee vinavyolingana."</string>
     <string name="force_stop" msgid="2681771622136916280">"Lazimisha kuzima"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Ungependa kufuta data ya programu?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Data ya programu, ikiwemo faili na mipangilio, zitafutwa kabisa kwenye kifaa hiki"</string>
 </resources>

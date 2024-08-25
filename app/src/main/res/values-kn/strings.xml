@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"ಸಂಗ್ರಹಣೆಯನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"ಯಾವುದೇ ಹೊಂದಾಣಿಕೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ."</string>
     <string name="force_stop" msgid="2681771622136916280">"ಬಲವಂತವಾಗಿ ನಿಲ್ಲಿಸಿ"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"ಆ್ಯಪ್ ಡೇಟಾ ಅಳಿಸಬೇಕೇ?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ಫೈಲ್‌ಗಳು ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಸೇರಿದಂತೆ ಈ ಆ್ಯಪ್‌ನ ಡೇಟಾವನ್ನು ಈ ಸಾಧನದಿಂದ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ"</string>
 </resources>

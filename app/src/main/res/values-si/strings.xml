@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"ගබඩාව හිස් කරන්න"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"කිසි ගැළපීමක් හමු නොවිය."</string>
     <string name="force_stop" msgid="2681771622136916280">"බලෙන් නවත්වන්න"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"යෙදුම් දත්ත මකන්නද?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ගොනු සහ සැකසීම් ඇතුළුව, මෙම යෙදුමේ දත්ත, මෙම උපාංගයෙන් ස්ථිරවම මකනු ඇත"</string>
 </resources>

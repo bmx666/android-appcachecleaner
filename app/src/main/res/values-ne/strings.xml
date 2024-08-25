@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"भण्डारण खाली गर्नुहोस्"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"मिल्दोजुल्दो परिणाम भेटिएन।"</string>
     <string name="force_stop" msgid="2681771622136916280">"जबरजस्ती रोक्नुहोस्"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"एपको डेटा मेटाउन चाहनुहुन्छ?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"यस एपका फाइल र सेटिङलगायतका डेटा यो डिभाइसबाट सदाका लागि मेटाइने छन्"</string>
 </resources>

@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Pastro hapësirën ruajtëse"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Nuk u gjetën përputhje."</string>
     <string name="force_stop" msgid="2681771622136916280">"Ndalo me forcë"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Të fshihen të dhënat e aplikacionit?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Të dhënat e këtij aplikacioni, duke përfshirë skedarët dhe cilësimet, do të fshihen përgjithmonë nga kjo pajisje"</string>
 </resources>

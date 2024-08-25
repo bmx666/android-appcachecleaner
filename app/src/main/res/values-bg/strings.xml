@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Изчистване на данните"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Няма намерени съответствия."</string>
     <string name="force_stop" msgid="2681771622136916280">"Принудител­но спиране"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Да се изтрият ли данните от приложението?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Данните в това приложение, включително файловете и настройките, ще бъдат изтрити за постоянно от устройството"</string>
 </resources>

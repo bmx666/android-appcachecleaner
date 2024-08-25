@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"သိုလှောင်ခန်း ရှင်းလင်းရန်"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"ကိုက်ညီမှု မတွေ့ပါ။"</string>
     <string name="force_stop" msgid="2681771622136916280">"မဖြစ်မနေ ရပ်ခိုင်းရန်"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"အက်ပ်ဒေတာ ဖျက်မလား။"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ဖိုင်နှင့် ဆက်တင်များအပါအဝင် ဤအက်ပ်၏ ဒေတာအားလုံးကို စက်မှ အပြီးဖျက်လိုက်ပါမည်"</string>
 </resources>

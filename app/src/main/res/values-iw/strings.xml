@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"מחיקת כל הנתונים מהאחסון"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"לא נמצאו התאמות."</string>
     <string name="force_stop" msgid="2681771622136916280">"אילוץ עצירה"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"למחוק את נתוני האפליקציה?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"הנתונים של האפליקציה הזו, כולל הקבצים וההגדרות, יימחקו מהמכשיר באופן סופי"</string>
 </resources>

@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Ачысціць сховішча"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Супадзенні не знойдзены."</string>
     <string name="force_stop" msgid="2681771622136916280">"Прымусовае спыненне"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Выдаліць даныя праграмы?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Даныя гэтай праграмы, у тым ліку файлы і налады, будуць канчаткова выдалены з гэтай прылады"</string>
 </resources>

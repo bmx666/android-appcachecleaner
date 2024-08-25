@@ -69,4 +69,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Borrar almacenamiento"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"No se han encontrado coincidencias."</string>
     <string name="force_stop" msgid="2681771622136916280">"Forzar detención"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"¿Eliminar datos de la aplicación?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Los datos de esta aplicación, incluidos los archivos y ajustes, se eliminarán permanentemente de este dispositivo"</string>
 </resources>

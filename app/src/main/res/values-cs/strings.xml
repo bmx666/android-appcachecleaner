@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Vymazat úložiště"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Nebyly nalezeny žádné shody."</string>
     <string name="force_stop" msgid="2681771622136916280">"Vynutit ukončení"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Smazat data aplikace?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Data této aplikace (včetně souborů a nastavení) budou ze zařízení trvale smazána"</string>
 </resources>

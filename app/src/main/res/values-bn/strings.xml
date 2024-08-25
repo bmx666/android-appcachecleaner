@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"স্টোরেজ সাফ করুন"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"কোনও মিল খুঁজে পাওয়া যায়নি।"</string>
     <string name="force_stop" msgid="2681771622136916280">"জোর করে বন্ধ করুন"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"অ্যাপ ডেটা মুছবেন?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ফাইল এবং সেটিংস সহ এই অ্যাপের ডেটা এই ডিভাইস থেকে স্থায়ীভাবে মুছে ফেলা হবে"</string>
 </resources>

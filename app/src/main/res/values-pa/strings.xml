@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"ਸਟੋਰੇਜ ਕਲੀਅਰ ਕਰੋ"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"ਕੋਈ ਮੇਲ ਨਹੀਂ ਮਿਲਿਆ।"</string>
     <string name="force_stop" msgid="2681771622136916280">"ਜ਼ਬਰਦਸਤੀ ਬੰਦ ਕਰੋ"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"ਕੀ ਐਪ ਡਾਟਾ ਮਿਟਾਉਣਾ ਹੈ?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ਫ਼ਾਈਲਾਂ ਅਤੇ ਸੈਟਿੰਗਾਂ ਸਮੇਤ ਇਸ ਐਪ ਦੇ ਡਾਟੇ ਨੂੰ ਇਸ ਡੀਵਾਈਸ ਤੋਂ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਇਆ ਜਾਵੇਗਾ"</string>
 </resources>

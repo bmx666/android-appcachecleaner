@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"اسٹوریج صاف کریں"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"کسی مماثلت کا پتا نہیں چلا۔"</string>
     <string name="force_stop" msgid="2681771622136916280">"زبردستی روکیں"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"ایپ کا ڈیٹا حذف کریں؟"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"اس ایپ کا ڈیٹا بشمول فائلز اور ترتیبات کو اس آلے سے مستقل طور پر حذف کر دیا جائے گا"</string>
 </resources>
