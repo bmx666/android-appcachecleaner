@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +34,7 @@ internal fun SettingsSwitch(
     @StringRes summaryResId: Int? = null,
     @DrawableRes icon: Int? = null,
     @StringRes iconDesc: Int? = null,
+    titleColor: Color = Color.Unspecified,
     switchColors: SwitchColors = SwitchDefaults.colors(),
     state: State<Boolean?>,
     onClick: () -> Unit
@@ -61,6 +63,7 @@ internal fun SettingsSwitch(
                     Spacer(modifier = Modifier.width(8.dp))
                 }
                 Text(
+                    color = titleColor,
                     text = stringResource(id = titleResId),
                     maxLines = Int.MAX_VALUE,
                     style = MaterialTheme.typography.titleMedium,
