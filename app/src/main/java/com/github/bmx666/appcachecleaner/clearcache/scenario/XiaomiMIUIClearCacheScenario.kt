@@ -4,8 +4,9 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
+import com.github.bmx666.appcachecleaner.util.findClickable
 import com.github.bmx666.appcachecleaner.util.getAllChild
-import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
+import com.github.bmx666.appcachecleaner.util.takeIfMatches
 import kotlinx.coroutines.CancellationException
 
 /***
@@ -152,10 +153,9 @@ private fun AccessibilityNodeInfo.findMenuItemText(
         childNode?.findMenuItemText(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.contentEquals("com.miui.securitycenter:id/action_menu_item_child_text") == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(false,
+        "com.miui.securitycenter:id/action_menu_item_child_text",
+        arrayText)?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findDialogText(
@@ -165,10 +165,9 @@ private fun AccessibilityNodeInfo.findDialogText(
         childNode?.findDialogText(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.matches("android:id/text.*".toRegex()) == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(false,
+        "android:id/text.*".toRegex(),
+        arrayText)?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findDialogButton(
@@ -178,8 +177,7 @@ private fun AccessibilityNodeInfo.findDialogButton(
         childNode?.findDialogButton(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.matches("android:id/button.*".toRegex()) == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(false,
+        "android:id/button.*".toRegex(),
+        arrayText)?.findClickable()
 }
