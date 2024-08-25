@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Xóa dữ liệu ứng dụng?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Dữ liệu của ứng dụng này, bao gồm cả các tệp và chế độ cài đặt, sẽ bị xoá vĩnh viễn khỏi thiết bị này"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Xoá"</string>
+    <string name="save" msgid="3125033126936493822">"Lưu"</string>
 </resources>

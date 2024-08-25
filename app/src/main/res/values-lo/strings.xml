@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"ລຶບຂໍ້ມູນແອັບບໍ່?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ຂໍ້ມູນຂອງແອັບນີ້, ຮວມທັງໄຟລ໌ ແລະ ການຕັ້ງຄ່າ, ຈະຖືກລຶບອອກຈາກອຸປະກອນນີ້ຢ່າງຖາວອນ"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"ລຶບ"</string>
+    <string name="save" msgid="3125033126936493822">"ບັນທຶກ"</string>
 </resources>

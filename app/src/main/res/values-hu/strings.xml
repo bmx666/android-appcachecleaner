@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Törli az alkalmazás adatait?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Az alkalmazás adatai (beleértve a fájlokat és a beállításokat) véglegesen törlődnek erről az eszközről"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Törlés"</string>
+    <string name="save" msgid="3125033126936493822">"Mentés"</string>
 </resources>

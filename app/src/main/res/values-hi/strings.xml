@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"ऐप्लिकेशन डेटा मिटाना है?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"इस ऐप्लिकेशन का डेटा, इस डिवाइस से हमेशा के लिए मिट जाएगा. इस डेटा में, फ़ाइलें और सेटिंग शामिल हैं"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"मिटाएं"</string>
+    <string name="save" msgid="3125033126936493822">"सेव करें"</string>
 </resources>

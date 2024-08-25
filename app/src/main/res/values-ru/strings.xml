@@ -378,4 +378,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Удалить данные приложения?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Данные приложения, включая файлы и настройки, будут навсегда удалены с этого устройства."</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Удалить"</string>
+    <string name="save" msgid="3125033126936493822">"Сохранить"</string>
 </resources>

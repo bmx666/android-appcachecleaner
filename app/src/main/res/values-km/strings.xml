@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"លុប​ទិន្នន័យ​កម្មវិធី?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ទិន្នន័យ​របស់កម្មវិធីនេះ រួមទាំង​ឯកសារនិងការកំណត់​នឹងត្រូវលុបចេញពី​ឧបករណ៍នេះ​ជាអចិន្ត្រៃយ៍"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"លុប"</string>
+    <string name="save" msgid="3125033126936493822">"រក្សាទុក"</string>
 </resources>
