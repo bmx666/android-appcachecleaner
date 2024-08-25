@@ -32,6 +32,10 @@ class Logger {
         cleanLogFile()
     }
 
+    fun onClearData() {
+        cleanLogFile()
+    }
+
     fun onDestroy() {
         deleteLogFile()
     }

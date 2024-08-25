@@ -44,6 +44,7 @@ abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 
 interface IIntentActivityCallback {
     fun onClearCacheFinish(message: String?)
+    fun onClearDataFinish(message: String?)
     fun onStopAccessibilityServiceFeedback()
 }
 
@@ -87,6 +88,15 @@ class LocalBroadcastManagerActivityHelper(
                         Logger.d("[Activity] ClearCacheFinish: message = $message, pkgName = $pkgName")
                     callback.onClearCacheFinish(message)
                 }
+                Constant.Intent.ClearDataFinish.ACTION -> {
+                    val message = intent.getStringExtra(
+                        Constant.Intent.ClearDataFinish.NAME_MESSAGE)
+                    val pkgName = intent.getStringExtra(
+                        Constant.Intent.ClearDataFinish.NAME_PACKAGE_NAME)
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Activity] ClearDataFinish: message = $message, pkgName = $pkgName")
+                    callback.onClearDataFinish(message)
+                }
                 Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
                     if (BuildConfig.DEBUG)
                         Logger.d("[Activity] StopAccessibilityServiceFeedback")
@@ -99,6 +109,7 @@ class LocalBroadcastManagerActivityHelper(
     override val intentFilter = IntentFilter().apply {
         addAction(Constant.Intent.AppInfo.ACTION)
         addAction(Constant.Intent.ClearCacheFinish.ACTION)
+        addAction(Constant.Intent.ClearDataFinish.ACTION)
         addAction(Constant.Intent.StopAccessibilityServiceFeedback.ACTION)
     }
 
@@ -129,12 +140,28 @@ class LocalBroadcastManagerActivityHelper(
             }
         )
     }
+
+    fun sendPackageListToClearData(pkgList: ArrayList<String>) {
+        if (BuildConfig.DEBUG) {
+            Logger.d("[Activity] sendPackageListToClearData")
+            pkgList.forEach {
+                Logger.d("[Activity] sendPackageListToClearData: package name = $it")
+            }
+        }
+        sendBroadcast(
+            Intent(Constant.Intent.ClearData.ACTION).apply {
+                putStringArrayListExtra(Constant.Intent.ClearData.NAME_PACKAGE_LIST, pkgList)
+            }
+        )
+    }
 }
 
 interface IIntentServiceCallback {
     fun onStopAccessibilityService()
     fun onClearCache(pkgList: ArrayList<String>?)
     fun onClearCacheFinish()
+    fun onClearData(pkgList: ArrayList<String>?)
+    fun onClearDataFinish()
 }
 
 data class IntentSettings(
@@ -180,6 +207,22 @@ class LocalBroadcastManagerServiceHelper(
                         Logger.d("[Service] ClearCacheFinish")
                     callback.onClearCacheFinish()
                 }
+                Constant.Intent.ClearData.ACTION -> {
+                    val pkgList =
+                        intent.getStringArrayListExtra(Constant.Intent.ClearData.NAME_PACKAGE_LIST)
+                    if (BuildConfig.DEBUG) {
+                        Logger.d("[Service] ClearData")
+                        pkgList?.forEach {
+                            Logger.d("[Service] ClearData: package name = $it")
+                        }
+                    }
+                    callback.onClearData(pkgList)
+                }
+                Constant.Intent.ClearDataFinish.ACTION -> {
+                    if (BuildConfig.DEBUG)
+                        Logger.d("[Service] CleanDataFinish")
+                    callback.onClearDataFinish()
+                }
             }
         }
     }
@@ -188,6 +231,8 @@ class LocalBroadcastManagerServiceHelper(
         addAction(Constant.Intent.StopAccessibilityService.ACTION)
         addAction(Constant.Intent.ClearCache.ACTION)
         addAction(Constant.Intent.ClearCacheFinish.ACTION)
+        addAction(Constant.Intent.ClearData.ACTION)
+        addAction(Constant.Intent.ClearDataFinish.ACTION)
     }
 
     init {
@@ -215,6 +260,22 @@ class LocalBroadcastManagerServiceHelper(
                     message)
                 putExtra(
                     Constant.Intent.ClearCacheFinish.NAME_PACKAGE_NAME,
+                    pkgName)
+            }
+        )
+    }
+
+    fun sendFinishClearData(message: String?,
+                             pkgName: String?) {
+        if (BuildConfig.DEBUG)
+            Logger.d("[Service] sendFinishClearData: message = $message, pkgName = $pkgName")
+        sendBroadcast(
+            Intent(Constant.Intent.ClearDataFinish.ACTION).apply {
+                putExtra(
+                    Constant.Intent.ClearDataFinish.NAME_MESSAGE,
+                    message)
+                putExtra(
+                    Constant.Intent.ClearDataFinish.NAME_PACKAGE_NAME,
                     pkgName)
             }
         )

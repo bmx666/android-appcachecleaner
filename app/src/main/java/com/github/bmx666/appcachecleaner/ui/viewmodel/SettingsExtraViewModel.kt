@@ -37,6 +37,13 @@ class SettingsExtraViewModel @Inject constructor(
             null
         )
 
+    val showButtonClearData: StateFlow<Boolean?> =
+        userPrefExtraManager.showButtonClearData.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
+
     val actionForceStopApps: StateFlow<Boolean?> =
         userPrefExtraManager.actionForceStopApps.stateIn(
             viewModelScope,
@@ -63,6 +70,7 @@ class SettingsExtraViewModel @Inject constructor(
         showButtonCleanCacheDisabledApps as StateFlow<Any?>,
         showButtonStartStopService as StateFlow<Any?>,
         showButtonCloseApp as StateFlow<Any?>,
+        showButtonClearData as StateFlow<Any?>,
         actionForceStopApps as StateFlow<Any?>,
         actionStopService as StateFlow<Any?>,
         actionCloseApp as StateFlow<Any?>,
@@ -83,6 +91,12 @@ class SettingsExtraViewModel @Inject constructor(
     fun toggleShowButtonCloseApp() {
         viewModelScope.launch {
             userPrefExtraManager.toggleShowButtonCloseApp()
+        }
+    }
+
+    fun toggleShowButtonClearData() {
+        viewModelScope.launch {
+            userPrefExtraManager.toggleShowButtonClearData()
         }
     }
 

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +42,7 @@ import androidx.navigation.NavHostController
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.const.Constant
+import com.github.bmx666.appcachecleaner.ui.compose.dialog.ClearDataDialog
 import com.github.bmx666.appcachecleaner.ui.compose.packagelist.PackageListFilter
 import com.github.bmx666.appcachecleaner.ui.compose.packagelist.PackageListFilterIcon
 import com.github.bmx666.appcachecleaner.ui.compose.packagelist.PackageListPackageList
@@ -49,6 +51,7 @@ import com.github.bmx666.appcachecleaner.ui.compose.view.GoBackIconButton
 import com.github.bmx666.appcachecleaner.ui.compose.view.TopAppBar
 import com.github.bmx666.appcachecleaner.ui.compose.view.goBack
 import com.github.bmx666.appcachecleaner.ui.viewmodel.PackageListViewModel
+import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsFilterViewModel
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelper
@@ -65,6 +68,9 @@ internal fun PackageListScreen(
     val context = LocalContext.current
     val packageListViewModel: PackageListViewModel = hiltViewModel()
     val settingsFilterViewModel: SettingsFilterViewModel = hiltViewModel()
+    val settingsExtraViewModel: SettingsExtraViewModel = hiltViewModel()
+
+    val showButtonClearData by settingsExtraViewModel.showButtonClearData.collectAsState()
 
     val packageListAction = action?.getEnumValueOrNull<Constant.PackageListAction>()
 
@@ -140,6 +146,7 @@ internal fun PackageListScreen(
 
     // if the dialog is visible
     var isFilterDialogShown by remember { mutableStateOf(false) }
+    var isClearDataDialogShown by remember { mutableStateOf(false) }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         PackageListFilter(
@@ -200,6 +207,20 @@ internal fun PackageListScreen(
                         Column(
                             horizontalAlignment = Alignment.End
                         ) {
+                            if (showButtonClearData == true) {
+                                SmallFloatingActionButton(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    onClick = { isClearDataDialogShown = true }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                                        contentDescription =
+                                        stringResource(R.string.clear_user_data_text),
+                                    )
+                                }
+                                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                            }
                             SmallFloatingActionButton(
                                 onClick = {
                                     packageListViewModel.checkVisible()
@@ -322,6 +343,29 @@ internal fun PackageListScreen(
                 }
         },
         content = { innerPadding ->
+            if (showButtonClearData == true) {
+                ClearDataDialog(
+                    showDialog = isClearDataDialogShown,
+                    onDismiss = {
+                        isClearDataDialogShown = false
+                    },
+                    onOk = {
+                        isClearDataDialogShown = false
+                        if (pkgListChecked.isNotEmpty()) {
+                            val mutablePkgList = pkgListChecked.toMutableList()
+                            mutablePkgList.apply {
+                                // do not clear self data
+                                if (contains(context.packageName))
+                                    remove(context.packageName)
+                            }
+                            localBroadcastManager.sendPackageListToClearData(
+                                mutablePkgList as ArrayList<String>)
+                        }
+                        goBack(navController)
+                    }
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

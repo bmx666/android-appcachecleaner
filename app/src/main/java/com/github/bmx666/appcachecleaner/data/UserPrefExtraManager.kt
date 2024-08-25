@@ -11,6 +11,7 @@ import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_ACTION_FORCE_STOP_APPS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_ACTION_STOP_SERVICE
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS
+import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_SHOW_BUTTON_CLEAR_DATA
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_SHOW_BUTTON_CLOSE_APP
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.Extra.Companion.DEFAULT_SHOW_BUTTON_START_STOP_SERVICE
 import com.github.bmx666.appcachecleaner.util.getValue
@@ -33,6 +34,8 @@ class UserPrefExtraManager @Inject constructor(
             booleanPreferencesKey("show_button_start_stop_service")
         private val KEY_SHOW_BUTTON_CLOSE_APP =
             booleanPreferencesKey("show_button_close_app")
+        private val KEY_SHOW_BUTTON_CLEAR_DATA =
+            booleanPreferencesKey("show_button_clear_data")
         private val KEY_ACTION_FORCE_STOP_APPS =
             booleanPreferencesKey("action_force_stop_apps")
         private val KEY_ACTION_STOP_SERVICE =
@@ -122,6 +125,10 @@ class UserPrefExtraManager @Inject constructor(
         KEY_SHOW_BUTTON_CLOSE_APP, DEFAULT_SHOW_BUTTON_CLOSE_APP
     )
 
+    val showButtonClearData: Flow<Boolean> = dataStore.data.getValue(
+        KEY_SHOW_BUTTON_CLEAR_DATA, DEFAULT_SHOW_BUTTON_CLEAR_DATA
+    )
+
     val actionForceStopApps: Flow<Boolean> = dataStore.data.getValue(
         KEY_ACTION_FORCE_STOP_APPS, DEFAULT_ACTION_FORCE_STOP_APPS
     )
@@ -144,6 +151,10 @@ class UserPrefExtraManager @Inject constructor(
 
     suspend fun toggleShowButtonCloseApp() = dataStore.toggle(
         KEY_SHOW_BUTTON_CLOSE_APP, DEFAULT_SHOW_BUTTON_CLOSE_APP
+    )
+
+    suspend fun toggleShowButtonClearData() = dataStore.toggle(
+        KEY_SHOW_BUTTON_CLEAR_DATA, DEFAULT_SHOW_BUTTON_CLEAR_DATA
     )
 
     suspend fun toggleActionForceStopApps() = dataStore.toggle(

@@ -189,6 +189,61 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return false
     }
 
+    private suspend fun findClearDataButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+        nodeInfo.findClearDataButton(arrayTextClearDataButton)?.let { clearDataButton ->
+            when (doPerformClick(clearDataButton, "clear data button")) {
+                // clear data button was found and it's enabled but perform click was failed
+                false -> {
+                    if (!nodeInfo.refresh()) {
+                        Logger.w("clearDataButton (no perform click): failed to refresh parent node")
+                        return false
+                    }
+
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    return findClearDataButton(nodeInfo)
+                }
+                true -> {
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    return true
+                }
+                null -> {
+                    return false
+                }
+            }
+        }
+        return null
+    }
+
+    private suspend fun findClearDataDialogOkButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+        nodeInfo.findDialogButton(arrayTextOkButton)?.let { clearDataDialogDeleteButton ->
+            return when (doPerformClick(clearDataDialogDeleteButton, "clear data dialog - ok button")) {
+                // ok button was found and it's enabled but perform click was failed
+                false -> false
+                // move to the next app
+                else -> true
+            }
+        }
+        return null
+    }
+
+    private suspend fun findClearDataDialogDeleteButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+        nodeInfo.findDialogButton(arrayTextDeleteButton)?.let { clearDataDialogDeleteButton ->
+            return when (doPerformClick(clearDataDialogDeleteButton, "clear data dialog - delete button")) {
+                // ok button was found and it's enabled but perform click was failed
+                false -> false
+                // move to the next app
+                else -> true
+            }
+        }
+        return null
+    }
+
+    private fun findClearDataDialogTitle(nodeInfo: AccessibilityNodeInfo): Boolean {
+        val foundTitle = nodeInfo.findDialogTitle(arrayTextClearDataDialogTitle) != null
+        Logger.d("findClearDataDialogTitle: found title = $foundTitle")
+        return foundTitle
+    }
+
     private suspend fun processForceStop(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         if (!forceStopApps) return null
         if (forceStopTries <= 0) return null
@@ -297,6 +352,28 @@ internal class DefaultClearScenario: BaseClearScenario() {
         processStorage(nodeInfo)?.let { return it }
         return null
     }
+
+    override suspend fun doClearData(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        return when (findClearDataDialogTitle(nodeInfo)) {
+            true ->
+                when (findClearDataDialogDeleteButton(nodeInfo)) {
+                    true -> PACKAGE_FINISH
+                    false -> PACKAGE_FINISH_FAILED
+                    null -> // fallback for old Android versions
+                        when (findClearDataDialogOkButton(nodeInfo)) {
+                            true -> PACKAGE_FINISH
+                            false -> PACKAGE_FINISH_FAILED
+                            null -> PACKAGE_FINISH_FAILED
+                        }
+                }
+            else ->
+                when (findClearDataButton(nodeInfo)) {
+                    true -> PACKAGE_WAIT_NEXT_STEP
+                    false -> PACKAGE_FINISH_FAILED
+                    null -> processStorage(nodeInfo)
+                }
+        }
+    }
 }
 
 private fun AccessibilityNodeInfo.findClearCacheButton(
@@ -304,6 +381,21 @@ private fun AccessibilityNodeInfo.findClearCacheButton(
 {
     this.getAllChild().forEach { childNode ->
         childNode?.findClearCacheButton(arrayText)?.let { return it }
+    }
+
+    return this.takeIfMatches(
+        findTextView = true,
+        findButton = true,
+        viewIdResourceName = "com.android.settings:id/.*button.*".toRegex(),
+        arrayText = arrayText,
+    )?.findClickable()
+}
+
+private fun AccessibilityNodeInfo.findClearDataButton(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findClearDataButton(arrayText)?.let { return it }
     }
 
     return this.takeIfMatches(

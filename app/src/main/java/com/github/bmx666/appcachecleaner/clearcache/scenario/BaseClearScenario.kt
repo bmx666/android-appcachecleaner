@@ -33,6 +33,8 @@ internal abstract class BaseClearScenario {
     internal val arrayTextOkButton = ArrayList<CharSequence>()
     internal val arrayTextForceStopButton = ArrayList<CharSequence>()
     internal val arrayTextForceStopDialogTitle = ArrayList<CharSequence>()
+    internal val arrayTextDeleteButton = ArrayList<CharSequence>()
+    internal val arrayTextClearDataDialogTitle = ArrayList<CharSequence>()
 
     internal var delayForNextAppTimeoutMs:
         Int = DEFAULT_DELAY_FOR_NEXT_APP_MS
@@ -95,6 +97,7 @@ internal abstract class BaseClearScenario {
 
     abstract fun resetInternalState()
     abstract suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException?
+    abstract suspend fun doClearData(nodeInfo: AccessibilityNodeInfo): CancellationException?
 
     protected suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,
                                        debugText: String): Boolean?
