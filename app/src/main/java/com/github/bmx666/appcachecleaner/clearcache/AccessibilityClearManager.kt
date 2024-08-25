@@ -61,6 +61,21 @@ class AccessibilityClearManager {
     // to avoid spamming by Jetpack recomposition
     private var lastNodeState: NodeState? = null
 
+    private enum class ClearType {
+        CLEAR_CACHE,
+        CLEAR_DATA,
+    }
+
+    private var clearType: ClearType? = null
+
+    fun setClearTypeClearCache() {
+        clearType = ClearType.CLEAR_CACHE
+    }
+
+    fun setClearTypeClearData() {
+        clearType = ClearType.CLEAR_DATA
+    }
+
     suspend fun setSettings(@ApplicationContext context: Context) {
         val userPrefScenarioManager = UserPrefScenarioManager(context)
         val userPrefTimeoutManager = UserPrefTimeoutManager(context)
@@ -89,6 +104,14 @@ class AccessibilityClearManager {
 
         clearScenario.arrayTextOkButton.addAll(
             ExtraSearchTextHelper.getTextForOk(context)
+        )
+
+        clearScenario.arrayTextDeleteButton.addAll(
+            ExtraSearchTextHelper.getTextForDelete(context)
+        )
+
+        clearScenario.arrayTextClearDataDialogTitle.addAll(
+            ExtraSearchTextHelper.getTextForClearDataDialogTitle(context)
         )
 
         clearScenario.arrayTextForceStopButton.addAll(
@@ -202,6 +225,97 @@ class AccessibilityClearManager {
                     else -> finish(e.message, currentPkg)
                 }
             }
+            // force clear type to avoid misbehavior
+            clearType = null
+        }
+    }
+
+    fun clearDataApp(pkgList: ArrayList<String>,
+                     updatePosition: (Int) -> Unit,
+                     performBack: () -> Boolean,
+                     openAppInfo: KFunction1<String, Unit>,
+                     finish: (String?, String?) -> Unit) {
+        accessibilityJob?.cancel(CANCEL_INIT)
+        packageJob?.cancel(CANCEL_INIT)
+        mainJob?.cancel(CANCEL_INIT)
+
+        mainJob = ioScope.launch {
+            var currentPkg: String? = null
+
+            try {
+
+                for ((index, pkg) in pkgList.withIndex()) {
+                    if (BuildConfig.DEBUG)
+                        Logger.d("clearDataApp: package name = $pkg")
+
+                    currentPkg = pkg
+
+                    updatePosition(index)
+
+                    if (pkg.trim().isEmpty())
+                        continue
+
+                    clearScenario.resetInternalState()
+                    // avoid self force stop
+                    if (currentPkg == selfPackageName)
+                        clearScenario.forceStopTries = 0
+
+                    if (index > 0) {
+                        waitNextAppJob?.cancel(CANCEL_IGNORE)
+                        waitNextAppJob = ioScope.launch {
+                            val timeoutMs = clearScenario.delayForNextAppTimeoutMs.toLong()
+                            delay(timeoutMs)
+                        }
+                        waitNextAppJob?.join()
+                    }
+
+                    if (BuildConfig.DEBUG)
+                        Logger.d("clearDataApp: open AppInfo of $pkg")
+                    openAppInfo(pkg)
+
+                    // wait cache clean process
+                    packageJob = ioScope.launch {
+                        // wait first Accessibility Event - open AppInfo
+                        waitAccessibilityJob = ioScope.launch {
+                            val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
+                            delay(timeoutMs)
+                            Logger.w("Accessibility Event timeout")
+                        }
+                        waitAccessibilityJob?.join()
+                        // got first Accessibility Event
+                        if (waitAccessibilityJob?.isCancelled == true) {
+                            val timeoutMs = clearScenario.maxWaitAppTimeoutMs.toLong()
+                            delay(timeoutMs)
+                        }
+                    }
+                    packageJob?.join()
+
+                    // timeout, no accessibility events, move to the next app
+                    accessibilityJob?.cancel(CANCEL_IGNORE)
+
+                    updatePosition(index + 1)
+
+                    // got first Accessibility event, need go back
+                    if (waitAccessibilityJob?.isCancelled == true) {
+                        val goBackAfterApps = clearScenario.goBackAfterApps
+                        if (goBackAfterApps > 0) {
+                            // go back after each Nth apps and for the last app
+                            if ((index % goBackAfterApps == 0 && index != 0) or (index == pkgList.size - 1))
+                                doGoBack(performBack)
+                        }
+                    }
+                }
+
+                finish(null, null)
+
+            } catch (e: CancellationException) {
+                when (e.message) {
+                    CANCEL_IGNORE.message, CANCEL_INIT.message -> {}
+                    else -> finish(e.message, currentPkg)
+                }
+            }
+            // force clear type to avoid misbehavior
+            clearType = null
         }
     }
 
@@ -235,7 +349,14 @@ class AccessibilityClearManager {
                     Logger.d("===>>> TREE END <<<===")
                 }
 
-                doAccessibilityEventClearCache(nodeInfo)
+                when (clearType) {
+                    ClearType.CLEAR_CACHE -> doAccessibilityEventClearCache(nodeInfo)
+                    ClearType.CLEAR_DATA -> doAccessibilityEventClearData(nodeInfo)
+                    else -> {
+                        // interrupt misbehavior
+                        interruptBySystem()
+                    }
+                }
             }
         }
     }
@@ -282,6 +403,24 @@ class AccessibilityClearManager {
             try {
                 waitAccessibilityJob?.cancel()
                 val result = clearScenario.doClearCache(nodeInfo)
+                when (result?.message) {
+                    PACKAGE_FINISH.message,
+                    PACKAGE_FINISH_FAILED.message,
+                    -> { packageJob?.cancel(result) }
+                    else -> {}
+                }
+            } catch (e: CancellationException) {
+                // TODO: process exceptions
+            }
+        }
+    }
+
+    private fun doAccessibilityEventClearData(nodeInfo: AccessibilityNodeInfo) {
+        accessibilityJob?.cancel(CANCEL_IGNORE)
+        accessibilityJob = ioScope.launch {
+            try {
+                waitAccessibilityJob?.cancel()
+                val result = clearScenario.doClearData(nodeInfo)
                 when (result?.message) {
                     PACKAGE_FINISH.message,
                     PACKAGE_FINISH_FAILED.message,

@@ -28,6 +28,7 @@ internal fun SettingsScreenExtraSearchText(
             R.string.storage_label
     })
     val forceStopLabel = stringResource(id = R.string.force_stop)
+    val clearDataLabel = stringResource(id = R.string.clear_user_data_text)
 
     val currentLocale by localeViewModel.currentLocale.collectAsState()
     val displayLanguage = currentLocale.displayLanguage
@@ -36,6 +37,7 @@ internal fun SettingsScreenExtraSearchText(
     val clearCacheSummary by settingsExtraSearchTextViewModel.getClearCache(currentLocale).collectAsState()
     val storageSummary by settingsExtraSearchTextViewModel.getStorage(currentLocale).collectAsState()
     val forceStopSummary by settingsExtraSearchTextViewModel.getForceStop(currentLocale).collectAsState()
+    val clearDataSummary by settingsExtraSearchTextViewModel.getClearData(currentLocale).collectAsState()
 
     val clearCacheDialogLabel = stringResource(
         id = R.string.dialog_extra_search_text_message,
@@ -54,6 +56,12 @@ internal fun SettingsScreenExtraSearchText(
         displayLanguage,
         displayCountry,
         forceStopLabel
+    )
+    val clearDataDialogLabel = stringResource(
+        id = R.string.dialog_extra_search_text_message,
+        displayLanguage,
+        displayCountry,
+        clearDataLabel
     )
 
     SettingsGroup(resId = R.string.btn_add_extra_search_text) {
@@ -104,6 +112,23 @@ internal fun SettingsScreenExtraSearchText(
                     settingsExtraSearchTextViewModel.removeForceStop(currentLocale)
                 else
                     settingsExtraSearchTextViewModel.setForceStop(currentLocale, str)
+            },
+            onCheck = { _ -> true },
+        )
+        HorizontalDivider()
+        SettingsEditText(
+            name = clearDataLabel,
+            summary = clearDataSummary,
+            dialogTextLabel = clearDataDialogLabel,
+            dialogTextPlaceholder = {
+                Text(text = clearDataLabel)
+            },
+            state = settingsExtraSearchTextViewModel.getClearData(currentLocale).collectAsState(),
+            onSave = { str ->
+                if (str.isBlank())
+                    settingsExtraSearchTextViewModel.removeClearData(currentLocale)
+                else
+                    settingsExtraSearchTextViewModel.setClearData(currentLocale, str)
             },
             onCheck = { _ -> true },
         )

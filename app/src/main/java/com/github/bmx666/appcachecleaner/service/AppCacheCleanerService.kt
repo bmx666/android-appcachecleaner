@@ -82,6 +82,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
             val pkgListSize = pkgList.size
             serviceScope.launch {
                 val context = this@AppCacheCleanerService.applicationContext
+                accessibilityClearManager.setClearTypeClearCache()
                 accessibilityClearManager.setSettings(context)
                 accessibilityClearManager.clearCacheApp(
                     pkgList,
@@ -97,7 +98,36 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         } ?: localBroadcastManager.sendFinishClearCache(null, null)
     }
 
+    override fun onClearData(pkgList: ArrayList<String>?) {
+        if (BuildConfig.DEBUG)
+            logger.onClearData()
+
+        pkgList?.let{
+            accessibilityOverlay.show(this)
+            val pkgListSize = pkgList.size
+            serviceScope.launch {
+                val context = this@AppCacheCleanerService.applicationContext
+                accessibilityClearManager.setClearTypeClearData()
+                accessibilityClearManager.setSettings(context)
+                accessibilityClearManager.clearDataApp(
+                    pkgList,
+                    { index: Int ->
+                        accessibilityOverlay.updateCounter(index, pkgListSize)
+                    },
+                    {
+                        performGlobalAction(GLOBAL_ACTION_BACK)
+                    },
+                    localBroadcastManager::sendAppInfo,
+                    localBroadcastManager::sendFinishClearData)
+            }
+        } ?: localBroadcastManager.sendFinishClearData(null, null)
+    }
+
     override fun onClearCacheFinish() {
+        accessibilityOverlay.hide(this)
+    }
+
+    override fun onClearDataFinish() {
         accessibilityOverlay.hide(this)
     }
 }

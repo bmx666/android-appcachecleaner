@@ -144,6 +144,11 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         }
         return null
     }
+
+    override suspend fun doClearData(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        // TODO:
+        return null
+    }
 }
 
 private fun AccessibilityNodeInfo.findMenuItemText(

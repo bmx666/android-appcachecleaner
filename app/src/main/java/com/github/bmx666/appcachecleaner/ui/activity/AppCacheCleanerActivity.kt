@@ -28,7 +28,6 @@ import com.github.bmx666.appcachecleaner.ui.viewmodel.FirstBootViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.PermissionViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsCustomPackageListViewModel
-import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraSearchTextViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsFilterViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsScenarioViewModel
@@ -47,7 +46,6 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private val firstBootViewModel: FirstBootViewModel by viewModels()
     private val settingsCustomPackageListViewModel: SettingsCustomPackageListViewModel by viewModels()
-    private val settingsExtraSearchTextViewModel: SettingsExtraSearchTextViewModel by viewModels()
     private val settingsExtraViewModel: SettingsExtraViewModel by viewModels()
     private val settingsFilterViewModel: SettingsFilterViewModel by viewModels()
     private val settingsScenarioViewModel: SettingsScenarioViewModel by viewModels()
@@ -190,6 +188,25 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
         if (message == CANCEL_INTERRUPTED_BY_SYSTEM.message)
             cleanResultViewModel.showInterruptedBySystemDialog()
+    }
+
+    @UiContext
+    @UiThread
+    override fun onClearDataFinish(message: String?) {
+        val interrupted: Boolean =
+            when (message) {
+                CANCEL_INTERRUPTED_BY_USER.message -> true
+                CANCEL_INTERRUPTED_BY_SYSTEM.message -> true
+                else -> false
+            }
+
+        cleanResultViewModel.finishClearData(this, interrupted)
+
+        // return back to Main Activity, sometimes not possible press Back from Settings
+        ActivityHelper.returnBackToMainActivity(this, this.intent)
+
+        if (BuildConfig.DEBUG)
+            saveLogFile()
     }
 
     override fun onStopAccessibilityServiceFeedback() {

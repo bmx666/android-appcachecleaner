@@ -75,4 +75,24 @@ class SettingsExtraSearchTextViewModel @Inject constructor(
             userPrefExtraSearchTextManager.removeForceStop(locale)
         }
     }
+
+    fun getClearData(locale: Locale): StateFlow<String?> {
+        return userPrefExtraSearchTextManager.getClearData(locale).stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
+    }
+
+    fun setClearData(locale: Locale, value: CharSequence?) {
+        viewModelScope.launch {
+            userPrefExtraSearchTextManager.setClearData(locale, value)
+        }
+    }
+
+    fun removeClearData(locale: Locale) {
+        viewModelScope.launch {
+            userPrefExtraSearchTextManager.removeClearData(locale)
+        }
+    }
 }

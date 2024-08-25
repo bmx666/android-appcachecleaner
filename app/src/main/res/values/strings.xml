@@ -77,6 +77,8 @@
     <string translatable="false" name="text_clean_cache_interrupt">Clean cache was interrupted</string>
     <string translatable="false" name="text_clean_cache_interrupt_display_size">Clean cache was interrupted\nCleaned up %1$s</string>
     <string translatable="false" name="text_clean_cache_interrupt_processing">Clean cache was interrupted\nProcessing…</string>
+    <string translatable="false" name="text_clean_data_finish">Clean data was finished</string>
+    <string translatable="false" name="text_clean_data_interrupt">Clean data was interrupted</string>
     <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
     <string translatable="false" name="btn_open_usage_stats">Open Usage Stats Settings</string>
     <string translatable="false" name="btn_clean_cache_all_apps">Clean cache of all apps</string>
@@ -321,6 +323,8 @@
     <string translatable="false" name="prefs_summary_show_button_start_stop_service">For some smartphones, you need to manually start or stop the accessibility service</string>
     <string translatable="false" name="prefs_title_show_button_close_app">Close app</string>
     <string translatable="false" name="prefs_summary_show_button_close_app">For some smartphones, you need to manually stop the accessibility service and close the app</string>
+    <string translatable="false" name="prefs_title_extra_show_button_clear_data">Clear data</string>
+    <string translatable="false" name="prefs_summary_extra_show_button_clear_data">Show button to clear data of apps instead of cache</string>
     <string translatable="false" name="prefs_extra_actions">Extra actions</string>
     <string translatable="false" name="prefs_title_extra_action_force_stop_apps">Force stop apps</string>
     <string translatable="false" name="prefs_summary_extra_action_force_stop_apps">Force stop apps before clearing the cache</string>

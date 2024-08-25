@@ -19,6 +19,13 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
+        private suspend fun getClearData(context: Context): CharSequence? {
+            val locale = LocaleHelper.getCurrentLocale(context)
+            val manager = UserPrefExtraSearchTextManager(context.applicationContext)
+            return manager.getClearData(locale).firstOrNull()
+        }
+
+        @JvmStatic
         private suspend fun getStorage(context: Context): CharSequence? {
             val locale = LocaleHelper.getCurrentLocale(context)
             val manager = UserPrefExtraSearchTextManager(context.applicationContext)
@@ -58,6 +65,34 @@ class ExtraSearchTextHelper {
             }
 
             list.add(context.getText(android.R.string.ok))
+
+            return list
+        }
+
+        @JvmStatic
+        suspend fun getTextForDelete(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
+
+            when (getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {}
+            }
+
+            list.add(context.getText(R.string.dlg_delete))
+
+            return list
+        }
+
+        @JvmStatic
+        suspend fun getTextForClearDataDialogTitle(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
+
+            when (getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {}
+            }
+
+            list.add(context.getText(R.string.clear_data_dlg_title))
 
             return list
         }
@@ -104,6 +139,11 @@ class ExtraSearchTextHelper {
         @JvmStatic
         suspend fun getTextForClearData(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
+
+            getClearData(context)?.let { value ->
+                if (value.isNotEmpty())
+                    list.add(value)
+            }
 
             when (getScenario(context)) {
                 Constant.Scenario.DEFAULT -> {

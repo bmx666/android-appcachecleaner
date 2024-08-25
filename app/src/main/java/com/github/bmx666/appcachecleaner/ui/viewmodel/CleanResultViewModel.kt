@@ -62,6 +62,19 @@ class CleanResultViewModel @Inject constructor(
             _actions.value = true
     }
 
+    fun finishClearData(context: Context, interrupted: Boolean) {
+        val resId =
+            when (interrupted) {
+                true -> R.string.text_clean_data_interrupt
+                else -> R.string.text_clean_data_finish
+            }
+
+        titleText = context.getString(resId)
+
+        if (!interrupted)
+            _actions.value = true
+    }
+
     fun resetActions() {
         _actions.value = false
     }

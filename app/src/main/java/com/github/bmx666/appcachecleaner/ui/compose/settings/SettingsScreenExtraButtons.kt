@@ -1,6 +1,8 @@
 package com.github.bmx666.appcachecleaner.ui.compose.settings
 
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +34,17 @@ internal fun SettingsScreenExtraButtons() {
             summaryResId = R.string.prefs_summary_show_button_close_app,
             state = settingsExtraViewModel.showButtonCloseApp.collectAsState(),
             onClick = { settingsExtraViewModel.toggleShowButtonCloseApp() }
+        )
+        HorizontalDivider()
+        SettingsSwitch(
+            titleResId = R.string.prefs_title_extra_show_button_clear_data,
+            summaryResId = R.string.prefs_summary_extra_show_button_clear_data,
+            state = settingsExtraViewModel.showButtonClearData.collectAsState(),
+            onClick = { settingsExtraViewModel.toggleShowButtonClearData() },
+            titleColor = MaterialTheme.colorScheme.error,
+            switchColors = SwitchDefaults.colors(
+                checkedTrackColor = MaterialTheme.colorScheme.error
+            )
         )
     }
 }

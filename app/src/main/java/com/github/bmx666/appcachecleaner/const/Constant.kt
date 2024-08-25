@@ -25,6 +25,13 @@ class Constant {
             }
         }
 
+        class ClearData {
+            companion object {
+                const val ACTION = "ClearData"
+                const val NAME_PACKAGE_LIST = "package_list"
+            }
+        }
+
         class AppInfo {
             companion object {
                 const val ACTION = "AppInfo"
@@ -35,6 +42,14 @@ class Constant {
         class ClearCacheFinish {
             companion object {
                 const val ACTION = "ClearCacheFinish"
+                const val NAME_MESSAGE = "message"
+                const val NAME_PACKAGE_NAME = "package_name"
+            }
+        }
+
+        class ClearDataFinish {
+            companion object {
+                const val ACTION = "ClearDataFinish"
                 const val NAME_MESSAGE = "message"
                 const val NAME_PACKAGE_NAME = "package_name"
             }
@@ -90,6 +105,7 @@ class Constant {
                 const val DEFAULT_SHOW_BUTTON_CLEAN_CACHE_DISABLED_APPS = false
                 const val DEFAULT_SHOW_BUTTON_START_STOP_SERVICE = false
                 const val DEFAULT_SHOW_BUTTON_CLOSE_APP = false
+                const val DEFAULT_SHOW_BUTTON_CLEAR_DATA = false
                 const val DEFAULT_ACTION_FORCE_STOP_APPS = false
                 const val DEFAULT_ACTION_STOP_SERVICE = false
                 const val DEFAULT_ACTION_CLOSE_APP = false
