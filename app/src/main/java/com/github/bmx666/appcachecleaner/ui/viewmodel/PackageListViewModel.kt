@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bmx666.appcachecleaner.data.LocaleManager
 import com.github.bmx666.appcachecleaner.data.UserPrefCustomPackageListManager
 import com.github.bmx666.appcachecleaner.data.UserPrefFilterManager
 import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
-import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.toFormattedString
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +35,7 @@ import javax.inject.Inject
 class PackageListViewModel @Inject constructor(
     private val userPrefCustomPackageListManager: UserPrefCustomPackageListManager,
     private val userPrefFilterManager: UserPrefFilterManager,
+    private val localeManager: LocaleManager,
     @ApplicationContext private val context: Context,
 ): ViewModel()
 {
@@ -347,7 +348,7 @@ class PackageListViewModel @Inject constructor(
         requestLabel: Boolean = true,
         sort: PackageSort = PackageSort.BY_SIZE)
     {
-        val locale = LocaleHelper.getCurrentLocale(context)
+        val currentLocale = localeManager.currentLocale.value
 
         val total = pkgList.size
         updateProgress(0, total)
@@ -376,9 +377,9 @@ class PackageListViewModel @Inject constructor(
                 PlaceholderContent.All.updateStats(pkgInfo, stats)
                 if (requestLabel) {
                     if (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
-                        !PlaceholderContent.All.isSameLabelLocale(pkgInfo, locale)) {
+                        !PlaceholderContent.All.isSameLabelLocale(pkgInfo, currentLocale)) {
                         val label = PackageManagerHelper.getApplicationLabel(context, pkgInfo)
-                        PlaceholderContent.All.updateLabel(pkgInfo, label, locale)
+                        PlaceholderContent.All.updateLabel(pkgInfo, label, currentLocale)
                     }
                 }
             } else {
@@ -389,7 +390,7 @@ class PackageListViewModel @Inject constructor(
                         pkgInfo.packageName
                     }
 
-                PlaceholderContent.All.add(pkgInfo, label, locale, stats)
+                PlaceholderContent.All.add(pkgInfo, label, currentLocale, stats)
             }
         }
 
