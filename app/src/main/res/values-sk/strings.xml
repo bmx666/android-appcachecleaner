@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Odstrániť dáta aplikácie?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Dáta tejto aplikácie (vrátane súborov a nastavení) budú zo zariadenia natrvalo odstránené"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Odstrániť"</string>
+    <string name="save" msgid="3125033126936493822">"Uložiť"</string>
 </resources>

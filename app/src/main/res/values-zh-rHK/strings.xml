@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"你要刪除應用程式資料嗎？"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"此應用程式的資料 (包括文件和設定) 將會從此裝置中永久刪除"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"刪除"</string>
+    <string name="save" msgid="3125033126936493822">"儲存"</string>
 </resources>

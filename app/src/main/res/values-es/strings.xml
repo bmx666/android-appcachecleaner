@@ -72,4 +72,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"¿Eliminar datos de la aplicación?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Los datos de esta aplicación, incluidos los archivos y ajustes, se eliminarán permanentemente de este dispositivo"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Eliminar"</string>
+    <string name="save" msgid="3125033126936493822">"Guardar"</string>
 </resources>

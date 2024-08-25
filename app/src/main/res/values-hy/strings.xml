@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Ջնջե՞լ հավելվածի տվյալները"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Այս հավելվածի տվյալները, այդ թվում՝ ֆայլերն ու կարգավորումները, ընդմիշտ կջնջվեն այս սարքից։"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Ջնջել"</string>
+    <string name="save" msgid="3125033126936493822">"Պահել"</string>
 </resources>

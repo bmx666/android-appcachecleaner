@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"ಆ್ಯಪ್ ಡೇಟಾ ಅಳಿಸಬೇಕೇ?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ಫೈಲ್‌ಗಳು ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಸೇರಿದಂತೆ ಈ ಆ್ಯಪ್‌ನ ಡೇಟಾವನ್ನು ಈ ಸಾಧನದಿಂದ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"ಅಳಿಸಿ"</string>
+    <string name="save" msgid="3125033126936493822">"ಸೇವ್ ಮಾಡಿ"</string>
 </resources>

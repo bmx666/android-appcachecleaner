@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"अ‍ॅप डेटा हटवायचा?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"फाइल आणि सेटिंग्जसोबतच, या अ‍ॅपचा डेटा या डिव्हाइवरून कायमचा हटवला जाईल"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"हटवा"</string>
+    <string name="save" msgid="3125033126936493822">"सेव्ह करा"</string>
 </resources>

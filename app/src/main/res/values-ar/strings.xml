@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"هل تريد حذف بيانات التطبيق؟"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ستُحذف نهائيًا بيانات هذا التطبيق من الجهاز، بما في ذلك الملفات والإعدادات."</string>
     <string name="dlg_delete" msgid="1790919205039397659">"حذف"</string>
+    <string name="save" msgid="3125033126936493822">"حفظ"</string>
 </resources>

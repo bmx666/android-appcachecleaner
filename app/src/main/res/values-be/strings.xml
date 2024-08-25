@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"Выдаліць даныя праграмы?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Даныя гэтай праграмы, у тым ліку файлы і налады, будуць канчаткова выдалены з гэтай прылады"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Выдаліць"</string>
+    <string name="save" msgid="3125033126936493822">"Захаваць"</string>
 </resources>

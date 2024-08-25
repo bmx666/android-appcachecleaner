@@ -14,4 +14,5 @@
     <string name="clear_data_dlg_title" msgid="180446967743732410">"داده‌های برنامه حذف شود؟"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"داده‌های این برنامه (شامل فایل‌ها و تنظیمات) برای همیشه از این دستگاه حذف خواهد شد"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"حذف"</string>
+    <string name="save" msgid="3125033126936493822">"ذخیره‌"</string>
 </resources>
