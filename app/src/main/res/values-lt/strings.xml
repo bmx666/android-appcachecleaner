@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Šios programos duomenys, įskaitant failus ir nustatymus, bus visam laikui ištrinti iš šio įrenginio"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Ištrinti"</string>
     <string name="save" msgid="3125033126936493822">"Išsaugoti"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Kontrastas"</string>
 </resources>

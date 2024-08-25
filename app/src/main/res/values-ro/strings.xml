@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Datele acestei aplicații, între care fișiere și setări, vor fi șterse definitiv de pe dispozitiv"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Șterge"</string>
     <string name="save" msgid="3125033126936493822">"Salvează"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Contrast"</string>
 </resources>

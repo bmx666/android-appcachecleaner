@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ਫ਼ਾਈਲਾਂ ਅਤੇ ਸੈਟਿੰਗਾਂ ਸਮੇਤ ਇਸ ਐਪ ਦੇ ਡਾਟੇ ਨੂੰ ਇਸ ਡੀਵਾਈਸ ਤੋਂ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਇਆ ਜਾਵੇਗਾ"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"ਮਿਟਾਓ"</string>
     <string name="save" msgid="3125033126936493822">"ਰੱਖਿਅਤ ਕਰੋ"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"ਕੰਟ੍ਰਾਸਟ"</string>
 </resources>

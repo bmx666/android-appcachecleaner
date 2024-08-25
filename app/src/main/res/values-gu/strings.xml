@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"આ ડિવાઇસમાંથી ફાઇલો અને સેટિંગ સહિત આ ઍપનો ડેટા કાયમી રીતે ડિલીટ કરવામાં આવશે"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"ડિલીટ કરો"</string>
     <string name="save" msgid="3125033126936493822">"સાચવો"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"કોન્ટ્રાસ્ટ"</string>
 </resources>

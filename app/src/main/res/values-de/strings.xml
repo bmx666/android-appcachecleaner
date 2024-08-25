@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Die Daten dieser App, einschließlich Dateien und Einstellungen, werden endgültig von diesem Gerät gelöscht"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Löschen"</string>
     <string name="save" msgid="3125033126936493822">"Speichern"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Kontrast"</string>
 </resources>

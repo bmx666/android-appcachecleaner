@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"اس ایپ کا ڈیٹا بشمول فائلز اور ترتیبات کو اس آلے سے مستقل طور پر حذف کر دیا جائے گا"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"حذف کریں"</string>
     <string name="save" msgid="3125033126936493822">"محفوظ کریں"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"کنٹراسٹ"</string>
 </resources>

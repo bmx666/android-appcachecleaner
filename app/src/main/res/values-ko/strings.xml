@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"파일 및 설정을 비롯해 앱의 데이터가 이 기기에서 완전히 소거됩니다."</string>
     <string name="dlg_delete" msgid="1790919205039397659">"소거"</string>
     <string name="save" msgid="3125033126936493822">"저장"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"대비"</string>
 </resources>

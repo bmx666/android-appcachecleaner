@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ගොනු සහ සැකසීම් ඇතුළුව, මෙම යෙදුමේ දත්ත, මෙම උපාංගයෙන් ස්ථිරවම මකනු ඇත"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"මකන්න"</string>
     <string name="save" msgid="3125033126936493822">"සුරකින්න"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"අසමානතාව"</string>
 </resources>
