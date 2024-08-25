@@ -372,4 +372,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Дані додатка, зокрема файли та налаштування, буде назавжди видалено з цього пристрою"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Видалити"</string>
     <string name="save" msgid="3125033126936493822">"Зберегти"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Контраст"</string>
 </resources>

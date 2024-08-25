@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Të dhënat e këtij aplikacioni, duke përfshirë skedarët dhe cilësimet, do të fshihen përgjithmonë nga kjo pajisje"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Fshi"</string>
     <string name="save" msgid="3125033126936493822">"Ruaj"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Kontrasti"</string>
 </resources>

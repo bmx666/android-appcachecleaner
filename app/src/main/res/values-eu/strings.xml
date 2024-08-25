@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Aplikazio honen datuak (fitxategiak eta ezarpenak barne) betiko ezabatuko dira gailutik"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Ezabatu"</string>
     <string name="save" msgid="3125033126936493822">"Gorde"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Kontrastea"</string>
 </resources>

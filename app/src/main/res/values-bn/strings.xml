@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"ফাইল এবং সেটিংস সহ এই অ্যাপের ডেটা এই ডিভাইস থেকে স্থায়ীভাবে মুছে ফেলা হবে"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"মুছুন"</string>
     <string name="save" msgid="3125033126936493822">"সেভ করুন"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"কনট্রাস্ট"</string>
 </resources>

@@ -15,4 +15,5 @@
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"Den här appens data, inklusive filer och inställningar, raderas permanent från enheten"</string>
     <string name="dlg_delete" msgid="1790919205039397659">"Radera"</string>
     <string name="save" msgid="3125033126936493822">"Spara"</string>
+    <string name="contrast_title" msgid="6885768151336508075">"Kontrast"</string>
 </resources>
