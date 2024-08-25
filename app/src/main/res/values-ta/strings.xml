@@ -13,4 +13,5 @@
     <string name="force_stop" msgid="2681771622136916280">"உடனே நிறுத்து"</string>
     <string name="clear_data_dlg_title" msgid="180446967743732410">"ஆப்ஸ் டேட்டாவை நீக்கவா?"</string>
     <string name="clear_data_dlg_text" msgid="3440011276559762619">"இந்த ஆப்ஸின் தரவு (ஃபைல்கள், அமைப்புகள் உட்பட) இந்தச் சாதனத்திலிருந்து நிரந்தரமாக நீக்கப்படும்"</string>
+    <string name="dlg_delete" msgid="1790919205039397659">"நீக்கு"</string>
 </resources>
