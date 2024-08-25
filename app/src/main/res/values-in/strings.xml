@@ -307,7 +307,7 @@
     <!-- Preference -->
     <string name="prefs_ui">UI</string>
     <string name="prefs_ui_night_mode">Tema Gelap</string>
-    <string name="prefs_ui_contrast">Kontras</string>
+    <string name="prefs_ui_contrast">@string/contrast_title</string>
     <string name="prefs_ui_dynamic_color">Warna dinamis</string>
     <string name="prefs_title_filter_min_cache_size">Ukuran Cache Min. untuk menyaring aplikasi</string>
     <string name="prefs_summary_filter_min_cache_size">Min. %1$s</string>

@@ -306,7 +306,7 @@
     <!-- Preference -->
     <string translatable="false" name="prefs_ui">UI</string>
     <string translatable="false" name="prefs_ui_night_mode">Dark theme</string>
-    <string translatable="false" name="prefs_ui_contrast">Contrast</string>
+    <string translatable="false" name="prefs_ui_contrast">@string/contrast_title</string>
     <string translatable="false" name="prefs_ui_dynamic_color">Dynamic color</string>
     <string translatable="false" name="prefs_title_filter_min_cache_size">Min. cache size to filter apps</string>
     <string translatable="false" name="prefs_summary_filter_min_cache_size">Min. %1$s</string>
