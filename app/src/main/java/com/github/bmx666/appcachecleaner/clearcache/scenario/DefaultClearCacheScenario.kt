@@ -9,9 +9,11 @@ import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.C
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_FORCE_STOP_TRIES
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
 import com.github.bmx666.appcachecleaner.log.Logger
+import com.github.bmx666.appcachecleaner.util.findByViewIdResourceName
+import com.github.bmx666.appcachecleaner.util.findClickable
 import com.github.bmx666.appcachecleaner.util.getAllChild
-import com.github.bmx666.appcachecleaner.util.lowercaseCompareText
 import com.github.bmx666.appcachecleaner.util.showTree
+import com.github.bmx666.appcachecleaner.util.takeIfMatches
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 
@@ -187,7 +189,11 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
                         }
                     }
                 }
-                null -> return
+                null -> {
+                    // force stop button was found but it disabled
+                    forceStopTries = 0
+                    return
+                }
             }
         }
     }
@@ -212,6 +218,11 @@ internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
         if (forceStopApps && forceStopTries > 0) {
             if (!findForceStopDialogOkButton(nodeInfo))
                 findForceStopButton(nodeInfo)
+            else
+                // skip check Force Stop button
+                forceStopTries = 0
+
+            // try again?
             forceStopTries--
         }
 
@@ -256,10 +267,9 @@ private fun AccessibilityNodeInfo.findClearCacheButton(
         childNode?.findClearCacheButton(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.matches("com.android.settings:id/.*button.*".toRegex()) == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(true,
+        "com.android.settings:id/.*button.*".toRegex(),
+        arrayText)?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findForceStopButton(
@@ -269,10 +279,9 @@ private fun AccessibilityNodeInfo.findForceStopButton(
         childNode?.findForceStopButton(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.matches("com.android.settings:id/.*button.*".toRegex()) == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(true,
+        "com.android.settings:id/.*button.*".toRegex(),
+        arrayText)?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
@@ -282,14 +291,9 @@ private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
         childNode?.findStorageAndCacheMenu(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-            nodeInfo.className?.contentEquals("android.widget.TextView") == true
-                    && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-        else
-            nodeInfo.viewIdResourceName?.contentEquals("android:id/title") == true
-                    && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(true,
+        "android:id/title",
+        arrayText)?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
@@ -299,7 +303,7 @@ private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
     }
 
     return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.contentEquals("com.android.settings:id/recycler_view") == true
+        nodeInfo.findByViewIdResourceName("com.android.settings:id/recycler_view")
     }
 }
 
@@ -310,8 +314,7 @@ private fun AccessibilityNodeInfo.findDialogButton(
         childNode?.findDialogButton(arrayText)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.viewIdResourceName?.matches("android:id/button.*".toRegex()) == true
-                && arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
-    }
+    return this.takeIfMatches(true,
+        "android:id/button.*".toRegex(),
+        arrayText)?.findClickable()
 }
