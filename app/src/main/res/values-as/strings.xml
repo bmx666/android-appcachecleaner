@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"ষ্ট’ৰেজ মচক"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"কোনো মিল পোৱা নগ’ল।"</string>
     <string name="force_stop" msgid="2681771622136916280">"বলেৰে ৰখাওক"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"এপৰ ডেটা মচিবনে?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ফাইল আৰু ছেটিঙকে ধৰি এই এপ্‌টোৰ ডেটা এই ডিভাইচটোৰ পৰা স্থায়ীভাৱে মচা হ\'ব"</string>
 </resources>

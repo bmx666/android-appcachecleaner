@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Xóa bộ nhớ"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Không tìm thấy kết quả phù hợp."</string>
     <string name="force_stop" msgid="2681771622136916280">"Buộc dừng"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Xóa dữ liệu ứng dụng?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Dữ liệu của ứng dụng này, bao gồm cả các tệp và chế độ cài đặt, sẽ bị xoá vĩnh viễn khỏi thiết bị này"</string>
 </resources>

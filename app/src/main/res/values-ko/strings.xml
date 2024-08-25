@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"저장용량 비우기"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"일치하는 항목이 없습니다."</string>
     <string name="force_stop" msgid="2681771622136916280">"강제 종료"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"앱 데이터를 삭제하시겠습니까?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"파일 및 설정을 비롯해 앱의 데이터가 이 기기에서 완전히 소거됩니다."</string>
 </resources>

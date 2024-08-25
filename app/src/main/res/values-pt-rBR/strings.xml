@@ -40,4 +40,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Limpar armazenamento"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Nenhum resultado encontrado."</string>
     <string name="force_stop" msgid="2681771622136916280">"Forçar fechamento"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Excluir os dados do app?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Os dados desse app, incluindo arquivos e configurações, serão excluídos permanentemente deste dispositivo"</string>
 </resources>

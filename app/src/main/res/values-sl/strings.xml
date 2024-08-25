@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Počisti shrambo"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Ni rezultatov."</string>
     <string name="force_stop" msgid="2681771622136916280">"Prisilno ustavi"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Želite izbrisati podatke aplikacije?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Podatki te aplikacije, vključno z datotekami in nastavitvami, bodo trajno izbrisani iz te naprave."</string>
 </resources>

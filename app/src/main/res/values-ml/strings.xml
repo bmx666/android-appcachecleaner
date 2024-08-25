@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"സ്‌റ്റോറേജ് മായ്‌ക്കുക"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"പൊരുത്തങ്ങളൊന്നും കണ്ടെത്തിയില്ല."</string>
     <string name="force_stop" msgid="2681771622136916280">"നിർബന്ധിതമായി നിർത്തുക"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"ആപ്പ് ഡാറ്റ ഇല്ലാതാക്കണോ?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ഈ ആപ്പിന്റെ ഫയലുകളും ക്രമീകരണവും ഉൾപ്പെടെയുള്ള ഡാറ്റ ഈ ഉപകരണത്തിൽ നിന്ന് ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും"</string>
 </resources>

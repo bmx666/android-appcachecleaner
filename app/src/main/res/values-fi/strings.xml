@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"Tyhjennä tallennustila"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"Osumia ei löytynyt."</string>
     <string name="force_stop" msgid="2681771622136916280">"Pakota lopetus"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"Poistetaanko sovelluksen tiedot?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"Sovelluksen data, mukaan lukien tiedostot ja asetukset, poistetaan pysyvästi tältä laitteelta"</string>
 </resources>

@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"محو مساحة التخزين"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"لم يتم العثور على نتائج مطابِقة."</string>
     <string name="force_stop" msgid="2681771622136916280">"فرض الإيقاف"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"هل تريد حذف بيانات التطبيق؟"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ستُحذف نهائيًا بيانات هذا التطبيق من الجهاز، بما في ذلك الملفات والإعدادات."</string>
 </resources>

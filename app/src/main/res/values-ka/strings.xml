@@ -11,4 +11,6 @@
     <string name="clear_user_data_text" msgid="6773186434260397947">"მონაცემთა საცავის გასუფთავება"</string>
     <string name="message_no_matches_found" msgid="6965828658999779258">"შესატყვისი ვერ მოიძებნა."</string>
     <string name="force_stop" msgid="2681771622136916280">"ძალით შეჩერება"</string>
+    <string name="clear_data_dlg_title" msgid="180446967743732410">"წაიშალოს აპის მონაცემები?"</string>
+    <string name="clear_data_dlg_text" msgid="3440011276559762619">"ამ აპის მონაცმეები, მათ შორის ფაილები და პარამეტრები, სამუდამოდ წაიშლება ამ მოწყობილობიდან"</string>
 </resources>
