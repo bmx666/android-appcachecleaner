@@ -306,7 +306,7 @@
     <!-- Preference -->
     <string name="prefs_ui">Інтерфейс</string>
     <string name="prefs_ui_night_mode">Темна тема</string>
-    <string name="prefs_ui_contrast">Контраст</string>
+    <string name="prefs_ui_contrast">@string/contrast_title</string>
     <string name="prefs_ui_dynamic_color">Динамічний колір</string>
     <string name="prefs_title_filter_min_cache_size">Мін. розмір кешу для фільтрації додатків</string>
     <string name="prefs_summary_filter_min_cache_size">Мін. %1$s</string>
