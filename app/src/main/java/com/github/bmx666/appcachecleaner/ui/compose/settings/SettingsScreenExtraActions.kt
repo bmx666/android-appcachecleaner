@@ -20,6 +20,7 @@ internal fun SettingsScreenExtraActions() {
             state = settingsExtraViewModel.actionForceStopApps.collectAsState(),
             onClick = { settingsExtraViewModel.toggleActionForceStopApps() }
         )
+        HorizontalDivider()
         SettingsSwitch(
             titleResId = R.string.prefs_title_extra_action_stop_service,
             summaryResId = R.string.prefs_summary_extra_action_stop_service,
