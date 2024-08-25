@@ -14,6 +14,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -31,6 +33,7 @@ internal fun SettingsSwitch(
     @StringRes summaryResId: Int? = null,
     @DrawableRes icon: Int? = null,
     @StringRes iconDesc: Int? = null,
+    switchColors: SwitchColors = SwitchDefaults.colors(),
     state: State<Boolean?>,
     onClick: () -> Unit
 ) {
@@ -70,6 +73,7 @@ internal fun SettingsSwitch(
                     .align(Alignment.CenterVertically)
             ) {
                 Switch(
+                    colors = switchColors,
                     enabled = state.value != null,
                     checked = state.value ?: false,
                     onCheckedChange = { onClick() }
