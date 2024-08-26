@@ -15,8 +15,40 @@ fun AccessibilityNodeInfo.findByViewIdResourceName(text: String): Boolean {
     return this.viewIdResourceName?.contentEquals(text) == true
 }
 
+fun AccessibilityNodeInfo.findByViewIdResourceNames(
+    viewIdResourceNames: Array<String>)
+: Boolean {
+    return viewIdResourceNames.any { viewIdResourceName ->
+        this.findByViewIdResourceName(viewIdResourceName)
+    }
+}
+
 fun AccessibilityNodeInfo.findByViewIdResourceName(regex: Regex): Boolean {
     return this.viewIdResourceName?.matches(regex) == true
+}
+
+fun AccessibilityNodeInfo.findNestedChildByViewIdResourceName(
+    viewIdResourceName: String)
+        : AccessibilityNodeInfo? {
+    this.getAllChild().forEach { childNode ->
+        childNode?.findNestedChildByViewIdResourceName(viewIdResourceName)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.findByViewIdResourceName(viewIdResourceName)
+    }
+}
+
+fun AccessibilityNodeInfo.findNestedChildByViewIdResourceNames(
+    viewIdResourceNames: Array<String>)
+        : AccessibilityNodeInfo? {
+    this.getAllChild().forEach { childNode ->
+        childNode?.findNestedChildByViewIdResourceNames(viewIdResourceNames)?.let { return it }
+    }
+
+    return this.takeIf { nodeInfo ->
+        nodeInfo.findByViewIdResourceNames(viewIdResourceNames)
+    }
 }
 
 fun AccessibilityNodeInfo.findByClassName(className: String): Boolean {
@@ -25,13 +57,13 @@ fun AccessibilityNodeInfo.findByClassName(className: String): Boolean {
 
 fun AccessibilityNodeInfo.findByClassNames(classNames: Array<String>): Boolean {
     return classNames.any { className ->
-        this.className?.contentEquals(className) == true
+        this.findByClassName(className)
     }
 }
 
-fun AccessibilityNodeInfo.findNestedChildByClassName(classNames: Array<String>): AccessibilityNodeInfo? {
+fun AccessibilityNodeInfo.findNestedChildByClassNames(classNames: Array<String>): AccessibilityNodeInfo? {
     this.getAllChild().forEach { childNode ->
-        childNode?.findNestedChildByClassName(classNames)?.let { return it }
+        childNode?.findNestedChildByClassNames(classNames)?.let { return it }
     }
 
     return this.takeIf { nodeInfo ->
