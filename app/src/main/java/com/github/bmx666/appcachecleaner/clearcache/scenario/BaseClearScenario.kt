@@ -93,9 +93,6 @@ internal abstract class BaseClearScenario {
     internal var forceStopWaitDialog:
         Boolean = false
 
-    // handle event Id for internal purpose
-    internal var eventId: Int = 0
-
     abstract fun resetInternalState()
     abstract suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException?
 

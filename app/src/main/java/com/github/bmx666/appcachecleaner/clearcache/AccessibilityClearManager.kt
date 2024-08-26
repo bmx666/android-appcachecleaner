@@ -195,7 +195,6 @@ class AccessibilityClearManager {
     }
 
     fun checkEvent(event: AccessibilityEvent) {
-        clearScenario.eventId++
         // do cache clean only if processing package
         if (mainJob?.isActive == true) {
             if (goBackJob?.isActive == true) {
@@ -208,7 +207,7 @@ class AccessibilityClearManager {
 
                 if (BuildConfig.DEBUG) {
                     Logger.d("===>>> TREE BEGIN <<<===")
-                    nodeInfo.showTree(clearScenario.eventId, 0)
+                    nodeInfo.showTree(event.eventTime, 0)
                     Logger.d("===>>> TREE END <<<===")
                 }
 
