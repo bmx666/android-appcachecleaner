@@ -106,7 +106,17 @@ class ExtraSearchTextHelper {
             val list = ArrayList<CharSequence>()
 
             when (getScenario(context)) {
-                Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.DEFAULT -> {
+                    arrayListOf(
+                        "clear_user_data_text",
+                    ).forEach { resourceName ->
+                        PackageManagerHelper.getApplicationResourceString(
+                            context,"com.android.settings", resourceName)?.let { value ->
+                            if (value.isNotEmpty())
+                                list.add(value)
+                        }
+                    }
+                }
                 Constant.Scenario.XIAOMI_MIUI -> {
                     arrayListOf(
                         "app_manager_menu_clear_data",
