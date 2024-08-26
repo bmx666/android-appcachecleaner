@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"保存"</string>
     <string name="contrast_title" msgid="6885768151336508075">"对比度"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"使用深色主题"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"要强行停止吗？"</string>
 </resources>

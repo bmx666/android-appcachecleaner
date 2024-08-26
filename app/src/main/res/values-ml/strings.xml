@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"സംരക്ഷിക്കുക"</string>
     <string name="contrast_title" msgid="6885768151336508075">"കോൺട്രാസ്റ്റ്"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"ഡാർക്ക് തീം ഉപയോഗിക്കുക"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"നിർബന്ധിതമായി നിർത്തണോ?"</string>
 </resources>

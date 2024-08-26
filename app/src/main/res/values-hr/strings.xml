@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"Spremi"</string>
     <string name="contrast_title" msgid="6885768151336508075">"Kontrast"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"Koristi tamnu temu"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"Prisilno zaustaviti?"</string>
 </resources>

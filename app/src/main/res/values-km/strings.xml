@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"រក្សាទុក"</string>
     <string name="contrast_title" msgid="6885768151336508075">"កម្រិត​រំលេចពណ៌"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"ប្រើទម្រង់រចនាងងឹត"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"បង្ខំ​ឲ្យ​ឈប់?"</string>
 </resources>

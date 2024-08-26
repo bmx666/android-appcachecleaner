@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"सेव्ह करा"</string>
     <string name="contrast_title" msgid="6885768151336508075">"कॉंट्रास्ट"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"गडद थीम वापरा"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"सक्तीने थांबवायचे?"</string>
 </resources>
