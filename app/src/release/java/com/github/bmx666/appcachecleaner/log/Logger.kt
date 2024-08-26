@@ -20,5 +20,6 @@ class Logger() {
 
     fun onCreate(cacheDir: File) {}
     fun onClearCache() {}
+    fun onClearData() {}
     fun onDestroy() {}
 }
