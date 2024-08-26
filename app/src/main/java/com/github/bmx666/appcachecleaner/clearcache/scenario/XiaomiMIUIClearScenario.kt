@@ -153,9 +153,12 @@ private fun AccessibilityNodeInfo.findMenuItemText(
         childNode?.findMenuItemText(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(false,
-        "com.miui.securitycenter:id/action_menu_item_child_text",
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = false,
+        findButton = false,
+        viewIdResourceName = "com.miui.securitycenter:id/action_menu_item_child_text",
+        arrayText = arrayText,
+    )?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findDialogText(
@@ -165,9 +168,12 @@ private fun AccessibilityNodeInfo.findDialogText(
         childNode?.findDialogText(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(false,
-        "android:id/text.*".toRegex(),
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = false,
+        findButton = false,
+        viewIdResourceName = "android:id/text.*".toRegex(),
+        arrayText = arrayText,
+    )?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findDialogButton(
@@ -177,7 +183,10 @@ private fun AccessibilityNodeInfo.findDialogButton(
         childNode?.findDialogButton(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(false,
-        "android:id/button.*".toRegex(),
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = false,
+        findButton = false,
+        viewIdResourceName ="android:id/button.*".toRegex(),
+        arrayText = arrayText,
+    )?.findClickable()
 }

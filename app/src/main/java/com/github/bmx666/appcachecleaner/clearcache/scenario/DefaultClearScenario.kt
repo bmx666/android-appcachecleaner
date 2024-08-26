@@ -267,9 +267,12 @@ private fun AccessibilityNodeInfo.findClearCacheButton(
         childNode?.findClearCacheButton(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(true,
-        "com.android.settings:id/.*button.*".toRegex(),
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = true,
+        findButton = true,
+        viewIdResourceName = "com.android.settings:id/.*button.*".toRegex(),
+        arrayText = arrayText,
+    )?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findForceStopButton(
@@ -279,9 +282,12 @@ private fun AccessibilityNodeInfo.findForceStopButton(
         childNode?.findForceStopButton(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(true,
-        "com.android.settings:id/.*button.*".toRegex(),
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = true,
+        findButton = true,
+        viewIdResourceName = "com.android.settings:id/.*button.*".toRegex(),
+        arrayText = arrayText,
+    )?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
@@ -291,9 +297,12 @@ private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
         childNode?.findStorageAndCacheMenu(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(true,
-        "android:id/title",
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = true,
+        findButton = true,
+        viewIdResourceName = "android:id/title",
+        arrayText = arrayText,
+    )?.findClickable()
 }
 
 private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
@@ -314,7 +323,10 @@ private fun AccessibilityNodeInfo.findDialogButton(
         childNode?.findDialogButton(arrayText)?.let { return it }
     }
 
-    return this.takeIfMatches(true,
-        "android:id/button.*".toRegex(),
-        arrayText)?.findClickable()
+    return this.takeIfMatches(
+        findTextView = true,
+        findButton = true,
+        viewIdResourceName = "android:id/button.*".toRegex(),
+        arrayText = arrayText,
+    )?.findClickable()
 }
