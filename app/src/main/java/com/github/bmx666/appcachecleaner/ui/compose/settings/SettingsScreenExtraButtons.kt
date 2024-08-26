@@ -42,6 +42,7 @@ internal fun SettingsScreenExtraButtons() {
             state = settingsExtraViewModel.showButtonClearData.collectAsState(),
             onClick = { settingsExtraViewModel.toggleShowButtonClearData() },
             titleColor = MaterialTheme.colorScheme.error,
+            summaryColor = MaterialTheme.colorScheme.error,
             switchColors = SwitchDefaults.colors(
                 checkedTrackColor = MaterialTheme.colorScheme.error
             )
