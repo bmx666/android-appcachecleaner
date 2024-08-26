@@ -51,7 +51,7 @@ class AppInfoService : Service() {
             }
         }
 
-        val pkgName = intent.getStringExtra(Constant.Intent.CleanCacheAppInfo.NAME_PACKAGE_NAME)
+        val pkgName = intent.getStringExtra(Constant.Intent.AppInfo.NAME_PACKAGE_NAME)
         ActivityHelper.startApplicationDetailsActivity(this, pkgName)
 
         // Return START_NOT_STICKY if you don't want the service to be recreated

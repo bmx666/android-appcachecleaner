@@ -25,16 +25,16 @@ class Constant {
             }
         }
 
-        class CleanCacheAppInfo {
+        class AppInfo {
             companion object {
-                const val ACTION = "CleanCacheAppInfo"
+                const val ACTION = "AppInfo"
                 const val NAME_PACKAGE_NAME = "package_name"
             }
         }
 
-        class CleanCacheFinish {
+        class ClearCacheFinish {
             companion object {
-                const val ACTION = "CleanCacheFinish"
+                const val ACTION = "ClearCacheFinish"
                 const val NAME_MESSAGE = "message"
                 const val NAME_PACKAGE_NAME = "package_name"
             }

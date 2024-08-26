@@ -133,7 +133,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         return null
     }
 
-    override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         if (state == State.OPEN_CLEAR_DATA_DIALOG)
             findClearDataDialogClearCacheButton(nodeInfo)?.let { return it }
         else if (state == State.OPEN_CLEAR_CACHE_DIALOG)

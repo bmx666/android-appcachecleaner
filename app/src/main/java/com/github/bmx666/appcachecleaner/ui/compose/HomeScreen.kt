@@ -140,7 +140,7 @@ fun HomeScreen(
             .collectLatest { list ->
                 if (list.isNotEmpty()) {
                     val pkgList = list.toMutableList()
-                    localBroadcastManager.sendPackageList(pkgList as ArrayList<String>)
+                    localBroadcastManager.sendPackageListToClearCache(pkgList as ArrayList<String>)
                 }
             }
     }
