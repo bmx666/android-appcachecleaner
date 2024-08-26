@@ -35,6 +35,7 @@ internal fun SettingsSwitch(
     @DrawableRes icon: Int? = null,
     @StringRes iconDesc: Int? = null,
     titleColor: Color = Color.Unspecified,
+    summaryColor: Color = Color.Unspecified,
     switchColors: SwitchColors = SwitchDefaults.colors(),
     state: State<Boolean?>,
     onClick: () -> Unit
@@ -86,6 +87,7 @@ internal fun SettingsSwitch(
     }
     summaryResId?.let {
         Text(
+            color = summaryColor,
             text = stringResource(id = it),
             modifier = Modifier.padding(
                 start = 16.dp,
