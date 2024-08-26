@@ -5,9 +5,9 @@ import android.os.ConditionVariable
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
-import com.github.bmx666.appcachecleaner.clearcache.scenario.BaseClearCacheScenario
-import com.github.bmx666.appcachecleaner.clearcache.scenario.DefaultClearCacheScenario
-import com.github.bmx666.appcachecleaner.clearcache.scenario.XiaomiMIUIClearCacheScenario
+import com.github.bmx666.appcachecleaner.clearcache.scenario.BaseClearScenario
+import com.github.bmx666.appcachecleaner.clearcache.scenario.DefaultClearScenario
+import com.github.bmx666.appcachecleaner.clearcache.scenario.XiaomiMIUIClearScenario
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_IGNORE
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INIT
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
 
-class AccessibilityClearCacheManager {
+class AccessibilityClearManager {
 
     private val ioScope = CoroutineScope(Dispatchers.IO)
     // main job that starts and finish cache clean process of all packages
@@ -58,48 +58,48 @@ class AccessibilityClearCacheManager {
         selfPackageName = context.packageName
 
         val scenario = userPrefScenarioManager.scenario.first()
-        cacheCleanScenario =
+        clearScenario =
             when (scenario) {
-                Constant.Scenario.DEFAULT -> DefaultClearCacheScenario()
-                Constant.Scenario.XIAOMI_MIUI -> XiaomiMIUIClearCacheScenario()
+                Constant.Scenario.DEFAULT -> DefaultClearScenario()
+                Constant.Scenario.XIAOMI_MIUI -> XiaomiMIUIClearScenario()
             }
 
-        cacheCleanScenario.arrayTextClearCacheButton.addAll(
+        clearScenario.arrayTextClearCacheButton.addAll(
             ExtraSearchTextHelper.getTextForClearCache(context)
         )
 
-        cacheCleanScenario.arrayTextClearDataButton.addAll(
+        clearScenario.arrayTextClearDataButton.addAll(
             ExtraSearchTextHelper.getTextForClearData(context)
         )
 
-        cacheCleanScenario.arrayTextStorageAndCacheMenu.addAll(
+        clearScenario.arrayTextStorageAndCacheMenu.addAll(
             ExtraSearchTextHelper.getTextForStorage(context)
         )
 
-        cacheCleanScenario.arrayTextOkButton.addAll(
+        clearScenario.arrayTextOkButton.addAll(
             ExtraSearchTextHelper.getTextForOk(context)
         )
 
-        cacheCleanScenario.arrayTextForceStopButton.addAll(
+        clearScenario.arrayTextForceStopButton.addAll(
             ExtraSearchTextHelper.getTextForForceStop(context)
         )
 
-        cacheCleanScenario.delayForNextAppTimeoutMs =
+        clearScenario.delayForNextAppTimeoutMs =
             userPrefTimeoutManager.delayForNextAppTimeout.first()
 
-        cacheCleanScenario.maxWaitAppTimeoutMs =
+        clearScenario.maxWaitAppTimeoutMs =
             userPrefTimeoutManager.maxWaitAppTimeout.first()
 
-        cacheCleanScenario.maxWaitClearCacheButtonTimeoutMs =
+        clearScenario.maxWaitClearCacheButtonTimeoutMs =
             userPrefTimeoutManager.maxWaitClearCacheButtonTimeout.first()
 
-        cacheCleanScenario.maxWaitAccessibilityEventMs =
+        clearScenario.maxWaitAccessibilityEventMs =
             userPrefTimeoutManager.maxWaitAccessibilityEventTimeout.first()
 
-        cacheCleanScenario.goBackAfterApps =
+        clearScenario.goBackAfterApps =
             userPrefTimeoutManager.maxGoBackAfterApps.first()
 
-        cacheCleanScenario.forceStopApps =
+        clearScenario.forceStopApps =
             userPrefExtraManager.actionForceStopApps.first()
     }
 
@@ -128,15 +128,15 @@ class AccessibilityClearCacheManager {
                     if (pkg.trim().isEmpty())
                         continue
 
-                    cacheCleanScenario.resetInternalState()
+                    clearScenario.resetInternalState()
                     // avoid self force stop
                     if (currentPkg == selfPackageName)
-                        cacheCleanScenario.forceStopTries = 0
+                        clearScenario.forceStopTries = 0
 
                     if (index > 0) {
                         waitNextAppJob?.cancel(CANCEL_IGNORE)
                         waitNextAppJob = ioScope.launch {
-                            val timeoutMs = cacheCleanScenario.delayForNextAppTimeoutMs.toLong()
+                            val timeoutMs = clearScenario.delayForNextAppTimeoutMs.toLong()
                             delay(timeoutMs)
                         }
                         waitNextAppJob?.join()
@@ -150,14 +150,14 @@ class AccessibilityClearCacheManager {
                     packageJob = ioScope.launch {
                         // wait first Accessibility Event - open AppInfo
                         waitAccessibilityJob = ioScope.launch {
-                            val timeoutMs = cacheCleanScenario.maxWaitAccessibilityEventMs.toLong()
+                            val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
                             delay(timeoutMs)
                             Logger.w("Accessibility Event timeout")
                         }
                         waitAccessibilityJob?.join()
                         // got first Accessibility Event
                         if (waitAccessibilityJob?.isCancelled == true) {
-                            val timeoutMs = cacheCleanScenario.maxWaitAppTimeoutMs.toLong()
+                            val timeoutMs = clearScenario.maxWaitAppTimeoutMs.toLong()
                             delay(timeoutMs)
                         }
                     }
@@ -170,7 +170,7 @@ class AccessibilityClearCacheManager {
 
                     // got first Accessibility event, need go back
                     if (waitAccessibilityJob?.isCancelled == true) {
-                        val goBackAfterApps = cacheCleanScenario.goBackAfterApps
+                        val goBackAfterApps = clearScenario.goBackAfterApps
                         if (goBackAfterApps > 0) {
                             // go back after each Nth apps and for the last app
                             if ((index % goBackAfterApps == 0 && index != 0) or (index == pkgList.size - 1))
@@ -235,7 +235,7 @@ class AccessibilityClearCacheManager {
     private suspend fun doGoBack(performBack: () -> Boolean) {
         goBackJob?.cancel(CANCEL_IGNORE)
         goBackJob = ioScope.launch {
-            val timeoutMs = cacheCleanScenario.maxWaitAccessibilityEventMs.toLong()
+            val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
             while (true) {
                 performBack()
                 needGoBack.close()
@@ -253,7 +253,7 @@ class AccessibilityClearCacheManager {
         accessibilityJob = ioScope.launch {
             try {
                 waitAccessibilityJob?.cancel()
-                val result = cacheCleanScenario.doCacheClean(nodeInfo)
+                val result = clearScenario.doCacheClean(nodeInfo)
                 when (result?.message) {
                     PACKAGE_FINISH.message,
                     PACKAGE_FINISH_FAILED.message,
@@ -267,6 +267,6 @@ class AccessibilityClearCacheManager {
     }
 
     companion object {
-        private var cacheCleanScenario: BaseClearCacheScenario = DefaultClearCacheScenario()
+        private var clearScenario: BaseClearScenario = DefaultClearScenario()
     }
 }

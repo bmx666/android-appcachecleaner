@@ -50,7 +50,7 @@ import kotlinx.coroutines.delay
  * 7. interrupt clean process and halt
  ***/
 
-internal class DefaultClearCacheScenario: BaseClearCacheScenario() {
+internal class DefaultClearScenario: BaseClearScenario() {
 
     override fun resetInternalState() {
         forceStopTries = DEFAULT_FORCE_STOP_TRIES

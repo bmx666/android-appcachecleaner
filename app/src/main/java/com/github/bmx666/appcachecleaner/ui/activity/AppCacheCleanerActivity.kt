@@ -23,7 +23,7 @@ import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_SYSTEM
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
 import com.github.bmx666.appcachecleaner.ui.compose.AppScreen
-import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanCacheResultViewModel
+import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanResultViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.FirstBootViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.PermissionViewModel
@@ -56,7 +56,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     private val localeViewModel: LocaleViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
-    private val cleanCacheResultViewModel: CleanCacheResultViewModel by viewModels()
+    private val cleanResultViewModel: CleanResultViewModel by viewModels()
 
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
@@ -97,7 +97,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                             AppScreen(
                                 localBroadcastManager,
                                 localeViewModel,
-                                cleanCacheResultViewModel)
+                                cleanResultViewModel)
                         }
                         true
                     } else {
@@ -180,7 +180,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 else -> false
             }
 
-        cleanCacheResultViewModel.finish(this, interrupted)
+        cleanResultViewModel.finish(this, interrupted)
 
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this, this.intent)
@@ -189,7 +189,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
             saveLogFile()
 
         if (message == CANCEL_INTERRUPTED_BY_SYSTEM.message)
-            cleanCacheResultViewModel.showInterruptedBySystemDialog()
+            cleanResultViewModel.showInterruptedBySystemDialog()
     }
 
     override fun onStopAccessibilityServiceFeedback() {
@@ -198,7 +198,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @Composable
     private fun CheckActions() {
-        val actions by cleanCacheResultViewModel.actions.collectAsState()
+        val actions by cleanResultViewModel.actions.collectAsState()
         val actionStopService by settingsExtraViewModel.actionStopService.collectAsState()
         val actionCloseApp by settingsExtraViewModel.actionCloseApp.collectAsState()
 
@@ -207,7 +207,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 localBroadcastManager.disableAccessibilityService()
             if (actionCloseApp == true)
                 finish()
-            cleanCacheResultViewModel.resetActions()
+            cleanResultViewModel.resetActions()
         }
     }
 }

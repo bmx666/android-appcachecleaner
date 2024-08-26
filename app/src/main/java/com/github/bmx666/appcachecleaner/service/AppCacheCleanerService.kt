@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.github.bmx666.appcachecleaner.BuildConfig
-import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearCacheManager
+import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearManager
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
 import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     companion object {
-        private val accessibilityClearCacheManager = AccessibilityClearCacheManager()
+        private val accessibilityClearManager = AccessibilityClearManager()
     }
 
     private val logger = Logger()
@@ -41,13 +41,13 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
         super.onServiceConnected()
         localBroadcastManager = LocalBroadcastManagerServiceHelper(this, this)
         accessibilityOverlay = AccessibilityOverlay {
-            accessibilityClearCacheManager.interruptByUser()
+            accessibilityClearManager.interruptByUser()
         }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         accessibilityOverlay.hide(this)
-        accessibilityClearCacheManager.interruptBySystem()
+        accessibilityClearManager.interruptBySystem()
         localBroadcastManager.onDestroy()
         return super.onUnbind(intent)
     }
@@ -60,7 +60,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
-            accessibilityClearCacheManager.checkEvent(event)
+            accessibilityClearManager.checkEvent(event)
     }
 
     override fun onInterrupt() {
@@ -80,8 +80,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
             val pkgListSize = pkgList.size
             serviceScope.launch {
                 val context = this@AppCacheCleanerService.applicationContext
-                accessibilityClearCacheManager.setSettings(context)
-                accessibilityClearCacheManager.clearCacheApp(
+                accessibilityClearManager.setSettings(context)
+                accessibilityClearManager.clearCacheApp(
                     pkgList,
                     { index: Int ->
                         accessibilityOverlay.updateCounter(index, pkgListSize)

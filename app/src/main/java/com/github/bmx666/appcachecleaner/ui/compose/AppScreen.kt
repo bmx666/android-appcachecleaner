@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.ui.theme.AppTheme
-import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanCacheResultViewModel
+import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanResultViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.FirstBootViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsUiViewModel
@@ -21,7 +21,7 @@ import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelpe
 fun AppScreen(
     localBroadcastManager: LocalBroadcastManagerActivityHelper,
     localeViewModel: LocaleViewModel,
-    cleanCacheResultViewModel: CleanCacheResultViewModel,
+    cleanResultViewModel: CleanResultViewModel,
 ) {
     val settingsUiViewModel: SettingsUiViewModel = hiltViewModel()
     val firstBootViewModel: FirstBootViewModel = hiltViewModel()
@@ -52,7 +52,7 @@ fun AppScreen(
                 HomeScreen(
                     navController = navController,
                     localBroadcastManager = localBroadcastManager,
-                    cleanCacheResultViewModel = cleanCacheResultViewModel,
+                    cleanResultViewModel = cleanResultViewModel,
                 )
             }
             composable(Constant.Navigation.HELP.name) {
