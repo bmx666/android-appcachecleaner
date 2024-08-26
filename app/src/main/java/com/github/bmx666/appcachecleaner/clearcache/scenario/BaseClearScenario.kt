@@ -32,6 +32,7 @@ internal abstract class BaseClearScenario {
     internal val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
     internal val arrayTextOkButton = ArrayList<CharSequence>()
     internal val arrayTextForceStopButton = ArrayList<CharSequence>()
+    internal val arrayTextForceStopDialogTitle = ArrayList<CharSequence>()
 
     internal var delayForNextAppTimeoutMs:
         Int = DEFAULT_DELAY_FOR_NEXT_APP_MS
@@ -88,6 +89,9 @@ internal abstract class BaseClearScenario {
 
     internal var forceStopTries:
         Int = DEFAULT_FORCE_STOP_TRIES
+
+    internal var forceStopWaitDialog:
+        Boolean = false
 
     // handle event Id for internal purpose
     internal var eventId: Int = 0

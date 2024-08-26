@@ -84,6 +84,10 @@ class AccessibilityClearManager {
             ExtraSearchTextHelper.getTextForForceStop(context)
         )
 
+        clearScenario.arrayTextForceStopDialogTitle.addAll(
+            ExtraSearchTextHelper.getTextForForceStopDialogTitle(context)
+        )
+
         clearScenario.delayForNextAppTimeoutMs =
             userPrefTimeoutManager.delayForNextAppTimeout.first()
 
