@@ -78,6 +78,8 @@
     <string name="text_clean_cache_interrupt">Очистка кэша была прервана</string>
     <string name="text_clean_cache_interrupt_display_size">Очистка кэша была прервана\nОчищено %1$s</string>
     <string name="text_clean_cache_interrupt_processing">Очистка кэша была прервана\nОбработка…</string>
+    <string name="text_clean_data_finish">Очистка данных завершена</string>
+    <string name="text_clean_data_interrupt">Очистка данных была прервана</string>
     <string name="btn_open_accessibility">Открыть настройки Спец. возможностей</string>
     <string name="btn_open_usage_stats">Открыть настройки Данные об Использ.</string>
     <string name="btn_clean_cache_all_apps">Очистка кэша всех приложений</string>
@@ -329,6 +331,8 @@
     <string name="prefs_summary_show_button_start_stop_service">Для некоторых смартфонов необходимо вручную запускать или останавливать службу специальных возможностей</string>
     <string name="prefs_title_show_button_close_app">Выйти из приложения</string>
     <string name="prefs_summary_show_button_close_app">Для некоторых смартфонов вам необходимо вручную остановить службу специальных возможностей и закрыть приложение</string>
+    <string name="prefs_title_extra_show_button_clear_data">Разрешить удалять данные</string>
+    <string name="prefs_summary_extra_show_button_clear_data">ОПАСНО! Отобразить кнопку для безвозвратного удаления данных. Используйте на свой страх и риск!</string>
     <string name="prefs_extra_actions">Доп. действия</string>
     <string name="prefs_title_extra_action_force_stop_apps">Принудительная остановка приложений</string>
     <string name="prefs_summary_extra_action_force_stop_apps">Принудительно останавливать приложения перед очисткой кэша</string>
