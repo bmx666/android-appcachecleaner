@@ -189,75 +189,77 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return false
     }
 
-    override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
-        if (forceStopApps && forceStopTries > 0) {
+    private suspend fun processForceStop(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        if (!forceStopApps) return null
+        if (forceStopTries <= 0) return null
 
-            if (forceStopWaitDialog) {
-                // force disable wait dialog to avoid misbehavior
-                forceStopWaitDialog = false
+        if (forceStopWaitDialog) {
+            // force disable wait dialog to avoid misbehavior
+            forceStopWaitDialog = false
 
-                // For Android N MR1 and early need to wait dialog
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
-                    // limit tries by app timeout
-                    var tries = maxWaitAppTimeoutMs / 250
+            // For Android N MR1 and early need to wait dialog
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+                // limit tries by app timeout
+                var tries = maxWaitAppTimeoutMs / 250
 
-                    while (tries-- > 0) {
-                        nodeInfo.refresh()
-                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                while (tries-- > 0) {
+                    nodeInfo.refresh()
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
 
-                        if (BuildConfig.DEBUG) {
-                            Logger.d("===>>> FORCE STOP Dialog TREE BEGIN <<<===")
-                            nodeInfo.showTree(0, 0)
-                            Logger.d("===>>> FORCE STOP Dialog TREE END <<<===")
-                        }
-
-                        if (findForceStopDialogTitle(nodeInfo))
-                            break
+                    if (BuildConfig.DEBUG) {
+                        Logger.d("===>>> FORCE STOP Dialog TREE BEGIN <<<===")
+                        nodeInfo.showTree(0, 0)
+                        Logger.d("===>>> FORCE STOP Dialog TREE END <<<===")
                     }
+
+                    if (findForceStopDialogTitle(nodeInfo))
+                        break
                 }
             }
-
-            when (findForceStopDialogTitle(nodeInfo)) {
-                true -> {
-                    when {
-                        // For Android N MR1 and early need to wait dialog
-                        Build.VERSION.SDK_INT <= Build.VERSION_CODES.O -> {
-                            // try refresh
-                            while (!findForceStopDialogOkButton(nodeInfo)) {
-                                nodeInfo.refresh()
-                                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-                            }
-                        }
-                        else -> findForceStopDialogOkButton(nodeInfo)
-                    }
-
-                    // it's force stop dialog, nothing to do more, exit
-                    forceStopTries = 0
-                    return PACKAGE_WAIT_NEXT_STEP
-                }
-                false -> {
-                    when (findForceStopButton(nodeInfo)) {
-                        false, null -> {
-                            // nothing found, fall down to clear cache scenario
-                            forceStopTries = 0
-                            forceStopWaitDialog = false
-                        }
-                        true -> {
-                            // found "Force stop" button, wait force stop dialog
-                            forceStopTries = DEFAULT_FORCE_STOP_TRIES
-                            forceStopWaitDialog = true
-                            return PACKAGE_WAIT_DIALOG
-                        }
-                    }
-                }
-            }
-
-            // try again?
-            forceStopTries--
         }
 
-        findClearCacheButton(nodeInfo)?.let { return it }
+        when (findForceStopDialogTitle(nodeInfo)) {
+            true -> {
+                when {
+                    // For Android N MR1 and early need to wait dialog
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.O -> {
+                        // try refresh
+                        while (!findForceStopDialogOkButton(nodeInfo)) {
+                            nodeInfo.refresh()
+                            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                        }
+                    }
+                    else -> findForceStopDialogOkButton(nodeInfo)
+                }
 
+                // it's force stop dialog, nothing to do more, exit
+                forceStopTries = 0
+                return PACKAGE_WAIT_NEXT_STEP
+            }
+            false -> {
+                when (findForceStopButton(nodeInfo)) {
+                    false, null -> {
+                        // nothing found, fall down to clear cache scenario
+                        forceStopTries = 0
+                        forceStopWaitDialog = false
+                    }
+                    true -> {
+                        // found "Force stop" button, wait force stop dialog
+                        forceStopTries = DEFAULT_FORCE_STOP_TRIES
+                        forceStopWaitDialog = true
+                        return PACKAGE_WAIT_DIALOG
+                    }
+                }
+            }
+        }
+
+        // try again?
+        forceStopTries--
+
+        return null
+    }
+
+    private suspend fun processStorage(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
 
         while (recyclerViewNodeInfo != null) {
@@ -286,6 +288,13 @@ internal class DefaultClearScenario: BaseClearScenario() {
             }
         }
 
+        return null
+    }
+
+    override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+        processForceStop(nodeInfo)?.let { return it }
+        findClearCacheButton(nodeInfo)?.let { return it }
+        processStorage(nodeInfo)?.let { return it }
         return null
     }
 }
