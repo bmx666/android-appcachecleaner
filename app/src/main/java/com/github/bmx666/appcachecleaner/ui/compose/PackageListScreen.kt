@@ -143,6 +143,11 @@ internal fun PackageListScreen(
             context.getString(R.string.toast_custom_list_has_been_saved, savedListName),
             Toast.LENGTH_SHORT).show()
     }
+    val showToastClearDataPackageExclude: (String) -> Unit = { packageName ->
+        Toast.makeText(context,
+            context.getString(R.string.toast_clear_data_package_exclude, packageName),
+            Toast.LENGTH_SHORT).show()
+    }
 
     // if the dialog is visible
     var isFilterDialogShown by remember { mutableStateOf(false) }
@@ -351,16 +356,25 @@ internal fun PackageListScreen(
                     },
                     onOk = {
                         isClearDataDialogShown = false
-                        if (pkgListChecked.isNotEmpty()) {
-                            val mutablePkgList = pkgListChecked.toMutableList()
-                            mutablePkgList.apply {
+                        pkgListChecked.toMutableList().apply {
+                            // exclude specific packages
+                            arrayListOf(
                                 // do not clear self data
-                                if (contains(context.packageName))
-                                    remove(context.packageName)
+                                context.packageName,
+                                "com.android.chrome",
+                                "com.google.android.gms",
+                            ).forEach { excludedPkg ->
+                                if (contains(excludedPkg)) {
+                                    remove(excludedPkg)
+                                    showToastClearDataPackageExclude(excludedPkg)
+                                }
                             }
-                            localBroadcastManager.sendPackageListToClearData(
-                                mutablePkgList as ArrayList<String>)
+
+                            if (isNotEmpty())
+                                localBroadcastManager.sendPackageListToClearData(
+                                    this as ArrayList<String>)
                         }
+
                         goBack(navController)
                     }
                 )
