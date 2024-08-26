@@ -240,7 +240,7 @@ internal fun PackageListScreen(
                                                     add(context.packageName)
                                             }
                                         }
-                                        localBroadcastManager.sendPackageList(
+                                        localBroadcastManager.sendPackageListToClearCache(
                                             mutablePkgList as ArrayList<String>)
                                     }
                                     goBack(navController)

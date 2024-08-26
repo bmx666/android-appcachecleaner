@@ -93,7 +93,7 @@ internal abstract class BaseClearScenario {
     internal var eventId: Int = 0
 
     abstract fun resetInternalState()
-    abstract suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException?
+    abstract suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException?
 
     protected suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,
                                        debugText: String): Boolean?

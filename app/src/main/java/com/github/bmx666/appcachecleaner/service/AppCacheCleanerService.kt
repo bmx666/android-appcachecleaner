@@ -90,12 +90,12 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                         performGlobalAction(GLOBAL_ACTION_BACK)
                     },
                     localBroadcastManager::sendAppInfo,
-                    localBroadcastManager::sendFinish)
+                    localBroadcastManager::sendFinishClearCache)
             }
-        } ?: localBroadcastManager.sendFinish(null, null)
+        } ?: localBroadcastManager.sendFinishClearCache(null, null)
     }
 
-    override fun onCleanCacheFinish() {
+    override fun onClearCacheFinish() {
         accessibilityOverlay.hide(this)
     }
 }

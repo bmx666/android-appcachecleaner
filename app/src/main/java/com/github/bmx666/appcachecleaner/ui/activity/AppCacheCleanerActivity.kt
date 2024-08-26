@@ -172,7 +172,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
 
     @UiContext
     @UiThread
-    override fun onCleanCacheFinish(message: String?) {
+    override fun onClearCacheFinish(message: String?) {
         val interrupted: Boolean =
             when (message) {
                 CANCEL_INTERRUPTED_BY_USER.message -> true
@@ -180,7 +180,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 else -> false
             }
 
-        cleanResultViewModel.finish(this, interrupted)
+        cleanResultViewModel.finishClearCache(this, interrupted)
 
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this, this.intent)

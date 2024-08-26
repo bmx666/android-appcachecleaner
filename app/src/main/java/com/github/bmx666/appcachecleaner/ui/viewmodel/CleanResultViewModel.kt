@@ -39,7 +39,7 @@ class CleanResultViewModel @Inject constructor(
         titleText = ""
     }
 
-    fun finish(context: Context, interrupted: Boolean) {
+    fun finishClearCache(context: Context, interrupted: Boolean) {
         val resId =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 when (interrupted) {
@@ -78,14 +78,14 @@ class CleanResultViewModel @Inject constructor(
     fun calculateCleanedCache(context: Context, interrupted: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val cleanCacheBytes =
+                val cleanedCacheBytes =
                     PlaceholderContent.Current.getChecked().sumOf {
                         PackageManagerHelper.getCacheSizeDiff(
                             it.stats,
                             PackageManagerHelper.getStorageStats(context, it.pkgInfo)
                         )
                     }
-                val sizeStr = DataSize.ofBytes(cleanCacheBytes)
+                val sizeStr = DataSize.ofBytes(cleanedCacheBytes)
                     .toFormattedString(context)
 
                 val resId = when (interrupted) {

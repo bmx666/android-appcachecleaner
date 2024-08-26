@@ -208,7 +208,7 @@ class AccessibilityClearManager {
                     Logger.d("===>>> TREE END <<<===")
                 }
 
-                doAccessibilityEvent(nodeInfo)
+                doAccessibilityEventClearCache(nodeInfo)
             }
         }
     }
@@ -249,12 +249,12 @@ class AccessibilityClearManager {
         goBackJob?.join()
     }
 
-    private fun doAccessibilityEvent(nodeInfo: AccessibilityNodeInfo) {
+    private fun doAccessibilityEventClearCache(nodeInfo: AccessibilityNodeInfo) {
         accessibilityJob?.cancel(CANCEL_IGNORE)
         accessibilityJob = ioScope.launch {
             try {
                 waitAccessibilityJob?.cancel()
-                val result = clearScenario.doCacheClean(nodeInfo)
+                val result = clearScenario.doClearCache(nodeInfo)
                 when (result?.message) {
                     PACKAGE_FINISH.message,
                     PACKAGE_FINISH_FAILED.message,

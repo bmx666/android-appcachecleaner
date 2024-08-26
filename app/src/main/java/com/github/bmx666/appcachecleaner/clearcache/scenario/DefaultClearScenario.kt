@@ -210,11 +210,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return false
     }
 
-    override suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
-        return cacheClean(nodeInfo)
-    }
-
-    private suspend fun cacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         if (forceStopApps && forceStopTries > 0) {
             if (!findForceStopDialogOkButton(nodeInfo))
                 findForceStopButton(nodeInfo)
