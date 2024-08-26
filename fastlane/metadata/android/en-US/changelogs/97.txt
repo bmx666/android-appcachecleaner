@@ -1,0 +1,5 @@
+* fix UI issues
+* prevent self force stop
+* fix force stop issues on Android 7.1 and earlier
+* ignore window recomposition events on Android 14 and later that cause issues during the cache clean process
+* rely on the force stop dialog title to prevent misbehavior during the cache clean process
