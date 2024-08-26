@@ -59,6 +59,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (BuildConfig.DEBUG)
+            Logger.d(event.toString())
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
             accessibilityClearManager.checkEvent(event)
     }
