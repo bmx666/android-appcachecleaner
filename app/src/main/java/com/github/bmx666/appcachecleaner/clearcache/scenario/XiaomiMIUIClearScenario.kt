@@ -47,7 +47,7 @@ import kotlinx.coroutines.CancellationException
  * 8. interrupt clean process and halt
  ***/
 
-internal class XiaomiMIUIClearCacheScenario: BaseClearCacheScenario() {
+internal class XiaomiMIUIClearScenario: BaseClearScenario() {
 
     private enum class State {
         INIT,

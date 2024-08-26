@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class CleanCacheResultViewModel @Inject constructor(
+class CleanResultViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ): ViewModel()
 {

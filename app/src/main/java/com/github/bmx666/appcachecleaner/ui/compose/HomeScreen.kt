@@ -53,7 +53,7 @@ import com.github.bmx666.appcachecleaner.ui.compose.dialog.UsageStatsPermissionD
 import com.github.bmx666.appcachecleaner.ui.compose.view.CustomListDropDownDialog
 import com.github.bmx666.appcachecleaner.ui.compose.view.TopAppBar
 import com.github.bmx666.appcachecleaner.ui.compose.view.goBack
-import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanCacheResultViewModel
+import com.github.bmx666.appcachecleaner.ui.viewmodel.CleanResultViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.PermissionViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsCustomPackageListViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraViewModel
@@ -68,7 +68,7 @@ import kotlinx.coroutines.flow.filterNotNull
 fun HomeScreen(
     navController: NavHostController,
     localBroadcastManager: LocalBroadcastManagerActivityHelper,
-    cleanCacheResultViewModel: CleanCacheResultViewModel,
+    cleanResultViewModel: CleanResultViewModel,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -111,7 +111,7 @@ fun HomeScreen(
         }
     }
 
-    val showInterruptedBySystemDialog by cleanCacheResultViewModel.isInterruptedBySystem.collectAsState()
+    val showInterruptedBySystemDialog by cleanResultViewModel.isInterruptedBySystem.collectAsState()
 
     // DisposableEffect to observe lifecycle events
     DisposableEffect(lifecycleOwner) {
@@ -191,7 +191,7 @@ fun HomeScreen(
             }
             InterruptedBySystemDialog(
                 showDialog = showInterruptedBySystemDialog) {
-                cleanCacheResultViewModel.resetInterruptedBySystemDialog()
+                cleanResultViewModel.resetInterruptedBySystemDialog()
             }
 
             if (isCustomListDialogShown) {
@@ -225,7 +225,7 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = cleanCacheResultViewModel.titleText,
+                    text = cleanResultViewModel.titleText,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -236,7 +236,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                        cleanCacheResultViewModel.resetTitle()
+                        cleanResultViewModel.resetTitle()
                         if (onCheckPermission()) {
                             val root = Constant.Navigation.PACKAGE_LIST
                             val action = Constant.PackageListAction.USER_APPS
@@ -253,7 +253,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                        cleanCacheResultViewModel.resetTitle()
+                        cleanResultViewModel.resetTitle()
                         if (onCheckPermission()) {
                             val root = Constant.Navigation.PACKAGE_LIST
                             val action = Constant.PackageListAction.SYSTEM_APPS
@@ -270,7 +270,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                        cleanCacheResultViewModel.resetTitle()
+                        cleanResultViewModel.resetTitle()
                         if (onCheckPermission()) {
                             val root = Constant.Navigation.PACKAGE_LIST
                             val action = Constant.PackageListAction.ALL_APPS
@@ -289,7 +289,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
-                            cleanCacheResultViewModel.resetTitle()
+                            cleanResultViewModel.resetTitle()
                             if (onCheckPermission()) {
                                 val root = Constant.Navigation.PACKAGE_LIST
                                 val action = Constant.PackageListAction.DISABLED_APPS
@@ -308,7 +308,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
-                            cleanCacheResultViewModel.resetTitle()
+                            cleanResultViewModel.resetTitle()
                             if (onCheckPermission()) {
                                 isCustomListDialogShown = true
                             }
@@ -325,7 +325,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
-                            cleanCacheResultViewModel.resetTitle()
+                            cleanResultViewModel.resetTitle()
                             when (hasAccessibilityPermission) {
                                 true -> {
                                     localBroadcastManager.disableAccessibilityService()

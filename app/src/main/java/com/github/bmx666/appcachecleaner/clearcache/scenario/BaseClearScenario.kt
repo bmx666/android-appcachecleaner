@@ -25,7 +25,7 @@ import com.github.bmx666.appcachecleaner.util.performClick
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 
-internal abstract class BaseClearCacheScenario {
+internal abstract class BaseClearScenario {
 
     internal val arrayTextClearCacheButton = ArrayList<CharSequence>()
     internal val arrayTextClearDataButton = ArrayList<CharSequence>()
