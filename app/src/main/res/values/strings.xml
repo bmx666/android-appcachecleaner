@@ -304,6 +304,7 @@
     <string translatable="false" name="toast_custom_list_add_list_empty">The list is empty, add at least one app</string>
     <string translatable="false" name="toast_custom_list_has_been_saved">The list %1$s has been saved</string>
     <string translatable="false" name="toast_custom_list_has_been_removed">The list %1$s has been removed</string>
+    <string translatable="false" name="toast_clear_data_package_exclude">App \u0022%1$s\u0022 has been excluded</string>
 
     <!-- Preference -->
     <string translatable="false" name="prefs_ui">UI</string>

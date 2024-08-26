@@ -309,6 +309,7 @@
     <string name="toast_custom_list_add_list_empty">Список пуст, добавьте хотя бы одно приложение</string>
     <string name="toast_custom_list_has_been_saved">Список %1$s был сохранен</string>
     <string name="toast_custom_list_has_been_removed">Список %1$s был удален</string>
+    <string name="toast_clear_data_package_exclude">Приложение \u0022%1$s\u0022 было исключено</string>
 
     <!-- Preference -->
     <string name="prefs_ui">Интерфейс</string>
