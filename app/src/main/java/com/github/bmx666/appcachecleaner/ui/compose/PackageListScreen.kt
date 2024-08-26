@@ -278,8 +278,7 @@ internal fun PackageListScreen(
                                 Icon(
                                     imageVector = Icons.Default.Save,
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    // TODO: contentDescription
-                                    contentDescription = null
+                                    contentDescription = stringResource(id = R.string.save)
                                 )
                             }
                         }
@@ -315,8 +314,7 @@ internal fun PackageListScreen(
                                 Icon(
                                     imageVector = Icons.Default.Save,
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    // TODO: contentDescription
-                                    contentDescription = null
+                                    contentDescription = stringResource(id = R.string.save)
                                 )
                             }
                         }
