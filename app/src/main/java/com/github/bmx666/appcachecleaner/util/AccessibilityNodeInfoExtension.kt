@@ -68,13 +68,13 @@ fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo?> {
     }
 }
 
-fun AccessibilityNodeInfo.showTree(level: Int) {
-    Logger.d(">".repeat(level) +
+fun AccessibilityNodeInfo.showTree(eventId: Int, level: Int) {
+    Logger.d("[$eventId] " + ">".repeat(level) +
             " " + this.className +
             ":" + this.text +
             ":" + this.viewIdResourceName)
     this.getAllChild().forEach { childNode ->
-        childNode?.showTree(level + 1)
+        childNode?.showTree(eventId, level + 1)
     }
 }
 

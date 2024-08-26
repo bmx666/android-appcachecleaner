@@ -251,7 +251,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
 
             if (BuildConfig.DEBUG) {
                 Logger.d("===>>> recyclerView TREE BEGIN <<<===")
-                recyclerViewNodeInfo.showTree(0)
+                recyclerViewNodeInfo.showTree(0, 0)
                 Logger.d("===>>> recyclerView TREE END <<<===")
             }
         }
