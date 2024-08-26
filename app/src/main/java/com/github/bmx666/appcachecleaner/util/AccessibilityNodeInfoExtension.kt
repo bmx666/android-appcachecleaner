@@ -1,6 +1,5 @@
 package com.github.bmx666.appcachecleaner.util
 
-import android.os.Build
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.log.Logger
 
@@ -80,36 +79,43 @@ fun AccessibilityNodeInfo.showTree(eventId: Int, level: Int) {
 
 private inline fun <reified T> AccessibilityNodeInfo.takeIfMatchesGeneric(
     findTextView: Boolean,
+    findButton: Boolean,
     viewIdResourceName: T,
     arrayText: ArrayList<CharSequence>
 ): AccessibilityNodeInfo? {
     return this.takeIf { nodeInfo ->
-        val isTextViewMatch = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+        val isTextViewFound = findTextView &&
                 nodeInfo.findByClassName("android.widget.TextView")
 
-        val isButtonMatch = !isTextViewMatch && when (viewIdResourceName) {
-            is String -> nodeInfo.findByViewIdResourceName(viewIdResourceName)
-            is Regex -> nodeInfo.findByViewIdResourceName(viewIdResourceName)
-            else -> false
-        }
+        val isButtonFound = findButton &&
+                nodeInfo.findByClassName("android.widget.Button")
 
-        (isTextViewMatch || isButtonMatch) &&
+        val isViewIdResourceNameMatch = !(isTextViewFound || isButtonFound) &&
+                when (viewIdResourceName) {
+                    is String -> nodeInfo.findByViewIdResourceName(viewIdResourceName)
+                    is Regex -> nodeInfo.findByViewIdResourceName(viewIdResourceName)
+                    else -> false
+                }
+
+        (isTextViewFound || isButtonFound || isViewIdResourceNameMatch) &&
             arrayText.any { text -> nodeInfo.lowercaseCompareText(text) }
     }
 }
 
 fun AccessibilityNodeInfo.takeIfMatches(
     findTextView: Boolean,
+    findButton: Boolean,
     viewIdResourceName: String,
     arrayText: ArrayList<CharSequence>
 ): AccessibilityNodeInfo? {
-    return this.takeIfMatchesGeneric(findTextView, viewIdResourceName, arrayText)
+    return this.takeIfMatchesGeneric(findTextView, findButton, viewIdResourceName, arrayText)
 }
 
 fun AccessibilityNodeInfo.takeIfMatches(
     findTextView: Boolean,
+    findButton: Boolean,
     viewIdResourceName: Regex,
     arrayText: ArrayList<CharSequence>
 ): AccessibilityNodeInfo? {
-    return this.takeIfMatchesGeneric(findTextView, viewIdResourceName, arrayText)
+    return this.takeIfMatchesGeneric(findTextView, findButton, viewIdResourceName, arrayText)
 }
