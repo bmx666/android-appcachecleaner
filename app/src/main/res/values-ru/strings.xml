@@ -381,4 +381,5 @@
     <string name="save" msgid="3125033126936493822">"Сохранить"</string>
     <string name="contrast_title" msgid="6885768151336508075">"Контрастность"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"Установить тёмную тему"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"Остановить принудительно?"</string>
 </resources>

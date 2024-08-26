@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"সেভ করুন"</string>
     <string name="contrast_title" msgid="6885768151336508075">"কনট্রাস্ট"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"গাঢ় থিম ব্যবহার করুন"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"জোর করে বন্ধ করবেন?"</string>
 </resources>

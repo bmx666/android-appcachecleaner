@@ -17,4 +17,5 @@
     <string name="save" msgid="3125033126936493822">"సేవ్ చేయండి"</string>
     <string name="contrast_title" msgid="6885768151336508075">"కాంట్రాస్ట్"</string>
     <string name="dark_theme_main_switch_title" msgid="4045147031947562280">"'ముదురు రంగు రూపం'ను ఉపయోగించండి"</string>
+    <string name="force_stop_dlg_title" msgid="86745852555490146">"ఫోర్స్ స్టాప్ చేయాలా?"</string>
 </resources>
