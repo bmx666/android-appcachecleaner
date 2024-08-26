@@ -1,6 +1,7 @@
 package com.github.bmx666.appcachecleaner.clearcache
 
 import android.content.Context
+import android.os.Build
 import android.os.ConditionVariable
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -49,6 +50,16 @@ class AccessibilityClearManager {
     private val needGoBack = ConditionVariable()
 
     private var selfPackageName: String? = null
+
+    private data class NodeState(
+        val className: CharSequence?,
+        val viewId: CharSequence?,
+        val children: List<NodeState> = emptyList()
+    )
+
+    // For Android 14 and later save Accessibility Node Info
+    // to avoid spamming by Jetpack recomposition
+    private var lastNodeState: NodeState? = null
 
     suspend fun setSettings(@ApplicationContext context: Context) {
         val userPrefScenarioManager = UserPrefScenarioManager(context)
@@ -205,6 +216,19 @@ class AccessibilityClearManager {
 
                 val nodeInfo = event.source!!
 
+                // Jetpack compose spam Accessibility Service when update some text
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    val currentNodeState = captureNodeState(nodeInfo)
+                    if (lastNodeState != null && compareNodeStates(lastNodeState!!, currentNodeState)) {
+                        // If the state is identical, ignore this event
+                        Logger.w("ignore recomposition event")
+                        return
+                    }
+
+                    // Update the last known state to the current one
+                    lastNodeState = currentNodeState
+                }
+
                 if (BuildConfig.DEBUG) {
                     Logger.d("===>>> TREE BEGIN <<<===")
                     nodeInfo.showTree(event.eventTime, 0)
@@ -268,6 +292,39 @@ class AccessibilityClearManager {
                 // TODO: process exceptions
             }
         }
+    }
+
+    private fun captureNodeState(nodeInfo: AccessibilityNodeInfo): NodeState {
+        val childStates = mutableListOf<NodeState>()
+        for (i in 0 until nodeInfo.childCount) {
+            val child = nodeInfo.getChild(i)
+            if (child != null) {
+                childStates.add(captureNodeState(child))
+            }
+        }
+        return NodeState(
+            className = nodeInfo.className,
+            viewId = nodeInfo.viewIdResourceName,
+            children = childStates
+        )
+    }
+
+    private fun compareNodeStates(oldState: NodeState, newState: NodeState): Boolean {
+        if (oldState.className != newState.className || oldState.viewId != newState.viewId) {
+            return false
+        }
+
+        if (oldState.children.size != newState.children.size) {
+            return false
+        }
+
+        for (i in oldState.children.indices) {
+            if (!compareNodeStates(oldState.children[i], newState.children[i])) {
+                return false
+            }
+        }
+
+        return true
     }
 
     companion object {
