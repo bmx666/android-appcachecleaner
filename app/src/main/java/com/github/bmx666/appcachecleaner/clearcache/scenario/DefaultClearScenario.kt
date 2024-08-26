@@ -5,6 +5,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
+import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_DIALOG
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_FORCE_STOP_TRIES
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.MIN_DELAY_PERFORM_CLICK_MS
@@ -54,6 +55,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
 
     override fun resetInternalState() {
         forceStopTries = DEFAULT_FORCE_STOP_TRIES
+        forceStopWaitDialog = false
     }
 
     private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
@@ -152,50 +154,27 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findForceStopButton(nodeInfo: AccessibilityNodeInfo) {
+    private suspend fun findForceStopButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
         nodeInfo.findForceStopButton(arrayTextForceStopButton)?.let { forceStopButton ->
 
-            when (doPerformClick(forceStopButton, "force stop button")) {
+            return when (doPerformClick(forceStopButton, "force stop button")) {
                 // force stop button was found and it's enabled but perform click was failed
-                false -> {
-                    if (!nodeInfo.refresh()) {
-                        Logger.w("forceStopButton (no perform click): failed to refresh parent node")
-                        return
-                    }
-
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-                    return findForceStopButton(nodeInfo)
-                }
-                true -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-
-                        // something goes wrong...
-                        if (!forceStopButton.refresh()) {
-                            Logger.w("forceStopButton (perform click): failed to refresh")
-                            return
-                        }
-
-                        // BUG: even after perform click nothing happens, do perform click again
-                        if (forceStopButton.isEnabled) {
-                            Logger.w("forceStopButton (perform click): still enabled")
-                            if (!nodeInfo.refresh()) {
-                                Logger.w("forceStopButton (perform click): failed to refresh parent node")
-                                return
-                            }
-
-                            Logger.w("forceStopButton (perform click): try perform click again")
-                            return findForceStopButton(nodeInfo)
-                        }
-                    }
-                }
-                null -> {
-                    // force stop button was found but it disabled
-                    forceStopTries = 0
-                    return
-                }
+                // sometimes even with "false" force dialog could be open, so return true
+                false -> true
+                // wait force stop dialog
+                true -> true
+                // force stop disabled, or something goes wrong...
+                null -> false
             }
         }
+
+        return null
+    }
+
+    private fun findForceStopDialogTitle(nodeInfo: AccessibilityNodeInfo): Boolean {
+        val foundTitle = nodeInfo.findDialogTitle(arrayTextForceStopDialogTitle) != null
+        Logger.d("findForceStopDialogTitle: found title = $foundTitle")
+        return foundTitle
     }
 
     private suspend fun findForceStopDialogOkButton(nodeInfo: AccessibilityNodeInfo): Boolean {
@@ -212,11 +191,66 @@ internal class DefaultClearScenario: BaseClearScenario() {
 
     override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
         if (forceStopApps && forceStopTries > 0) {
-            if (!findForceStopDialogOkButton(nodeInfo))
-                findForceStopButton(nodeInfo)
-            else
-                // skip check Force Stop button
-                forceStopTries = 0
+
+            if (forceStopWaitDialog) {
+                // force disable wait dialog to avoid misbehavior
+                forceStopWaitDialog = false
+
+                // For Android N MR1 and early need to wait dialog
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+                    // limit tries by app timeout
+                    var tries = maxWaitAppTimeoutMs / 250
+
+                    while (tries-- > 0) {
+                        nodeInfo.refresh()
+                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+
+                        if (BuildConfig.DEBUG) {
+                            Logger.d("===>>> FORCE STOP Dialog TREE BEGIN <<<===")
+                            nodeInfo.showTree(0, 0)
+                            Logger.d("===>>> FORCE STOP Dialog TREE END <<<===")
+                        }
+
+                        if (findForceStopDialogTitle(nodeInfo))
+                            break
+                    }
+                }
+            }
+
+            when (findForceStopDialogTitle(nodeInfo)) {
+                true -> {
+                    when {
+                        // For Android N MR1 and early need to wait dialog
+                        Build.VERSION.SDK_INT <= Build.VERSION_CODES.O -> {
+                            // try refresh
+                            while (!findForceStopDialogOkButton(nodeInfo)) {
+                                nodeInfo.refresh()
+                                delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                            }
+                        }
+                        else -> findForceStopDialogOkButton(nodeInfo)
+                    }
+
+                    // it's force stop dialog, nothing to do more, exit
+                    forceStopTries = 0
+                    return PACKAGE_WAIT_NEXT_STEP
+                }
+                false -> {
+                    when (findForceStopButton(nodeInfo)) {
+                        false, null -> {
+                            // nothing found, fall down to clear cache scenario
+                            forceStopTries = 0
+                            forceStopWaitDialog = false
+                        }
+                        true -> {
+                            // found "Force stop" button, wait force stop dialog
+                            forceStopTries = DEFAULT_FORCE_STOP_TRIES
+                            forceStopWaitDialog = true
+                            return PACKAGE_WAIT_DIALOG
+                        }
+                    }
+                }
+            }
 
             // try again?
             forceStopTries--
@@ -325,4 +359,19 @@ private fun AccessibilityNodeInfo.findDialogButton(
         viewIdResourceName = "android:id/button.*".toRegex(),
         arrayText = arrayText,
     )?.findClickable()
+}
+
+private fun AccessibilityNodeInfo.findDialogTitle(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+{
+    this.getAllChild().forEach { childNode ->
+        childNode?.findDialogTitle(arrayText)?.let { return it }
+    }
+
+    return this.takeIfMatches(
+        findTextView = true,
+        findButton = false,
+        viewIdResourceName = "android:id/alertTitle",
+        arrayText = arrayText,
+    )
 }

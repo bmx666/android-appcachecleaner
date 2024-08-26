@@ -142,6 +142,8 @@ class Constant {
             // valid only for package jobs
             val PACKAGE_WAIT_NEXT_STEP =
                 CancellationException("package_wait_next_step")
+            val PACKAGE_WAIT_DIALOG =
+                CancellationException("package_wait_dialog")
             val PACKAGE_FINISH =
                 CancellationException("package_finish")
             val PACKAGE_FINISH_FAILED =

@@ -186,5 +186,19 @@ class ExtraSearchTextHelper {
 
             return list
         }
+
+        @JvmStatic
+        suspend fun getTextForForceStopDialogTitle(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
+
+            when (getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {}
+            }
+
+            list.add(context.getText(R.string.force_stop_dlg_title))
+
+            return list
+        }
     }
 }
