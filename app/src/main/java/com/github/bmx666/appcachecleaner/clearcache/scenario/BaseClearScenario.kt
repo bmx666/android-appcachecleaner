@@ -89,6 +89,9 @@ internal abstract class BaseClearScenario {
     internal var forceStopTries:
         Int = DEFAULT_FORCE_STOP_TRIES
 
+    // handle event Id for internal purpose
+    internal var eventId: Int = 0
+
     abstract fun resetInternalState()
     abstract suspend fun doCacheClean(nodeInfo: AccessibilityNodeInfo): CancellationException?
 
