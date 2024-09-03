@@ -248,6 +248,8 @@ internal class DefaultClearScenario: BaseClearScenario() {
         if (!forceStopApps) return null
         if (forceStopTries <= 0) return null
 
+        var foundForceStopDialog = findForceStopDialogTitle(nodeInfo)
+
         if (forceStopWaitDialog) {
             // force disable wait dialog to avoid misbehavior
             forceStopWaitDialog = false
@@ -258,6 +260,9 @@ internal class DefaultClearScenario: BaseClearScenario() {
                 var tries = maxWaitAppTimeoutMs / 250
 
                 while (tries-- > 0) {
+                    if (foundForceStopDialog)
+                        break
+
                     nodeInfo.refresh()
                     delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
 
@@ -267,13 +272,30 @@ internal class DefaultClearScenario: BaseClearScenario() {
                         Logger.d("===>>> FORCE STOP Dialog TREE END <<<===")
                     }
 
-                    if (findForceStopDialogTitle(nodeInfo))
-                        break
+                    foundForceStopDialog = findForceStopDialogTitle(nodeInfo)
                 }
+            }
+
+            // Some Custom Force Stop Dialogs have buttons "Force stop" and "Cancel"
+            if (!foundForceStopDialog) {
+                val foundCancelButton =
+                    nodeInfo.findDialogButton(arrayTextCancelButton, false) != null
+                // Could be dialog?
+                if (foundCancelButton) {
+                    val forceStopDialogButton =
+                        nodeInfo.findDialogButton(arrayTextForceStopButton, false)
+                    forceStopDialogButton?.let {
+                        doPerformClick(it, "force stop dialog - force stop button")
+                    }
+                }
+
+                // ignore everything and move to the next step
+                forceStopTries = 0
+                return PACKAGE_WAIT_NEXT_STEP
             }
         }
 
-        when (findForceStopDialogTitle(nodeInfo)) {
+        when (foundForceStopDialog) {
             true -> {
                 when {
                     // For Android N MR1 and early need to wait dialog
@@ -448,14 +470,14 @@ private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
 }
 
 private fun AccessibilityNodeInfo.findDialogButton(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
+    arrayText: ArrayList<CharSequence>, findTextView: Boolean = true): AccessibilityNodeInfo?
 {
     this.getAllChild().forEach { childNode ->
-        childNode?.findDialogButton(arrayText)?.let { return it }
+        childNode?.findDialogButton(arrayText, findTextView)?.let { return it }
     }
 
     return this.takeIfMatches(
-        findTextView = true,
+        findTextView = findTextView,
         findButton = true,
         viewIdResourceName = "android:id/button.*".toRegex(),
         arrayText = arrayText,

@@ -31,6 +31,7 @@ internal abstract class BaseClearScenario {
     internal val arrayTextClearDataButton = ArrayList<CharSequence>()
     internal val arrayTextStorageAndCacheMenu = ArrayList<CharSequence>()
     internal val arrayTextOkButton = ArrayList<CharSequence>()
+    internal val arrayTextCancelButton = ArrayList<CharSequence>()
     internal val arrayTextForceStopButton = ArrayList<CharSequence>()
     internal val arrayTextForceStopDialogTitle = ArrayList<CharSequence>()
     internal val arrayTextDeleteButton = ArrayList<CharSequence>()

@@ -70,6 +70,20 @@ class ExtraSearchTextHelper {
         }
 
         @JvmStatic
+        suspend fun getTextForCancel(context: Context): ArrayList<CharSequence> {
+            val list = ArrayList<CharSequence>()
+
+            when (getScenario(context)) {
+                Constant.Scenario.DEFAULT -> {}
+                Constant.Scenario.XIAOMI_MIUI -> {}
+            }
+
+            list.add(context.getText(android.R.string.cancel))
+
+            return list
+        }
+
+        @JvmStatic
         suspend fun getTextForDelete(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
 
