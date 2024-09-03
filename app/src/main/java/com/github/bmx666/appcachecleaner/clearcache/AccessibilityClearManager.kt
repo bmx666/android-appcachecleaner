@@ -106,6 +106,10 @@ class AccessibilityClearManager {
             ExtraSearchTextHelper.getTextForOk(context)
         )
 
+        clearScenario.arrayTextCancelButton.addAll(
+            ExtraSearchTextHelper.getTextForCancel(context)
+        )
+
         clearScenario.arrayTextDeleteButton.addAll(
             ExtraSearchTextHelper.getTextForDelete(context)
         )
