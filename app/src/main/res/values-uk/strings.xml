@@ -78,6 +78,8 @@
     <string name="text_clean_cache_interrupt">Очищення кешу перервано</string>
     <string name="text_clean_cache_interrupt_display_size">Очищення кешу перервано\nОчищено %1$s</string>
     <string name="text_clean_cache_interrupt_processing">Очищення кешу перервано\nОбробка…</string>
+    <string name="text_clean_data_finish">Очищення даних завершено</string>
+    <string name="text_clean_data_interrupt">Очищення даних перервано</string>
     <string name="btn_open_accessibility">Відкрити налаштування Спец. можлив.</string>
     <string name="btn_open_usage_stats">Відкрити налаштування Історії використання</string>
     <string name="btn_clean_cache_all_apps">Очистити кеш усіх додатків</string>
@@ -302,6 +304,7 @@
     <string name="toast_custom_list_add_list_empty">Список порожній, додайте принаймні один додаток</string>
     <string name="toast_custom_list_has_been_saved">Список %1$s збережено</string>
     <string name="toast_custom_list_has_been_removed">Список %1$s видалено</string>
+    <string name="toast_clear_data_package_exclude">Додаток \u0022%1$s\u0022 був виключений</string>
 
     <!-- Preference -->
     <string name="prefs_ui">Інтерфейс</string>
@@ -321,6 +324,8 @@
     <string name="prefs_summary_show_button_start_stop_service">Для деяких смартфонів потрібно вручну запускати або зупиняти службу Спец. можливості</string>
     <string name="prefs_title_show_button_close_app">Закрити додаток</string>
     <string name="prefs_summary_show_button_close_app">Для деяких смартфонів потрібно вручну зупиняти службу Спец. можливості та закривати додаток</string>
+    <string name="prefs_title_extra_show_button_clear_data">Дозволити очищення даних</string>
+    <string name="prefs_summary_extra_show_button_clear_data">НЕБЕЗПЕЧНО! Показати кнопку остаточного видалення даних. Використовуєте на свій страх і ризик!</string>
     <string name="prefs_extra_actions">Додаткові дії</string>
     <string name="prefs_title_extra_action_force_stop_apps">Примусове зупинення додатків</string>
     <string name="prefs_summary_extra_action_force_stop_apps">Примусово зупиняти додатки перед очищенням кешу</string>
