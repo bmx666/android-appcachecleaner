@@ -115,9 +115,12 @@ class ExtraSearchTextHelper {
         suspend fun getTextForClearCache(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
 
+            // use only user defined text
             getClearCache(context)?.let { value ->
-                if (value.isNotEmpty())
+                if (value.isNotBlank()) {
                     list.add(value)
+                    return list
+                }
             }
 
             when (getScenario(context)) {
@@ -127,7 +130,7 @@ class ExtraSearchTextHelper {
                     ).forEach { resourceName ->
                         PackageManagerHelper.getApplicationResourceString(
                             context,"com.android.settings", resourceName)?.let { value ->
-                            if (value.isNotEmpty())
+                            if (value.isNotBlank())
                                 list.add(value)
                         }
                     }
@@ -138,7 +141,7 @@ class ExtraSearchTextHelper {
                     ).forEach { resourceName ->
                         PackageManagerHelper.getApplicationResourceString(
                             context,"com.miui.securitycenter", resourceName)?.let { value ->
-                            if (value.isNotEmpty())
+                            if (value.isNotBlank())
                                 list.add(value)
                         }
                     }
@@ -154,9 +157,12 @@ class ExtraSearchTextHelper {
         suspend fun getTextForClearData(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
 
+            // use only user defined text
             getClearData(context)?.let { value ->
-                if (value.isNotEmpty())
+                if (value.isNotBlank()) {
                     list.add(value)
+                    return list
+                }
             }
 
             when (getScenario(context)) {
@@ -166,7 +172,7 @@ class ExtraSearchTextHelper {
                     ).forEach { resourceName ->
                         PackageManagerHelper.getApplicationResourceString(
                             context,"com.android.settings", resourceName)?.let { value ->
-                            if (value.isNotEmpty())
+                            if (value.isNotBlank())
                                 list.add(value)
                         }
                     }
@@ -177,7 +183,7 @@ class ExtraSearchTextHelper {
                     ).forEach { resourceName ->
                         PackageManagerHelper.getApplicationResourceString(
                             context,"com.miui.securitycenter", resourceName)?.let { value ->
-                            if (value.isNotEmpty())
+                            if (value.isNotBlank())
                                 list.add(value)
                         }
                     }
@@ -193,9 +199,12 @@ class ExtraSearchTextHelper {
         suspend fun getTextForStorage(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
 
+            // use only user defined text
             getStorage(context)?.let { value ->
-                if (value.isNotEmpty())
+                if (value.isNotBlank()) {
                     list.add(value)
+                    return list
+                }
             }
 
             when (getScenario(context)) {
@@ -226,9 +235,12 @@ class ExtraSearchTextHelper {
         suspend fun getTextForForceStop(context: Context): ArrayList<CharSequence> {
             val list = ArrayList<CharSequence>()
 
+            // use only user defined text
             getForceStop(context)?.let { value ->
-                if (value.isNotEmpty())
+                if (value.isNotBlank()) {
                     list.add(value)
+                    return list
+                }
             }
 
             when (getScenario(context)) {
