@@ -178,7 +178,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 else -> false
             }
 
-        cleanResultViewModel.finishClearCache(this, interrupted)
+        cleanResultViewModel.finishClearCache(interrupted)
 
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this, this.intent)
@@ -200,7 +200,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 else -> false
             }
 
-        cleanResultViewModel.finishClearData(this, interrupted)
+        cleanResultViewModel.finishClearData(interrupted)
 
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this, this.intent)

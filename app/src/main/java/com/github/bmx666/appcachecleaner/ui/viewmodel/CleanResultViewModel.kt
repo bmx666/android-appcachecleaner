@@ -39,7 +39,7 @@ class CleanResultViewModel @Inject constructor(
         titleText = ""
     }
 
-    fun finishClearCache(context: Context, interrupted: Boolean) {
+    fun finishClearCache(interrupted: Boolean) {
         val resId =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 when (interrupted) {
@@ -56,13 +56,13 @@ class CleanResultViewModel @Inject constructor(
         titleText = context.getString(resId)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            calculateCleanedCache(context, interrupted)
+            calculateCleanedCache(interrupted)
 
         if (!interrupted)
             _actions.value = true
     }
 
-    fun finishClearData(context: Context, interrupted: Boolean) {
+    fun finishClearData(interrupted: Boolean) {
         val resId =
             when (interrupted) {
                 true -> R.string.text_clean_data_interrupt
@@ -88,7 +88,7 @@ class CleanResultViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun calculateCleanedCache(context: Context, interrupted: Boolean) {
+    private fun calculateCleanedCache(interrupted: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val cleanedCacheBytes =
