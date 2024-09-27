@@ -71,7 +71,6 @@
         \n
         - Это приложение не собирает и/или не передает личные или конфиденциальные данные при использовании Данных об использовании.
     </string>
-    <string name="text_clean_cache_left">осталось приложений</string>
     <string name="text_clean_cache_finish">Очистка кэша завершена</string>
     <string name="text_clean_cache_finish_display_size">Очистка кэша завершена\nОчищено %1$s</string>
     <string name="text_clean_cache_finish_processing">Очистка кэша завершена\nОбработка…</string>
@@ -80,8 +79,6 @@
     <string name="text_clean_cache_interrupt_processing">Очистка кэша была прервана\nОбработка…</string>
     <string name="text_clean_data_finish">Очистка данных завершена</string>
     <string name="text_clean_data_interrupt">Очистка данных была прервана</string>
-    <string name="btn_open_accessibility">Открыть настройки Спец. возможностей</string>
-    <string name="btn_open_usage_stats">Открыть настройки Данные об Использ.</string>
     <string name="btn_clean_cache_all_apps">Очистка кэша всех приложений</string>
     <string name="btn_clean_cache_system_apps">Очистка кэша системных приложений</string>
     <string name="btn_clean_cache_user_apps">Очистка кэша польз. приложений</string>
@@ -96,14 +93,7 @@
     <string name="toast_package_list_item_long_click">Удерживайте иконку приложения, чтобы открыть настройки &lt;О приложении&gt;</string>
     <string name="text_list_ignored_apps">Игнор. приложения</string>
 
-    <string name="dialog_extra_search_text_title">Добавить доп. текст для поиска</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nвместо \"%3$s\"</string>
-    <string name="dialog_extra_search_text_btn_ok">OK</string>
-    <string name="dialog_extra_search_text_btn_remove">Удалить</string>
-
-    <string name="dialog_filter_min_cache_size_title">Фильтр по размеру кэша</string>
-    <string name="dialog_filter_min_cache_size_message">Введите мин. размер кэша для фильтрации приложений (KB,MB,GB,TB)</string>
-    <string name="toast_error_filter_min_cache_size">Введите мин. размер кэша в KB,MB,GB,TB ИЛИ 0 для сброса настройки по умолчанию</string>
 
     <string name="dialog_interrupted_by_system_title">Прервано</string>
     <string name="dialog_interrupted_by_system_messages"><![CDATA[
@@ -139,8 +129,6 @@
         описанных выше, то я обязуюсь сообщить о своей проблеме по указанному адресу в главе
         <b>Сообщить об ошибке</b> в меню <b>Помощи</b>.
     </string>
-
-    <string name="menu_extra_search_text_title">Доп. текст для поиска:</string>
 
     <string name="help_about"><![CDATA[
         <h2>О приложении</h2>
@@ -299,15 +287,10 @@
 
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Очистка кэша из собств. списка</string>
-    <string name="dialog_title_custom_list_add">Добавить собств. список</string>
     <string name="dialog_message_custom_list_add">Введите новое имя:</string>
-    <string name="dialog_title_custom_list_edit">Редактировать собств. список</string>
     <string name="dialog_message_custom_list_edit">Выберите список:</string>
-    <string name="dialog_title_custom_list_remove">Удалить собств. список</string>
     <string name="dialog_message_custom_list_remove">Выберите список:</string>
-    <string name="dialog_title_custom_list_clean_cache">Очистка кэша из собств. списка</string>
     <string name="dialog_message_custom_list_clean_cache">Выберите список:</string>
-    <string name="toast_custom_list_add_already_exists">Введенное имя уже существует, выберите другое имя</string>
     <string name="toast_custom_list_add_list_empty">Список пуст, добавьте хотя бы одно приложение</string>
     <string name="toast_custom_list_has_been_saved">Список %1$s был сохранен</string>
     <string name="toast_custom_list_has_been_removed">Список %1$s был удален</string>
@@ -365,9 +348,6 @@
         <item>По умолчанию</item>
         <item>Xiaomi MIUI</item>
     </string-array>
-
-    <!-- Snackbar -->
-    <string name="snackbar_processing">Идёт обработка, пожалуйста подождите…</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистить кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Хранилище и кеш"</string>

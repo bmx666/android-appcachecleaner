@@ -71,15 +71,12 @@
         \n
         - Cette application ne collecte pas et/ou ne partage pas de données personnelles ou sensibles à l\'aide des statistiques d\'utilisation.
     </string>
-    <string name="text_clean_cache_left">applis restantes</string>
     <string name="text_clean_cache_finish">Le nettoyage du cache est terminé</string>
     <string name="text_clean_cache_finish_display_size">Le nettoyage du cache est terminé\n %1$s nettoyé</string>
     <string name="text_clean_cache_finish_processing">Le nettoyage du cache est terminé\nTraitement en cours…</string>
     <string name="text_clean_cache_interrupt">Le nettoyage du cache a été interrompu</string>
     <string name="text_clean_cache_interrupt_display_size">Le nettoyage du cache a été interrompu\n %1$s nettoyé</string>
     <string name="text_clean_cache_interrupt_processing">Le nettoyage du cache a été interrompu\nTraitement en cours…</string>
-    <string name="btn_open_accessibility">Ouvrir les paramètres d\'accessibilités</string>
-    <string name="btn_open_usage_stats">Ouvrir les paramètres des statistiques d\'utilisation.</string>
     <string name="btn_clean_cache_all_apps">Vider le cache de toutes les applis</string>
     <string name="btn_clean_cache_system_apps">Vider le cache des applis système</string>
     <string name="btn_clean_cache_user_apps">Vider le cache des applis utilisateur</string>
@@ -94,14 +91,7 @@
     <string name="toast_package_list_item_long_click">Maintenez l\'icône de l\'application enfoncée pour lancer &lt;Infos sur l\'appli&gt;</string>
     <string name="text_list_ignored_apps">Apps ignorées</string>
 
-    <string name="dialog_extra_search_text_title">Ajouter un texte de recherche supplémentaire</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nau lieu de \"%3$s\"</string>
-    <string name="dialog_extra_search_text_btn_ok">OK</string>
-    <string name="dialog_extra_search_text_btn_remove">Enlever</string>
-
-    <string name="dialog_filter_min_cache_size_title">Filtrer par taille de cache</string>
-    <string name="dialog_filter_min_cache_size_message">Entrez la taille minimale du cache pour filtrer les applications (KB,MB,GB,TB)</string>
-    <string name="toast_error_filter_min_cache_size">Veuillez entrer la taille minimale du cache en KB,MB,GB,TB ou 0 pour réinitialiser par défaut</string>
 
     <string name="dialog_interrupted_by_system_title">Interrompu</string>
     <string name="dialog_interrupted_by_system_messages"><![CDATA[
@@ -136,8 +126,6 @@
         décrit ci-dessus, je m\'engage à signaler mon problème à l\'adresse indiquée dans le chapitre
         <b>Signaler une erreur</b> dans le menu <b>Aide</b>.
     </string>
-
-    <string name="menu_extra_search_text_title">Texte supplémentaire pour la recherche :</string>
 
     <string name="help_about"><![CDATA[
         <h2>À propos de l&apos;aide</h2>
@@ -295,15 +283,10 @@
 
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Nettoyer le cache de la liste personnalisée</string>
-    <string name="dialog_title_custom_list_add">Ajouter la liste personnalisée</string>
     <string name="dialog_message_custom_list_add">Entrez un nouveau nom :</string>
-    <string name="dialog_title_custom_list_edit">Modifier la liste personnalisée</string>
     <string name="dialog_message_custom_list_edit">Sélectionnez une liste :</string>
-    <string name="dialog_title_custom_list_remove">Enlever la liste personnalisée</string>
     <string name="dialog_message_custom_list_remove">Sélectionnez une liste :</string>
-    <string name="dialog_title_custom_list_clean_cache">Nettoyer le cache de la liste personnalisée</string>
     <string name="dialog_message_custom_list_clean_cache">Sélectionnez une liste :</string>
-    <string name="toast_custom_list_add_already_exists">Le nom entré existe déjà, veuillez utiliser un autre nom</string>
     <string name="toast_custom_list_add_list_empty">La liste est vide, ajoutez au moins une application</string>
     <string name="toast_custom_list_has_been_saved">La liste %1$s a été sauvegardée</string>
     <string name="toast_custom_list_has_been_removed">La liste %1$s a été retirée</string>
@@ -358,9 +341,6 @@
         <item>Par défaut</item>
         <item>Xiaomi MIUI</item>
     </string-array>
-
-    <!-- Snackbar -->
-    <string name="snackbar_processing">En cours de traitement, veuillez patienter…</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Vider le cache"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Espace de stockage et cache"</string>

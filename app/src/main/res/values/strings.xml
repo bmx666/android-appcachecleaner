@@ -70,7 +70,6 @@
         \n
         - This application does not collect and/or share personal or sensitive data using the Usage stats.
     </string>
-    <string translatable="false" name="text_clean_cache_left">left apps</string>
     <string translatable="false" name="text_clean_cache_finish">Clean cache was finished</string>
     <string translatable="false" name="text_clean_cache_finish_display_size">Clean cache was finished\nCleaned up %1$s</string>
     <string translatable="false" name="text_clean_cache_finish_processing">Clean cache was finished\nProcessing…</string>
@@ -79,8 +78,6 @@
     <string translatable="false" name="text_clean_cache_interrupt_processing">Clean cache was interrupted\nProcessing…</string>
     <string translatable="false" name="text_clean_data_finish">Clean data was finished</string>
     <string translatable="false" name="text_clean_data_interrupt">Clean data was interrupted</string>
-    <string translatable="false" name="btn_open_accessibility">Open Accessibility Settings</string>
-    <string translatable="false" name="btn_open_usage_stats">Open Usage Stats Settings</string>
     <string translatable="false" name="btn_clean_cache_all_apps">Clean cache of all apps</string>
     <string translatable="false" name="btn_clean_cache_system_apps">Clean cache of system apps</string>
     <string translatable="false" name="btn_clean_cache_user_apps">Clean cache of user apps</string>
@@ -95,14 +92,7 @@
     <string translatable="false" name="toast_package_list_item_long_click">Hold the app icon to launch &lt;App Info&gt;</string>
     <string translatable="false" name="text_list_ignored_apps">Ignored apps</string>
 
-    <string translatable="false" name="dialog_extra_search_text_title">Add extra search text</string>
     <string translatable="false" name="dialog_extra_search_text_message">%1$s (%2$s)\ninstead of \"%3$s\"</string>
-    <string translatable="false" name="dialog_extra_search_text_btn_ok">OK</string>
-    <string translatable="false" name="dialog_extra_search_text_btn_remove">Remove</string>
-
-    <string translatable="false" name="dialog_filter_min_cache_size_title">Filter by cache size</string>
-    <string translatable="false" name="dialog_filter_min_cache_size_message">Enter the min. cache size for application filtering (KB,MB,GB,TB)</string>
-    <string translatable="false" name="toast_error_filter_min_cache_size">Please enter min. cache size in KB,MB,GB,TB OR 0 to reset default</string>
 
     <string translatable="false" name="dialog_interrupted_by_system_title">Interrupted</string>
     <string translatable="false" name="dialog_interrupted_by_system_messages"><![CDATA[
@@ -137,8 +127,6 @@
         I am obligated to report my problem at the address specified in the chapter
         <b>Submit a bug report</b> in the <b>Help</b> menu.
     </string>
-
-    <string translatable="false" name="menu_extra_search_text_title">Extra search text for:</string>
 
     <string translatable="false" name="help_about"><![CDATA[
         <h2>About app</h2>
@@ -292,15 +280,10 @@
 
     <!-- Custom package lists -->
     <string translatable="false" name="btn_clean_custom_list_cache">Clean cache of custom list</string>
-    <string translatable="false" name="dialog_title_custom_list_add">Add custom list</string>
     <string translatable="false" name="dialog_message_custom_list_add">Please enter a new name:</string>
-    <string translatable="false" name="dialog_title_custom_list_edit">Edit custom list</string>
     <string translatable="false" name="dialog_message_custom_list_edit">Please select a list:</string>
-    <string translatable="false" name="dialog_title_custom_list_remove">Remove custom list</string>
     <string translatable="false" name="dialog_message_custom_list_remove">Please select a list:</string>
-    <string translatable="false" name="dialog_title_custom_list_clean_cache">Clean cache of custom list</string>
     <string translatable="false" name="dialog_message_custom_list_clean_cache">Please select a list:</string>
-    <string translatable="false" name="toast_custom_list_add_already_exists">The entered name already exists, please use another name</string>
     <string translatable="false" name="toast_custom_list_add_list_empty">The list is empty, add at least one app</string>
     <string translatable="false" name="toast_custom_list_has_been_saved">The list %1$s has been saved</string>
     <string translatable="false" name="toast_custom_list_has_been_removed">The list %1$s has been removed</string>
@@ -358,13 +341,6 @@
         <item>Default</item>
         <item>Xiaomi MIUI</item>
     </string-array>
-    <string-array translatable="false" name="settings_scenario_entry_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
-    <!-- Snackbar -->
-    <string translatable="false" name="snackbar_processing">Processing, please wait…</string>
 
     <string name="clear_cache_btn_text">Clear cache</string>
     <string name="clear_user_data_text">Clear storage</string>
