@@ -70,15 +70,12 @@
         \n
         - Aplikasi ini tidak mengumpulkan dan/atau membagikan data pribadi atau sensitif menggunakan statistik penggunaan.
     </string>
-    <string name="text_clean_cache_left">aplikasi tersisa</string>
     <string name="text_clean_cache_finish">Pembersihan cache telah selesai</string>
     <string name="text_clean_cache_finish_display_size">Pembersihan cache telah selesai\nMembersihkan %1$s</string>
     <string name="text_clean_cache_finish_processing">Pembersihan cache telah selesai\nSedang diproses…</string>
     <string name="text_clean_cache_interrupt">Pembersihan cache terganggu</string>
     <string name="text_clean_cache_interrupt_display_size">Pembersihan cache terganggu\nMembersihkan %1$s</string>
     <string name="text_clean_cache_interrupt_processing">Pembersihan cache terganggu\nSedang diproses…</string>
-    <string name="btn_open_accessibility">Buka Pengaturan Aksesibilitas</string>
-    <string name="btn_open_usage_stats">Buka Pengaturan Statistik Penggunaan</string>
     <string name="btn_clean_cache_all_apps">Bersihkan cache semua aplikasi</string>
     <string name="btn_clean_cache_system_apps">Bersihkan cache aplikasi sistem</string>
     <string name="btn_clean_cache_user_apps">Bersihkan cache aplikasi pengguna</string>
@@ -93,14 +90,7 @@
     <string name="toast_package_list_item_long_click">Tahan ikon aplikasi untuk meluncurkan &lt;Info Aplikasi&gt;</string>
     <string name="text_list_ignored_apps">Aplikasi yang diabaikan</string>
 
-    <string name="dialog_extra_search_text_title">Tambahkan teks pencarian tambahan</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nsebagai ganti dari \"%3$s\"</string>
-    <string name="dialog_extra_search_text_btn_ok">OK</string>
-    <string name="dialog_extra_search_text_btn_remove">Hapus</string>
-
-    <string name="dialog_filter_min_cache_size_title">Saring berdasarkan ukuran cache</string>
-    <string name="dialog_filter_min_cache_size_message">Masukkan ukuran cache min. untuk penyaringan aplikasi (KB,MB,GB,TB)</string>
-    <string name="toast_error_filter_min_cache_size">Silakan masukkan ukuran cache min. dalam KB,MB,GB,TB ATAU 0 untuk mereset standar</string>
 
     <string name="dialog_interrupted_by_system_title">Terganggu</string>
     <string name="dialog_interrupted_by_system_messages"><![CDATA[
@@ -135,8 +125,6 @@
         saya berkewajiban untuk melaporkan masalah saya di alamat yang ditentukan di bab
         <b>Kirim laporan bug</b> di menu <b>Bantuan</b>.
     </string>
-
-    <string name="menu_extra_search_text_title">Teks pencarian tambahan untuk:</string>
 
     <string name="help_about"><![CDATA[
         <h2>Tentang aplikasi</h2>
@@ -291,15 +279,10 @@
 
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Bersihkan cache daftar kustom</string>
-    <string name="dialog_title_custom_list_add">Tambahkan daftar kustom</string>
     <string name="dialog_message_custom_list_add">Silakan masukkan nama baru:</string>
-    <string name="dialog_title_custom_list_edit">Edit daftar kustom</string>
     <string name="dialog_message_custom_list_edit">Silakan pilih daftar:</string>
-    <string name="dialog_title_custom_list_remove">Hapus daftar kustom</string>
     <string name="dialog_message_custom_list_remove">Silakan pilih daftar:</string>
-    <string name="dialog_title_custom_list_clean_cache">Bersihkan cache daftar kustom</string>
     <string name="dialog_message_custom_list_clean_cache">Silakan pilih daftar:</string>
-    <string name="toast_custom_list_add_already_exists">Nama yang dimasukkan sudah ada, silakan gunakan nama lain</string>
     <string name="toast_custom_list_add_list_empty">Daftar kosong, tambahkan setidaknya satu aplikasi</string>
     <string name="toast_custom_list_has_been_saved">Daftar %1$s telah disimpan</string>
     <string name="toast_custom_list_has_been_removed">Daftar %1$s telah dihapus</string>
@@ -354,9 +337,6 @@
         <item>Bawaan</item>
         <item>Xiaomi MIUI</item>
     </string-array>
-
-    <!-- Snackbar -->
-    <string name="snackbar_processing">Sedang diproses, mohon tunggu…</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Hapus cache"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Penyimpanan amp; cache"</string>

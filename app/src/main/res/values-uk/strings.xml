@@ -71,7 +71,6 @@
         \n
         - Цей додаток не збирає та/або не ділиться особистими чи конфіденційними даними за допомогою Історії використання.
     </string>
-    <string name="text_clean_cache_left">залишилося додатків</string>
     <string name="text_clean_cache_finish">Очищення кешу завершено</string>
     <string name="text_clean_cache_finish_display_size">Очищення кешу завершено\nОчищено %1$s</string>
     <string name="text_clean_cache_finish_processing">Очищення кешу завершено\nОбробка…</string>
@@ -80,8 +79,6 @@
     <string name="text_clean_cache_interrupt_processing">Очищення кешу перервано\nОбробка…</string>
     <string name="text_clean_data_finish">Очищення даних завершено</string>
     <string name="text_clean_data_interrupt">Очищення даних перервано</string>
-    <string name="btn_open_accessibility">Відкрити налаштування Спец. можлив.</string>
-    <string name="btn_open_usage_stats">Відкрити налаштування Історії використання</string>
     <string name="btn_clean_cache_all_apps">Очистити кеш усіх додатків</string>
     <string name="btn_clean_cache_system_apps">Очистити кеш системних додатків</string>
     <string name="btn_clean_cache_user_apps">Очистити кеш додатків користувача</string>
@@ -96,14 +93,7 @@
     <string name="toast_package_list_item_long_click">Утримуйте значок додатка, щоб відкрити &lt;Інформацію про додаток&gt;</string>
     <string name="text_list_ignored_apps">Проігноровані додатки</string>
 
-    <string name="dialog_extra_search_text_title">Додати додатковий текст пошуку</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nзамість \"%3$s\"</string>
-    <string name="dialog_extra_search_text_btn_ok">OK</string>
-    <string name="dialog_extra_search_text_btn_remove">Видалити</string>
-
-    <string name="dialog_filter_min_cache_size_title">Фільтрувати за розміром кешу</string>
-    <string name="dialog_filter_min_cache_size_message">Введіть мінімальний розмір кешу для фільтрації додатків (КБ, МБ, ГБ, ТБ)</string>
-    <string name="toast_error_filter_min_cache_size">Будь ласка, введіть мінімальний розмір кешу в КБ, МБ, ГБ, ТБ або 0 для скидання за замовчуванням</string>
 
     <string name="dialog_interrupted_by_system_title">Перервано</string>
     <string name="dialog_interrupted_by_system_messages"><![CDATA[
@@ -138,8 +128,6 @@
         я зобов\'язуюсь повідомити про свою проблему за адресою, зазначеною у розділі
         <b>Надіслати звіт про помилку</b> у меню <b>Допомога</b>.
     </string>
-
-    <string name="menu_extra_search_text_title">Додатковий текст для пошуку:</string>
 
     <string name="help_about"><![CDATA[
         <h2>Про додаток</h2>
@@ -292,15 +280,10 @@
 
     <!-- Custom package lists -->
     <string name="btn_clean_custom_list_cache">Очистити кеш користувацького списку</string>
-    <string name="dialog_title_custom_list_add">Додати користувацький список</string>
     <string name="dialog_message_custom_list_add">Будь ласка, введіть нову назву:</string>
-    <string name="dialog_title_custom_list_edit">Редагувати користувацький список</string>
     <string name="dialog_message_custom_list_edit">Будь ласка, виберіть список:</string>
-    <string name="dialog_title_custom_list_remove">Видалити користувацький список</string>
     <string name="dialog_message_custom_list_remove">Будь ласка, виберіть список:</string>
-    <string name="dialog_title_custom_list_clean_cache">Очистити кеш користувацького списку</string>
     <string name="dialog_message_custom_list_clean_cache">Будь ласка, виберіть список:</string>
-    <string name="toast_custom_list_add_already_exists">Введена назва вже існує, будь ласка, використайте іншу назву</string>
     <string name="toast_custom_list_add_list_empty">Список порожній, додайте принаймні один додаток</string>
     <string name="toast_custom_list_has_been_saved">Список %1$s збережено</string>
     <string name="toast_custom_list_has_been_removed">Список %1$s видалено</string>
@@ -358,9 +341,6 @@
         <item>За замовчуванням</item>
         <item>Xiaomi MIUI</item>
     </string-array>
-
-    <!-- Snackbar -->
-    <string name="snackbar_processing">Обробка, будь ласка, зачекайте…</string>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Очистити кеш"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Пам’ять і кеш"</string>

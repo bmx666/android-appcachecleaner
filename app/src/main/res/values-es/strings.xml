@@ -2,15 +2,12 @@
 <resources>
     <string name="app_name">Limpiador de Caché</string>
     <string name="service_name">Limpiador de Caché</string>
-    <string name="text_clean_cache_left">Aplicaciones restantes</string>
     <string name="text_clean_cache_finish">La limpieza de caché finalizó</string>
     <string name="text_clean_cache_finish_display_size">La limpieza de caché finalizó\nSe limpió %1$s</string>
     <string name="text_clean_cache_finish_processing">La limpieza de caché finalizó\nProcesando…</string>
     <string name="text_clean_cache_interrupt">Se interrumpió la limpieza de caché</string>
     <string name="text_clean_cache_interrupt_display_size">Se interrumpió la limpieza de caché\nSe limpió %1$s</string>
     <string name="text_clean_cache_interrupt_processing">Se interrumpió la limpieza de caché\nProcesando…</string>
-    <string name="btn_open_accessibility">Abrir configuración de accesibilidad</string>
-    <string name="btn_open_usage_stats">Abrir configuración de estadísticas de uso</string>
     <string name="btn_clean_cache_all_apps">Limpiar caché de todas las aplicaciones</string>
     <string name="btn_clean_cache_system_apps">Limpiar caché de aplicaciones del sistema</string>
     <string name="btn_clean_cache_user_apps">Limpiar caché de aplicaciones de usuario</string>
@@ -22,12 +19,7 @@
     <string name="description_apps_all_uncheck">Desmarque todas las aplicaciones</string>
     <string name="text_cache_size_fmt">Caché: %1$s</string>
 
-    <string name="dialog_extra_search_text_title">Agregar texto de búsqueda extra</string>
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\nen lugar de \"%3$s\"</string>
-    <string name="dialog_extra_search_text_btn_ok">Listo</string>
-    <string name="dialog_extra_search_text_btn_remove">Quitar</string>
-
-    <string name="menu_extra_search_text_title">Texto de búsqueda extra para:</string>
 
     <string name="first_boot_title">Por favor, lea antes de usar</string>
     <string name="first_boot_message"><![CDATA[
