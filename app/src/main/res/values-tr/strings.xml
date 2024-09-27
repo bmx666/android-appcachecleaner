@@ -2,15 +2,85 @@
 <resources>
     <string name="app_name">Önbellek Temizleyici</string>
     <string name="service_name">Önbellek Temizleyici</string>
+    <string name="text_enable_accessibility_title">Erişilebilirlik Servisini Etkinleştir</string>
+    <string name="text_enable_accessibility_message">
+        Düzgün çalışabilmesi için, <b>Önbellek Temizleyici</b> izninizi gerektirir.
+        İzni vermek için Ayarlar\'a gidin ve <b>Erişilebilirlik</b> izni verin.
+        \n\n
+        1. Ayarlardan <b>Erişilebilirlik</b> bölümüne gidin.
+        \n
+        2. <b>Önbellek Temizleyici</b>yi bulun ve üzerine dokunun.
+        \n
+        3. İzin verin.
+        \n\n
+        <u><b>Erişilebilirlik servisleri bildirimi:</b></u>
+        \n
+        - Bu uygulama, temel işlevlerini yerine getirmek için Erişilebilirlik Servisleri API\'sine ihtiyaç duyar, örneğin tıklama ve kaydırma gibi işlevler.
+        \n
+        - Erişilebilirlik izni, Android 6 ve üstü için gereklidir.
+        \n
+        - Bu uygulama, Erişilebilirlik yeteneklerini kullanarak kişisel veya hassas veri toplamaz veya paylaşmaz.
+    </string>
+    <string name="text_enable_accessibility_message_api33">
+        Düzgün çalışabilmesi için, <b>Önbellek Temizleyici</b> izninizi gerektirir.
+        İzni vermek için Ayarlar\'a gidin ve <b>Erişilebilirlik</b> izni verin.
+        \n\n
+        1. Ayarlardan <b>Erişilebilirlik</b> bölümüne gidin.
+        \n
+        2. <b>Önbellek Temizleyici</b>yi bulun ve üzerine dokunun.
+        \n
+        3. İzin verin.
+        \n\n
+        <u><b>Erişilebilirlik servisleri bildirimi:</b></u>
+        \n
+        - Bu uygulama, temel işlevlerini yerine getirmek için Erişilebilirlik Servisleri API\'sine ihtiyaç duyar, örneğin tıklama ve kaydırma gibi işlevler.
+        \n
+        - Erişilebilirlik izni, Android 6 ve üstü için gereklidir.
+        \n
+        - Bu uygulama, Erişilebilirlik yeteneklerini kullanarak kişisel veya hassas veri toplamaz veya paylaşmaz.
+        \n\n
+        <u><b>Kısıtlı ayarlara izin ver:</b></u>
+        \n
+        - Android 13\'ten itibaren Erişilebilirlik API\'leri üçüncü taraf uygulamaları için kısıtlanmıştır. <b>Yardım</b> menüsünde <b>Uyarı ⚠️</b> paragrafını okuyun.
+    </string>
+    <string name="text_accessibility_description">
+        "Önbellek Temizleyici", temel işlevlerini yerine getirmek için Erişilebilirlik Servisleri API\'sine ihtiyaç duyar, örneğin tıklama ve kaydırma gibi işlevler.
+        "Önbellek Temizleyici", Erişilebilirlik yeteneklerini kullanarak kişisel veya hassas veri toplamaz veya paylaşmaz.
+    </string>
+    <string name="text_enable_usage_stats_title">Kullanım İstatistiklerini Etkinleştir</string>
+    <string name="text_enable_usage_stats_message">
+        Düzgün çalışabilmesi için, <b>Önbellek Temizleyici</b> izninizi gerektirir. Kullanım İstatistikleri izni vermek için Ayarlar\'a gidin.
+        \n\n
+        1. Ayarlardan <b>Uygulamalar</b> bölümüne gidin.
+        \n
+        2. <b>Özel uygulama erişimi</b>ni bulun ve üzerine dokunun.
+        \n
+        3. <b>Kullanım erişimi</b>ni bulun ve üzerine dokunun.
+        \n
+        4. <b>Önbellek Temizleyici</b>yi bulun ve üzerine dokunun.
+        \n
+        5. İzin verin.
+        \n\n
+        <u><b>Kullanım istatistikleri bildirimi:</b></u>
+        \n
+        - Bu uygulama, kurulu uygulamaların önbellek boyutunu almak gibi temel işlevlerini yerine getirmek için kullanım istatistiklerine ihtiyaç duyar.
+        \n
+        - Kullanım istatistikleri izni, Android 8 ve üstü için gereklidir.
+        \n
+        - Bu uygulama, kullanım istatistiklerini kullanarak kişisel veya hassas veri toplamaz veya paylaşmaz.
+    </string>
     <string name="text_clean_cache_finish">Önbellek temizleme bitti</string>
     <string name="text_clean_cache_finish_display_size">Önbellek temizleme bitti\n%1$s temizlendi</string>
     <string name="text_clean_cache_finish_processing">Önbellek temizleme bitti\nİşleniyor…</string>
     <string name="text_clean_cache_interrupt">Önbellek temizlemeye müdahale edildi</string>
     <string name="text_clean_cache_interrupt_display_size">Önbellek temizlemeye müdahale edildi\n%1$s temizlendi</string>
     <string name="text_clean_cache_interrupt_processing">Önbellek temizlemeye müdahale edildi\nİşleniyor…</string>
+    <string name="text_clean_data_finish">Veri temizleme tamamlandı</string>
+    <string name="text_clean_data_interrupt">Veri temizleme kesildi</string>
     <string name="btn_clean_cache_all_apps">Tüm uygulamaların önbelleğini temizle</string>
     <string name="btn_clean_cache_system_apps">Sistem uygulamalarının önbelleğini temizle</string>
     <string name="btn_clean_cache_user_apps">Kullanıcı uygulamalarının önbelleğini temizle</string>
+    <string name="btn_clean_cache_disabled_apps">Devre dışı bırakılan uygulamaların önbelleğini temizle</string>
     <string name="btn_close_app">Uygulamayı kapat</string>
     <string name="btn_start_accessibility_service">Erişilebilirlik hizmetini başlat</string>
     <string name="btn_stop_accessibility_service">Erişilebilirlik hizmetini durdur</string>
@@ -18,8 +88,226 @@
     <string name="description_apps_all_check">Tüm uygulamaları seç</string>
     <string name="description_apps_all_uncheck">Tüm uygulamaların seçimini kaldır</string>
     <string name="text_cache_size_fmt">Önbellek: %1$s</string>
+    <string name="toast_package_list_item_long_click">Uygulama Bilgisi\'ni başlatmak için simgeye uzun basın</string>
+    <string name="text_list_ignored_apps">Yok sayılan uygulamalar</string>
 
     <string name="dialog_extra_search_text_message">%1$s (%2$s)\n\"%3$s\" yerine</string>
+
+    <string name="dialog_interrupted_by_system_title">Kesildi</string>
+    <string name="dialog_interrupted_by_system_messages"><![CDATA[
+        <b>Önbellek Temizleyici</b> Android Sistemi tarafından uygulama temizlenirken kesildi.
+    ]]></string>
+
+    <string name="first_boot_title">Kullanmadan önce okuyun</string>
+    <string name="first_boot_message"><![CDATA[
+        <h2>Özelleştirilmiş Ayarlar Arayüzü</h2>
+        <br/>
+        Birçok şirket veya Android ROM&apos;u varsayılan Android kullanıcı arayüzünü, Ayarlar dahil, ekler veya değiştirir.
+        Bu, <b>Önbellek Temizleyici</b> uygulaması belirli bir metni aradığı ve eşleşmediğinde
+        uygulamanın hiçbir işlem yapmadığı için bir sorun yaratabilir.
+    ]]></string>
+    <string name="first_boot_confirm_1">
+        <b>Özelleştirilmiş Ayarlar Arayüzü</b> bölümünü <b>Yardım</b> menüsünde okuyacağımı ve <b>Önbellek Temizleyici</b> uygulamasında herhangi bir işlem yapmadan önce bunu onayladığımı kabul ediyorum.
+    </string>
+    <string name="first_boot_confirm_2">
+        Eğer <b>Önbellek Temizleyici</b> herhangi bir işlem yapmazsa, <b>Depolama ve Önbellek</b> veya <b>Depolama</b> menüsünü aramak ve <b>Önbelleği Temizle</b> düğmesini bulmak için alternatif metin ayarlamayı içeren <b>Özelleştirilmiş Ayarlar Arayüzü</b> başlıklı bölümde açıklanan işlemleri yapacağımı kabul ediyorum.
+    </string>
+    <string name="first_boot_confirm_3">
+        Eğer <b>Önbellek Temizleyici</b> herhangi bir işlem yapmazsa, telefonum <b>belirli bölgesel MIUI yazılımına sahip bir Xiaomi</b> ise <b>Ayarlar</b> bölümünde varsayılan senaryoyu <b>Xiaomi MIUI</b> senaryosuna değiştireceğimi kabul ediyorum.
+    </string>
+    <string name="first_boot_confirm_4">
+        Eğer <b>Önbellek Temizleyici</b> yukarıda açıklanan işlemlerin hiçbirini yapmazsa, <b>Yardım</b> menüsünde <b>Hata raporu gönder</b> bölümünde belirtilen adrese sorunu bildirmekle yükümlü olduğumu kabul ediyorum.
+    </string>
+
+    <string name="help_about"><![CDATA[
+        <h2>Uygulama hakkında</h2>
+        <br/>
+        Android 6 (Marshmallow) itibariyle tüm uygulamaların önbelleğini aynı anda temizlemek artık mümkün değil ve Google bu izni yalnızca sistem uygulamalarına verdi. Tek bir çözüm kaldı - uygulama bilgilerini manuel olarak açıp belirli <b>&quot;Depolama&quot;</b> menüsünü bulup ardından <b>&quot;Önbelleği temizle&quot;</b> düğmesine basmak.
+        <br/><br/>
+        <b>Önbellek Temizleyici</b> uygulaması tüm yüklü kullanıcı ve sistem uygulamalarını isteyebilir ve Erişilebilirlik hizmetini kullanarak önbellek temizleme ile ilgili tüm manuel işlemlerin yerini alır.
+    ]]></string>
+
+    <string name="help_android13_accessibility_permission"><![CDATA[
+        <br/>
+        <h2>Uyarı ⚠️</h2>
+        <br/>
+        Android 13&apos;ten itibaren Erişilebilirlik API&apos;leri üçüncü taraf uygulamalar için kısıtlanmıştır. <b>Önbellek Temizleyici</b> uygulaması için Erişilebilirlik&apos;i etkinleştirmek için aşağıdaki adımları izleyin.
+        <br/><br/>
+        Önemli! İlk başlatmada, kısıtlamayı etkinleştirmek için <b>Erişilebilirlik</b>e gidip <b>Önbellek Temizleyici</b> üzerine tıklamanız gerekir; aksi takdirde Android <b>Kısıtlı ayarlara izin ver</b>i göstermez.
+        <br/><br/>
+        ▶️ <a href="https://www.youtube.com/watch?v=UiCr33gYZiI">YouTube&apos;da <b>EĞİTİCİ</b>yi izleyin</a>
+        <br/><br/>
+        <h3>Kısıtlı ayarlara izin ver</h3>
+        <br/>
+        Kısıtlı ayarları etkinleştirdiğinizde, uygulamalara kişisel verilerinizi riske atabilecek hassas bilgilere erişim izni verirsiniz. Kısıtlı ayarları etkinleştirmenizi önermiyoruz, geliştiriciye güvenmiyorsanız.
+        <br/><br/>
+        Engelli bireyleri desteklemek için tasarlanmış bir uygulama, örneğin erişilebilirlik ayarlarını etkinleştirmenizi isteyebilir. Erişilebilirlik ayarlarına erişim ile uygulama, ekranınızdaki içeriği okuyabilir ve uygulamalarla sizin adınıza etkileşime girebilir.
+        <br/><br/>
+        1. Android cihazınızda <b>Ayarlar</b> uygulamasını açın
+        <br/>
+        2. <b>Uygulamalar</b> üzerine dokunun
+        <br/>
+        3. <b>Tüm Uygulamalar</b> üzerine dokunun
+        <br/>
+        4. <b>Önbellek Temizleyici</b>yi bulun ve üzerine dokunun
+        <br/>
+        5. Sağ üst köşedeki <b>Diğer</b> menüsüne <b>⋮</b> dokunun
+        <br/>
+        6. <b>Kısıtlı ayarlara izin ver</b> seçeneğine dokunun
+        <br/>
+        7. Ekrandaki talimatları izleyin
+        <br/><br/>
+        <b>Android Yardımı</b> - <a href="https://support.google.com/android/answer/12623953?hl=tr">Kısıtlı ayarlar hakkında bilgi edinin</a>
+    ]]></string>
+
+    <string name="help_how_to_use"><![CDATA[
+        <br/>
+        <h2>Nasıl kullanılır</h2>
+        <br/>
+        1. <b>Kullanıcı Uygulamaları</b>, <b>Sistem Uygulamaları</b> veya <b>Tüm Uygulamalar</b> önbelleğini temizle düğmesine tıklayın
+        <br/>
+        2. Eğer gerekiyorsa <b>Önbellek Temizleyici</b> uygulaması için Kullanım İstatistikleri desteğini etkinleştirin
+        <br/>
+        3. Eğer gerekiyorsa <b>Önbellek Temizleyici</b> uygulaması için Erişilebilirlik desteğini etkinleştirin
+        <br/>
+        4. Listedeki gerekli uygulamaları seçin (tüm uygulamaları seçmek/seçimi kaldırmak için yüzen düğmeyi kullanın)
+        <br/>
+        5. Önbellek temizleme işlemini başlatmak için <b>Önbellek Temizleme yüzen düğmesine</b> basın
+        <br/>
+        6. İşlemi durdurmak için <b>Erişilebilirlik kaplama düğmesine</b> basın YA DA işlem bitene kadar bekleyin
+        <br/>
+        7. <i>(isteğe bağlı)</i> Erişilebilirlik servisini devre dışı bırakmak için <b>Erişilebilirlik servisini durdur</b> düğmesine basın
+    ]]></string>
+
+    <string name="help_customized_settings_ui"><![CDATA[
+        <br/>
+        <h2>Özelleştirilmiş Ayarlar Arayüzü</h2>
+        <br/>
+        Birçok şirket veya Android ROM&apos;u, Ayarlar dahil olmak üzere varsayılan Android arayüzünü değiştirir veya eklemeler yapar.
+        Bu, <b>Önbellek Temizleyici</b> uygulamasının belirli metinleri aradığı ve eşleşmediği durumlarda hiçbir işlem yapmamasına neden olabilir.
+        <br/>
+        <br/>
+        Önbellek temizleme sorununu çözmek için aşağıdaki adımları izleyin:
+        <br/>
+        <br/>
+        1. Herhangi bir uygulamayı seçin ve <b>&quot;Uygulama Bilgileri&quot;</b> bölümüne gidin
+        <br/>
+        2. <b>&quot;Depolama&quot;</b> menüsündeki metni not alın
+        <br/>
+        3. <b>&quot;Depolama&quot;</b> menüsüne gidin
+        <br/>
+        4. <b>&quot;Önbelleği Temizle&quot;</b> düğmesindeki metni not alın
+        <br/>
+        5. <b>Önbellek Temizleyici</b> uygulamasını spesifik bir dilde açın (Ayarlar&apos;dan gerekli dili seçin)
+        <br/>
+        6. Sağ üst köşedeki <b>Ayarlar</b> menüsünü açın ve <b>Ekstra Arama Metni Ekle</b> bölümünü bulun
+        <br/>
+        7. <b>Önbelleği Temizle</b> üzerine dokunun, <b>&quot;Önbelleği Temizle&quot; düğmesi</b> için özel arama metnini girin ve <b>&quot;Tamam&quot;</b> a basın.
+        <br/>
+        8. <b>Depolama</b> üzerine dokunun, <b>&quot;Depolama&quot; menüsü</b> için özel arama metnini girin ve <b>&quot;Tamam&quot;</b> a basın.
+        <br/>
+        <br/>
+        <h4>Bölgesel MIUI yazılımına sahip Xiaomi telefonlar için farklı önbellek temizleme senaryosu gereklidir:</h4>
+        <br/>
+        1. <b>Ayarlar</b> menüsünden <b>Diğer</b> bölümünü bulun
+        <br/>
+        2. <b>Önbelleği temizleme senaryosu</b>na tıklayın ve <b>Xiaomi MIUI</b> seçin
+        <br/>
+        <br/>
+        <h4>DİKKAT ⚠️: Huawei ve Xiaomi telefonları, pil optimizasyonu nedeniyle <b>Önbellek Temizleyici</b> ve Erişilebilirlik servisi arasındaki iletişimi bozabilir.
+        Aşağıdaki adımları izleyin:</h4>
+        <br/>
+        1. <b>Ayarlar</b> menüsünden <b>Ekstra Düğmeleri Göster</b> seçeneğini etkinleştirin
+        <br/>
+        2. <b>Erişilebilirlik Servisini Başlat/Durdur</b> seçeneğini etkinleştirin
+    ]]></string>
+
+    <string name="help_icon_copyright"><![CDATA[
+        <br/>
+        <h2>Simge Telif Hakkı</h2>
+        <br/>
+        <a href="https://www.flaticon.com/free-icon/broom_2954888"><b>Süpürge simgesi</b> Smashicons - Flaticon tarafından oluşturulmuştur.</a>
+        <br/>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon.pdf">
+        Freepik lisansı için <b>Süpürge simgesi</b></a>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon_monochrome.pdf">
+        Monokrom <b>Süpürge simgesi</b> için Freepik lisansı</a>
+    ]]></string>
+
+    <string name="help_submit_bug_report"><![CDATA[
+        <br/>
+        <h2>Hata Raporu Gönder</h2>
+        <br/>
+        <b><a href="https://github.com/bmx666/android-appcachecleaner/issues">Github</a></b>
+    ]]></string>
+
+    <string name="description_accessibility_overlay_button_interrupt">Önbellek temizleme işlemini kes</string>
+
+    <!-- Özel paket listeleri -->
+    <string name="btn_clean_custom_list_cache">Özel listenin önbelleğini temizle</string>
+    <string name="dialog_message_custom_list_add">Yeni bir ad girin:</string>
+    <string name="dialog_message_custom_list_edit">Bir liste seçin:</string>
+    <string name="dialog_message_custom_list_remove">Bir liste seçin:</string>
+    <string name="dialog_message_custom_list_clean_cache">Bir liste seçin:</string>
+    <string name="toast_custom_list_add_list_empty">Liste boş, en az bir uygulama ekleyin</string>
+    <string name="toast_custom_list_has_been_saved">Liste %1$s kaydedildi</string>
+    <string name="toast_custom_list_has_been_removed">Liste %1$s kaldırıldı</string>
+    <string name="toast_clear_data_package_exclude">Uygulama \u0022%1$s\u0022 hariç tutuldu</string>
+
+    <!-- Tercihler -->
+    <string name="prefs_ui">Kullanıcı Arayüzü</string>
+    <string name="prefs_ui_night_mode">@string/dark_theme_main_switch_title</string>
+    <string name="prefs_ui_contrast">@string/contrast_title</string>
+    <string name="prefs_ui_dynamic_color">Dinamik renk</string>
+    <string name="prefs_title_filter_min_cache_size">Uygulamalar için minimum önbellek boyutunu filtrele</string>
+    <string name="prefs_summary_filter_min_cache_size">Minimum %1$s</string>
+    <string name="prefs_error_convert_filter_min_cache_size">Lütfen KB, MB, GB, TB cinsinden veya sıfırlamak için 0 girin</string>
+    <string name="prefs_title_filter_hide_disabled_apps">Devre dışı bırakılan uygulamaları gizle</string>
+    <string name="prefs_title_filter_hide_ignored_apps">Yok sayılan uygulamaları gizle</string>
+    <string name="prefs_title_filter_list_of_ignored_apps_edit">Yok sayılan uygulamaların listesi</string>
+    <string name="prefs_summary_filter_list_of_ignored_apps_edit">Yok sayılan uygulamaların listesini düzenle</string>
+    <string name="prefs_show_extra_buttons">Ekstra düğmeleri göster</string>
+    <string name="prefs_title_show_button_clean_cache_disabled_apps">Devre dışı bırakılan uygulamaların önbelleğini temizle</string>
+    <string name="prefs_title_show_button_start_stop_service">Erişilebilirlik servisini başlat/durdur</string>
+    <string name="prefs_summary_show_button_start_stop_service">Bazı akıllı telefonlarda Erişilebilirlik servisini manuel olarak başlatmak veya durdurmak gerekebilir</string>
+    <string name="prefs_title_show_button_close_app">Uygulamayı kapat</string>
+    <string name="prefs_summary_show_button_close_app">Bazı akıllı telefonlarda uygulamayı kapatmadan önce Erişilebilirlik servisini manuel olarak durdurmak gerekebilir</string>
+    <string name="prefs_title_extra_show_button_clear_data">Verileri temizle seçeneğine izin ver</string>
+    <string name="prefs_summary_extra_show_button_clear_data">TEHLİKE! Verilerin kalıcı olarak silinmesi düğmesini göster. Kendi sorumluluğunuzda kullanın!</string>
+    <string name="prefs_extra_actions">Ekstra eylemler</string>
+    <string name="prefs_title_extra_action_force_stop_apps">Uygulamaları zorla durdur</string>
+    <string name="prefs_summary_extra_action_force_stop_apps">Önbelleği temizlemeden önce uygulamaları zorla durdur</string>
+    <string name="prefs_title_extra_action_stop_service">Erişilebilirlik servisini otomatik durdur</string>
+    <string name="prefs_summary_extra_action_stop_service">Önbellek temizlendikten sonra Erişilebilirlik servisini otomatik olarak durdur</string>
+    <string name="prefs_title_extra_action_close_app">Uygulamayı otomatik kapat</string>
+    <string name="prefs_summary_extra_action_close_app">Önbellek temizlendikten sonra uygulamayı otomatik olarak kapat</string>
+    <string name="prefs_custom_lists">Özel uygulama listeleri</string>
+    <string name="prefs_title_custom_list_add">Ekle</string>
+    <string name="prefs_summary_custom_list_add">Yeni bir özel uygulama listesi ekle</string>
+    <string name="prefs_title_custom_list_edit">Düzenle</string>
+    <string name="prefs_summary_custom_list_edit">Mevcut bir özel uygulama listesini düzenle</string>
+    <string name="prefs_title_custom_list_remove">Kaldır</string>
+    <string name="prefs_summary_custom_list_remove">Mevcut bir özel uygulama listesini kaldır</string>
+    <string name="prefs_other">Diğer</string>
+    <string name="prefs_title_delay_for_next_app_timeout">Uygulamalar arası zaman aşımı - %.2fs</string>
+    <string name="prefs_summary_delay_for_next_app_timeout">Eski akıllı telefonlar için uygulamalar arası zaman aşımını artırmanız önerilir, Android Sistemi kesintilere neden olabilir</string>
+    <string name="prefs_title_max_wait_app_timeout">Uygulama başına maksimum zaman aşımı - %.2fs</string>
+    <string name="prefs_summary_max_wait_app_timeout">Eski akıllı telefonlar için önbellek boyutu hesaplaması daha uzun sürebilir</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">Önbelleği Temizle düğmesini beklemek için maksimum zaman aşımı - %.2fs</string>
+    <string name="prefs_summary_max_wait_clear_cache_btn_timeout">Eski akıllı telefonlar için önbellek boyutu hesaplaması daha uzun sürebilir</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">Etkinlik için maksimum zaman aşımı - %.2fs</string>
+    <string name="prefs_summary_max_wait_accessibility_event_timeout">Eski akıllı telefonlar için Erişilebilirlik etkinliği daha uzun sürebilir</string>
+    <string name="prefs_title_go_back_after_apps">Temizlenen %d uygulamadan sonra geri dön</string>
+    <string name="prefs_title_go_back_after_apps_never">Uygulama temizlendikten sonra asla geri dönme</string>
+    <string name="prefs_summary_go_back_after_apps">Android\'deki pencere yığılmasını önlemek için geri dönün, daha yüksek bir değer bekleme süresini azaltabilir, 0 - asla geri dönmeyin</string>
+    <string name="prefs_summary_go_back_after_apps_for_api_34">Android\'deki pencere yığılmasını önlemek için geri dönün, daha yüksek bir değer bekleme süresini azaltabilir</string>
+    <string name="prefs_title_scenario">Önbellek temizleme senaryosu</string>
+    <string-array name="settings_scenario_entries">
+        <item>Varsayılan</item>
+        <item>Xiaomi MIUI</item>
+    </string-array>
 
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"Önbelleği temizle"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"Depolama alanı ve önbellek"</string>
