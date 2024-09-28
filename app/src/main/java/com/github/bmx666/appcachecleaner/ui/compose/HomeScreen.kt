@@ -89,6 +89,7 @@ fun HomeScreen(
     var selectedCustomListName by remember { mutableStateOf("") }
     val selectedCustomList by settingsCustomPackageListViewModel
         .getCustomPackageList(selectedCustomListName).collectAsState()
+    var selectedCustomListNameForFilter by remember { mutableStateOf(false) }
 
     val permissionViewModel: PermissionViewModel = hiltViewModel()
     val permissionCheckerIsReady by permissionViewModel.isReady.collectAsState()
@@ -139,8 +140,18 @@ fun HomeScreen(
             .distinctUntilChanged() // Only react to actual changes in the list
             .collectLatest { list ->
                 if (list.isNotEmpty()) {
-                    val pkgList = list.toMutableList()
-                    localBroadcastManager.sendPackageListToClearCache(pkgList as ArrayList<String>)
+                    if (selectedCustomListNameForFilter) {
+                        val root = Constant.Navigation.PACKAGE_LIST
+                        val action = Constant.PackageListAction.CUSTOM_LIST_FILTER
+                        navController.navigate(
+                            route = "$root/$action?name=$selectedCustomListName"
+                        )
+                    } else {
+                        val pkgList = list.toMutableList()
+                        localBroadcastManager.sendPackageListToClearCache(pkgList as ArrayList<String>)
+                    }
+                    // reset string to avoid misbehavior
+                    selectedCustomListName = ""
                 }
             }
     }
@@ -203,11 +214,16 @@ fun HomeScreen(
                         label = stringResource(
                             id = R.string.dialog_message_custom_list_clean_cache),
                         storedValue = customListNames ?: emptySet(),
-                        onOk = { name -> selectedCustomListName = name }
-                    ) {
-                        // to dismiss dialog from within
-                        isCustomListDialogShown = false
-                    }
+                        onOk = { name ->
+                            selectedCustomListName = name
+                            selectedCustomListNameForFilter = false
+                        },
+                        onDismiss = { isCustomListDialogShown = false },
+                        onFilter = { name ->
+                            selectedCustomListName = name
+                            selectedCustomListNameForFilter = true
+                        },
+                    )
                 }
             }
 

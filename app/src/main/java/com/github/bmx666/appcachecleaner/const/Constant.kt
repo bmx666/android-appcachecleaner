@@ -180,6 +180,7 @@ class Constant {
         IGNORED_APPS,
         CUSTOM_LIST_ADD,
         CUSTOM_LIST_EDIT,
+        CUSTOM_LIST_FILTER,
     }
 
     enum class Navigation {
