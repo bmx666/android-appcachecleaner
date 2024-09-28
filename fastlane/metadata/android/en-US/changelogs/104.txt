@@ -1,0 +1,2 @@
+* add custom list filtering
+* fix to open custom list with special names
