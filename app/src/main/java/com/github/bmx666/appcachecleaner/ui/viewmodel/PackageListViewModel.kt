@@ -337,10 +337,28 @@ class PackageListViewModel @Inject constructor(
             )
         }
 
+    fun loadCustomListAppsFilter(name: String) =
+        process {
+            processPackageList(
+                pkgList = PackageManagerHelper.getInstalledApps(
+                    context = context,
+                    systemNotUpdated = true,
+                    systemUpdated = true,
+                    userOnly = true,
+                ),
+                checkedPkgList = userPrefCustomPackageListManager.getCustomList(name).firstOrNull(),
+                hideUncheckedApps = true,
+                requestLabel = true,
+                requestStats = true,
+                sort = PackageSort.BY_LABEL,
+            )
+        }
+
     private suspend fun processPackageList(
         pkgList: ArrayList<PackageInfo>,
         checkedPkgList: Set<String>? = null,
         minCacheSizeBytes: Long? = null,
+        hideUncheckedApps: Boolean? = null,
         hideDisabledApps: Boolean? = null,
         hideIgnoredApps: Boolean? = null,
         listOfIgnoredApps: Set<String>? = null,
@@ -365,6 +383,10 @@ class PackageListViewModel @Inject constructor(
 
             if (hideIgnoredApps == true &&
                 listOfIgnoredApps?.contains(pkgInfo.packageName) == true)
+                return@forEachIndexed
+
+            if (hideUncheckedApps == true &&
+                checkedPkgList?.contains(pkgInfo.packageName) == false)
                 return@forEachIndexed
 
             val stats =

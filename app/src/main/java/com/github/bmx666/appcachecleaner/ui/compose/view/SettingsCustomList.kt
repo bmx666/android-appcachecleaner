@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.github.bmx666.appcachecleaner.R
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -84,10 +85,12 @@ private fun SettingsCustomListEditRemove(
             // dismiss the dialog on touch outside
             isDialogShown = false
         }) {
-            CustomListDropDownDialog(dialogTextLabel, stateValue!!, onSave) {
-                // to dismiss dialog from within
-                isDialogShown = false
-            }
+            CustomListDropDownDialog(
+                label = dialogTextLabel,
+                storedValue = stateValue!!,
+                onOk = onSave,
+                onDismiss = { isDialogShown = false },
+            )
         }
     }
 
@@ -292,7 +295,8 @@ internal fun CustomListDropDownDialog(
     label: String,
     storedValue: Set<String>,
     onOk: (String) -> Unit,
-    onDismiss: () -> Unit // internal method to dismiss dialog from within
+    onDismiss: () -> Unit, // internal method to dismiss dialog from within
+    onFilter: ((String) -> Unit)? = null,
 ) {
     // storage for new input
     var selectedValue by remember {
@@ -336,6 +340,21 @@ internal fun CustomListDropDownDialog(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
+                onFilter?.let {
+                    Button(
+                        onClick = {
+                            // save and dismiss the dialog
+                            onFilter(selectedValue)
+                            onDismiss()
+                            // disable / enable the button
+                        })
+                    {
+                        Text(
+                            text = stringResource(id = R.string.filter),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                }
                 Button(
                     onClick = {
                         // save and dismiss the dialog

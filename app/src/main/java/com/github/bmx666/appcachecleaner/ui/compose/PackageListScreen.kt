@@ -104,6 +104,11 @@ internal fun PackageListScreen(
                         packageListViewModel.loadCustomListAppsEdit(name)
                     } ?: goBack(navController)
                 }
+                Constant.PackageListAction.CUSTOM_LIST_FILTER -> {
+                    name?.let {
+                        packageListViewModel.loadCustomListAppsFilter(name)
+                    } ?: goBack(navController)
+                }
             }
         } ?: goBack(navController)
     }
@@ -119,7 +124,8 @@ internal fun PackageListScreen(
         Constant.PackageListAction.USER_APPS,
         Constant.PackageListAction.SYSTEM_APPS,
         Constant.PackageListAction.ALL_APPS,
-        Constant.PackageListAction.DISABLED_APPS -> {
+        Constant.PackageListAction.DISABLED_APPS,
+        Constant.PackageListAction.CUSTOM_LIST_FILTER -> {
             checkedTotalCacheSizeString?.let {
                 String.format("%s (%s)", fixedTitle, checkedTotalCacheSizeString)
             } ?: fixedTitle
@@ -208,7 +214,8 @@ internal fun PackageListScreen(
                     Constant.PackageListAction.USER_APPS,
                     Constant.PackageListAction.SYSTEM_APPS,
                     Constant.PackageListAction.ALL_APPS,
-                    Constant.PackageListAction.DISABLED_APPS -> {
+                    Constant.PackageListAction.DISABLED_APPS,
+                    Constant.PackageListAction.CUSTOM_LIST_FILTER -> {
                         Column(
                             horizontalAlignment = Alignment.End
                         ) {
