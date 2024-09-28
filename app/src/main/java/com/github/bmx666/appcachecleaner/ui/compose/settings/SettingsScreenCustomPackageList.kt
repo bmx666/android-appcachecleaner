@@ -20,6 +20,7 @@ import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsCustomListEdit
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsCustomListRemove
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsGroup
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsCustomPackageListViewModel
+import com.github.bmx666.appcachecleaner.util.encode
 
 @Composable
 internal fun SettingsScreenCustomPackageList(navController: NavController) {
@@ -45,7 +46,7 @@ internal fun SettingsScreenCustomPackageList(navController: NavController) {
                 val root = Constant.Navigation.PACKAGE_LIST
                 val action = Constant.PackageListAction.CUSTOM_LIST_ADD
                 navController.navigate(
-                    route = "$root/$action?name=$name"
+                    route = "$root/$action?name=${name.encode()}"
                 )
             },
         )
@@ -63,7 +64,7 @@ internal fun SettingsScreenCustomPackageList(navController: NavController) {
                     val root = Constant.Navigation.PACKAGE_LIST
                     val action = Constant.PackageListAction.CUSTOM_LIST_EDIT
                     navController.navigate(
-                        route = "$root/$action?name=$name"
+                        route = "$root/$action?name=${name.encode()}"
                     )
                 },
             )
