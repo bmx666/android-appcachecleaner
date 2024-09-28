@@ -16,6 +16,7 @@ import com.github.bmx666.appcachecleaner.ui.viewmodel.FirstBootViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.LocaleViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsUiViewModel
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelper
+import com.github.bmx666.appcachecleaner.util.decode
 
 @Composable
 fun AppScreen(
@@ -79,7 +80,7 @@ fun AppScreen(
                 ),
             ) { backStackEntry ->
                 val action = backStackEntry.arguments?.getString("action")
-                val name = backStackEntry.arguments?.getString("name")
+                val name = backStackEntry.arguments?.getString("name")?.decode()
                 PackageListScreen(
                     navController = navController,
                     localBroadcastManager = localBroadcastManager,

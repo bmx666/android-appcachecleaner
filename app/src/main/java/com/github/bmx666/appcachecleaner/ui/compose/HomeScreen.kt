@@ -58,6 +58,7 @@ import com.github.bmx666.appcachecleaner.ui.viewmodel.PermissionViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsCustomPackageListViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsExtraViewModel
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelper
+import com.github.bmx666.appcachecleaner.util.encode
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -144,7 +145,7 @@ fun HomeScreen(
                         val root = Constant.Navigation.PACKAGE_LIST
                         val action = Constant.PackageListAction.CUSTOM_LIST_FILTER
                         navController.navigate(
-                            route = "$root/$action?name=$selectedCustomListName"
+                            route = "$root/$action?name=${selectedCustomListName.encode()}"
                         )
                     } else {
                         val pkgList = list.toMutableList()
