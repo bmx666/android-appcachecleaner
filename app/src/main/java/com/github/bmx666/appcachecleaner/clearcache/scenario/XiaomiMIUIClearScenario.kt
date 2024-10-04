@@ -159,7 +159,7 @@ private fun AccessibilityNodeInfo.findMenuItemText(
     }
 
     return this.takeIfMatches(
-        findTextView = false,
+        findTextView = true, // on some Xiaomi viewId is null
         findButton = false,
         viewIdResourceName = "com.miui.securitycenter:id/action_menu_item_child_text",
         arrayText = arrayText,
