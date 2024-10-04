@@ -1,5 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">缓存清理器</string>
+    <string name="service_name">缓存清理器</string>
+    <string name="text_enable_accessibility_title">启用辅助功能服务</string>
+    <string name="text_enable_accessibility_message">
+        为了正常运行，<b>缓存清理器</b>需要您的许可。
+        请前往设置中允许<b>辅助功能</b>的权限。
+        \n\n
+        1. 前往设置中的<b>辅助功能</b>。
+        \n
+        2. 找到<b>缓存清理器</b>并点击它。
+        \n
+        3. 授予权限。
+        \n\n
+        <u><b>辅助功能服务声明：</b></u>
+        \n
+        - 本应用程序需要辅助功能服务API来执行核心功能，例如执行点击、滑动等核心操作。
+        \n
+        - Android 6及以上版本需要辅助功能权限。
+        \n
+        - 本应用程序不会通过辅助功能收集或分享个人或敏感数据。
+    </string>
+    <string name="text_enable_accessibility_message_api33">
+        为了正常运行，<b>缓存清理器</b>需要您的许可。
+        请前往设置中允许<b>辅助功能</b>的权限。
+        \n\n
+        1. 前往设置中的<b>辅助功能</b>。
+        \n
+        2. 找到<b>缓存清理器</b>并点击它。
+        \n
+        3. 授予权限。
+        \n\n
+        <u><b>辅助功能服务声明：</b></u>
+        \n
+        - 本应用程序需要辅助功能服务API来执行核心功能，例如执行点击、滑动等核心操作。
+        \n
+        - Android 6及以上版本需要辅助功能权限。
+        \n
+        - 本应用程序不会通过辅助功能收集或分享个人或敏感数据。
+        \n\n
+        <u><b>允许受限设置：</b></u>
+        \n
+        - 由于Android 13对第三方应用的辅助功能API有所限制，请阅读<b>帮助</b>菜单中的<b>⚠️警告</b>章节。
+    </string>
+    <string name="text_accessibility_description">
+        "缓存清理器"需要辅助功能服务API来实现其核心功能，例如执行点击、滑动等操作。
+        "缓存清理器"不会通过辅助功能收集或分享个人或敏感数据。
+    </string>
+    <string name="text_enable_usage_stats_title">启用使用情况统计</string>
+    <string name="text_enable_usage_stats_message">
+        为了正常运行，<b>缓存清理器</b>需要您的许可。请前往设置中允许使用情况统计的权限。
+        \n\n
+        1. 前往设置中的<b>应用</b>。
+        \n
+        2. 找到<b>特殊应用访问</b>并点击它。
+        \n
+        3. 找到<b>使用权限访问</b>并点击它。
+        \n
+        4. 找到<b>缓存清理器</b>并点击它。
+        \n
+        5. 授予权限。
+        \n\n
+        <u><b>使用情况统计声明：</b></u>
+        \n
+        - 本应用需要使用情况统计来执行其核心功能，例如获取已安装应用的缓存大小。
+        \n
+        - Android 8及以上版本需要使用情况统计权限。
+        \n
+        - 本应用不会通过使用情况统计收集或分享个人或敏感数据。
+    </string>
+    <string name="text_clean_cache_finish">缓存清理完成</string>
+    <string name="text_clean_cache_finish_display_size">缓存清理完成\n已清理 %1$s</string>
+    <string name="text_clean_cache_finish_processing">缓存清理完成\n处理中…</string>
+    <string name="text_clean_cache_interrupt">缓存清理被中断</string>
+    <string name="text_clean_cache_interrupt_display_size">缓存清理被中断\n已清理 %1$s</string>
+    <string name="text_clean_cache_interrupt_processing">缓存清理被中断\n处理中…</string>
+    <string name="text_clean_data_finish">数据清理完成</string>
+    <string name="text_clean_data_interrupt">数据清理被中断</string>
+    <string name="btn_clean_cache_all_apps">清理所有应用的缓存</string>
+    <string name="btn_clean_cache_system_apps">清理系统应用的缓存</string>
+    <string name="btn_clean_cache_user_apps">清理用户应用的缓存</string>
+    <string name="btn_clean_cache_disabled_apps">清理已禁用应用的缓存</string>
+    <string name="btn_close_app">关闭应用</string>
+    <string name="btn_start_accessibility_service">启动辅助功能服务</string>
+    <string name="btn_stop_accessibility_service">停止辅助功能服务</string>
+    <string name="btn_add_extra_search_text">添加额外搜索文本</string>
+    <string name="description_apps_all_check">选择所有应用</string>
+    <string name="description_apps_all_uncheck">取消选择所有应用</string>
+    <string name="text_cache_size_fmt">缓存：%1$s</string>
+    <string name="toast_package_list_item_long_click">长按应用图标以启动&lt;应用信息&gt;</string>
+    <string name="text_list_ignored_apps">忽略的应用</string>
+
+    <string name="dialog_extra_search_text_message">%1$s (%2$s)\n代替 "%3$s"</string>
+
+    <string name="dialog_interrupted_by_system_title">中断</string>
+    <string name="dialog_interrupted_by_system_messages"><![CDATA[
+        <b>缓存清理器</b>在清理应用时被Android系统中断。
+    ]]></string>
+
+    <string name="first_boot_title">使用前请阅读</string>
+    <string name="first_boot_message"><![CDATA[
+        <h2>自定义设置界面</h2>
+        <br/>
+        许多公司或Android ROM会添加或更改默认的Android界面，包括设置。这可能会导致问题，因为<b>缓存清理器</b>应用正在查找特定文本，如果不匹配，应用将无法执行操作。
+    ]]></string>
+    <string name="first_boot_confirm_1">
+        我确认我将在使用<b>缓存清理器</b>应用之前，阅读<b>帮助</b>菜单中的<b>自定义设置界面</b>章节。
+    </string>
+    <string name="first_boot_confirm_2">
+        我确认如果<b>缓存清理器</b>没有执行任何操作，我将按照<b>帮助</b>菜单中<b>自定义设置界面</b>章节中描述的操作进行。
+    </string>
+    <string name="first_boot_confirm_3">
+        我确认如果<b>缓存清理器</b>没有执行任何操作，我将更改<b>设置</b>中的缓存清理场景。
+    </string>
+    <string name="first_boot_confirm_4">
+        我确认如果<b>缓存清理器</b>没有执行任何上述操作，我有责任报告问题至<b>帮助</b>菜单中指定的地址。
+    </string>
+
+    <string name="help_about"><![CDATA[
+        <h2>关于应用</h2>
+        <br/>
+        自Android 6（棉花糖）起，无法一次性清除所有应用的缓存，Google将此权限移至系统应用中。唯一剩下的方式是手动打开应用信息，找到<b>存储</b>菜单并按下<b>清除缓存</b>按钮。
+        <br/><br/>
+        <b>缓存清理器</b>应用可以请求所有已安装的用户和系统应用，并通过辅助功能服务替代所有手动清理缓存的操作。
+    ]]></string>
+
+    <string name="help_android13_accessibility_permission"><![CDATA[
+        <br/>
+        <h2>警告 ⚠️</h2>
+        <br/>
+        由于 Android 13 对第三方应用的无障碍 API 进行了限制，请按照以下步骤为 <b>缓存清理器</b> 应用启用无障碍功能。
+        <br/><br/>
+        重要提示！首次启动时，您必须进入 <b>无障碍</b> 并点击 <b>缓存清理器</b> 以激活限制，否则 Android 不会显示
+        <b>允许受限设置</b>。
+        <br/><br/>
+        ▶️ <a href="https://www.youtube.com/watch?v=UiCr33gYZiI">在 YouTube 上观看 <b>教程</b></a>
+        <br/><br/>
+        <h3>允许受限设置</h3>
+        <br/>
+        启用受限设置后，您允许应用访问可能使个人数据面临风险的敏感信息。我们不建议您启用受限设置，除非您信任该应用开发者。
+        <br/><br/>
+        一些合法的应用可能会要求您启用受限设置。例如，为残障人士设计的应用可能会要求您打开无障碍设置。
+        启用无障碍设置后，应用可以读取屏幕上的内容并代表您与应用进行交互。
+        <br/><br/>
+        1. 在您的 Android 设备上，打开 <b>设置</b> 应用
+        <br/>
+        2. 点击 <b>应用</b>
+        <br/>
+        3. 点击 <b>所有应用</b>
+        <br/>
+        4. 找到并点击 <b>缓存清理器</b>
+        <br/>
+        5. 点击右上角菜单 <b>更多</b> <b>⋮</b>
+        <br/>
+        6. 点击 <b>允许受限设置</b>
+        <br/>
+        7. 按照屏幕上的指示操作
+        <br/><br/>
+        <b>Android 帮助</b> - <a href="https://support.google.com/android/answer/12623953?hl=zh-Hans">了解有关受限设置的更多信息</a>
+    ]]></string>
+
+    <string name="help_how_to_use"><![CDATA[
+        <br/>
+        <h2>使用方法</h2>
+        <br/>
+        1. 点击 <b>用户应用</b>、<b>系统应用</b> 或 <b>所有应用</b> 的清理缓存按钮
+        <br/>
+        2. 如果需要，请为 <b>缓存清理器</b> 应用启用使用情况统计支持
+        <br/>
+        3. 如果需要，请为 <b>缓存清理器</b> 应用启用无障碍支持
+        <br/>
+        4. 在列表中检查所需应用（使用浮动按钮全选/取消全选所有应用）
+        <br/>
+        5. 按下 <b>清理缓存浮动按钮</b> 开始清理缓存过程
+        <br/>
+        6. 按下 <b>无障碍覆盖按钮</b> 中断过程或等待过程完成
+        <br/>
+        7. <i>（可选）</i> 按下 <b>停止无障碍服务</b> 以禁用无障碍服务
+    ]]></string>
+
+    <string name="help_customized_settings_ui"><![CDATA[
+        <br/>
+        <h2>自定义设置界面</h2>
+        <br/>
+        许多公司或 Android ROM 会添加或更改默认的 Android UI，包括设置。
+        这可能会导致问题，因为 <b>缓存清理器</b> 应用正在查找特定的文本，如果不匹配，应用将无法正常工作。
+        <br/><br/>
+        请按照以下步骤解决清除缓存问题：
+        <br/><br/>
+        1. 选择任意应用并进入 <b>&quot;应用信息&quot;</b>
+        <br/>
+        2. 记录 <b>&quot;存储&quot;</b> 菜单的文本
+        <br/>
+        3. 进入 <b>&quot;存储&quot;</b> 菜单
+        <br/>
+        4. 记录 <b>&quot;清除缓存&quot;</b> 按钮的文本
+        <br/>
+        5. 在特定语言环境下打开 <b>缓存清理器</b> 应用（在设置中切换到所需语言环境，然后返回 <b>缓存清理器</b> 应用）
+        <br/>
+        6. 打开右上角的 <b>设置</b> 菜单，找到 <b>添加额外搜索文本</b> 部分
+        <br/>
+        7. 点击 <b>清除缓存</b>，在输入框中输入 <b>&quot;清除缓存&quot; 按钮</b> 的自定义搜索文本并按 <b>&quot;确定&quot;</b> 保存。要删除自定义搜索文本，只需清空输入框中的文本并按 <b>&quot;确定&quot;</b>
+        <br/>
+        8. 点击 <b>存储</b>，在输入框中输入 <b>&quot;存储&quot; 菜单</b> 的自定义搜索文本并按 <b>&quot;确定&quot;</b> 保存。要删除自定义搜索文本，只需清空输入框中的文本并按 <b>&quot;确定&quot;</b>
+        <br/><br/>
+        <h4>使用特定区域性 MIUI 固件的小米手机必须使用不同的清除缓存方案：</h4>
+        1. 打开右上角的 <b>设置</b> 菜单并找到 <b>其他</b> 部分
+        <br/>
+        2. 点击 <b>清除缓存方案</b> 并选择 <b>小米 MIUI</b>
+        <br/><br/>
+        <h4>注意 ⚠️：华为和小米手机经常使用激进的电池优化，可能会中断 <b>缓存清理器</b> 与无障碍服务之间的通信，导致其无法正常工作。请按照以下步骤操作：</h4>
+        1. 打开右上角的 <b>设置</b> 菜单并找到 <b>显示额外按钮</b> 部分
+        <br/>
+        2. 启用 <b>启动/停止无障碍服务</b> 选项
+        <br/>
+        3. 下次启动 <b>缓存清理器</b> 时，如果无障碍服务正在运行，通过点击 <b>停止无障碍服务</b> 按钮将其停止。
+        然后，通过点击 <b>启动无障碍服务</b> 按钮再次启用它
+    ]]></string>
+
+    <string name="help_icon_copyright"><![CDATA[
+        <br/>
+        <h2>图标版权</h2>
+        <br/>
+        <a href="https://www.flaticon.com/free-icon/broom_2954888"><b>扫帚图标</b>由 Smashicons 创建 - Flaticon</a>
+        <br/><br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon.pdf">
+        Freepik <b>扫帚图标</b>的许可证</a>
+        <br/>
+        <a href="https://github.com/bmx666/android-appcachecleaner/blob/main/LICENSE_Freepik_icon_monochrome.pdf">
+        Freepik 单色 <b>扫帚图标</b>的许可证</a>
+    ]]></string>
+
+    <string name="help_submit_bug_report"><![CDATA[
+        <br/>
+        <h2>提交错误报告</h2>
+        <br/>
+        <b><a href="https://github.com/bmx666/android-appcachecleaner/issues">Github</a></b>
+    ]]></string>
+
+    <string name="description_accessibility_overlay_button_interrupt">中断缓存清理过程</string>
+
+    <!-- 自定义包列表 -->
+    <string name="btn_clean_custom_list_cache">清理自定义列表的缓存</string>
+    <string name="dialog_message_custom_list_add">请输入新名称：</string>
+    <string name="dialog_message_custom_list_edit">请选择一个列表：</string>
+    <string name="dialog_message_custom_list_remove">请选择一个列表：</string>
+    <string name="dialog_message_custom_list_clean_cache">请选择一个列表：</string>
+    <string name="toast_custom_list_add_list_empty">列表为空，请至少添加一个应用</string>
+    <string name="toast_custom_list_has_been_saved">列表 %1$s 已保存</string>
+    <string name="toast_custom_list_has_been_removed">列表 %1$s 已删除</string>
+    <string name="toast_clear_data_package_exclude">应用 \u0022%1$s\u0022 已排除</string>
+
+    <!-- 首选项 -->
+    <string name="prefs_ui">界面</string>
+    <string name="prefs_ui_night_mode">@string/dark_theme_main_switch_title</string>
+    <string name="prefs_ui_contrast">@string/contrast_title</string>
+    <string name="prefs_ui_dynamic_color">动态颜色</string>
+    <string name="prefs_title_filter_min_cache_size">过滤应用的最小缓存大小</string>
+    <string name="prefs_summary_filter_min_cache_size">最小 %1$s</string>
+    <string name="prefs_error_convert_filter_min_cache_size">请输入以 KB、MB、GB、TB 为单位的最小缓存大小，或输入 0 重置过滤器</string>
+    <string name="prefs_title_filter_hide_disabled_apps">隐藏已禁用的应用</string>
+    <string name="prefs_title_filter_hide_ignored_apps">隐藏被忽略的应用</string>
+    <string name="prefs_title_filter_list_of_ignored_apps_edit">编辑忽略的应用列表</string>
+    <string name="prefs_summary_filter_list_of_ignored_apps_edit">编辑忽略的应用列表</string>
+    <string name="prefs_show_extra_buttons">显示额外按钮</string>
+    <string name="prefs_title_show_button_clean_cache_disabled_apps">清理已禁用应用的缓存</string>
+    <string name="prefs_title_show_button_start_stop_service">启动/停止无障碍服务</string>
+    <string name="prefs_summary_show_button_start_stop_service">对于某些智能手机，您需要手动启动或停止无障碍服务</string>
+    <string name="prefs_title_show_button_close_app">关闭应用</string>
+    <string name="prefs_summary_show_button_close_app">对于某些智能手机，您需要手动停止无障碍服务并关闭应用</string>
+    <string name="prefs_title_extra_show_button_clear_data">允许清除数据</string>
+    <string name="prefs_summary_extra_show_button_clear_data">危险！显示永久删除数据的按钮，使用需自担风险！</string>
+    <string name="prefs_extra_actions">额外操作</string>
+    <string name="prefs_title_extra_action_force_stop_apps">强制停止应用</string>
+    <string name="prefs_summary_extra_action_force_stop_apps">在清理缓存之前强制停止应用</string>
+    <string name="prefs_title_extra_action_stop_service">自动停止无障碍服务</string>
+    <string name="prefs_summary_extra_action_stop_service">清理缓存后自动停止无障碍服务</string>
+    <string name="prefs_title_extra_action_close_app">自动关闭应用</string>
+    <string name="prefs_summary_extra_action_close_app">清理缓存后自动关闭应用</string>
+    <string name="prefs_custom_lists">自定义应用列表</string>
+    <string name="prefs_title_custom_list_add">添加</string>
+    <string name="prefs_summary_custom_list_add">添加新的自定义应用列表</string>
+    <string name="prefs_title_custom_list_edit">编辑</string>
+    <string name="prefs_summary_custom_list_edit">编辑现有的自定义应用列表</string>
+    <string name="prefs_title_custom_list_remove">删除</string>
+    <string name="prefs_summary_custom_list_remove">删除现有的自定义应用列表</string>
+    <string name="prefs_other">其他</string>
+    <string name="prefs_title_delay_for_next_app_timeout">应用间的超时 - %.2fs</string>
+    <string name="prefs_summary_delay_for_next_app_timeout">对于较旧的智能手机，建议增加应用之间的超时时间，因为 Android 系统可能会造成中断</string>
+    <string name="prefs_title_max_wait_app_timeout">单个应用的最大超时 - %.2fs</string>
+    <string name="prefs_summary_max_wait_app_timeout">对于较旧的智能手机，建议增加超时时间，因为缓存大小的计算可能需要更长时间</string>
+    <string name="prefs_title_max_wait_clear_cache_btn_timeout">等待清除缓存按钮的最大超时 - %.2fs</string>
+    <string name="prefs_summary_max_wait_clear_cache_btn_timeout">对于较旧的智能手机，建议增加超时时间，因为缓存大小的计算可能需要更长时间</string>
+    <string name="prefs_title_max_wait_accessibility_event_timeout">事件的最大超时 - %.2fs</string>
+    <string name="prefs_summary_max_wait_accessibility_event_timeout">对于较旧的智能手机，建议增加超时时间，因为无障碍事件可能需要更长时间</string>
+    <string name="prefs_title_go_back_after_apps">清理 %d 个应用后返回</string>
+    <string name="prefs_title_go_back_after_apps_never">清理应用后从不返回</string>
+    <string name="prefs_summary_go_back_after_apps">为了避免 Android 中的窗口堆栈溢出，较高的值可能会减少等待时间，0 - 永不返回</string>
+    <string name="prefs_summary_go_back_after_apps_for_api_34">为了避免 Android 中的窗口堆栈溢出，较高的值可能会减少等待时间</string>
+    <string name="prefs_title_scenario">清理缓存方案</string>
+    <string-array name="settings_scenario_entries">
+        <item>默认</item>
+        <item>小米 MIUI</item>
+    </string-array>
+
     <string name="clear_cache_btn_text" msgid="8597272828928143723">"清除缓存"</string>
     <string name="storage_settings_for_app" msgid="229425418984637483">"存储和缓存"</string>
     <string name="storage_label" msgid="2522307545547515733">"存储"</string>
