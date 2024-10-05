@@ -1,0 +1,1 @@
+* fix search menu items for Xiaomi MIUI
