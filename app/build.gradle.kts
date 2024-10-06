@@ -86,7 +86,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // Compose UI
-    val composeBom = platform("androidx.compose:compose-bom:2024.09.01")
+    val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
