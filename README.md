@@ -91,3 +91,4 @@ Please follow the steps below to resolve clear cache issue:
 
 [<img src="https://codebard.com/ext_images/patreon-medium-button.png" alt="Patreon" style="height: 60px !important;">](https://www.patreon.com/bmx666)
 
+[<img src="https://github.com/user-attachments/assets/d02e06c3-2959-4731-9eaf-a073b994a18c" alt="DonationAlerts" style="height: 60px;">](https://www.donationalerts.com/r/bmx666)
