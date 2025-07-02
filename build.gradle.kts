@@ -1,12 +1,12 @@
 plugins {
-    id("com.android.application") version "8.11.0" apply false
-    id("com.android.library") version "8.11.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.0" apply false
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0"
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.ksp) apply false
 }
 buildscript {
     dependencies {
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.56.2")
+        classpath(libs.hilt.gradle.plugin)
     }
 }

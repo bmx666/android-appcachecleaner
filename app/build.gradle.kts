@@ -72,57 +72,57 @@ composeCompiler {
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:1.9.1")
-    implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.preference.ktx)
 
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.google.material)
 
-    debugImplementation("com.jakewharton.timber:timber:5.0.1")
+    debugImplementation(libs.timber)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
     // Compose UI
-    val composeBom = platform("androidx.compose:compose-bom:2024.11.00")
+    val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation(libs.compose.material3)
 
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    implementation(libs.compose.ui.preview)
+    debugImplementation(libs.compose.ui.tooling)
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 
-    implementation("androidx.compose.material:material-icons-core:1.7.8")
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.2")
+    implementation(libs.compose.material.icons.core)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.material3.window)
 
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
-    implementation("androidx.navigation:navigation-compose:2.9.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
-    implementation("androidx.compose.runtime:runtime-rxjava2:1.8.3")
+    implementation(libs.activity.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.navigation.compose)
+    implementation(libs.compose.runtime.livedata)
+    implementation(libs.compose.runtime.rxjava2)
 
-    implementation("androidx.datastore:datastore-core:1.1.7")
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation(libs.datastore.core)
+    implementation(libs.datastore.preferences)
 
-    implementation("androidx.room:room-runtime:2.7.2")
-    ksp("androidx.room:room-compiler:2.7.2")
-    implementation("androidx.room:room-ktx:2.7.2")
-    implementation("androidx.room:room-paging:2.7.2")
+    implementation(libs.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.room.ktx)
+    implementation(libs.room.paging)
 
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    ksp("com.google.dagger:dagger-compiler:2.56.2")
-    ksp("com.google.dagger:hilt-compiler:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
+    implementation(libs.coil.compose)
+    implementation(libs.accompanist.permissions)
 }
