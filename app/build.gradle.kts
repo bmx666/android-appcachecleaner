@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.github.bmx666.appcachecleaner"
 
-    compileSdk = 35
+    compileSdk = 36
 
     signingConfigs {
         create("release") {
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "com.github.bmx666.appcachecleaner"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 107
         versionName = "2.2.9"
 
