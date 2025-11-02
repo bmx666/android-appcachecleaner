@@ -36,7 +36,7 @@ class PackageListViewModel @Inject constructor(
     private val userPrefCustomPackageListManager: UserPrefCustomPackageListManager,
     private val userPrefFilterManager: UserPrefFilterManager,
     private val localeManager: LocaleManager,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ): ViewModel()
 {
     private enum class PackageSort {
