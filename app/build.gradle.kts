@@ -72,9 +72,7 @@ composeCompiler {
 dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.localbroadcastmanager)
 
     implementation(libs.google.material)
 
@@ -82,7 +80,6 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // Compose UI
     val composeBom = platform(libs.compose.bom)
@@ -91,35 +88,26 @@ dependencies {
 
     implementation(libs.compose.material3)
 
-    implementation(libs.compose.ui.preview)
     debugImplementation(libs.compose.ui.tooling)
-
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    debugImplementation(libs.compose.ui.test.manifest)
 
     implementation(libs.compose.material.icons.core)
     implementation(libs.compose.material.icons.extended)
-    implementation(libs.compose.material3.window)
 
     implementation(libs.activity.compose)
     implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.compose)
-    implementation(libs.compose.runtime.livedata)
-    implementation(libs.compose.runtime.rxjava2)
 
     implementation(libs.datastore.core)
     implementation(libs.datastore.preferences)
 
     implementation(libs.room.runtime)
     ksp(libs.androidx.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(libs.room.paging)
 
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.compiler)
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.lifecycle.viewmodel.compose)
 
     implementation(libs.coil.compose)
     implementation(libs.accompanist.permissions)
