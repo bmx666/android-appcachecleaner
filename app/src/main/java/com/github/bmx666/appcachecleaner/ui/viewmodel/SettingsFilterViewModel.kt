@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsFilterViewModel @Inject constructor(
     private val userPrefFilterManager: UserPrefFilterManager,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 
 ) : ViewModel() {
 
