@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,43 +35,50 @@ internal fun PackageListSearchIcon(
 
     if (expanded) {
         SearchBar(
-            query = queryText,
-            onQueryChange = { text ->
-                queryText = text
-                onQueryChange(text)
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = queryText,
+                    onQueryChange = { text ->
+                        queryText = text
+                        onQueryChange(text)
+                    },
+                    onSearch = { _ ->
+                        expanded = false
+                        keyboardController?.hide()
+                    },
+                    expanded = false,
+                    onExpandedChange = {},
+                    enabled = true,
+                    placeholder = {
+                        Text(text = stringResource(id = android.R.string.search_go))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            expanded = false
+                            queryText = ""
+                            onQueryChange(queryText)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = stringResource(id = android.R.string.cancel)
+                            )
+                        }
+                    },
+                )
             },
-            onSearch = { _ ->
-                expanded = false
-                keyboardController?.hide()
-            },
-            active = false,
-            onActiveChange = {},
+            expanded = false,
+            onExpandedChange = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            placeholder = {
-                Text(text = stringResource(id = android.R.string.search_go))
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = null
-                )
-            },
-            trailingIcon = {
-                IconButton(onClick = {
-                    expanded = false
-                    queryText = ""
-                    onQueryChange(queryText)
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        contentDescription = stringResource(id = android.R.string.cancel)
-                    )
-                }
-            },
             content = {},
         )
     } else {
