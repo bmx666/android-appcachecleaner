@@ -3,7 +3,7 @@ package com.github.bmx666.appcachecleaner.ui.compose.settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsGroup
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsSwitch

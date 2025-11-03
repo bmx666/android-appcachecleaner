@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsEditText
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsGroup
