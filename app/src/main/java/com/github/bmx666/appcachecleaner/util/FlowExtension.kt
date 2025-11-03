@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-fun <T> Flow<Preferences>.getValue(
+inline fun <reified T> Flow<Preferences>.getValue(
     key: Preferences.Key<T>,
     defValue: T,
     minValue: T? = null,
@@ -33,7 +33,7 @@ fun <T> Flow<Preferences>.getValue(
         }
 }
 
-fun <T> Flow<Preferences>.getValueOrNull(
+inline fun <reified T> Flow<Preferences>.getValueOrNull(
     key: Preferences.Key<T>,
     defValue: T? = null,
     minValue: T? = null,
@@ -76,7 +76,7 @@ inline fun <reified T : Enum<T>> Flow<Preferences>.getEnumValue(
             preferences[key]?.let { stringValue ->
                 try {
                     enumValueOf<T>(stringValue)
-                } catch (e: IllegalArgumentException) {
+                } catch (_: IllegalArgumentException) {
                     defValue
                 }
             } ?: defValue
