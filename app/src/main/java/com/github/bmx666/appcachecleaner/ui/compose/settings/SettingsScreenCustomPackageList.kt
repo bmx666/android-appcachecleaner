@@ -25,12 +25,13 @@ import com.github.bmx666.appcachecleaner.util.encode
 @Composable
 internal fun SettingsScreenCustomPackageList(navController: NavController) {
     val context = LocalContext.current
+    val appContext = LocalContext.current.applicationContext
     val settingsCustomPackageListViewModel: SettingsCustomPackageListViewModel = hiltViewModel()
     val listNames by settingsCustomPackageListViewModel.listNames.collectAsState()
 
     val showToastListRemove: (String) -> Unit = { name ->
-        Toast.makeText(context,
-            context.getString(R.string.toast_custom_list_has_been_removed, name),
+        Toast.makeText(appContext,
+            appContext.getString(R.string.toast_custom_list_has_been_removed, name),
             Toast.LENGTH_SHORT).show()
     }
 
