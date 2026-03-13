@@ -66,6 +66,7 @@ internal fun PackageListScreen(
     name: String?,
 ) {
     val context = LocalContext.current
+    val appContext = LocalContext.current.applicationContext
     val packageListViewModel: PackageListViewModel = hiltViewModel()
     val settingsFilterViewModel: SettingsFilterViewModel = hiltViewModel()
     val settingsExtraViewModel: SettingsExtraViewModel = hiltViewModel()
@@ -140,18 +141,18 @@ internal fun PackageListScreen(
     }
 
     val showToastCustomListEmpty: () -> Unit = {
-        Toast.makeText(context,
-            context.getString(R.string.toast_custom_list_add_list_empty),
+        Toast.makeText(appContext,
+            appContext.getString(R.string.toast_custom_list_add_list_empty),
             Toast.LENGTH_SHORT).show()
     }
     val showToastCustomListSave: (String) -> Unit = { savedListName ->
-        Toast.makeText(context,
-            context.getString(R.string.toast_custom_list_has_been_saved, savedListName),
+        Toast.makeText(appContext,
+            appContext.getString(R.string.toast_custom_list_has_been_saved, savedListName),
             Toast.LENGTH_SHORT).show()
     }
     val showToastClearDataPackageExclude: (String) -> Unit = { packageName ->
-        Toast.makeText(context,
-            context.getString(R.string.toast_clear_data_package_exclude, packageName),
+        Toast.makeText(appContext,
+            appContext.getString(R.string.toast_clear_data_package_exclude, packageName),
             Toast.LENGTH_SHORT).show()
     }
 
