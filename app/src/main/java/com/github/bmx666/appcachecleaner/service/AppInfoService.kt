@@ -32,6 +32,7 @@ class AppInfoService : Service() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
                 } else {
+                    @Suppress("DEPRECATION")
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE
                 }
 
