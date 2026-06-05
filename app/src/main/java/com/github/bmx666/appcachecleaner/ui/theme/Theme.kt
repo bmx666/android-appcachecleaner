@@ -307,7 +307,7 @@ fun AppTheme(
             // Get insets controller
             val insetsController = WindowCompat.getInsetsController(window, view)
             // Ensure the status bar is visible
-            insetsController?.isAppearanceLightStatusBars =
+            insetsController.isAppearanceLightStatusBars =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM)
                     !isDarkTheme
                 else
