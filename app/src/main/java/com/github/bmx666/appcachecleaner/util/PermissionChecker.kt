@@ -60,6 +60,7 @@ class PermissionChecker {
                             AppOpsManager.OPSTR_GET_USAGE_STATS,
                             applicationInfo.uid, applicationInfo.packageName)
                     else
+                        @Suppress("DEPRECATION")
                         appOpsManager.unsafeCheckOpNoThrow(
                             AppOpsManager.OPSTR_GET_USAGE_STATS,
                             applicationInfo.uid, applicationInfo.packageName)
