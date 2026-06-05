@@ -2,7 +2,6 @@ package com.github.bmx666.appcachecleaner.ui.theme
 
 import android.app.Activity
 import android.os.Build
-import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -302,8 +301,12 @@ fun AppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Set status bar color
-            window.statusBarColor = colorScheme.primary.toArgb()
+            // statusBarColor is deprecated/ignored on API 35+ (edge-to-edge default).
+            // Still honored below 35, so apply only there.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                @Suppress("DEPRECATION")
+                window.statusBarColor = colorScheme.primary.toArgb()
+            }
             // Get insets controller
             val insetsController = WindowCompat.getInsetsController(window, view)
             // Ensure the status bar is visible
@@ -312,8 +315,6 @@ fun AppTheme(
                     !isDarkTheme
                 else
                     isDarkTheme
-            // Make sure system UI visibility flags are not hiding the status bar
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
     }
 
