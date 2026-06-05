@@ -44,7 +44,7 @@ fun CenterAlignedTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
         navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
