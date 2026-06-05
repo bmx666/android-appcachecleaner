@@ -102,9 +102,6 @@ dependencies {
     implementation(libs.datastore.core)
     implementation(libs.datastore.preferences)
 
-    implementation(libs.room.runtime)
-    ksp(libs.androidx.room.compiler)
-
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.compiler)
     ksp(libs.dagger.hilt.compiler)
