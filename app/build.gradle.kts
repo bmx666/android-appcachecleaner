@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
@@ -5,65 +7,66 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
-android {
-    namespace = "com.github.bmx666.appcachecleaner"
-
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
-
-    signingConfigs {
-        create("release") {
-            keyAlias = "AppCacheCleaner"
-            keyPassword = "AppCacheCleaner"
-            storeFile = file("AppCacheCleaner.jks")
-            storePassword = "AppCacheCleaner"
-        }
-    }
-
-    defaultConfig {
-        applicationId = "com.github.bmx666.appcachecleaner"
-        minSdk = 23
-        targetSdk = 36
-        versionCode = 108
-        versionName = "2.2.10"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            isDebuggable = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("release")
-        }
-        debug {
-            isDebuggable = true
-            applicationIdSuffix = ".debug"
-        }
-    }
-    bundle {
-        storeArchive {
-            enable = false
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-    buildFeatures {
-        buildConfig = true
-        compose = true
-        viewBinding = true
-    }
-}
-
 kotlin {
-    jvmToolchain(21)
+    android {
+        namespace = "com.github.bmx666.appcachecleaner"
+        compileSdk {
+            version = release(libs.versions.android.compileSdk.version.get().toInt()) {
+                minorApiLevel = libs.versions.android.compileSdk.minorApiLevel.get().toInt()
+            }
+        }
+
+        signingConfigs {
+            create("release") {
+                keyAlias = "AppCacheCleaner"
+                keyPassword = "AppCacheCleaner"
+                storeFile = file("AppCacheCleaner.jks")
+                storePassword = "AppCacheCleaner"
+            }
+        }
+
+        defaultConfig {
+            applicationId = "com.github.bmx666.appcachecleaner"
+            minSdk = libs.versions.android.minSdk.get().toInt()
+
+            versionCode = 108
+            versionName = "2.2.10"
+
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+        buildTypes {
+            release {
+                isDebuggable = false
+                proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+                )
+                signingConfig = signingConfigs.getByName("release")
+            }
+            debug {
+                isDebuggable = true
+                applicationIdSuffix = ".debug"
+            }
+        }
+        bundle {
+            storeArchive {
+                enable = false
+            }
+        }
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
+        }
+        buildFeatures {
+            buildConfig = true
+            compose = true
+            viewBinding = true
+        }
+    }
+
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+    }
 }
 
 composeCompiler {
@@ -105,6 +108,8 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.compiler)
     ksp(libs.dagger.hilt.compiler)
+    // Upgrade metadata lib on KSP classpath so Dagger reads Kotlin 2.3 metadata (v2.4.0).
+    ksp(libs.kotlin.metadata.jvm)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
 
