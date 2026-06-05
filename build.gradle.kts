@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
-    id("com.autonomousapps.dependency-analysis") version "3.6.1"
+    id("com.autonomousapps.dependency-analysis") version "3.14.1"
 }
 
 allprojects {
