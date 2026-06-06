@@ -27,14 +27,21 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction1
 
 class AccessibilityClearManager {
 
-    private val ioScope = CoroutineScope(Dispatchers.IO)
+    // SupervisorJob so one failed child does not tear down the scope. Recreatable:
+    // destroy() cancels it on service teardown, and clearCacheApp/clearDataApp revive
+    // it because this manager is a static singleton reused across service rebinds.
+    private fun newScope() = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var ioScope = newScope()
     // main job that starts and finish cache clean process of all packages
     private var mainJob: Job? = null
     // package job that starts and finish for one package
@@ -150,6 +157,8 @@ class AccessibilityClearManager {
                       performBack: () -> Boolean,
                       openAppInfo: KFunction1<String, Unit>,
                       finish: (String?, String?) -> Unit) {
+        // Revive scope if a prior destroy() cancelled it (static singleton reuse).
+        if (!ioScope.isActive) ioScope = newScope()
         accessibilityJob?.cancel(CANCEL_INIT)
         packageJob?.cancel(CANCEL_INIT)
         mainJob?.cancel(CANCEL_INIT)
@@ -239,6 +248,8 @@ class AccessibilityClearManager {
                      performBack: () -> Boolean,
                      openAppInfo: KFunction1<String, Unit>,
                      finish: (String?, String?) -> Unit) {
+        // Revive scope if a prior destroy() cancelled it (static singleton reuse).
+        if (!ioScope.isActive) ioScope = newScope()
         accessibilityJob?.cancel(CANCEL_INIT)
         packageJob?.cancel(CANCEL_INIT)
         mainJob?.cancel(CANCEL_INIT)
@@ -383,6 +394,13 @@ class AccessibilityClearManager {
         waitAccessibilityJob?.cancel(CANCEL_IGNORE)
         waitNextAppJob?.cancel(CANCEL_IGNORE)
         goBackJob?.cancel(CANCEL_IGNORE)
+    }
+
+    // Service teardown hook: stop in-flight work and cancel the scope so no coroutine
+    // outlives the service. Scope is revived on the next clearCacheApp/clearDataApp.
+    fun destroy() {
+        interruptBySystem()
+        ioScope.cancel()
     }
 
     private suspend fun doGoBack(performBack: () -> Boolean) {
