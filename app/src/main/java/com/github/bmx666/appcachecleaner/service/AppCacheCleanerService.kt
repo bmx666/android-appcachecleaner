@@ -86,7 +86,6 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
             val pkgListSize = pkgList.size
             serviceScope.launch {
                 val context = this@AppCacheCleanerService.applicationContext
-                accessibilityClearManager.setClearTypeClearCache()
                 accessibilityClearManager.setSettings(context)
                 accessibilityClearManager.clearCacheApp(
                     pkgList,
@@ -111,7 +110,6 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
             val pkgListSize = pkgList.size
             serviceScope.launch {
                 val context = this@AppCacheCleanerService.applicationContext
-                accessibilityClearManager.setClearTypeClearData()
                 accessibilityClearManager.setSettings(context)
                 accessibilityClearManager.clearDataApp(
                     pkgList,
