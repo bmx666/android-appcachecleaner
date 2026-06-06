@@ -1,7 +1,6 @@
 [versions]
 annotation = "1.10.0"
 appcompat = "1.7.1"
-localbroadcastmanager = "1.1.0"
 
 material = "1.14.0"
 timber = "5.0.1"
@@ -38,7 +37,6 @@ android-minSdk = "23"
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-androidx-localbroadcastmanager = { group = "androidx.localbroadcastmanager", name = "localbroadcastmanager", version.ref = "localbroadcastmanager" }
 
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
