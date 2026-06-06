@@ -18,6 +18,12 @@ object PlaceholderContent {
 
     object All {
         internal val items by lazy { mutableListOf<PlaceholderPackage>() }
+        // Name -> package index. Holds the SAME objects as items, kept in strict 1:1
+        // sync: add() is the only structural mutation in All (no remove/clear), and it
+        // is idempotent (first-wins), so a name maps to exactly one items entry. Field
+        // mutations through either view are visible in both. Guarded by the shared mutex
+        // like items. Turns per-name lookups from O(N) find to O(1).
+        private val index by lazy { hashMapOf<String, PlaceholderPackage>() }
 
         suspend fun reset() = mutex.withLock {
             items.forEach {
@@ -28,58 +34,65 @@ object PlaceholderContent {
         }
 
         suspend fun contains(pkgInfo: PackageInfo): Boolean = mutex.withLock {
-            items.any { it.name == pkgInfo.packageName }
+            index.containsKey(pkgInfo.packageName)
         }
 
         suspend fun add(pkgInfo: PackageInfo, label: String, locale: Locale,
                     stats: StorageStats?) = mutex.withLock {
-            items.add(
-                PlaceholderPackage(
-                    pkgInfo = pkgInfo,
-                    name = pkgInfo.packageName,
-                    label = label,
-                    locale = locale,
-                    stats = stats,
-                    visible = true,
-                    checked = false,
-                    ignore = false))
+            // Idempotent + first-wins: never create a second items entry for a name
+            // already present. Keeps items and index in exact 1:1 sync even if the
+            // package source yields duplicate names (multi-profile / cloned apps), so
+            // updateStats/updateLabel via index[name] always hit the one displayed obj.
+            if (index.containsKey(pkgInfo.packageName))
+                return@withLock
+            val pkg = PlaceholderPackage(
+                pkgInfo = pkgInfo,
+                name = pkgInfo.packageName,
+                label = label,
+                locale = locale,
+                stats = stats,
+                visible = true,
+                checked = false,
+                ignore = false)
+            items.add(pkg)
+            index[pkg.name] = pkg
             Unit
         }
 
         suspend fun updateStats(pkgInfo: PackageInfo, stats: StorageStats?) = mutex.withLock {
-            items.find { it.name == pkgInfo.packageName }?.let {
+            index[pkgInfo.packageName]?.let {
                 it.stats = stats; it.ignore = false
             }
             Unit
         }
 
         suspend fun isSameLabelLocale(pkgInfo: PackageInfo, locale: Locale): Boolean = mutex.withLock {
-            items.find { it.name == pkgInfo.packageName }?.let {
+            index[pkgInfo.packageName]?.let {
                 return@withLock it.locale == locale
             } ?: return@withLock false
         }
 
         suspend fun isLabelAsPackageName(pkgInfo: PackageInfo): Boolean = mutex.withLock {
-            items.find { it.name == pkgInfo.packageName }?.let {
+            index[pkgInfo.packageName]?.let {
                 return@withLock it.label == pkgInfo.packageName
             } ?: return@withLock false
         }
 
         suspend fun updateLabel(pkgInfo: PackageInfo, label: String, locale: Locale) = mutex.withLock {
-            items.find { it.name == pkgInfo.packageName }?.let {
+            index[pkgInfo.packageName]?.let {
                 it.label = label; it.locale = locale; it.ignore = false
             }
             Unit
         }
 
         suspend fun check(packageName: String, checked: Boolean) = mutex.withLock {
-            items.filter { it.name == packageName }.forEach { it.checked = checked }
+            // O(1) single-row toggle via index; 1:1 sync guarantees one obj per name.
+            index[packageName]?.let { it.checked = checked }
+            Unit
         }
 
         suspend fun check(list: Set<String>) = mutex.withLock {
-            items.forEach { it.name
-                it.checked = list.contains(it.name)
-            }
+            items.forEach { it.checked = list.contains(it.name) }
         }
 
         suspend fun checkVisible() = mutex.withLock {
