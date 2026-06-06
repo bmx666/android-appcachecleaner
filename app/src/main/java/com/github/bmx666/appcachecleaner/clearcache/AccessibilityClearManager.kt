@@ -72,20 +72,18 @@ class AccessibilityClearManager {
     // to avoid spamming by Jetpack recomposition
     private var lastNodeState: NodeState? = null
 
-    private enum class ClearType {
-        CLEAR_CACHE,
-        CLEAR_DATA,
+    // Explicit clear-run state machine (was nullable ClearType enum). Set at clearApp
+    // entry, reset to Idle when the run ends. `logTag` labels debug logs per type.
+    // @Volatile: written on caller thread (service Main) + reset on ioScope (IO),
+    // read in checkEvent on the accessibility Main thread -> needs a memory barrier.
+    private sealed class ClearState(val logTag: String) {
+        object Idle : ClearState("idle")
+        object ClearingCache : ClearState("clearCacheApp")
+        object ClearingData : ClearState("clearDataApp")
     }
 
-    private var clearType: ClearType? = null
-
-    fun setClearTypeClearCache() {
-        clearType = ClearType.CLEAR_CACHE
-    }
-
-    fun setClearTypeClearData() {
-        clearType = ClearType.CLEAR_DATA
-    }
+    @Volatile
+    private var clearState: ClearState = ClearState.Idle
 
     suspend fun setSettings(@ApplicationContext context: Context) {
         val userPrefScenarioManager = UserPrefScenarioManager(context)
@@ -161,25 +159,27 @@ class AccessibilityClearManager {
                       performBack: () -> Boolean,
                       openAppInfo: KFunction1<String, Unit>,
                       finish: (String?, String?) -> Unit) =
-        clearApp("clearCacheApp", pkgList, updatePosition, performBack, openAppInfo, finish)
+        clearApp(ClearState.ClearingCache, pkgList, updatePosition, performBack, openAppInfo, finish)
 
     fun clearDataApp(pkgList: ArrayList<String>,
                      updatePosition: (Int) -> Unit,
                      performBack: () -> Boolean,
                      openAppInfo: KFunction1<String, Unit>,
                      finish: (String?, String?) -> Unit) =
-        clearApp("clearDataApp", pkgList, updatePosition, performBack, openAppInfo, finish)
+        clearApp(ClearState.ClearingData, pkgList, updatePosition, performBack, openAppInfo, finish)
 
     // Per-package lifecycle driver: open AppInfo -> wait first event -> timeout ->
     // go back -> next. Type-agnostic; cache-vs-data branching is dispatched out via
-    // checkEvent -> clearType -> scenario.doClearCache/doClearData. `tag` only labels
-    // debug logs. Caller must set clearType (setClearTypeClearCache/Data) beforehand.
-    private fun clearApp(tag: String,
+    // checkEvent -> clearState -> scenario.doClearCache/doClearData. `state` sets the
+    // run type (own log tag) and is reset to Idle when the run ends.
+    private fun clearApp(state: ClearState,
                          pkgList: ArrayList<String>,
                          updatePosition: (Int) -> Unit,
                          performBack: () -> Boolean,
                          openAppInfo: KFunction1<String, Unit>,
                          finish: (String?, String?) -> Unit) {
+        val tag = state.logTag
+        clearState = state
         // Revive scope if a prior destroy() cancelled it (static singleton reuse).
         if (!ioScope.isActive) ioScope = newScope()
         accessibilityJob?.cancel(CANCEL_INIT)
@@ -261,8 +261,8 @@ class AccessibilityClearManager {
                     else -> finish(e.message, currentPkg)
                 }
             }
-            // force clear type to avoid misbehavior
-            clearType = null
+            // reset state so stray events after the run cannot dispatch into a scenario
+            clearState = ClearState.Idle
         }
     }
 
@@ -296,13 +296,11 @@ class AccessibilityClearManager {
                     Logger.d("===>>> TREE END <<<===")
                 }
 
-                when (clearType) {
-                    ClearType.CLEAR_CACHE -> doAccessibilityEventClearCache(nodeInfo)
-                    ClearType.CLEAR_DATA -> doAccessibilityEventClearData(nodeInfo)
-                    else -> {
-                        // interrupt misbehavior
-                        interruptBySystem()
-                    }
+                when (clearState) {
+                    ClearState.ClearingCache -> doAccessibilityEventClearCache(nodeInfo)
+                    ClearState.ClearingData -> doAccessibilityEventClearData(nodeInfo)
+                    // event during active run but no type -> misbehavior, interrupt
+                    ClearState.Idle -> interruptBySystem()
                 }
             }
         }
