@@ -1,5 +1,6 @@
 package com.github.bmx666.appcachecleaner.ui.viewmodel
 
+import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build
@@ -20,6 +21,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,8 +32,15 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.springframework.util.unit.DataSize
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
+
+// Package metadata (stats + label) is IPC-bound, not CPU-bound, so a small fixed
+// pool overlaps PackageManager/StorageStats round trips without flooding binder.
+private const val METADATA_FETCH_CONCURRENCY = 32
 
 @HiltViewModel
 class PackageListViewModel @Inject constructor(
@@ -43,6 +54,15 @@ class PackageListViewModel @Inject constructor(
         BY_SIZE,
         BY_LABEL,
     }
+
+    // `exists` = already in PlaceholderContent.All; `label` null = existing entry
+    // whose label needs no refresh.
+    private data class FetchedPackage(
+        val pkgInfo: PackageInfo,
+        val exists: Boolean,
+        val stats: StorageStats?,
+        val label: String?,
+    )
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -373,46 +393,69 @@ class PackageListViewModel @Inject constructor(
 
         PlaceholderContent.All.reset()
 
-        pkgList.forEachIndexed { index, pkgInfo ->
-            updateProgress(index, total)
+        // Fetch per-package stats + label in parallel, then mutate
+        // PlaceholderContent serially. The parallel pass only READS
+        // PlaceholderContent (contains/isLabelAsPackageName/isSameLabelLocale) and
+        // never mutates it, so existence + label-fetch decisions stay stable across
+        // tasks. Insertion order is irrelevant: the list is sorted afterwards by
+        // getFiltered*/getSorted*. Heavy IO runs outside the PlaceholderContent mutex.
+        val semaphore = Semaphore(METADATA_FETCH_CONCURRENCY)
+        val progress = AtomicInteger(0)
 
-            // skip disabled app
-            if (hideDisabledApps == true &&
-                (pkgInfo.applicationInfo?.enabled == false))
-                return@forEachIndexed
+        val fetched = coroutineScope {
+            pkgList.map { pkgInfo ->
+                async {
+                    // skip disabled app
+                    if (hideDisabledApps == true &&
+                        (pkgInfo.applicationInfo?.enabled == false))
+                        return@async null
 
-            if (hideIgnoredApps == true &&
-                listOfIgnoredApps?.contains(pkgInfo.packageName) == true)
-                return@forEachIndexed
+                    if (hideIgnoredApps == true &&
+                        listOfIgnoredApps?.contains(pkgInfo.packageName) == true)
+                        return@async null
 
-            if (hideUncheckedApps == true &&
-                checkedPkgList?.contains(pkgInfo.packageName) == false)
-                return@forEachIndexed
+                    if (hideUncheckedApps == true &&
+                        checkedPkgList?.contains(pkgInfo.packageName) == false)
+                        return@async null
 
-            val stats =
-                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)  && requestStats)
-                    PackageManagerHelper.getStorageStats(context, pkgInfo)
-                else
-                    null
+                    semaphore.withPermit {
+                        val stats =
+                            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && requestStats)
+                                PackageManagerHelper.getStorageStats(context, pkgInfo)
+                            else
+                                null
 
-            if (PlaceholderContent.All.contains(pkgInfo)) {
-                PlaceholderContent.All.updateStats(pkgInfo, stats)
-                if (requestLabel) {
-                    if (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
-                        !PlaceholderContent.All.isSameLabelLocale(pkgInfo, currentLocale)) {
-                        val label = PackageManagerHelper.getApplicationLabel(context, pkgInfo)
-                        PlaceholderContent.All.updateLabel(pkgInfo, label, currentLocale)
+                        val exists = PlaceholderContent.All.contains(pkgInfo)
+                        // null label => existing entry whose label needs no refresh.
+                        val label: String? =
+                            if (!exists) {
+                                if (requestLabel)
+                                    PackageManagerHelper.getApplicationLabel(context, pkgInfo)
+                                else
+                                    pkgInfo.packageName
+                            } else if (requestLabel &&
+                                (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
+                                 !PlaceholderContent.All.isSameLabelLocale(pkgInfo, currentLocale))) {
+                                PackageManagerHelper.getApplicationLabel(context, pkgInfo)
+                            } else {
+                                null
+                            }
+
+                        FetchedPackage(pkgInfo, exists, stats, label)
+                    }.also {
+                        updateProgress(progress.incrementAndGet(), total)
                     }
                 }
-            } else {
-                val label =
-                    if (requestLabel) {
-                        PackageManagerHelper.getApplicationLabel(context, pkgInfo)
-                    } else {
-                        pkgInfo.packageName
-                    }
+            }.awaitAll().filterNotNull()
+        }
 
-                PlaceholderContent.All.add(pkgInfo, label, currentLocale, stats)
+        fetched.forEach { f ->
+            if (f.exists) {
+                PlaceholderContent.All.updateStats(f.pkgInfo, f.stats)
+                f.label?.let { PlaceholderContent.All.updateLabel(f.pkgInfo, it, currentLocale) }
+            } else {
+                PlaceholderContent.All.add(
+                    f.pkgInfo, f.label ?: f.pkgInfo.packageName, currentLocale, f.stats)
             }
         }
 
