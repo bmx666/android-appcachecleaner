@@ -1,44 +1,44 @@
 package com.github.bmx666.appcachecleaner.util
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.service.AppInfoService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 
 abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 
-    abstract class Callback {
-        open fun onReceive(context: Context?, intent: Intent?) {}
-    }
+    /** Handle an event delivered on the main thread. */
+    protected abstract fun onEvent(event: AppEvent)
 
-    private val internalBroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            localBroadcastReceiver.onReceive(context, intent)
+    // Main-thread scope so callbacks run where the old BroadcastReceiver did.
+    private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    private var collectJob: Job? = null
+
+    protected fun register() {
+        collectJob = scope.launch {
+            AppEventBus.events.collect { onEvent(it) }
         }
     }
 
-    private val localBroadcastManager = LocalBroadcastManager.getInstance(context)
-    protected abstract val localBroadcastReceiver: Callback
-    protected abstract val intentFilter: IntentFilter
-
-    protected fun register() {
-        localBroadcastManager.registerReceiver(internalBroadcastReceiver, intentFilter)
-    }
-
     fun onDestroy() {
-        localBroadcastManager.unregisterReceiver(internalBroadcastReceiver)
+        collectJob?.cancel()
+        collectJob = null
+        scope.cancel()
     }
 
-    fun sendBroadcast(intent: Intent) {
-        localBroadcastManager.sendBroadcast(intent)
+    fun sendBroadcast(event: AppEvent) {
+        AppEventBus.emit(event)
     }
 }
 
@@ -50,67 +50,44 @@ interface IIntentActivityCallback {
 
 class LocalBroadcastManagerActivityHelper(
     context: Context,
-    callback: IIntentActivityCallback): BaseLocalBroadcastManagerHelper(context) {
+    private val callback: IIntentActivityCallback): BaseLocalBroadcastManagerHelper(context) {
 
-    override val localBroadcastReceiver = object : Callback() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                Constant.Intent.AppInfo.ACTION -> {
-                    val pkgName = intent.getStringExtra(
-                        Constant.Intent.AppInfo.NAME_PACKAGE_NAME
-                    )
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Activity] AppInfo: package name = $pkgName")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        val serviceIntent = Intent(
-                            this@LocalBroadcastManagerActivityHelper.context,
-                            AppInfoService::class.java).apply {
-                            putExtra(
-                                Constant.Intent.AppInfo.NAME_PACKAGE_NAME,
-                                pkgName)
-                        }
-                        ContextCompat.startForegroundService(
-                            this@LocalBroadcastManagerActivityHelper.context,
-                            serviceIntent)
-                    } else {
-                        ActivityHelper.startApplicationDetailsActivity(
-                            this@LocalBroadcastManagerActivityHelper.context,
-                            pkgName
-                        )
+    override fun onEvent(event: AppEvent) {
+        when (event) {
+            is AppEvent.AppInfo -> {
+                val pkgName = event.packageName
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Activity] AppInfo: package name = $pkgName")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    val serviceIntent = Intent(
+                        context,
+                        AppInfoService::class.java).apply {
+                        putExtra(
+                            Constant.Intent.AppInfo.NAME_PACKAGE_NAME,
+                            pkgName)
                     }
-                }
-                Constant.Intent.ClearCacheFinish.ACTION -> {
-                    val message = intent.getStringExtra(
-                        Constant.Intent.ClearCacheFinish.NAME_MESSAGE)
-                    val pkgName = intent.getStringExtra(
-                        Constant.Intent.ClearCacheFinish.NAME_PACKAGE_NAME)
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Activity] ClearCacheFinish: message = $message, pkgName = $pkgName")
-                    callback.onClearCacheFinish(message)
-                }
-                Constant.Intent.ClearDataFinish.ACTION -> {
-                    val message = intent.getStringExtra(
-                        Constant.Intent.ClearDataFinish.NAME_MESSAGE)
-                    val pkgName = intent.getStringExtra(
-                        Constant.Intent.ClearDataFinish.NAME_PACKAGE_NAME)
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Activity] ClearDataFinish: message = $message, pkgName = $pkgName")
-                    callback.onClearDataFinish(message)
-                }
-                Constant.Intent.StopAccessibilityServiceFeedback.ACTION -> {
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Activity] StopAccessibilityServiceFeedback")
-                    callback.onStopAccessibilityServiceFeedback()
+                    ContextCompat.startForegroundService(context, serviceIntent)
+                } else {
+                    ActivityHelper.startApplicationDetailsActivity(context, pkgName)
                 }
             }
+            is AppEvent.ClearCacheFinish -> {
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Activity] ClearCacheFinish: message = ${event.message}, pkgName = ${event.packageName}")
+                callback.onClearCacheFinish(event.message)
+            }
+            is AppEvent.ClearDataFinish -> {
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Activity] ClearDataFinish: message = ${event.message}, pkgName = ${event.packageName}")
+                callback.onClearDataFinish(event.message)
+            }
+            AppEvent.StopAccessibilityServiceFeedback -> {
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Activity] StopAccessibilityServiceFeedback")
+                callback.onStopAccessibilityServiceFeedback()
+            }
+            else -> Unit
         }
-    }
-
-    override val intentFilter = IntentFilter().apply {
-        addAction(Constant.Intent.AppInfo.ACTION)
-        addAction(Constant.Intent.ClearCacheFinish.ACTION)
-        addAction(Constant.Intent.ClearDataFinish.ACTION)
-        addAction(Constant.Intent.StopAccessibilityServiceFeedback.ACTION)
     }
 
     init {
@@ -124,7 +101,7 @@ class LocalBroadcastManagerActivityHelper(
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
             ActivityHelper.showAccessibilitySettings(context)
         else
-            sendBroadcast(Intent(Constant.Intent.StopAccessibilityService.ACTION))
+            sendBroadcast(AppEvent.StopAccessibilityService)
     }
 
     fun sendPackageListToClearCache(pkgList: ArrayList<String>) {
@@ -134,11 +111,7 @@ class LocalBroadcastManagerActivityHelper(
                 Logger.d("[Activity] sendPackageListToClearCache: package name = $it")
             }
         }
-        sendBroadcast(
-            Intent(Constant.Intent.ClearCache.ACTION).apply {
-                putStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST, pkgList)
-            }
-        )
+        sendBroadcast(AppEvent.ClearCache(pkgList))
     }
 
     fun sendPackageListToClearData(pkgList: ArrayList<String>) {
@@ -148,11 +121,7 @@ class LocalBroadcastManagerActivityHelper(
                 Logger.d("[Activity] sendPackageListToClearData: package name = $it")
             }
         }
-        sendBroadcast(
-            Intent(Constant.Intent.ClearData.ACTION).apply {
-                putStringArrayListExtra(Constant.Intent.ClearData.NAME_PACKAGE_LIST, pkgList)
-            }
-        )
+        sendBroadcast(AppEvent.ClearData(pkgList))
     }
 }
 
@@ -179,60 +148,49 @@ data class IntentSettings(
 
 class LocalBroadcastManagerServiceHelper(
     context: Context,
-    callback: IIntentServiceCallback): BaseLocalBroadcastManagerHelper(context) {
+    private val callback: IIntentServiceCallback): BaseLocalBroadcastManagerHelper(context) {
 
-    override val localBroadcastReceiver = object : Callback() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                Constant.Intent.StopAccessibilityService.ACTION -> {
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Service] StopAccessibilityService")
-                    // send back to Activity - service was stopped
-                    sendBroadcast(Intent(Constant.Intent.StopAccessibilityServiceFeedback.ACTION))
-                    callback.onStopAccessibilityService()
-                }
-                Constant.Intent.ClearCache.ACTION -> {
-                    val pkgList =
-                        intent.getStringArrayListExtra(Constant.Intent.ClearCache.NAME_PACKAGE_LIST)
-                    if (BuildConfig.DEBUG) {
-                        Logger.d("[Service] ClearCache")
-                        pkgList?.forEach {
-                            Logger.d("[Service] ClearCache: package name = $it")
-                        }
-                    }
-                    callback.onClearCache(pkgList)
-                }
-                Constant.Intent.ClearCacheFinish.ACTION -> {
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Service] ClearCacheFinish")
-                    callback.onClearCacheFinish()
-                }
-                Constant.Intent.ClearData.ACTION -> {
-                    val pkgList =
-                        intent.getStringArrayListExtra(Constant.Intent.ClearData.NAME_PACKAGE_LIST)
-                    if (BuildConfig.DEBUG) {
-                        Logger.d("[Service] ClearData")
-                        pkgList?.forEach {
-                            Logger.d("[Service] ClearData: package name = $it")
-                        }
-                    }
-                    callback.onClearData(pkgList)
-                }
-                Constant.Intent.ClearDataFinish.ACTION -> {
-                    if (BuildConfig.DEBUG)
-                        Logger.d("[Service] CleanDataFinish")
-                    callback.onClearDataFinish()
-                }
+    override fun onEvent(event: AppEvent) {
+        when (event) {
+            AppEvent.StopAccessibilityService -> {
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Service] StopAccessibilityService")
+                // send back to Activity - service was stopped
+                sendBroadcast(AppEvent.StopAccessibilityServiceFeedback)
+                callback.onStopAccessibilityService()
             }
+            is AppEvent.ClearCache -> {
+                val pkgList = event.packageList
+                if (BuildConfig.DEBUG) {
+                    Logger.d("[Service] ClearCache")
+                    pkgList?.forEach {
+                        Logger.d("[Service] ClearCache: package name = $it")
+                    }
+                }
+                callback.onClearCache(pkgList)
+            }
+            is AppEvent.ClearCacheFinish -> {
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Service] ClearCacheFinish")
+                callback.onClearCacheFinish()
+            }
+            is AppEvent.ClearData -> {
+                val pkgList = event.packageList
+                if (BuildConfig.DEBUG) {
+                    Logger.d("[Service] ClearData")
+                    pkgList?.forEach {
+                        Logger.d("[Service] ClearData: package name = $it")
+                    }
+                }
+                callback.onClearData(pkgList)
+            }
+            is AppEvent.ClearDataFinish -> {
+                if (BuildConfig.DEBUG)
+                    Logger.d("[Service] CleanDataFinish")
+                callback.onClearDataFinish()
+            }
+            else -> Unit
         }
-    }
-
-    override val intentFilter = IntentFilter().apply {
-        addAction(Constant.Intent.StopAccessibilityService.ACTION)
-        addAction(Constant.Intent.ClearCache.ACTION)
-        addAction(Constant.Intent.ClearCacheFinish.ACTION)
-        addAction(Constant.Intent.ClearData.ACTION)
-        addAction(Constant.Intent.ClearDataFinish.ACTION)
     }
 
     init {
@@ -242,42 +200,20 @@ class LocalBroadcastManagerServiceHelper(
     fun sendAppInfo(pkgName: String) {
         if (BuildConfig.DEBUG)
             Logger.d("[Service] sendAppInfo: package name = $pkgName")
-        sendBroadcast(
-            Intent(Constant.Intent.AppInfo.ACTION).apply {
-                putExtra(Constant.Intent.AppInfo.NAME_PACKAGE_NAME, pkgName)
-            }
-        )
+        sendBroadcast(AppEvent.AppInfo(pkgName))
     }
 
     fun sendFinishClearCache(message: String?,
                    pkgName: String?) {
         if (BuildConfig.DEBUG)
             Logger.d("[Service] sendFinishClearCache: message = $message, pkgName = $pkgName")
-        sendBroadcast(
-            Intent(Constant.Intent.ClearCacheFinish.ACTION).apply {
-                putExtra(
-                    Constant.Intent.ClearCacheFinish.NAME_MESSAGE,
-                    message)
-                putExtra(
-                    Constant.Intent.ClearCacheFinish.NAME_PACKAGE_NAME,
-                    pkgName)
-            }
-        )
+        sendBroadcast(AppEvent.ClearCacheFinish(message, pkgName))
     }
 
     fun sendFinishClearData(message: String?,
                              pkgName: String?) {
         if (BuildConfig.DEBUG)
             Logger.d("[Service] sendFinishClearData: message = $message, pkgName = $pkgName")
-        sendBroadcast(
-            Intent(Constant.Intent.ClearDataFinish.ACTION).apply {
-                putExtra(
-                    Constant.Intent.ClearDataFinish.NAME_MESSAGE,
-                    message)
-                putExtra(
-                    Constant.Intent.ClearDataFinish.NAME_PACKAGE_NAME,
-                    pkgName)
-            }
-        )
+        sendBroadcast(AppEvent.ClearDataFinish(message, pkgName))
     }
 }
