@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -47,7 +48,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     override fun onUnbind(intent: Intent?): Boolean {
         accessibilityOverlay.hide(this)
-        accessibilityClearManager.interruptBySystem()
+        // destroy() interrupts in-flight work and cancels the manager IO scope.
+        accessibilityClearManager.destroy()
         localBroadcastManager.onDestroy()
         return super.onUnbind(intent)
     }
@@ -55,6 +57,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
     override fun onDestroy() {
         if (BuildConfig.DEBUG)
             logger.onDestroy()
+        // Cancel the service scope so launched coroutines do not outlive the service.
+        serviceScope.cancel()
         super.onDestroy()
     }
 
