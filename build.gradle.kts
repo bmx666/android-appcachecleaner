@@ -14,6 +14,7 @@ allprojects {
 
 buildscript {
     dependencies {
+        //classpath("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.20")
         classpath(libs.hilt.gradle.plugin)
     }
 }
