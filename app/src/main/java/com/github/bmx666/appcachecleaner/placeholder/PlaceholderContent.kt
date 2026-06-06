@@ -5,14 +5,21 @@ import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.bmx666.appcachecleaner.util.getInternalCacheSize
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.Locale
 
 object PlaceholderContent {
 
+    // Single shared lock guards both All.items and Current.items. Mutex is NOT
+    // reentrant: only leaf accessors lock; dispatch-only fns (getSorted) must not,
+    // or a fn locking then calling another locked fn would deadlock.
+    private val mutex = Mutex()
+
     object All {
         internal val items by lazy { mutableListOf<PlaceholderPackage>() }
 
-        suspend fun reset() {
+        suspend fun reset() = mutex.withLock {
             items.forEach {
                 it.ignore = true
                 it.visible = true
@@ -20,12 +27,12 @@ object PlaceholderContent {
             }
         }
 
-        suspend fun contains(pkgInfo: PackageInfo): Boolean {
-            return items.any { it.name == pkgInfo.packageName }
+        suspend fun contains(pkgInfo: PackageInfo): Boolean = mutex.withLock {
+            items.any { it.name == pkgInfo.packageName }
         }
 
         suspend fun add(pkgInfo: PackageInfo, label: String, locale: Locale,
-                    stats: StorageStats?) {
+                    stats: StorageStats?) = mutex.withLock {
             items.add(
                 PlaceholderPackage(
                     pkgInfo = pkgInfo,
@@ -36,55 +43,59 @@ object PlaceholderContent {
                     visible = true,
                     checked = false,
                     ignore = false))
+            Unit
         }
 
-        suspend fun updateStats(pkgInfo: PackageInfo, stats: StorageStats?) {
+        suspend fun updateStats(pkgInfo: PackageInfo, stats: StorageStats?) = mutex.withLock {
             items.find { it.name == pkgInfo.packageName }?.let {
                 it.stats = stats; it.ignore = false
             }
+            Unit
         }
 
-        suspend fun isSameLabelLocale(pkgInfo: PackageInfo, locale: Locale): Boolean {
+        suspend fun isSameLabelLocale(pkgInfo: PackageInfo, locale: Locale): Boolean = mutex.withLock {
             items.find { it.name == pkgInfo.packageName }?.let {
-                return it.locale == locale
-            } ?: return false
+                return@withLock it.locale == locale
+            } ?: return@withLock false
         }
 
-        suspend fun isLabelAsPackageName(pkgInfo: PackageInfo): Boolean {
+        suspend fun isLabelAsPackageName(pkgInfo: PackageInfo): Boolean = mutex.withLock {
             items.find { it.name == pkgInfo.packageName }?.let {
-                return it.label == pkgInfo.packageName
-            } ?: return false
+                return@withLock it.label == pkgInfo.packageName
+            } ?: return@withLock false
         }
 
-        suspend fun updateLabel(pkgInfo: PackageInfo, label: String, locale: Locale) {
+        suspend fun updateLabel(pkgInfo: PackageInfo, label: String, locale: Locale) = mutex.withLock {
             items.find { it.name == pkgInfo.packageName }?.let {
                 it.label = label; it.locale = locale; it.ignore = false
             }
+            Unit
         }
 
-        suspend fun check(packageName: String, checked: Boolean) {
+        suspend fun check(packageName: String, checked: Boolean) = mutex.withLock {
             items.filter { it.name == packageName }.forEach { it.checked = checked }
         }
 
-        suspend fun check(list: Set<String>) {
+        suspend fun check(list: Set<String>) = mutex.withLock {
             items.forEach { it.name
                 it.checked = list.contains(it.name)
             }
         }
 
-        suspend fun checkVisible() {
+        suspend fun checkVisible() = mutex.withLock {
             items.filterNot { it.ignore }.filter { it.visible }.forEach { it.checked = true }
         }
 
-        suspend fun uncheckVisible() {
+        suspend fun uncheckVisible() = mutex.withLock {
             items.filterNot { it.ignore }.filter { it.visible }.forEach { it.checked = false }
         }
 
-        suspend fun getChecked(): Set<String> {
-            return items.filter { it.checked }.map { it.name }.toSet()
+        suspend fun getChecked(): Set<String> = mutex.withLock {
+            items.filter { it.checked }.map { it.name }.toSet()
         }
 
         suspend fun getSorted(): List<PlaceholderPackage> {
+            // Dispatch only - delegates lock. Do NOT lock here (non-reentrant Mutex).
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     getSortedByCacheSize()
                 else
@@ -92,33 +103,33 @@ object PlaceholderContent {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        private suspend fun getSortedByCacheSize(): List<PlaceholderPackage> {
-            return items.filterNot { it.ignore }
+        private suspend fun getSortedByCacheSize(): List<PlaceholderPackage> = mutex.withLock {
+            items.filterNot { it.ignore }
                 .onEach { it.visible = true }
                 .sortedWith(compareByDescending<PlaceholderPackage> { it.getCacheSize() }
                     .thenBy { it.label })
         }
 
-        suspend fun getSortedByLabel(): List<PlaceholderPackage> {
-            return items.filterNot { it.ignore }
+        suspend fun getSortedByLabel(): List<PlaceholderPackage> = mutex.withLock {
+            items.filterNot { it.ignore }
                 .onEach { it.visible = true }
                 .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
                     .thenBy { it.label })
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        suspend fun getFilteredByCacheSize(minCacheBytes: Long): List<PlaceholderPackage> {
+        suspend fun getFilteredByCacheSize(minCacheBytes: Long): List<PlaceholderPackage> = mutex.withLock {
             val compareCacheBytes: (cacheBytes: Long?) -> Boolean = { cacheBytes ->
                 cacheBytes?.let { v -> v >= minCacheBytes } ?: false
             }
 
-            return items.filterNot { it.ignore }
+            items.filterNot { it.ignore }
                 .onEach { it.visible = compareCacheBytes(it.getCacheSize()) }
                 .sortedWith(compareByDescending<PlaceholderPackage> { it.getCacheSize() }
                     .thenBy { it.label })
         }
 
-        suspend fun getFilteredByName(text: String): List<PlaceholderPackage> {
+        suspend fun getFilteredByName(text: String): List<PlaceholderPackage> = mutex.withLock {
             val finalText = text.trim().lowercase()
             val finalTextIsNotEmpty = finalText.isNotEmpty()
             val compareLabel: (label: String) -> Boolean = { label ->
@@ -127,7 +138,7 @@ object PlaceholderContent {
                 else true
             }
 
-            return items.filterNot { it.ignore }
+            items.filterNot { it.ignore }
                 .onEach { it.visible = compareLabel(it.label) }
                 .sortedWith(compareBy<PlaceholderPackage> { !it.checked }
                     .thenBy { it.label })
@@ -137,22 +148,24 @@ object PlaceholderContent {
     object Current {
         internal val items by lazy { mutableListOf<PlaceholderPackage>() }
 
-        suspend fun update(list: List<PlaceholderPackage>) {
+        suspend fun update(list: List<PlaceholderPackage>) = mutex.withLock {
             items.clear()
             items.addAll(list)
+            Unit
         }
 
-        suspend fun getVisible(): List<PlaceholderPackage> {
-            return items.filter { it.visible }
+        suspend fun getVisible(): List<PlaceholderPackage> = mutex.withLock {
+            items.filter { it.visible }
         }
 
-        suspend fun getChecked(): List<PlaceholderPackage> {
-            return items.filter { it.checked }
+        suspend fun getChecked(): List<PlaceholderPackage> = mutex.withLock {
+            items.filter { it.checked }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        suspend fun getCheckedTotalCacheSize(): Long {
-            return All.items.filter { it.checked }.sumOf { it.getCacheSize() }
+        suspend fun getCheckedTotalCacheSize(): Long = mutex.withLock {
+            // Reads All.items, so guarded by the same shared mutex.
+            All.items.filter { it.checked }.sumOf { it.getCacheSize() }
         }
     }
 
