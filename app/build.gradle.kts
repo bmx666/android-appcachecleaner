@@ -37,6 +37,8 @@ kotlin {
         buildTypes {
             release {
                 isDebuggable = false
+                isShrinkResources = true
+                isMinifyEnabled = true
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
