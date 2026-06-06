@@ -160,98 +160,26 @@ class AccessibilityClearManager {
                       updatePosition: (Int) -> Unit,
                       performBack: () -> Boolean,
                       openAppInfo: KFunction1<String, Unit>,
-                      finish: (String?, String?) -> Unit) {
-        // Revive scope if a prior destroy() cancelled it (static singleton reuse).
-        if (!ioScope.isActive) ioScope = newScope()
-        accessibilityJob?.cancel(CANCEL_INIT)
-        packageJob?.cancel(CANCEL_INIT)
-        mainJob?.cancel(CANCEL_INIT)
-
-        mainJob = ioScope.launch {
-            var currentPkg: String? = null
-
-            try {
-
-                for ((index, pkg) in pkgList.withIndex()) {
-                    if (BuildConfig.DEBUG)
-                        Logger.d("clearCacheApp: package name = $pkg")
-
-                    currentPkg = pkg
-
-                    updatePosition(index)
-
-                    if (pkg.trim().isEmpty())
-                        continue
-
-                    clearScenario.resetInternalState()
-                    // avoid self force stop
-                    if (currentPkg == selfPackageName)
-                        clearScenario.forceStopTries = 0
-
-                    if (index > 0) {
-                        waitNextAppJob?.cancel(CANCEL_IGNORE)
-                        waitNextAppJob = ioScope.launch {
-                            val timeoutMs = clearScenario.delayForNextAppTimeoutMs.toLong()
-                            delay(timeoutMs)
-                        }
-                        waitNextAppJob?.join()
-                    }
-
-                    if (BuildConfig.DEBUG)
-                        Logger.d("clearCacheApp: open AppInfo of $pkg")
-                    openAppInfo(pkg)
-
-                    // wait cache clean process
-                    packageJob = ioScope.launch {
-                        // wait first Accessibility Event - open AppInfo
-                        waitAccessibilityJob = ioScope.launch {
-                            val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
-                            delay(timeoutMs)
-                            Logger.w("Accessibility Event timeout")
-                        }
-                        waitAccessibilityJob?.join()
-                        // got first Accessibility Event
-                        if (waitAccessibilityJob?.isCancelled == true) {
-                            val timeoutMs = clearScenario.maxWaitAppTimeoutMs.toLong()
-                            delay(timeoutMs)
-                        }
-                    }
-                    packageJob?.join()
-
-                    // timeout, no accessibility events, move to the next app
-                    accessibilityJob?.cancel(CANCEL_IGNORE)
-
-                    updatePosition(index + 1)
-
-                    // got first Accessibility event, need go back
-                    if (waitAccessibilityJob?.isCancelled == true) {
-                        val goBackAfterApps = clearScenario.goBackAfterApps
-                        if (goBackAfterApps > 0) {
-                            // go back after each Nth apps and for the last app
-                            if ((index % goBackAfterApps == 0 && index != 0) or (index == pkgList.size - 1))
-                                doGoBack(performBack)
-                        }
-                    }
-                }
-
-                finish(null, null)
-
-            } catch (e: CancellationException) {
-                when (e.message) {
-                    CANCEL_IGNORE.message, CANCEL_INIT.message -> {}
-                    else -> finish(e.message, currentPkg)
-                }
-            }
-            // force clear type to avoid misbehavior
-            clearType = null
-        }
-    }
+                      finish: (String?, String?) -> Unit) =
+        clearApp("clearCacheApp", pkgList, updatePosition, performBack, openAppInfo, finish)
 
     fun clearDataApp(pkgList: ArrayList<String>,
                      updatePosition: (Int) -> Unit,
                      performBack: () -> Boolean,
                      openAppInfo: KFunction1<String, Unit>,
-                     finish: (String?, String?) -> Unit) {
+                     finish: (String?, String?) -> Unit) =
+        clearApp("clearDataApp", pkgList, updatePosition, performBack, openAppInfo, finish)
+
+    // Per-package lifecycle driver: open AppInfo -> wait first event -> timeout ->
+    // go back -> next. Type-agnostic; cache-vs-data branching is dispatched out via
+    // checkEvent -> clearType -> scenario.doClearCache/doClearData. `tag` only labels
+    // debug logs. Caller must set clearType (setClearTypeClearCache/Data) beforehand.
+    private fun clearApp(tag: String,
+                         pkgList: ArrayList<String>,
+                         updatePosition: (Int) -> Unit,
+                         performBack: () -> Boolean,
+                         openAppInfo: KFunction1<String, Unit>,
+                         finish: (String?, String?) -> Unit) {
         // Revive scope if a prior destroy() cancelled it (static singleton reuse).
         if (!ioScope.isActive) ioScope = newScope()
         accessibilityJob?.cancel(CANCEL_INIT)
@@ -265,7 +193,7 @@ class AccessibilityClearManager {
 
                 for ((index, pkg) in pkgList.withIndex()) {
                     if (BuildConfig.DEBUG)
-                        Logger.d("clearDataApp: package name = $pkg")
+                        Logger.d("$tag: package name = $pkg")
 
                     currentPkg = pkg
 
@@ -289,7 +217,7 @@ class AccessibilityClearManager {
                     }
 
                     if (BuildConfig.DEBUG)
-                        Logger.d("clearDataApp: open AppInfo of $pkg")
+                        Logger.d("$tag: open AppInfo of $pkg")
                     openAppInfo(pkg)
 
                     // wait cache clean process
