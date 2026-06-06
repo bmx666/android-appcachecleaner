@@ -111,7 +111,6 @@ dependencies {
     ksp(libs.dagger.hilt.compiler)
     // Upgrade metadata lib on KSP classpath so Dagger reads Kotlin 2.3 metadata (v2.4.0).
     ksp(libs.kotlin.metadata.jvm)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
 
     implementation(libs.coil.compose)
