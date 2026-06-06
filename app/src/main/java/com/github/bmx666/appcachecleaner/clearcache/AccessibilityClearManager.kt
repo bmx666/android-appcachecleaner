@@ -58,6 +58,10 @@ class AccessibilityClearManager {
 
     private var selfPackageName: String? = null
 
+    // Instance-scoped (was a companion static): per-manager clear scenario, rebuilt by
+    // setSettings(). Keeping it on the instance removes cross-instance/rebind sharing.
+    private var clearScenario: BaseClearScenario = DefaultClearScenario()
+
     private data class NodeState(
         val className: CharSequence?,
         val viewId: CharSequence?,
@@ -486,9 +490,5 @@ class AccessibilityClearManager {
         }
 
         return true
-    }
-
-    companion object {
-        private var clearScenario: BaseClearScenario = DefaultClearScenario()
     }
 }
