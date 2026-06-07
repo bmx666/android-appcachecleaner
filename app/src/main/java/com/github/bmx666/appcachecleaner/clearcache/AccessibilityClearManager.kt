@@ -2,7 +2,6 @@ package com.github.bmx666.appcachecleaner.clearcache
 
 import android.content.Context
 import android.os.Build
-import android.os.ConditionVariable
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
@@ -29,34 +28,51 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.reflect.KFunction1
+import kotlin.time.Duration.Companion.milliseconds
 
 class AccessibilityClearManager {
 
+    // Single coordination scope on Main.immediate: all coordination state below is
+    // confined to the one accessibility main thread (clearApp body, checkEvent producer,
+    // doGoBack), so the fields need no memory barrier (was 6 cross-thread Job fields).
     // SupervisorJob so one failed child does not tear down the scope. Recreatable:
-    // destroy() cancels it on service teardown, and clearCacheApp/clearDataApp revive
-    // it because this manager is a static singleton reused across service rebinds.
-    private fun newScope() = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private var ioScope = newScope()
-    // main job that starts and finish cache clean process of all packages
+    // destroy() cancels it on service teardown, and clearCacheApp/clearDataApp revive it
+    // because this manager is a static singleton reused across service rebinds. Only the
+    // scenario node-walk hops off this thread (withContext(IO)).
+    private fun newScope() = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private var coordScope = newScope()
+
+    // The whole-run job. Its children (per-package waits, scenario hop, go-back loop) are
+    // structured under it, so a single cancel cascades - no per-job enumeration anymore.
     private var mainJob: Job? = null
-    // package job that starts and finish for one package
-    private var packageJob: Job? = null
-    // accessibility event job that starts when Accessibility service got event
-    private var accessibilityJob: Job? = null
-    // wait accessibility event job
-    private var waitAccessibilityJob: Job? = null
-    // wait for the next app job
-    private var waitNextAppJob: Job? = null
-    // For Android 14 and later need go back to reduce windows stack
-    private var goBackJob: Job? = null
-    private val needGoBack = ConditionVariable()
+
+    // Callback -> coroutine bridge. checkEvent (producer) drops the current screen's node
+    // / a go-back signal into the queue for the active phase; the clear loop consumes it.
+    // CONFLATED keeps only the newest item (matches the old "new event preempts the
+    // in-flight one"). eventChannel is replaced fresh per package -> zero stale carryover.
+    private var eventChannel: Channel<AccessibilityNodeInfo>? = null
+    private var goBackChannel: Channel<Unit>? = null
+
+    // Routes checkEvent. Package -> feed eventChannel; GoBack -> feed goBackChannel;
+    // Idle -> drop (between packages / before-after a run). Replaces inspecting
+    // mainJob/packageJob/goBackJob isActive. Main-confined like the channels above.
+    private enum class Phase { Idle, Package, GoBack }
+    private var phase: Phase = Phase.Idle
 
     private var selfPackageName: String? = null
+
+    // Safety cap on go-back presses: bounds the loop if a screen swallows BACK and the
+    // foreground never returns to our app (otherwise it would spin forever). Comfortably
+    // above any real Settings back-stack depth accrued between go-back points.
+    private val MAX_GO_BACK_TRIES = 16
 
     // Instance-scoped (was a companion static): per-manager clear scenario, rebuilt by
     // setSettings(). Keeping it on the instance removes cross-instance/rebind sharing.
@@ -74,8 +90,8 @@ class AccessibilityClearManager {
 
     // Explicit clear-run state machine (was nullable ClearType enum). Set at clearApp
     // entry, reset to Idle when the run ends. `logTag` labels debug logs per type.
-    // @Volatile: written on caller thread (service Main) + reset on ioScope (IO),
-    // read in checkEvent on the accessibility Main thread -> needs a memory barrier.
+    // @Volatile retained as a defensive barrier: it is captured into a local on the main
+    // thread before the IO scenario hop, but the run type is also read from checkEvent.
     private sealed class ClearState(val logTag: String) {
         object Idle : ClearState("idle")
         object ClearingCache : ClearState("clearCacheApp")
@@ -157,36 +173,40 @@ class AccessibilityClearManager {
     fun clearCacheApp(pkgList: ArrayList<String>,
                       updatePosition: (Int) -> Unit,
                       performBack: () -> Boolean,
+                      getForegroundPackageName: () -> String?,
                       openAppInfo: KFunction1<String, Unit>,
                       finish: (String?, String?) -> Unit) =
-        clearApp(ClearState.ClearingCache, pkgList, updatePosition, performBack, openAppInfo, finish)
+        clearApp(ClearState.ClearingCache, pkgList, updatePosition, performBack,
+            getForegroundPackageName, openAppInfo, finish)
 
     fun clearDataApp(pkgList: ArrayList<String>,
                      updatePosition: (Int) -> Unit,
                      performBack: () -> Boolean,
+                     getForegroundPackageName: () -> String?,
                      openAppInfo: KFunction1<String, Unit>,
                      finish: (String?, String?) -> Unit) =
-        clearApp(ClearState.ClearingData, pkgList, updatePosition, performBack, openAppInfo, finish)
+        clearApp(ClearState.ClearingData, pkgList, updatePosition, performBack,
+            getForegroundPackageName, openAppInfo, finish)
 
-    // Per-package lifecycle driver: open AppInfo -> wait first event -> timeout ->
-    // go back -> next. Type-agnostic; cache-vs-data branching is dispatched out via
-    // checkEvent -> clearState -> scenario.doClearCache/doClearData. `state` sets the
+    // Per-package lifecycle driver: open AppInfo -> wait first event -> drive scenario
+    // until finish/timeout -> go back -> next. Type-agnostic; cache-vs-data branching is
+    // dispatched out via clearState -> scenario.doClearCache/doClearData. `state` sets the
     // run type (own log tag) and is reset to Idle when the run ends.
     private fun clearApp(state: ClearState,
                          pkgList: ArrayList<String>,
                          updatePosition: (Int) -> Unit,
                          performBack: () -> Boolean,
+                         getForegroundPackageName: () -> String?,
                          openAppInfo: KFunction1<String, Unit>,
                          finish: (String?, String?) -> Unit) {
         val tag = state.logTag
         clearState = state
         // Revive scope if a prior destroy() cancelled it (static singleton reuse).
-        if (!ioScope.isActive) ioScope = newScope()
-        accessibilityJob?.cancel(CANCEL_INIT)
-        packageJob?.cancel(CANCEL_INIT)
+        if (!coordScope.isActive) coordScope = newScope()
+        // Preempt any in-flight run; its children cancel with it (structured).
         mainJob?.cancel(CANCEL_INIT)
 
-        mainJob = ioScope.launch {
+        mainJob = coordScope.launch {
             var currentPkg: String? = null
 
             try {
@@ -208,47 +228,34 @@ class AccessibilityClearManager {
                         clearScenario.forceStopTries = 0
 
                     if (index > 0) {
-                        waitNextAppJob?.cancel(CANCEL_IGNORE)
-                        waitNextAppJob = ioScope.launch {
-                            val timeoutMs = clearScenario.delayForNextAppTimeoutMs.toLong()
-                            delay(timeoutMs)
-                        }
-                        waitNextAppJob?.join()
+                        // Idle during the inter-app delay -> stale/late events dropped.
+                        phase = Phase.Idle
+                        delay(clearScenario.delayForNextAppTimeoutMs.toLong().milliseconds)
                     }
+
+                    // Fresh per-package queue: no event from the previous package can be
+                    // mistaken for this package's first event (matters for system
+                    // packages that open nothing -> must time out, not grab a stale node).
+                    val channel = Channel<AccessibilityNodeInfo>(Channel.CONFLATED)
+                    eventChannel = channel
+                    phase = Phase.Package
 
                     if (BuildConfig.DEBUG)
                         Logger.d("$tag: open AppInfo of $pkg")
                     openAppInfo(pkg)
 
-                    // wait cache clean process
-                    packageJob = ioScope.launch {
-                        // wait first Accessibility Event - open AppInfo
-                        waitAccessibilityJob = ioScope.launch {
-                            val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
-                            delay(timeoutMs)
-                            Logger.w("Accessibility Event timeout")
-                        }
-                        waitAccessibilityJob?.join()
-                        // got first Accessibility Event
-                        if (waitAccessibilityJob?.isCancelled == true) {
-                            val timeoutMs = clearScenario.maxWaitAppTimeoutMs.toLong()
-                            delay(timeoutMs)
-                        }
-                    }
-                    packageJob?.join()
+                    val gotEvent = processPackage(channel)
 
-                    // timeout, no accessibility events, move to the next app
-                    accessibilityJob?.cancel(CANCEL_IGNORE)
-
+                    phase = Phase.Idle
                     updatePosition(index + 1)
 
                     // got first Accessibility event, need go back
-                    if (waitAccessibilityJob?.isCancelled == true) {
+                    if (gotEvent) {
                         val goBackAfterApps = clearScenario.goBackAfterApps
                         if (goBackAfterApps > 0) {
                             // go back after each Nth apps and for the last app
                             if ((index % goBackAfterApps == 0 && index != 0) or (index == pkgList.size - 1))
-                                doGoBack(performBack)
+                                doGoBack(performBack, getForegroundPackageName)
                         }
                     }
                 }
@@ -260,22 +267,64 @@ class AccessibilityClearManager {
                     CANCEL_IGNORE.message, CANCEL_INIT.message -> {}
                     else -> finish(e.message, currentPkg)
                 }
+            } finally {
+                // Only the current run resets shared state; a run preempted by CANCEL_INIT
+                // must not clobber the run that replaced it (its finally runs later).
+                if (mainJob === coroutineContext[Job]) {
+                    phase = Phase.Idle
+                    eventChannel = null
+                    // force clear type to avoid misbehavior
+                    clearState = ClearState.Idle
+                }
             }
-            // reset state so stray events after the run cannot dispatch into a scenario
-            clearState = ClearState.Idle
         }
     }
 
-    fun checkEvent(event: AccessibilityEvent) {
-        // do cache clean only if processing package
-        if (mainJob?.isActive == true) {
-            if (goBackJob?.isActive == true) {
-                needGoBack.open()
-            } else if (packageJob?.isActive == true) {
-                if (event.source == null)
-                    return
+    // Drive one package. Returns true if at least one accessibility event arrived (gates
+    // go-back). Waits maxWaitAccessibilityEventMs for the first event; none -> the package
+    // opened nothing (e.g. a system package) -> skip. After the first event, feed each
+    // node to the scenario until it reports finish/failed or maxWaitAppTimeoutMs elapses.
+    private suspend fun processPackage(channel: Channel<AccessibilityNodeInfo>): Boolean {
+        val first: AccessibilityNodeInfo =
+            withTimeoutOrNull(clearScenario.maxWaitAccessibilityEventMs.toLong().milliseconds) {
+                channel.receive()
+            } ?: run {
+                Logger.w("Accessibility Event timeout")
+                return false
+            }
+        // run type captured on the main thread, then used inside the IO scenario hop
+        val type = clearState
+        withTimeoutOrNull(clearScenario.maxWaitAppTimeoutMs.toLong().milliseconds) {
+            var node: AccessibilityNodeInfo = first
+            while (true) {
+                // stable val: a captured var cannot be smart-cast inside the IO closure
+                val current = node
+                val result = withContext(Dispatchers.IO) {
+                    when (type) {
+                        ClearState.ClearingCache -> clearScenario.doClearCache(current)
+                        ClearState.ClearingData -> clearScenario.doClearData(current)
+                        // event during active run but no type -> misbehavior, stop package
+                        ClearState.Idle -> PACKAGE_FINISH_FAILED
+                    }
+                }
+                when (result?.message) {
+                    PACKAGE_FINISH.message,
+                    PACKAGE_FINISH_FAILED.message,
+                    -> return@withTimeoutOrNull
+                    else -> {}
+                }
+                node = channel.receive()
+            }
+        }
+        return true
+    }
 
-                val nodeInfo = event.source!!
+    fun checkEvent(event: AccessibilityEvent) {
+        when (phase) {
+            // back-press loop is waiting for the window to change
+            Phase.GoBack -> goBackChannel?.trySend(Unit)
+            Phase.Package -> {
+                val nodeInfo = event.source ?: return
 
                 // Jetpack compose spam Accessibility Service when update some text
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -296,92 +345,54 @@ class AccessibilityClearManager {
                     Logger.d("===>>> TREE END <<<===")
                 }
 
-                when (clearState) {
-                    ClearState.ClearingCache -> doAccessibilityEventClearCache(nodeInfo)
-                    ClearState.ClearingData -> doAccessibilityEventClearData(nodeInfo)
-                    // event during active run but no type -> misbehavior, interrupt
-                    ClearState.Idle -> interruptBySystem()
-                }
+                // hand the node to the active package loop (CONFLATED -> newest wins)
+                eventChannel?.trySend(nodeInfo)
             }
+            // between packages / outside a run -> nothing to do
+            Phase.Idle -> {}
         }
     }
 
     fun interruptByUser() {
-        accessibilityJob?.cancel(CANCEL_INTERRUPTED_BY_USER)
-        packageJob?.cancel(CANCEL_INTERRUPTED_BY_USER)
+        // structured cancellation cascades to all children of the run
         mainJob?.cancel(CANCEL_INTERRUPTED_BY_USER)
-
-        waitAccessibilityJob?.cancel(CANCEL_IGNORE)
-        waitNextAppJob?.cancel(CANCEL_IGNORE)
-        goBackJob?.cancel(CANCEL_IGNORE)
     }
 
     fun interruptBySystem() {
-        accessibilityJob?.cancel(CANCEL_INTERRUPTED_BY_SYSTEM)
-        packageJob?.cancel(CANCEL_INTERRUPTED_BY_SYSTEM)
         mainJob?.cancel(CANCEL_INTERRUPTED_BY_SYSTEM)
-
-        waitAccessibilityJob?.cancel(CANCEL_IGNORE)
-        waitNextAppJob?.cancel(CANCEL_IGNORE)
-        goBackJob?.cancel(CANCEL_IGNORE)
     }
 
     // Service teardown hook: stop in-flight work and cancel the scope so no coroutine
     // outlives the service. Scope is revived on the next clearCacheApp/clearDataApp.
     fun destroy() {
         interruptBySystem()
-        ioScope.cancel()
+        coordScope.cancel()
     }
 
-    private suspend fun doGoBack(performBack: () -> Boolean) {
-        goBackJob?.cancel(CANCEL_IGNORE)
-        goBackJob = ioScope.launch {
-            val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
-            while (true) {
+    private suspend fun doGoBack(performBack: () -> Boolean,
+                                getForegroundPackageName: () -> String?) {
+        val channel = Channel<Unit>(Channel.CONFLATED)
+        goBackChannel = channel
+        phase = Phase.GoBack
+        val timeoutMs = clearScenario.maxWaitAccessibilityEventMs.toLong()
+        try {
+            // Pop the back stack until OUR app is the active window. Foreground is read
+            // DIRECTLY (rootInActiveWindow.packageName) each iteration, not inferred from
+            // events, because our own app does NOT reliably emit a window-state event on
+            // return. Consequences:
+            //  - silent return to our app can't hang (no event needed to detect self),
+            //  - stale events can't over-back (real window re-checked before each back),
+            //  - guard cap stops a screen that swallows BACK from spinning forever.
+            var tries = 0
+            while (getForegroundPackageName() != selfPackageName && tries++ < MAX_GO_BACK_TRIES) {
                 performBack()
-                needGoBack.close()
-                // need more go back
-                if (needGoBack.block(timeoutMs))
-                    continue
-                break
+                // pace the loop: wait for the window to change, then re-read the real
+                // foreground. timeout is just pacing - the read is the source of truth.
+                withTimeoutOrNull(timeoutMs.milliseconds) { channel.receive() }
             }
-        }
-        goBackJob?.join()
-    }
-
-    private fun doAccessibilityEventClearCache(nodeInfo: AccessibilityNodeInfo) {
-        accessibilityJob?.cancel(CANCEL_IGNORE)
-        accessibilityJob = ioScope.launch {
-            try {
-                waitAccessibilityJob?.cancel()
-                val result = clearScenario.doClearCache(nodeInfo)
-                when (result?.message) {
-                    PACKAGE_FINISH.message,
-                    PACKAGE_FINISH_FAILED.message,
-                    -> { packageJob?.cancel(result) }
-                    else -> {}
-                }
-            } catch (e: CancellationException) {
-                // TODO: process exceptions
-            }
-        }
-    }
-
-    private fun doAccessibilityEventClearData(nodeInfo: AccessibilityNodeInfo) {
-        accessibilityJob?.cancel(CANCEL_IGNORE)
-        accessibilityJob = ioScope.launch {
-            try {
-                waitAccessibilityJob?.cancel()
-                val result = clearScenario.doClearData(nodeInfo)
-                when (result?.message) {
-                    PACKAGE_FINISH.message,
-                    PACKAGE_FINISH_FAILED.message,
-                    -> { packageJob?.cancel(result) }
-                    else -> {}
-                }
-            } catch (e: CancellationException) {
-                // TODO: process exceptions
-            }
+        } finally {
+            phase = Phase.Idle
+            goBackChannel = null
         }
     }
 

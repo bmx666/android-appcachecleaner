@@ -95,6 +95,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                     {
                         performGlobalAction(GLOBAL_ACTION_BACK)
                     },
+                    { rootInActiveWindow?.packageName?.toString() },
                     localBroadcastManager::sendAppInfo,
                     localBroadcastManager::sendFinishClearCache)
             }
@@ -119,6 +120,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
                     {
                         performGlobalAction(GLOBAL_ACTION_BACK)
                     },
+                    { rootInActiveWindow?.packageName?.toString() },
                     localBroadcastManager::sendAppInfo,
                     localBroadcastManager::sendFinishClearData)
             }
