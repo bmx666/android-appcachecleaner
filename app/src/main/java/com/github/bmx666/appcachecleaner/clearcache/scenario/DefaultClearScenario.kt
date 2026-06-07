@@ -12,11 +12,12 @@ import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Comp
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.util.findByViewIdResourceName
 import com.github.bmx666.appcachecleaner.util.findClickable
-import com.github.bmx666.appcachecleaner.util.getAllChild
+import com.github.bmx666.appcachecleaner.util.findNode
 import com.github.bmx666.appcachecleaner.util.showTree
 import com.github.bmx666.appcachecleaner.util.takeIfMatches
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 /***
  * Steps to clean app cache:
@@ -59,7 +60,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 
     private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
-        nodeInfo.findClearCacheButton(arrayTextClearCacheButton)?.let { clearCacheButton ->
+        nodeInfo.findClickableByText(arrayTextClearCacheButton, SETTINGS_BUTTON_ID_REGEX)?.let { clearCacheButton ->
 
             // Android 7.1 and early does not support this feature
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -84,7 +85,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
                     }
                     Logger.d("===>>> findClearCacheButton: loop: refresh, END <<<===")
 
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
                 }
             }
 
@@ -96,12 +97,12 @@ internal class DefaultClearScenario: BaseClearScenario() {
                         return PACKAGE_FINISH_FAILED
                     }
 
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-                    return findClearCacheButton(nodeInfo)
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
+                    findClearCacheButton(nodeInfo)
                 }
                 true -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                        delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
 
                         // something goes wrong...
                         if (!clearCacheButton.refresh()) {
@@ -122,7 +123,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
                         }
                     }
 
-                    return PACKAGE_FINISH
+                    PACKAGE_FINISH
                 }
                 // move to the next app
                 null -> PACKAGE_FINISH
@@ -138,13 +139,13 @@ internal class DefaultClearScenario: BaseClearScenario() {
                 true -> PACKAGE_WAIT_NEXT_STEP
                 // move to the next app, storage & cache button disabled
                 null -> PACKAGE_FINISH
-                // storage & cache button was found and it's enabled but perform click was failed
+                // storage & cache button was found, and it's enabled but perform click was failed
                 false -> {
                     if (!nodeInfo.refresh())
                         return PACKAGE_FINISH_FAILED
 
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
-                    return findStorageAndCacheMenu(nodeInfo)
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
+                    findStorageAndCacheMenu(nodeInfo)
                 }
             }
         }
@@ -155,10 +156,10 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 
     private suspend fun findForceStopButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
-        nodeInfo.findForceStopButton(arrayTextForceStopButton)?.let { forceStopButton ->
+        nodeInfo.findClickableByText(arrayTextForceStopButton, SETTINGS_BUTTON_ID_REGEX)?.let { forceStopButton ->
 
             return when (doPerformClick(forceStopButton, "force stop button")) {
-                // force stop button was found and it's enabled but perform click was failed
+                // force stop button was found, and it's enabled but perform click was failed
                 // sometimes even with "false" force dialog could be open, so return true
                 false -> true
                 // wait force stop dialog
@@ -190,7 +191,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 
     private suspend fun findClearDataButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
-        nodeInfo.findClearDataButton(arrayTextClearDataButton)?.let { clearDataButton ->
+        nodeInfo.findClickableByText(arrayTextClearDataButton, SETTINGS_BUTTON_ID_REGEX)?.let { clearDataButton ->
             when (doPerformClick(clearDataButton, "clear data button")) {
                 // clear data button was found and it's enabled but perform click was failed
                 false -> {
@@ -199,11 +200,11 @@ internal class DefaultClearScenario: BaseClearScenario() {
                         return false
                     }
 
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
                     return findClearDataButton(nodeInfo)
                 }
                 true -> {
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
                     return true
                 }
                 null -> {
@@ -264,7 +265,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
                         break
 
                     nodeInfo.refresh()
-                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                    delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
 
                     if (BuildConfig.DEBUG) {
                         Logger.d("===>>> FORCE STOP Dialog TREE BEGIN <<<===")
@@ -303,7 +304,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
                         // try refresh
                         while (!findForceStopDialogOkButton(nodeInfo)) {
                             nodeInfo.refresh()
-                            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+                            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
                         }
                     }
                     else -> findForceStopDialogOkButton(nodeInfo)
@@ -351,12 +352,12 @@ internal class DefaultClearScenario: BaseClearScenario() {
             if (doPerformScrollForward(recyclerViewNodeInfo, "RecycleView") != true)
                 break
 
-            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
 
             if (!recyclerViewNodeInfo.refresh())
                 break
 
-            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong())
+            delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
 
             if (BuildConfig.DEBUG) {
                 Logger.d("===>>> recyclerView TREE BEGIN <<<===")
@@ -398,103 +399,60 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 }
 
-private fun AccessibilityNodeInfo.findClearCacheButton(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findClearCacheButton(arrayText)?.let { return it }
+// Hoisted out of the per-node finders: previously recompiled at every node of
+// every subtree walk, on every accessibility event.
+private val SETTINGS_BUTTON_ID_REGEX = "com.android.settings:id/.*button.*".toRegex()
+private val DIALOG_BUTTON_ID_REGEX = "android:id/button.*".toRegex()
+
+// Collapsed clear-cache / clear-data / force-stop finders (were byte-identical):
+// locate a text/button node matching [arrayText] under [viewIdResourceName],
+// return its clickable ancestor.
+private fun AccessibilityNodeInfo.findClickableByText(
+    arrayText: ArrayList<CharSequence>,
+    viewIdResourceName: Regex): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = true,
+            findButton = true,
+            viewIdResourceName = viewIdResourceName,
+            arrayText = arrayText,
+        )?.findClickable()
     }
-
-    return this.takeIfMatches(
-        findTextView = true,
-        findButton = true,
-        viewIdResourceName = "com.android.settings:id/.*button.*".toRegex(),
-        arrayText = arrayText,
-    )?.findClickable()
-}
-
-private fun AccessibilityNodeInfo.findClearDataButton(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findClearDataButton(arrayText)?.let { return it }
-    }
-
-    return this.takeIfMatches(
-        findTextView = true,
-        findButton = true,
-        viewIdResourceName = "com.android.settings:id/.*button.*".toRegex(),
-        arrayText = arrayText,
-    )?.findClickable()
-}
-
-private fun AccessibilityNodeInfo.findForceStopButton(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findForceStopButton(arrayText)?.let { return it }
-    }
-
-    return this.takeIfMatches(
-        findTextView = true,
-        findButton = true,
-        viewIdResourceName = "com.android.settings:id/.*button.*".toRegex(),
-        arrayText = arrayText,
-    )?.findClickable()
-}
 
 private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findStorageAndCacheMenu(arrayText)?.let { return it }
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = true,
+            findButton = true,
+            viewIdResourceName = "android:id/title",
+            arrayText = arrayText,
+        )?.findClickable()
     }
 
-    return this.takeIfMatches(
-        findTextView = true,
-        findButton = true,
-        viewIdResourceName = "android:id/title",
-        arrayText = arrayText,
-    )?.findClickable()
-}
-
-private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findRecyclerView()?.let { return it }
+private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIf { it.findByViewIdResourceName("com.android.settings:id/recycler_view") }
     }
-
-    return this.takeIf { nodeInfo ->
-        nodeInfo.findByViewIdResourceName("com.android.settings:id/recycler_view")
-    }
-}
 
 private fun AccessibilityNodeInfo.findDialogButton(
-    arrayText: ArrayList<CharSequence>, findTextView: Boolean = true): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findDialogButton(arrayText, findTextView)?.let { return it }
+    arrayText: ArrayList<CharSequence>, findTextView: Boolean = true): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = findTextView,
+            findButton = true,
+            viewIdResourceName = DIALOG_BUTTON_ID_REGEX,
+            arrayText = arrayText,
+        )?.findClickable()
     }
-
-    return this.takeIfMatches(
-        findTextView = findTextView,
-        findButton = true,
-        viewIdResourceName = "android:id/button.*".toRegex(),
-        arrayText = arrayText,
-    )?.findClickable()
-}
 
 private fun AccessibilityNodeInfo.findDialogTitle(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findDialogTitle(arrayText)?.let { return it }
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = true,
+            findButton = false,
+            viewIdResourceName = "android:id/alertTitle",
+            arrayText = arrayText,
+        )
     }
-
-    return this.takeIfMatches(
-        findTextView = true,
-        findButton = false,
-        viewIdResourceName = "android:id/alertTitle",
-        arrayText = arrayText,
-    )
-}
