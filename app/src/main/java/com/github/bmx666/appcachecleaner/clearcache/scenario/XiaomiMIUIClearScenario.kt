@@ -5,7 +5,7 @@ import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.C
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
 import com.github.bmx666.appcachecleaner.util.findClickable
-import com.github.bmx666.appcachecleaner.util.getAllChild
+import com.github.bmx666.appcachecleaner.util.findNode
 import com.github.bmx666.appcachecleaner.util.takeIfMatches
 import kotlinx.coroutines.CancellationException
 
@@ -151,47 +151,40 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
     }
 }
 
-private fun AccessibilityNodeInfo.findMenuItemText(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findMenuItemText(arrayText)?.let { return it }
-    }
+// Hoisted out of the per-node finders: previously recompiled at every node of
+// every subtree walk, on every accessibility event.
+private val DIALOG_TEXT_ID_REGEX = "android:id/text.*".toRegex()
+private val DIALOG_BUTTON_ID_REGEX = "android:id/button.*".toRegex()
 
-    return this.takeIfMatches(
-        findTextView = true, // on some Xiaomi viewId is null
-        findButton = false,
-        viewIdResourceName = "com.miui.securitycenter:id/action_menu_item_child_text",
-        arrayText = arrayText,
-    )?.findClickable()
-}
+private fun AccessibilityNodeInfo.findMenuItemText(
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = true, // on some Xiaomi viewId is null
+            findButton = false,
+            viewIdResourceName = "com.miui.securitycenter:id/action_menu_item_child_text",
+            arrayText = arrayText,
+        )?.findClickable()
+    }
 
 private fun AccessibilityNodeInfo.findDialogText(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findDialogText(arrayText)?.let { return it }
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = false,
+            findButton = false,
+            viewIdResourceName = DIALOG_TEXT_ID_REGEX,
+            arrayText = arrayText,
+        )?.findClickable()
     }
-
-    return this.takeIfMatches(
-        findTextView = false,
-        findButton = false,
-        viewIdResourceName = "android:id/text.*".toRegex(),
-        arrayText = arrayText,
-    )?.findClickable()
-}
 
 private fun AccessibilityNodeInfo.findDialogButton(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo?
-{
-    this.getAllChild().forEach { childNode ->
-        childNode?.findDialogButton(arrayText)?.let { return it }
+    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIfMatches(
+            findTextView = false,
+            findButton = false,
+            viewIdResourceName = DIALOG_BUTTON_ID_REGEX,
+            arrayText = arrayText,
+        )?.findClickable()
     }
-
-    return this.takeIfMatches(
-        findTextView = false,
-        findButton = false,
-        viewIdResourceName ="android:id/button.*".toRegex(),
-        arrayText = arrayText,
-    )?.findClickable()
-}

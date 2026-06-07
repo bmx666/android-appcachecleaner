@@ -27,29 +27,36 @@ fun AccessibilityNodeInfo.findByViewIdResourceName(regex: Regex): Boolean {
     return this.viewIdResourceName?.matches(regex) == true
 }
 
-fun AccessibilityNodeInfo.findNestedChildByViewIdResourceName(
-    viewIdResourceName: String)
+/**
+ * Single parametrized post-order depth-first walk of the node subtree.
+ * Recurses children first and returns the first non-null [transform] result,
+ * otherwise applies [transform] to this node. All node finders delegate here
+ * to avoid duplicating the recursion (see DefaultClearScenario / XiaomiMIUI).
+ * Note: recursive => cannot be inline; [transform] is invoked per node.
+ */
+fun AccessibilityNodeInfo.findNode(
+    transform: (AccessibilityNodeInfo) -> AccessibilityNodeInfo?)
         : AccessibilityNodeInfo? {
     this.getAllChild().forEach { childNode ->
-        childNode?.findNestedChildByViewIdResourceName(viewIdResourceName)?.let { return it }
+        childNode?.findNode(transform)?.let { return it }
     }
 
-    return this.takeIf { nodeInfo ->
-        nodeInfo.findByViewIdResourceName(viewIdResourceName)
-    }
+    return transform(this)
 }
+
+fun AccessibilityNodeInfo.findNestedChildByViewIdResourceName(
+    viewIdResourceName: String)
+        : AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIf { it.findByViewIdResourceName(viewIdResourceName) }
+    }
 
 fun AccessibilityNodeInfo.findNestedChildByViewIdResourceNames(
     viewIdResourceNames: Array<String>)
-        : AccessibilityNodeInfo? {
-    this.getAllChild().forEach { childNode ->
-        childNode?.findNestedChildByViewIdResourceNames(viewIdResourceNames)?.let { return it }
+        : AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIf { it.findByViewIdResourceNames(viewIdResourceNames) }
     }
-
-    return this.takeIf { nodeInfo ->
-        nodeInfo.findByViewIdResourceNames(viewIdResourceNames)
-    }
-}
 
 fun AccessibilityNodeInfo.findByClassName(className: String): Boolean {
     return this.className?.contentEquals(className) == true
@@ -61,15 +68,10 @@ fun AccessibilityNodeInfo.findByClassNames(classNames: Array<String>): Boolean {
     }
 }
 
-fun AccessibilityNodeInfo.findNestedChildByClassNames(classNames: Array<String>): AccessibilityNodeInfo? {
-    this.getAllChild().forEach { childNode ->
-        childNode?.findNestedChildByClassNames(classNames)?.let { return it }
+fun AccessibilityNodeInfo.findNestedChildByClassNames(classNames: Array<String>): AccessibilityNodeInfo? =
+    findNode { node ->
+        node.takeIf { it.findByClassNames(classNames) }
     }
-
-    return this.takeIf { nodeInfo ->
-        nodeInfo.findByClassNames(classNames)
-    }
-}
 
 fun AccessibilityNodeInfo.findClickable(): AccessibilityNodeInfo? {
     return when {
