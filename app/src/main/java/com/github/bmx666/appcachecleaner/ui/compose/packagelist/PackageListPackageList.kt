@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bmx666.appcachecleaner.R
-import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.model.PlaceholderPackage
 import com.github.bmx666.appcachecleaner.ui.compose.view.AppIcon
 import com.github.bmx666.appcachecleaner.ui.compose.view.LabelledCheckBox
 import com.github.bmx666.appcachecleaner.util.toFormattedString
@@ -37,11 +37,12 @@ import org.springframework.util.unit.DataSize
 
 @Composable
 internal fun PackageListPackageList(
-    pkgList: List<PlaceholderContent.PlaceholderPackage>,
+    pkgList: List<PlaceholderPackage>,
+    checkedNames: Set<String>,
     showCacheSize: Boolean,
     onAppIconClick: () -> Unit,
     onAppIconLongClick: (String) -> Unit,
-    onPackageClick: (PlaceholderContent.PlaceholderPackage, Boolean) -> Unit,
+    onPackageClick: (PlaceholderPackage, Boolean) -> Unit,
 ) {
     when {
         pkgList.isEmpty() ->
@@ -63,6 +64,7 @@ internal fun PackageListPackageList(
                 items(pkgList) { pkg ->
                     ListItem(
                         pkg = pkg,
+                        checked = checkedNames.contains(pkg.pkgInfo.packageName),
                         showCacheSize = showCacheSize,
                         onAppIconClick = onAppIconClick,
                         onAppIconLongClick = onAppIconLongClick,
@@ -76,14 +78,15 @@ internal fun PackageListPackageList(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ListItem(
-    pkg: PlaceholderContent.PlaceholderPackage,
+    pkg: PlaceholderPackage,
+    checked: Boolean,
     showCacheSize: Boolean,
     onAppIconClick: () -> Unit,
     onAppIconLongClick: (String) -> Unit,
-    onPackageClick: (PlaceholderContent.PlaceholderPackage, Boolean) -> Unit,
+    onPackageClick: (PlaceholderPackage, Boolean) -> Unit,
 ) {
     val context = LocalContext.current
-    var isChecked by remember(pkg.pkgInfo.packageName) { mutableStateOf(pkg.checked) }
+    var isChecked by remember(pkg.pkgInfo.packageName, checked) { mutableStateOf(checked) }
 
     Row (
         modifier = Modifier

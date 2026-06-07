@@ -12,9 +12,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bmx666.appcachecleaner.data.LocaleManager
+import com.github.bmx666.appcachecleaner.data.PackageRepository
 import com.github.bmx666.appcachecleaner.data.UserPrefCustomPackageListManager
 import com.github.bmx666.appcachecleaner.data.UserPrefFilterManager
-import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
+import com.github.bmx666.appcachecleaner.model.PlaceholderPackage
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
 import com.github.bmx666.appcachecleaner.util.toFormattedString
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +48,7 @@ class PackageListViewModel @Inject constructor(
     private val userPrefCustomPackageListManager: UserPrefCustomPackageListManager,
     private val userPrefFilterManager: UserPrefFilterManager,
     private val localeManager: LocaleManager,
+    private val repo: PackageRepository,
     @param:ApplicationContext private val context: Context,
 ): ViewModel()
 {
@@ -55,8 +57,8 @@ class PackageListViewModel @Inject constructor(
         BY_LABEL,
     }
 
-    // `exists` = already in PlaceholderContent.All; `label` null = existing entry
-    // whose label needs no refresh.
+    // `exists` = already in the repository; `label` null = existing entry whose label
+    // needs no refresh.
     private data class FetchedPackage(
         val pkgInfo: PackageInfo,
         val exists: Boolean,
@@ -77,12 +79,11 @@ class PackageListViewModel @Inject constructor(
         updateProgress(0, 0)
     }
 
-    private val _pkgListChecked = MutableStateFlow<Set<String>>(emptySet())
-    val pkgListChecked: StateFlow<Set<String>> = _pkgListChecked
+    // Single source of truth: observe the repository directly (no mirrored slices).
+    val pkgListChecked: StateFlow<Set<String>> = repo.checked
+    val pkgListCurrentVisible: StateFlow<List<PlaceholderPackage>> = repo.visiblePackages
 
-    private val _pkgListCurrentVisible = MutableStateFlow<List<PlaceholderContent.PlaceholderPackage>>(emptyList())
-    val pkgListCurrentVisible: StateFlow<List<PlaceholderContent.PlaceholderPackage>> = _pkgListCurrentVisible
-
+    // User-entered minimum cache size for display only (the actual filter lives in repo).
     @RequiresApi(Build.VERSION_CODES.O)
     private val _filterByCacheSize = MutableStateFlow(0L)
     @RequiresApi(Build.VERSION_CODES.O)
@@ -95,19 +96,16 @@ class PackageListViewModel @Inject constructor(
             null,
         )
 
-    private val _checkedTotalCacheSize = MutableStateFlow(0L)
     val checkedTotalCacheSizeString: StateFlow<String?> =
-        _checkedTotalCacheSize.map { bytes ->
-            bytes.let {
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ->
-                        when {
-                            bytes > 0 ->
-                                DataSize.ofBytes(bytes).toFormattedString(context)
-                            else -> null
-                        }
-                    else -> null
-                }
+        repo.checkedTotalCacheBytes.map { bytes ->
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ->
+                    when {
+                        bytes > 0 ->
+                            DataSize.ofBytes(bytes).toFormattedString(context)
+                        else -> null
+                    }
+                else -> null
             }
         }.stateIn(
             viewModelScope,
@@ -120,12 +118,8 @@ class PackageListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isProcessing.value = true
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getFilteredByCacheSize(minCacheSizeBytes)
-                )
+                repo.applyFilterByCacheSize(minCacheSizeBytes)
                 _filterByCacheSize.value = minCacheSizeBytes
-                _pkgListCurrentVisible.value = PlaceholderContent.Current.getVisible()
-                _pkgListChecked.value = PlaceholderContent.All.getChecked()
             } finally {
                 _isProcessing.value = false
             }
@@ -139,10 +133,7 @@ class PackageListViewModel @Inject constructor(
         filterByNameJob = viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isProcessing.value = true
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getFilteredByName(text))
-                _pkgListCurrentVisible.value = PlaceholderContent.Current.getVisible()
-                _pkgListChecked.value = PlaceholderContent.All.getChecked()
+                repo.applyFilterByName(text)
             } finally {
                 _isProcessing.value = false
             }
@@ -152,10 +143,7 @@ class PackageListViewModel @Inject constructor(
 
     fun checkPackage(packageName: String, checked: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            PlaceholderContent.All.check(packageName, checked)
-            _pkgListChecked.value = PlaceholderContent.All.getChecked()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                _checkedTotalCacheSize.value = PlaceholderContent.Current.getCheckedTotalCacheSize()
+            repo.setChecked(packageName, checked)
         }
     }
 
@@ -163,18 +151,9 @@ class PackageListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isProcessing.value = true
-                PlaceholderContent.All.checkVisible()
+                repo.checkVisible()
                 // use fake delay to reload list
                 delay(250L)
-
-                _pkgListCurrentVisible.value =
-                    PlaceholderContent.Current.getVisible()
-                _pkgListChecked.value =
-                    PlaceholderContent.All.getChecked()
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    _checkedTotalCacheSize.value =
-                        PlaceholderContent.Current.getCheckedTotalCacheSize()
             } finally {
                 _isProcessing.value = false
             }
@@ -185,18 +164,9 @@ class PackageListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isProcessing.value = true
-                PlaceholderContent.All.uncheckVisible()
+                repo.uncheckVisible()
                 // use fake delay to reload list
                 delay(250L)
-
-                _pkgListCurrentVisible.value =
-                    PlaceholderContent.Current.getVisible()
-                _pkgListChecked.value =
-                    PlaceholderContent.All.getChecked()
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    _checkedTotalCacheSize.value =
-                        PlaceholderContent.Current.getCheckedTotalCacheSize()
             } finally {
                 _isProcessing.value = false
             }
@@ -207,7 +177,7 @@ class PackageListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isProcessing.value = true
-                val pkgList = PlaceholderContent.All.getChecked()
+                val pkgList = repo.getChecked()
                 if (pkgList.isEmpty())
                     userPrefFilterManager.removeListOfIgnoredApps()
                 else
@@ -215,10 +185,7 @@ class PackageListViewModel @Inject constructor(
 
                 // use fake delay to reload list
                 delay(250L)
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getSortedByLabel())
-                _pkgListCurrentVisible.value =
-                    PlaceholderContent.Current.getVisible()
+                repo.applySortByLabel()
             } finally {
                 _isProcessing.value = false
             }
@@ -233,7 +200,7 @@ class PackageListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isProcessing.value = true
-                val pkgList = PlaceholderContent.All.getChecked()
+                val pkgList = repo.getChecked()
                 if (pkgList.isNotEmpty()) {
                     userPrefCustomPackageListManager.setCustomList(name, pkgList)
                     viewModelScope.launch(Dispatchers.Main) {
@@ -241,10 +208,7 @@ class PackageListViewModel @Inject constructor(
                     }
                     // use fake delay to reload list
                     delay(250L)
-                    PlaceholderContent.Current.update(
-                        PlaceholderContent.All.getSortedByLabel())
-                    _pkgListCurrentVisible.value =
-                        PlaceholderContent.Current.getVisible()
+                    repo.applySortByLabel()
                 } else {
                     viewModelScope.launch(Dispatchers.Main) {
                         onEmpty()
@@ -391,14 +355,14 @@ class PackageListViewModel @Inject constructor(
         val total = pkgList.size
         updateProgress(0, total)
 
-        PlaceholderContent.All.reset()
+        repo.reset()
 
-        // Fetch per-package stats + label in parallel, then mutate
-        // PlaceholderContent serially. The parallel pass only READS
-        // PlaceholderContent (contains/isLabelAsPackageName/isSameLabelLocale) and
-        // never mutates it, so existence + label-fetch decisions stay stable across
-        // tasks. Insertion order is irrelevant: the list is sorted afterwards by
-        // getFiltered*/getSorted*. Heavy IO runs outside the PlaceholderContent mutex.
+        // Fetch per-package stats + label in parallel, then mutate the repository
+        // serially. The parallel pass only READS the repository
+        // (contains/isLabelAsPackageName/isSameLabelLocale) and never mutates it, so
+        // existence + label-fetch decisions stay stable across tasks. Insertion order is
+        // irrelevant: the list is sorted afterwards by the applyXxx call. Heavy IO runs
+        // outside the repository mutex.
         val semaphore = Semaphore(METADATA_FETCH_CONCURRENCY)
         val progress = AtomicInteger(0)
 
@@ -425,7 +389,7 @@ class PackageListViewModel @Inject constructor(
                             else
                                 null
 
-                        val exists = PlaceholderContent.All.contains(pkgInfo)
+                        val exists = repo.contains(pkgInfo)
                         // null label => existing entry whose label needs no refresh.
                         val label: String? =
                             if (!exists) {
@@ -434,8 +398,8 @@ class PackageListViewModel @Inject constructor(
                                 else
                                     pkgInfo.packageName
                             } else if (requestLabel &&
-                                (PlaceholderContent.All.isLabelAsPackageName(pkgInfo) ||
-                                 !PlaceholderContent.All.isSameLabelLocale(pkgInfo, currentLocale))) {
+                                (repo.isLabelAsPackageName(pkgInfo) ||
+                                 !repo.isSameLabelLocale(pkgInfo, currentLocale))) {
                                 PackageManagerHelper.getApplicationLabel(context, pkgInfo)
                             } else {
                                 null
@@ -451,10 +415,10 @@ class PackageListViewModel @Inject constructor(
 
         fetched.forEach { f ->
             if (f.exists) {
-                PlaceholderContent.All.updateStats(f.pkgInfo, f.stats)
-                f.label?.let { PlaceholderContent.All.updateLabel(f.pkgInfo, it, currentLocale) }
+                repo.updateStats(f.pkgInfo, f.stats)
+                f.label?.let { repo.updateLabel(f.pkgInfo, it, currentLocale) }
             } else {
-                PlaceholderContent.All.add(
+                repo.add(
                     f.pkgInfo, f.label ?: f.pkgInfo.packageName, currentLocale, f.stats)
             }
         }
@@ -462,32 +426,26 @@ class PackageListViewModel @Inject constructor(
         updateProgress(total, total)
 
         checkedPkgList?.let {
-            PlaceholderContent.All.check(checkedPkgList)
+            repo.setCheckedBatch(checkedPkgList)
         }
 
+        // Apply the active view; this recomputes the visible list and emits the flows.
         when (sort) {
             PackageSort.BY_SIZE ->
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ->
-                        PlaceholderContent.Current.update(
-                            PlaceholderContent.All.getFilteredByCacheSize(minCacheSizeBytes ?: 0L)
-                        )
+                        repo.applyFilterByCacheSize(minCacheSizeBytes ?: 0L)
                     else ->
-                        PlaceholderContent.Current.update(
-                            PlaceholderContent.All.getSorted())
+                        repo.applySortByLabel()
                 }
             PackageSort.BY_LABEL ->
-                PlaceholderContent.Current.update(
-                    PlaceholderContent.All.getSortedByLabel())
+                repo.applySortByLabel()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // reset custom filter by cache size
             _filterByCacheSize.value = 0L
         }
-
-        _pkgListCurrentVisible.value = PlaceholderContent.Current.getVisible()
-        _pkgListChecked.value = PlaceholderContent.All.getChecked()
     }
 
     private fun process(process: suspend () -> Unit) {

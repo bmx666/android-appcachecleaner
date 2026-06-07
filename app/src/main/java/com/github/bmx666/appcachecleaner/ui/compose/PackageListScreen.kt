@@ -433,6 +433,7 @@ internal fun PackageListScreen(
                     else -> {
                         PackageListPackageList(
                             pkgList = pkgListCurrentVisible,
+                            checkedNames = pkgListChecked,
                             showCacheSize = showCacheSize,
                             onAppIconClick = {
                                 Toast.makeText(context,
