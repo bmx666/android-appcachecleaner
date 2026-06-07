@@ -281,16 +281,35 @@ internal class DefaultClearScenario: BaseClearScenario() {
             if (!foundForceStopDialog) {
                 val foundCancelButton =
                     nodeInfo.findDialogButton(arrayTextCancelButton, false) != null
-                // Could be dialog?
+                // Real custom dialog (has "Cancel"): click its "Force stop", finish
                 if (foundCancelButton) {
                     val forceStopDialogButton =
                         nodeInfo.findDialogButton(arrayTextForceStopButton, false)
                     forceStopDialogButton?.let {
                         doPerformClick(it, "force stop dialog - force stop button")
                     }
+
+                    // ignore everything and move to the next step
+                    forceStopTries = 0
+                    return PACKAGE_WAIT_NEXT_STEP
                 }
 
-                // ignore everything and move to the next step
+                // Android 14+ (Compose Settings) emits stale recomposition /
+                // content-change events between the "Force stop" click and the
+                // real dialog window. Such an event is neither the dialog nor a
+                // custom dialog => the dialog has not appeared yet. The wait flag
+                // is one-shot, so consuming it here makes the real dialog be
+                // ignored (forceStopTries already 0) and the package times out.
+                // Re-arm and keep waiting instead; bounded by forceStopTries.
+                // Gated to API 34+: classic Views (API <=33) deliver the dialog
+                // as the next event, so they keep the original bail behavior.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                    && forceStopTries-- > 0) {
+                    forceStopWaitDialog = true
+                    return PACKAGE_WAIT_DIALOG
+                }
+
+                // give up (API <=33, or tries exhausted), move to the next step
                 forceStopTries = 0
                 return PACKAGE_WAIT_NEXT_STEP
             }
