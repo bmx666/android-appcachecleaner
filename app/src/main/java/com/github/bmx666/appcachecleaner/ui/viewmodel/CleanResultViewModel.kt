@@ -9,8 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bmx666.appcachecleaner.R
-import com.github.bmx666.appcachecleaner.placeholder.PlaceholderContent
-import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
+import com.github.bmx666.appcachecleaner.data.PackageRepository
 import com.github.bmx666.appcachecleaner.util.toFormattedString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CleanResultViewModel @Inject constructor(
+    private val repo: PackageRepository,
     @param:ApplicationContext private val context: Context,
 ): ViewModel()
 {
@@ -91,13 +91,9 @@ class CleanResultViewModel @Inject constructor(
     private fun calculateCleanedCache(interrupted: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val cleanedCacheBytes =
-                    PlaceholderContent.Current.getChecked().sumOf {
-                        PackageManagerHelper.getCacheSizeDiff(
-                            it.stats,
-                            PackageManagerHelper.getStorageStats(context, it.pkgInfo)
-                        )
-                    }
+                // Re-reads checked packages' stats (after a settle delay) and writes
+                // the fresh sizes back into the warm master list, returning bytes cleaned.
+                val cleanedCacheBytes = repo.refreshStatsAfterCacheClean()
                 val sizeStr = DataSize.ofBytes(cleanedCacheBytes)
                     .toFormattedString(context)
 
