@@ -258,7 +258,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
             // For Android N MR1 and early need to wait dialog
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
                 // limit tries by app timeout
-                var tries = maxWaitAppTimeoutMs / 250
+                var tries = maxWaitAppTimeoutMs / MIN_DELAY_PERFORM_CLICK_MS
 
                 while (tries-- > 0) {
                     if (foundForceStopDialog)
