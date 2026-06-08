@@ -59,7 +59,10 @@ internal class DefaultClearScenario: BaseClearScenario() {
         forceStopWaitDialog = false
     }
 
-    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun findClearCacheButton(
+        nodeInfo: AccessibilityNodeInfo,
+        clickTries: Int = maxPerformClickCountTries,
+    ): CancellationException? {
         nodeInfo.findClickableByText(arrayTextClearCacheButton, SETTINGS_BUTTON_ID_REGEX)?.let { clearCacheButton ->
 
             // Android 7.1 and early does not support this feature
@@ -92,13 +95,21 @@ internal class DefaultClearScenario: BaseClearScenario() {
             return when (doPerformClick(clearCacheButton, "clean cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
                 false -> {
+                    // bound the perform-click==false retry chain. Without this the
+                    // node is only stopped by the whole-package cap; a clickable-but-
+                    // click-fails view could spin until then.
+                    if (clickTries <= 0) {
+                        Logger.w("clearCacheButton (no perform click): retries exhausted")
+                        return PACKAGE_FINISH_FAILED
+                    }
+
                     if (!nodeInfo.refresh()) {
                         Logger.w("clearCacheButton (no perform click): failed to refresh parent node")
                         return PACKAGE_FINISH_FAILED
                     }
 
                     delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
-                    findClearCacheButton(nodeInfo)
+                    findClearCacheButton(nodeInfo, clickTries - 1)
                 }
                 true -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -132,7 +143,10 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findStorageAndCacheMenu(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun findStorageAndCacheMenu(
+        nodeInfo: AccessibilityNodeInfo,
+        clickTries: Int = maxPerformClickCountTries,
+    ): CancellationException? {
         suspend fun fn(storageAndCacheMenu: AccessibilityNodeInfo): CancellationException? {
             return when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
                 // open App Storage Activity
@@ -141,11 +155,15 @@ internal class DefaultClearScenario: BaseClearScenario() {
                 null -> PACKAGE_FINISH
                 // storage & cache button was found, and it's enabled but perform click was failed
                 false -> {
+                    // bound the perform-click==false retry chain.
+                    if (clickTries <= 0)
+                        return PACKAGE_FINISH_FAILED
+
                     if (!nodeInfo.refresh())
                         return PACKAGE_FINISH_FAILED
 
                     delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
-                    findStorageAndCacheMenu(nodeInfo)
+                    findStorageAndCacheMenu(nodeInfo, clickTries - 1)
                 }
             }
         }
@@ -190,18 +208,27 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return false
     }
 
-    private suspend fun findClearDataButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+    private suspend fun findClearDataButton(
+        nodeInfo: AccessibilityNodeInfo,
+        clickTries: Int = maxPerformClickCountTries,
+    ): Boolean? {
         nodeInfo.findClickableByText(arrayTextClearDataButton, SETTINGS_BUTTON_ID_REGEX)?.let { clearDataButton ->
             when (doPerformClick(clearDataButton, "clear data button")) {
                 // clear data button was found and it's enabled but perform click was failed
                 false -> {
+                    // bound the perform-click==false retry chain.
+                    if (clickTries <= 0) {
+                        Logger.w("clearDataButton (no perform click): retries exhausted")
+                        return false
+                    }
+
                     if (!nodeInfo.refresh()) {
                         Logger.w("clearDataButton (no perform click): failed to refresh parent node")
                         return false
                     }
 
                     delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)
-                    return findClearDataButton(nodeInfo)
+                    return findClearDataButton(nodeInfo, clickTries - 1)
                 }
                 true -> {
                     delay(MIN_DELAY_PERFORM_CLICK_MS.toLong().milliseconds)

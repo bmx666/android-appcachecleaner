@@ -64,7 +64,7 @@ internal abstract class BaseClearScenario {
             )
         }
 
-    private var maxPerformClickCountTries:
+    protected var maxPerformClickCountTries:
         Int = DEFAULT_PERFORM_CLICK_COUNT_TRIES
 
     internal var maxWaitAccessibilityEventMs:
