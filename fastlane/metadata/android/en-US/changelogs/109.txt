@@ -1,0 +1,5 @@
+* support Android 17
+* fix force-stop for Android 14 and later
+* faster loading of app info
+* improve clean cache stability and reliability
+* fix navigation back between apps for some cases
