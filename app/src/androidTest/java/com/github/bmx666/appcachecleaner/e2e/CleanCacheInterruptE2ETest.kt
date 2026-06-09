@@ -47,6 +47,7 @@ class CleanCacheInterruptE2ETest {
         val checkAll = targetContext.getString(R.string.description_apps_all_check)
         device.wait(Until.findObject(By.desc(checkAll)), AccessibilityE2ESupport.APP_READY_MS)
             ?.click()
+        device.waitForIdle() // let the selection register before we fire Clear cache
 
         val clearCache = targetContext.getString(R.string.clear_cache_btn_text)
         device.wait(Until.findObject(By.desc(clearCache)), AccessibilityE2ESupport.APP_READY_MS)
