@@ -1,17 +1,17 @@
 package com.github.bmx666.appcachecleaner.data
 
-import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build
-import androidx.annotation.RequiresApi
 import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
+import com.github.bmx666.appcachecleaner.util.getInternalCacheSize
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 // Injectable boundary over PackageManager / StorageStatsManager. Callers (repository,
 // package-list ViewModel) depend on this interface so a fake can stand in for the
-// framework in tests; the production impl just delegates to PackageManagerHelper.
+// framework in tests. It deals only in plain types (Long cache size, not StorageStats) so
+// everything downstream stays free of Android storage classes and pre-O guards.
 interface PackageSource {
     suspend fun getInstalledApps(
         systemNotUpdated: Boolean,
@@ -21,13 +21,10 @@ interface PackageSource {
 
     suspend fun getDisabledApps(): List<PackageInfo>
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getStorageStats(pkgInfo: PackageInfo): StorageStats?
+    // Internal cache size in bytes; 0 on pre-O (no StorageStats API) or on any error.
+    suspend fun getCacheBytes(pkgInfo: PackageInfo): Long
 
     suspend fun getApplicationLabel(pkgInfo: PackageInfo): String
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getCacheSizeDiff(old: StorageStats?, new: StorageStats?): Long
 }
 
 class AndroidPackageSource @Inject constructor(
@@ -44,14 +41,14 @@ class AndroidPackageSource @Inject constructor(
     override suspend fun getDisabledApps(): List<PackageInfo> =
         PackageManagerHelper.getDisabledApps(context)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun getStorageStats(pkgInfo: PackageInfo): StorageStats? =
-        PackageManagerHelper.getStorageStats(context, pkgInfo)
+    override suspend fun getCacheBytes(pkgInfo: PackageInfo): Long {
+        // Inline SDK gate (not SdkProvider) so lint can prove the @RequiresApi(O)
+        // getStorageStats/getInternalCacheSize calls below are reached only on O+.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return 0L
+        val stats = PackageManagerHelper.getStorageStats(context, pkgInfo) ?: return 0L
+        return stats.getInternalCacheSize()
+    }
 
     override suspend fun getApplicationLabel(pkgInfo: PackageInfo): String =
         PackageManagerHelper.getApplicationLabel(context, pkgInfo)
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun getCacheSizeDiff(old: StorageStats?, new: StorageStats?): Long =
-        PackageManagerHelper.getCacheSizeDiff(old, new)
 }

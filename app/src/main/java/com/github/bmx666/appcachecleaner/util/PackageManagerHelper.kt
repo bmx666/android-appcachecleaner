@@ -68,8 +68,8 @@ class PackageManagerHelper {
         }
 
         @JvmStatic
-        suspend fun getApplicationIcon(context: Context, pkgInfo: PackageInfo): Drawable? {
-            return context.packageManager.getApplicationIcon(pkgInfo.packageName)
+        suspend fun getApplicationIcon(context: Context, pkgName: String): Drawable? {
+            return context.packageManager.getApplicationIcon(pkgName)
         }
 
         @JvmStatic
@@ -133,23 +133,6 @@ class PackageManagerHelper {
             }
 
             return null
-        }
-
-        @JvmStatic
-        fun getCacheSizeDiff(old: StorageStats?, new: StorageStats?): Long {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return 0
-            if (old == null || new == null) return 0
-
-            try {
-                val newCacheSize = new.getInternalCacheSize()
-                val oldCacheSize = old.getInternalCacheSize()
-                return if (newCacheSize >= oldCacheSize) 0
-                    else oldCacheSize - newCacheSize
-            } catch (e: Exception) {
-                Logger.e(e.message ?: e.toString())
-            }
-
-            return 0
         }
     }
 }

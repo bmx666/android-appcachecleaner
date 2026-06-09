@@ -1,13 +1,7 @@
 package com.github.bmx666.appcachecleaner.data
 
-import android.app.usage.StorageStats
-import android.content.Context
 import android.content.pm.PackageInfo
-import android.os.Build
-import androidx.annotation.RequiresApi
-import com.github.bmx666.appcachecleaner.model.PlaceholderPackage
-import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.github.bmx666.appcachecleaner.model.AppPackage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,20 +17,28 @@ import javax.inject.Singleton
 // Settings/accessibility excursion, and the master list stays warm for the whole
 // process because re-collecting per-package stats is minutes-long IO on slow devices.
 //
+// Domain/platform boundary: the visible model (AppPackage) is pure (no Android types) so
+// all filter/sort/selection logic is plain-JVM testable. The only Android handles -
+// PackageInfo, needed to re-query cache size after a clean - live in a separate name-keyed
+// `handles` map, never in the emitted model.
+//
 // Single source of truth: this repo owns the active filter/sort spec AND emits the
 // derived StateFlows. ViewModels observe; they never re-push slices. One Mutex guards
-// all mutable state (master list, index, selection, view spec). Mutex is NOT reentrant:
-// public suspend fns lock; private *Locked helpers must already hold the lock.
+// all mutable state (master list, index, handles, selection, view spec). Mutex is NOT
+// reentrant: public suspend fns lock; private *Locked helpers must already hold the lock.
 @Singleton
 class PackageRepository @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+    private val packageSource: PackageSource,
 ) {
     private val mutex = Mutex()
 
-    // Master list: every loaded package. Never evicted (warm cache).
-    private val items = mutableListOf<PlaceholderPackage>()
+    // Master list: every loaded package (pure domain). Never evicted (warm cache).
+    private val items = mutableListOf<AppPackage>()
     // Name -> object, strict 1:1 with items (add is idempotent first-wins). O(1) lookup.
-    private val index = hashMapOf<String, PlaceholderPackage>()
+    private val index = hashMapOf<String, AppPackage>()
+    // Name -> Android handle, parallel to index. The only place PackageInfo is retained;
+    // used solely to re-query cache size in refreshStatsAfterCacheClean.
+    private val handles = hashMapOf<String, PackageInfo>()
     // Selection source of truth, decoupled from the heavy package objects.
     private val checkedNames = hashSetOf<String>()
 
@@ -48,10 +50,10 @@ class PackageRepository @Inject constructor(
     }
     private var viewSpec: ViewSpec = ViewSpec.SortByLabel
     // Last computed view (all non-ignored, sorted; visible flag marks the shown subset).
-    private var currentList: List<PlaceholderPackage> = emptyList()
+    private var currentList: List<AppPackage> = emptyList()
 
-    private val _visiblePackages = MutableStateFlow<List<PlaceholderPackage>>(emptyList())
-    val visiblePackages: StateFlow<List<PlaceholderPackage>> = _visiblePackages.asStateFlow()
+    private val _visiblePackages = MutableStateFlow<List<AppPackage>>(emptyList())
+    val visiblePackages: StateFlow<List<AppPackage>> = _visiblePackages.asStateFlow()
 
     private val _checked = MutableStateFlow<Set<String>>(emptySet())
     val checked: StateFlow<Set<String>> = _checked.asStateFlow()
@@ -74,28 +76,29 @@ class PackageRepository @Inject constructor(
     }
 
     suspend fun add(pkgInfo: PackageInfo, label: String, locale: Locale,
-                    stats: StorageStats?) = mutex.withLock {
+                    cacheBytes: Long) = mutex.withLock {
         // Idempotent first-wins: never create a second entry for an existing name
         // (multi-profile / cloned apps), keeping items and index in exact 1:1 sync.
         if (index.containsKey(pkgInfo.packageName))
             return@withLock
-        val pkg = PlaceholderPackage(
-            pkgInfo = pkgInfo,
+        val pkg = AppPackage(
             name = pkgInfo.packageName,
             label = label,
             locale = locale,
-            stats = stats,
+            cacheBytes = cacheBytes,
             visible = true,
             ignore = false)
         items.add(pkg)
         index[pkg.name] = pkg
+        handles[pkg.name] = pkgInfo
         Unit
     }
 
-    suspend fun updateStats(pkgInfo: PackageInfo, stats: StorageStats?) = mutex.withLock {
+    suspend fun updateCacheBytes(pkgInfo: PackageInfo, cacheBytes: Long) = mutex.withLock {
         index[pkgInfo.packageName]?.let {
-            it.stats = stats; it.ignore = false
+            it.cacheBytes = cacheBytes; it.ignore = false
         }
+        handles[pkgInfo.packageName] = pkgInfo
         Unit
     }
 
@@ -149,7 +152,6 @@ class PackageRepository @Inject constructor(
         recomputeLocked()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun applyFilterByCacheSize(minCacheBytes: Long) = mutex.withLock {
         viewSpec = ViewSpec.FilterByCacheSize(minCacheBytes)
         recomputeLocked()
@@ -162,31 +164,30 @@ class PackageRepository @Inject constructor(
 
     // ---- post-clean write-back ----
 
-    // Re-read stats of the currently checked packages and write them back into the
-    // master list (warm cache stays current without a full refetch), returning total
-    // bytes cleaned. One batch settle delay first: the StorageStats quota path lags
-    // after a cache drop, so an immediate read can still report the pre-clean size.
-    // Heavy IO runs OUTSIDE the mutex; the lock is taken only to snapshot then write.
-    @RequiresApi(Build.VERSION_CODES.O)
+    // Re-read cache size of the currently checked packages and write it back into the
+    // master list (warm cache stays current without a full refetch), returning total bytes
+    // cleaned. One batch settle delay first: the StorageStats quota path lags after a cache
+    // drop, so an immediate read can still report the pre-clean size. Heavy IO runs OUTSIDE
+    // the mutex; the lock is taken only to snapshot (name, old size, handle) then write back.
     suspend fun refreshStatsAfterCacheClean(): Long {
         delay(POST_CLEAN_SETTLE_MS)
 
-        // Snapshot the checked-and-shown packages (parity with the old Current.getChecked).
+        // Snapshot the checked-and-shown packages together with their handles.
         val targets = mutex.withLock {
             currentList.filter { checkedNames.contains(it.name) }
-                .map { it.pkgInfo to it.stats }
+                .mapNotNull { pkg -> handles[pkg.name]?.let { Triple(pkg.name, pkg.cacheBytes, it) } }
         }
 
         var cleanedBytes = 0L
-        val fresh = HashMap<String, StorageStats?>(targets.size)
-        targets.forEach { (pkgInfo, oldStats) ->
-            val newStats = PackageManagerHelper.getStorageStats(context, pkgInfo)
-            cleanedBytes += PackageManagerHelper.getCacheSizeDiff(oldStats, newStats)
-            fresh[pkgInfo.packageName] = newStats
+        val fresh = HashMap<String, Long>(targets.size)
+        targets.forEach { (name, oldBytes, pkgInfo) ->
+            val newBytes = packageSource.getCacheBytes(pkgInfo)
+            if (oldBytes > newBytes) cleanedBytes += (oldBytes - newBytes)
+            fresh[name] = newBytes
         }
 
         mutex.withLock {
-            fresh.forEach { (name, stats) -> index[name]?.stats = stats }
+            fresh.forEach { (name, bytes) -> index[name]?.cacheBytes = bytes }
             recomputeLocked()
         }
         return cleanedBytes
@@ -201,7 +202,7 @@ class PackageRepository @Inject constructor(
         _checkedTotalCacheBytes.value = checkedTotalCacheBytesLocked()
     }
 
-    private fun computeViewLocked(): List<PlaceholderPackage> {
+    private fun computeViewLocked(): List<AppPackage> {
         val base = items.filterNot { it.ignore }
         return when (val spec = viewSpec) {
             ViewSpec.SortByLabel ->
@@ -214,25 +215,18 @@ class PackageRepository @Inject constructor(
                 base.onEach { it.visible = match(it.label) }.sortedByLabelLocked()
             }
             is ViewSpec.FilterByCacheSize ->
-                // FilterByCacheSize is only ever set via applyFilterByCacheSize (O+),
-                // but guard inline so lint can prove the getCacheSize() calls are safe.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    base.onEach { it.visible = (it.getCacheSize() >= spec.minBytes) }
-                        .sortedWith(compareByDescending<PlaceholderPackage> { it.getCacheSize() }
-                            .thenBy { it.label })
-                else
-                    base.onEach { it.visible = true }.sortedByLabelLocked()
+                base.onEach { it.visible = (it.cacheBytes >= spec.minBytes) }
+                    .sortedWith(compareByDescending<AppPackage> { it.cacheBytes }
+                        .thenBy { it.label })
         }
     }
 
-    private fun List<PlaceholderPackage>.sortedByLabelLocked(): List<PlaceholderPackage> =
-        sortedWith(compareBy<PlaceholderPackage> { !checkedNames.contains(it.name) }
+    private fun List<AppPackage>.sortedByLabelLocked(): List<AppPackage> =
+        sortedWith(compareBy<AppPackage> { !checkedNames.contains(it.name) }
             .thenBy { it.label })
 
     private fun checkedTotalCacheBytesLocked(): Long =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            items.filter { checkedNames.contains(it.name) }.sumOf { it.getCacheSize() }
-        else 0L
+        items.filter { checkedNames.contains(it.name) }.sumOf { it.cacheBytes }
 
     companion object {
         // One batch settle before re-reading post-clean stats (quota path lags).
