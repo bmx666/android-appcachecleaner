@@ -67,15 +67,23 @@ object AccessibilityE2ESupport {
         }
     }
 
-    /** Poll the live AccessibilityManager until our service shows up as actually enabled/bound. */
+    /**
+     * Poll the live AccessibilityManager until our service shows up as actually enabled/bound.
+     * Match on AccessibilityServiceInfo.getId() (the flattened "pkg/cls" component string, stable
+     * since API 14) - resolveInfo/serviceInfo can be null or carry a mismatched packageName across
+     * API levels, which made the old packageName check report "not bound" even when it was (the
+     * API 23..latest grantPrerequisites failure).
+     */
     private fun awaitServiceBound(): Boolean {
         val am = targetContext.getSystemService(Context.ACCESSIBILITY_SERVICE)
                 as AccessibilityManager
+        val want = serviceComponent()
+        val wantClass = AppCacheCleanerService::class.java.name
         val deadline = SystemClock.uptimeMillis() + SERVICE_BIND_MS
         while (SystemClock.uptimeMillis() < deadline) {
             val bound = am.getEnabledAccessibilityServiceList(
                 android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
-                .any { it.resolveInfo?.serviceInfo?.packageName == targetContext.packageName }
+                .any { it.id == want || it.id?.endsWith(wantClass) == true }
             if (bound) return true
             SystemClock.sleep(200)
         }
@@ -107,17 +115,24 @@ object AccessibilityE2ESupport {
         val title = targetContext.getString(R.string.first_boot_title)
         if (device.wait(Until.hasObject(By.text(title)), FIRST_BOOT_MS) != true) return
 
-        // Tick all checkboxes top-to-bottom; clicking one enables the next within the same pass.
-        repeat(4) {
-            val boxes = device.findObjects(By.checkable(true))
+        // All 4 boxes must be checked IN ORDER (each enables the next); only then does OK enable.
+        // Click strictly by index 0..3 and tap the row's bounds-centre so the hit lands on the
+        // Row's `clickable` (the inner Checkbox has onCheckedChange=null, so isChecked is not a
+        // reliable click target). Re-query each pass because handles go stale after recomposition.
+        for (i in 0 until 4) {
+            val rows = device.findObjects(By.checkable(true))
                 .sortedBy { it.visibleBounds.centerY() }
-            val next = boxes.firstOrNull { !it.isChecked } ?: return@repeat
-            next.click()
-            device.waitForIdle()
+            val row = rows.getOrNull(i) ?: break
+            if (!row.isChecked) {
+                val b = row.visibleBounds
+                device.click(b.centerX(), b.centerY())
+                device.waitForIdle()
+            }
         }
 
+        // OK is enabled only once every box is checked - wait for the enabled node before tapping.
         val ok = targetContext.getString(android.R.string.ok)
-        device.wait(Until.findObject(By.text(ok)), FIRST_BOOT_MS)?.click()
+        device.wait(Until.findObject(By.text(ok).enabled(true)), FIRST_BOOT_MS)?.click()
         // Back on the splash->home gate; wait for it to settle.
         device.waitForIdle()
     }
