@@ -1,6 +1,5 @@
 package com.github.bmx666.appcachecleaner.ui.viewmodel
 
-import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build
@@ -16,7 +15,7 @@ import com.github.bmx666.appcachecleaner.data.PackageRepository
 import com.github.bmx666.appcachecleaner.data.PackageSource
 import com.github.bmx666.appcachecleaner.data.UserPrefCustomPackageListManager
 import com.github.bmx666.appcachecleaner.data.UserPrefFilterManager
-import com.github.bmx666.appcachecleaner.model.PlaceholderPackage
+import com.github.bmx666.appcachecleaner.model.AppPackage
 import com.github.bmx666.appcachecleaner.platform.DispatcherProvider
 import com.github.bmx666.appcachecleaner.util.ByteFormatter
 import com.github.bmx666.appcachecleaner.util.LocaleHelper
@@ -64,7 +63,7 @@ class PackageListViewModel @Inject constructor(
     private data class FetchedPackage(
         val pkgInfo: PackageInfo,
         val exists: Boolean,
-        val stats: StorageStats?,
+        val cacheBytes: Long,
         val label: String?,
     )
 
@@ -83,7 +82,7 @@ class PackageListViewModel @Inject constructor(
 
     // Single source of truth: observe the repository directly (no mirrored slices).
     val pkgListChecked: StateFlow<Set<String>> = repo.checked
-    val pkgListCurrentVisible: StateFlow<List<PlaceholderPackage>> = repo.visiblePackages
+    val pkgListCurrentVisible: StateFlow<List<AppPackage>> = repo.visiblePackages
 
     // User-entered minimum cache size for display only (the actual filter lives in repo).
     @RequiresApi(Build.VERSION_CODES.O)
@@ -378,11 +377,9 @@ class PackageListViewModel @Inject constructor(
                         return@async null
 
                     semaphore.withPermit {
-                        val stats =
-                            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && requestStats)
-                                packageSource.getStorageStats(pkgInfo)
-                            else
-                                null
+                        // getCacheBytes returns 0 on pre-O / error, so no SDK guard here.
+                        val cacheBytes =
+                            if (requestStats) packageSource.getCacheBytes(pkgInfo) else 0L
 
                         val exists = repo.contains(pkgInfo)
                         // null label => existing entry whose label needs no refresh.
@@ -400,7 +397,7 @@ class PackageListViewModel @Inject constructor(
                                 null
                             }
 
-                        FetchedPackage(pkgInfo, exists, stats, label)
+                        FetchedPackage(pkgInfo, exists, cacheBytes, label)
                     }.also {
                         updateProgress(progress.incrementAndGet(), total)
                     }
@@ -410,11 +407,11 @@ class PackageListViewModel @Inject constructor(
 
         fetched.forEach { f ->
             if (f.exists) {
-                repo.updateStats(f.pkgInfo, f.stats)
+                repo.updateCacheBytes(f.pkgInfo, f.cacheBytes)
                 f.label?.let { repo.updateLabel(f.pkgInfo, it, currentLocale) }
             } else {
                 repo.add(
-                    f.pkgInfo, f.label ?: f.pkgInfo.packageName, currentLocale, f.stats)
+                    f.pkgInfo, f.label ?: f.pkgInfo.packageName, currentLocale, f.cacheBytes)
             }
         }
 
