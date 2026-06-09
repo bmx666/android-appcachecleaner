@@ -1,7 +1,7 @@
 package com.github.bmx666.appcachecleaner.clearcache.scenario
 
 import android.os.Build
-import android.view.accessibility.AccessibilityNodeInfo
+import com.github.bmx666.appcachecleaner.clearcache.node.NodeView
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
@@ -60,7 +60,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 
     private suspend fun findClearCacheButton(
-        nodeInfo: AccessibilityNodeInfo,
+        nodeInfo: NodeView,
         clickTries: Int = maxPerformClickCountTries,
     ): CancellationException? {
         nodeInfo.findClickableByText(arrayTextClearCacheButton, SETTINGS_BUTTON_ID_REGEX)?.let { clearCacheButton ->
@@ -144,10 +144,10 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 
     private suspend fun findStorageAndCacheMenu(
-        nodeInfo: AccessibilityNodeInfo,
+        nodeInfo: NodeView,
         clickTries: Int = maxPerformClickCountTries,
     ): CancellationException? {
-        suspend fun fn(storageAndCacheMenu: AccessibilityNodeInfo): CancellationException? {
+        suspend fun fn(storageAndCacheMenu: NodeView): CancellationException? {
             return when (doPerformClick(storageAndCacheMenu, "storage & cache button")) {
                 // open App Storage Activity
                 true -> PACKAGE_WAIT_NEXT_STEP
@@ -173,7 +173,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findForceStopButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+    private suspend fun findForceStopButton(nodeInfo: NodeView): Boolean? {
         nodeInfo.findClickableByText(arrayTextForceStopButton, SETTINGS_BUTTON_ID_REGEX)?.let { forceStopButton ->
 
             return when (doPerformClick(forceStopButton, "force stop button")) {
@@ -190,13 +190,13 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private fun findForceStopDialogTitle(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private fun findForceStopDialogTitle(nodeInfo: NodeView): Boolean {
         val foundTitle = nodeInfo.findDialogTitle(arrayTextForceStopDialogTitle) != null
         Logger.d("findForceStopDialogTitle: found title = $foundTitle")
         return foundTitle
     }
 
-    private suspend fun findForceStopDialogOkButton(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private suspend fun findForceStopDialogOkButton(nodeInfo: NodeView): Boolean {
         nodeInfo.findDialogButton(arrayTextOkButton)?.let { forceStopDialogOkButton ->
             return when (doPerformClick(forceStopDialogOkButton, "force stop dialog - ok button")) {
                 // ok button was found and it's enabled but perform click was failed
@@ -209,7 +209,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
     }
 
     private suspend fun findClearDataButton(
-        nodeInfo: AccessibilityNodeInfo,
+        nodeInfo: NodeView,
         clickTries: Int = maxPerformClickCountTries,
     ): Boolean? {
         nodeInfo.findClickableByText(arrayTextClearDataButton, SETTINGS_BUTTON_ID_REGEX)?.let { clearDataButton ->
@@ -242,7 +242,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findClearDataDialogOkButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+    private suspend fun findClearDataDialogOkButton(nodeInfo: NodeView): Boolean? {
         nodeInfo.findDialogButton(arrayTextOkButton)?.let { clearDataDialogDeleteButton ->
             return when (doPerformClick(clearDataDialogDeleteButton, "clear data dialog - ok button")) {
                 // ok button was found and it's enabled but perform click was failed
@@ -254,7 +254,7 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findClearDataDialogDeleteButton(nodeInfo: AccessibilityNodeInfo): Boolean? {
+    private suspend fun findClearDataDialogDeleteButton(nodeInfo: NodeView): Boolean? {
         nodeInfo.findDialogButton(arrayTextDeleteButton)?.let { clearDataDialogDeleteButton ->
             return when (doPerformClick(clearDataDialogDeleteButton, "clear data dialog - delete button")) {
                 // ok button was found and it's enabled but perform click was failed
@@ -266,13 +266,13 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private fun findClearDataDialogTitle(nodeInfo: AccessibilityNodeInfo): Boolean {
+    private fun findClearDataDialogTitle(nodeInfo: NodeView): Boolean {
         val foundTitle = nodeInfo.findDialogTitle(arrayTextClearDataDialogTitle) != null
         Logger.d("findClearDataDialogTitle: found title = $foundTitle")
         return foundTitle
     }
 
-    private suspend fun processForceStop(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun processForceStop(nodeInfo: NodeView): CancellationException? {
         if (!forceStopApps) return null
         if (forceStopTries <= 0) return null
 
@@ -383,8 +383,8 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun processStorage(nodeInfo: AccessibilityNodeInfo): CancellationException? {
-        var recyclerViewNodeInfo: AccessibilityNodeInfo? = nodeInfo
+    private suspend fun processStorage(nodeInfo: NodeView): CancellationException? {
+        var recyclerViewNodeInfo: NodeView? = nodeInfo
 
         while (recyclerViewNodeInfo != null) {
 
@@ -415,14 +415,14 @@ internal class DefaultClearScenario: BaseClearScenario() {
         return null
     }
 
-    override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    override suspend fun doClearCache(nodeInfo: NodeView): CancellationException? {
         processForceStop(nodeInfo)?.let { return it }
         findClearCacheButton(nodeInfo)?.let { return it }
         processStorage(nodeInfo)?.let { return it }
         return null
     }
 
-    override suspend fun doClearData(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    override suspend fun doClearData(nodeInfo: NodeView): CancellationException? {
         return when (findClearDataDialogTitle(nodeInfo)) {
             true ->
                 when (findClearDataDialogDeleteButton(nodeInfo)) {
@@ -453,9 +453,9 @@ private val DIALOG_BUTTON_ID_REGEX = "android:id/button.*".toRegex()
 // Collapsed clear-cache / clear-data / force-stop finders (were byte-identical):
 // locate a text/button node matching [arrayText] under [viewIdResourceName],
 // return its clickable ancestor.
-private fun AccessibilityNodeInfo.findClickableByText(
+private fun NodeView.findClickableByText(
     arrayText: ArrayList<CharSequence>,
-    viewIdResourceName: Regex): AccessibilityNodeInfo? =
+    viewIdResourceName: Regex): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = true,
@@ -465,8 +465,8 @@ private fun AccessibilityNodeInfo.findClickableByText(
         )?.findClickable()
     }
 
-private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+private fun NodeView.findStorageAndCacheMenu(
+    arrayText: ArrayList<CharSequence>): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = true,
@@ -476,13 +476,13 @@ private fun AccessibilityNodeInfo.findStorageAndCacheMenu(
         )?.findClickable()
     }
 
-private fun AccessibilityNodeInfo.findRecyclerView(): AccessibilityNodeInfo? =
+private fun NodeView.findRecyclerView(): NodeView? =
     findNode { node ->
         node.takeIf { it.findByViewIdResourceName("com.android.settings:id/recycler_view") }
     }
 
-private fun AccessibilityNodeInfo.findDialogButton(
-    arrayText: ArrayList<CharSequence>, findTextView: Boolean = true): AccessibilityNodeInfo? =
+private fun NodeView.findDialogButton(
+    arrayText: ArrayList<CharSequence>, findTextView: Boolean = true): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = findTextView,
@@ -492,8 +492,8 @@ private fun AccessibilityNodeInfo.findDialogButton(
         )?.findClickable()
     }
 
-private fun AccessibilityNodeInfo.findDialogTitle(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+private fun NodeView.findDialogTitle(
+    arrayText: ArrayList<CharSequence>): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = true,

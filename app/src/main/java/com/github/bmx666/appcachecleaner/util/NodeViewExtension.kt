@@ -1,21 +1,21 @@
 package com.github.bmx666.appcachecleaner.util
 
-import android.view.accessibility.AccessibilityNodeInfo
+import com.github.bmx666.appcachecleaner.clearcache.node.NodeView
 import com.github.bmx666.appcachecleaner.log.Logger
 
-fun AccessibilityNodeInfo.lowercaseCompareText(text: CharSequence?): Boolean {
+fun NodeView.lowercaseCompareText(text: CharSequence?): Boolean {
     return this.lowercaseCompareText(text?.toString())
 }
 
-fun AccessibilityNodeInfo.lowercaseCompareText(text: String?): Boolean {
+fun NodeView.lowercaseCompareText(text: String?): Boolean {
     return this.text?.toString()?.lowercase().contentEquals(text?.lowercase())
 }
 
-fun AccessibilityNodeInfo.findByViewIdResourceName(text: String): Boolean {
+fun NodeView.findByViewIdResourceName(text: String): Boolean {
     return this.viewIdResourceName?.contentEquals(text) == true
 }
 
-fun AccessibilityNodeInfo.findByViewIdResourceNames(
+fun NodeView.findByViewIdResourceNames(
     viewIdResourceNames: Array<String>)
 : Boolean {
     return viewIdResourceNames.any { viewIdResourceName ->
@@ -23,7 +23,7 @@ fun AccessibilityNodeInfo.findByViewIdResourceNames(
     }
 }
 
-fun AccessibilityNodeInfo.findByViewIdResourceName(regex: Regex): Boolean {
+fun NodeView.findByViewIdResourceName(regex: Regex): Boolean {
     return this.viewIdResourceName?.matches(regex) == true
 }
 
@@ -34,9 +34,9 @@ fun AccessibilityNodeInfo.findByViewIdResourceName(regex: Regex): Boolean {
  * to avoid duplicating the recursion (see DefaultClearScenario / XiaomiMIUI).
  * Note: recursive => cannot be inline; [transform] is invoked per node.
  */
-fun AccessibilityNodeInfo.findNode(
-    transform: (AccessibilityNodeInfo) -> AccessibilityNodeInfo?)
-        : AccessibilityNodeInfo? {
+fun NodeView.findNode(
+    transform: (NodeView) -> NodeView?)
+        : NodeView? {
     this.getAllChild().forEach { childNode ->
         childNode?.findNode(transform)?.let { return it }
     }
@@ -44,49 +44,49 @@ fun AccessibilityNodeInfo.findNode(
     return transform(this)
 }
 
-fun AccessibilityNodeInfo.findNestedChildByViewIdResourceName(
+fun NodeView.findNestedChildByViewIdResourceName(
     viewIdResourceName: String)
-        : AccessibilityNodeInfo? =
+        : NodeView? =
     findNode { node ->
         node.takeIf { it.findByViewIdResourceName(viewIdResourceName) }
     }
 
-fun AccessibilityNodeInfo.findNestedChildByViewIdResourceNames(
+fun NodeView.findNestedChildByViewIdResourceNames(
     viewIdResourceNames: Array<String>)
-        : AccessibilityNodeInfo? =
+        : NodeView? =
     findNode { node ->
         node.takeIf { it.findByViewIdResourceNames(viewIdResourceNames) }
     }
 
-fun AccessibilityNodeInfo.findByClassName(className: String): Boolean {
+fun NodeView.findByClassName(className: String): Boolean {
     return this.className?.contentEquals(className) == true
 }
 
-fun AccessibilityNodeInfo.findByClassNames(classNames: Array<String>): Boolean {
+fun NodeView.findByClassNames(classNames: Array<String>): Boolean {
     return classNames.any { className ->
         this.findByClassName(className)
     }
 }
 
-fun AccessibilityNodeInfo.findNestedChildByClassNames(classNames: Array<String>): AccessibilityNodeInfo? =
+fun NodeView.findNestedChildByClassNames(classNames: Array<String>): NodeView? =
     findNode { node ->
         node.takeIf { it.findByClassNames(classNames) }
     }
 
-fun AccessibilityNodeInfo.findClickable(): AccessibilityNodeInfo? {
+fun NodeView.findClickable(): NodeView? {
     return when {
         this.isClickable -> this
         else -> this.parent?.findClickable()
     }
 }
 
-fun AccessibilityNodeInfo.performClick(): Boolean? {
-    return this.findClickable()?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+fun NodeView.performClick(): Boolean? {
+    return this.findClickable()?.click()
 }
 
-fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo?> {
+fun NodeView.getAllChild(): Iterator<NodeView?> {
 
-    return object : Iterator<AccessibilityNodeInfo?> {
+    return object : Iterator<NodeView?> {
 
         val childCount = this@getAllChild.childCount
         var currentIdx = 0
@@ -95,13 +95,13 @@ fun AccessibilityNodeInfo.getAllChild(): Iterator<AccessibilityNodeInfo?> {
             return childCount > 0 && currentIdx < childCount
         }
 
-        override fun next(): AccessibilityNodeInfo? {
+        override fun next(): NodeView? {
             return this@getAllChild.getChild(currentIdx++)
         }
     }
 }
 
-fun AccessibilityNodeInfo.showTree(eventTime: Long, level: Int) {
+fun NodeView.showTree(eventTime: Long, level: Int) {
     Logger.d("[$eventTime] " + ">".repeat(level) +
             " " + this.className +
             ":" + this.text +
@@ -111,12 +111,12 @@ fun AccessibilityNodeInfo.showTree(eventTime: Long, level: Int) {
     }
 }
 
-private inline fun <reified T> AccessibilityNodeInfo.takeIfMatchesGeneric(
+private inline fun <reified T> NodeView.takeIfMatchesGeneric(
     findTextView: Boolean,
     findButton: Boolean,
     viewIdResourceName: T,
     arrayText: ArrayList<CharSequence>
-): AccessibilityNodeInfo? {
+): NodeView? {
     return this.takeIf { nodeInfo ->
         val isTextViewFound = findTextView &&
                 nodeInfo.findByClassName("android.widget.TextView")
@@ -136,20 +136,20 @@ private inline fun <reified T> AccessibilityNodeInfo.takeIfMatchesGeneric(
     }
 }
 
-fun AccessibilityNodeInfo.takeIfMatches(
+fun NodeView.takeIfMatches(
     findTextView: Boolean,
     findButton: Boolean,
     viewIdResourceName: String,
     arrayText: ArrayList<CharSequence>
-): AccessibilityNodeInfo? {
+): NodeView? {
     return this.takeIfMatchesGeneric(findTextView, findButton, viewIdResourceName, arrayText)
 }
 
-fun AccessibilityNodeInfo.takeIfMatches(
+fun NodeView.takeIfMatches(
     findTextView: Boolean,
     findButton: Boolean,
     viewIdResourceName: Regex,
     arrayText: ArrayList<CharSequence>
-): AccessibilityNodeInfo? {
+): NodeView? {
     return this.takeIfMatchesGeneric(findTextView, findButton, viewIdResourceName, arrayText)
 }
