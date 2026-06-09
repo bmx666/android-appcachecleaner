@@ -53,6 +53,7 @@ class CleanCacheE2ETest {
             Until.findObject(By.desc(checkAll)), AccessibilityE2ESupport.APP_READY_MS)
         assertNotNull("package list / check-all not shown (list still loading?)", checkAllBtn)
         checkAllBtn.click()
+        device.waitForIdle() // let the selection register before we fire Clear cache
 
         val clearCache = targetContext.getString(R.string.clear_cache_btn_text)
         val clearBtn = device.wait(
