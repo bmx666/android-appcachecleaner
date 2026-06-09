@@ -123,6 +123,9 @@ dependencies {
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.espresso.core)
+    // UiAutomator: drives the SYSTEM App Info / Settings screens the accessibility
+    // service walks (cross-process) - Espresso cannot leave the app under test.
+    androidTestImplementation(libs.androidx.uiautomator)
     androidTestImplementation(libs.androidx.arch.core.testing)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.kotlinx.coroutines.test)
