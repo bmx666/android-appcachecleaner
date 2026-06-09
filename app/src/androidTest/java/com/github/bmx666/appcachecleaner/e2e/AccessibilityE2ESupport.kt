@@ -1,12 +1,14 @@
 package com.github.bmx666.appcachecleaner.e2e
 
 import android.app.Instrumentation
+import android.app.UiAutomation
 import android.content.Context
-import android.os.ParcelFileDescriptor
+import android.os.Build
 import android.os.SystemClock
 import android.view.accessibility.AccessibilityManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Configurator
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
@@ -45,10 +47,25 @@ object AccessibilityE2ESupport {
     private fun serviceComponent(): String =
         targetContext.packageName + "/" + AppCacheCleanerService::class.java.name
 
+    /**
+     * CRITICAL: by default UiAutomation suppresses every OTHER accessibility service while the
+     * test holds it - which unbinds our AppCacheCleanerService, so it never binds and a clean
+     * silently no-ops. Tell UiAutomator to keep other services alive. Must be set BEFORE the
+     * first UiDevice access (it fixes the flags the UiAutomation bridge is created with). The
+     * flag only exists / takes effect on API 24+; on API 23 UiAutomation always suppresses, so
+     * these E2E tests cannot run there.
+     */
+    private fun allowOtherAccessibilityServices() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Configurator.getInstance().setUiAutomationFlags(
+                UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES)
+        }
+    }
+
+    // Routed through UiDevice so it uses the (non-suppressing) UiAutomation configured above,
+    // not a second flags-0 automation that would re-suppress our service.
     private fun shell(cmd: String) {
-        val fd = instrumentation.uiAutomation.executeShellCommand(cmd)
-        // Drain the pipe so the command actually completes before we move on.
-        ParcelFileDescriptor.AutoCloseInputStream(fd).use { it.readBytes() }
+        device.executeShellCommand(cmd)
     }
 
     /**
@@ -59,6 +76,7 @@ object AccessibilityE2ESupport {
      * fires), which is exactly the "press clean, nothing happens, back to home" symptom.
      */
     fun grantPrerequisites() {
+        allowOtherAccessibilityServices() // before any UiDevice/shell use
         shell("appops set ${targetContext.packageName} GET_USAGE_STATS allow")
         shell("settings put secure enabled_accessibility_services ${serviceComponent()}")
         shell("settings put secure accessibility_enabled 1")
