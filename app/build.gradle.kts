@@ -137,6 +137,9 @@ dependencies {
     testImplementation(composeBom)
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
+    // Robolectric-driven Compose smoke tests run in the JVM unit-test source set.
+    testImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.compose.ui.test.manifest)
 
     implementation(libs.compose.material3)
 
