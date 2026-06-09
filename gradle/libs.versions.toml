@@ -17,6 +17,7 @@ robolectric = "4.16.1"
 androidx-test-core = "1.7.0"
 androidx-arch-core-testing = "2.2.0"
 espresso = "3.7.0"
+uiautomator = "2.3.0"
 
 compose-bom = "2026.05.01"
 compose-ui = "1.11.2"
@@ -64,6 +65,7 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidx-test-core" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidx-arch-core-testing" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
