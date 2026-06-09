@@ -20,12 +20,13 @@ import com.github.bmx666.appcachecleaner.data.UserPrefExtraManager
 import com.github.bmx666.appcachecleaner.data.UserPrefScenarioManager
 import com.github.bmx666.appcachecleaner.data.UserPrefTimeoutManager
 import com.github.bmx666.appcachecleaner.log.Logger
+import com.github.bmx666.appcachecleaner.platform.DefaultDispatcherProvider
+import com.github.bmx666.appcachecleaner.platform.DispatcherProvider
 import com.github.bmx666.appcachecleaner.util.ExtraSearchTextHelper
 import com.github.bmx666.appcachecleaner.util.showTree
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -36,19 +37,32 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.reflect.KFunction1
 import kotlin.time.Duration.Companion.milliseconds
 
-class AccessibilityClearManager {
+// Injectable seams (default to production impls so the static service singleton constructs
+// with `AccessibilityClearManager()` unchanged):
+//  - [scenario]     : the clear scenario. setSettings() rebuilds it from user prefs in prod;
+//                     tests inject a real DefaultClearScenario (or a recording stub) and skip
+//                     setSettings, scripting node trees directly.
+//  - [dispatchers]  : coordination + scenario-hop dispatchers. Tests pass a single
+//                     TestDispatcherProvider so the whole flow runs on virtual time under
+//                     runTest (deterministic, no real Main/IO pools). NOTE: prod now uses
+//                     dispatchers.main (Dispatchers.Main), not Main.immediate as before -
+//                     the documented single-thread confinement still holds (all coordination
+//                     state is touched only from this scope), the trade is testability.
+class AccessibilityClearManager internal constructor(
+    private val scenario: BaseClearScenario = DefaultClearScenario(),
+    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
+) {
 
-    // Single coordination scope on Main.immediate: all coordination state below is
+    // Single coordination scope on dispatchers.main: all coordination state below is
     // confined to the one accessibility main thread (clearApp body, checkEvent producer,
     // doGoBack), so the fields need no memory barrier (was 6 cross-thread Job fields).
     // SupervisorJob so one failed child does not tear down the scope. Recreatable:
     // destroy() cancels it on service teardown, and clearCacheApp/clearDataApp revive it
     // because this manager is a static singleton reused across service rebinds. Only the
-    // scenario node-walk hops off this thread (withContext(IO)).
-    private fun newScope() = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    // scenario node-walk hops off this thread (withContext(dispatchers.io)).
+    private fun newScope() = CoroutineScope(SupervisorJob() + dispatchers.main)
     private var coordScope = newScope()
 
     // The whole-run job. Its children (per-package waits, scenario hop, go-back loop) are
@@ -77,7 +91,8 @@ class AccessibilityClearManager {
 
     // Instance-scoped (was a companion static): per-manager clear scenario, rebuilt by
     // setSettings(). Keeping it on the instance removes cross-instance/rebind sharing.
-    private var clearScenario: BaseClearScenario = DefaultClearScenario()
+    // Seeded from the injected [scenario] so tests can drive a known scenario without prefs.
+    private var clearScenario: BaseClearScenario = scenario
 
     private data class NodeState(
         val className: CharSequence?,
@@ -175,7 +190,7 @@ class AccessibilityClearManager {
                       updatePosition: (Int) -> Unit,
                       performBack: () -> Boolean,
                       getForegroundPackageName: () -> String?,
-                      openAppInfo: KFunction1<String, Unit>,
+                      openAppInfo: (String) -> Unit,
                       finish: (String?, String?) -> Unit) =
         clearApp(ClearState.ClearingCache, pkgList, updatePosition, performBack,
             getForegroundPackageName, openAppInfo, finish)
@@ -184,7 +199,7 @@ class AccessibilityClearManager {
                      updatePosition: (Int) -> Unit,
                      performBack: () -> Boolean,
                      getForegroundPackageName: () -> String?,
-                     openAppInfo: KFunction1<String, Unit>,
+                     openAppInfo: (String) -> Unit,
                      finish: (String?, String?) -> Unit) =
         clearApp(ClearState.ClearingData, pkgList, updatePosition, performBack,
             getForegroundPackageName, openAppInfo, finish)
@@ -198,7 +213,7 @@ class AccessibilityClearManager {
                          updatePosition: (Int) -> Unit,
                          performBack: () -> Boolean,
                          getForegroundPackageName: () -> String?,
-                         openAppInfo: KFunction1<String, Unit>,
+                         openAppInfo: (String) -> Unit,
                          finish: (String?, String?) -> Unit) {
         val tag = state.logTag
         clearState = state
@@ -300,7 +315,7 @@ class AccessibilityClearManager {
             while (true) {
                 // stable val: a captured var cannot be smart-cast inside the IO closure
                 val current = node
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(dispatchers.io) {
                     when (type) {
                         ClearState.ClearingCache -> clearScenario.doClearCache(current)
                         ClearState.ClearingData -> clearScenario.doClearData(current)
@@ -320,12 +335,23 @@ class AccessibilityClearManager {
         return true
     }
 
+    // Framework entry point: adapt the live accessibility node and delegate. Kept thin so
+    // the whole phase-routing + recomposition-dedup decision logic in onWindowStateChanged
+    // is exercisable on a plain JVM with a scripted NodeView (no AccessibilityEvent).
     fun checkEvent(event: AccessibilityEvent) {
+        onWindowStateChanged(event.source?.let { AndroidNodeView(it) })
+    }
+
+    // Routes one window-state change. [node] is the active screen's root for the Package
+    // phase (null -> nothing to feed) and is ignored for the GoBack phase (which only needs
+    // the "window changed" signal). Tests drive this directly: a scripted tree for Package
+    // events, any value for the go-back loop's window-change pings.
+    internal fun onWindowStateChanged(node: NodeView?) {
         when (phase) {
             // back-press loop is waiting for the window to change
             Phase.GoBack -> goBackChannel?.trySend(Unit)
             Phase.Package -> {
-                val nodeView = AndroidNodeView(event.source ?: return)
+                val nodeView = node ?: return
 
                 // Jetpack compose spam Accessibility Service when update some text
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -342,7 +368,7 @@ class AccessibilityClearManager {
 
                 if (BuildConfig.DEBUG) {
                     Logger.d("===>>> TREE BEGIN <<<===")
-                    nodeView.showTree(event.eventTime, 0)
+                    nodeView.showTree(0, 0)
                     Logger.d("===>>> TREE END <<<===")
                 }
 
