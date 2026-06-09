@@ -6,8 +6,9 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bmx666.appcachecleaner.data.UserPrefFilterManager
+import com.github.bmx666.appcachecleaner.util.ByteFormatter
+import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import com.github.bmx666.appcachecleaner.util.combineNonNull
-import com.github.bmx666.appcachecleaner.util.toFormattedString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.springframework.util.unit.DataSize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +37,7 @@ class SettingsFilterViewModel @Inject constructor(
         minCacheSizeBytes.map { bytes ->
             bytes?.let {
                 if (bytes > 0)
-                    DataSize.ofBytes(bytes).toFormattedString(context = context)
+                    ByteFormatter.format(bytes, LocaleHelper.getCurrentLocale(context))
                 else
                     null
             }

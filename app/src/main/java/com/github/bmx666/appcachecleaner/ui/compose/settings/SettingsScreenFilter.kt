@@ -18,7 +18,7 @@ import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsGroup
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsSwitch
 import com.github.bmx666.appcachecleaner.ui.compose.view.SettingsText
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsFilterViewModel
-import org.springframework.util.unit.DataSize
+import com.github.bmx666.appcachecleaner.util.ByteFormatter
 
 @Composable
 internal fun SettingsScreenFilter(navController: NavController) {
@@ -40,8 +40,7 @@ internal fun SettingsScreenFilter(navController: NavController) {
                 },
                 state = settingsFilterViewModel.minCacheSizeString.collectAsState(),
                 onSave = { str ->
-                    val dataSize = DataSize.parse(str)
-                    val minCacheSize = dataSize.toBytes()
+                    val minCacheSize = ByteFormatter.parse(str) ?: 0L
                     if (minCacheSize > 0L)
                         settingsFilterViewModel.setMinCacheSizeBytes(
                             if (minCacheSize > 1024L) minCacheSize else 1024L)
@@ -49,12 +48,7 @@ internal fun SettingsScreenFilter(navController: NavController) {
                         settingsFilterViewModel.removeMinCacheSizeBytes()
                 },
                 onCheck = { str ->
-                    try {
-                        DataSize.parse(str)
-                        true
-                    } catch (e: Exception) {
-                        false
-                    }
+                    ByteFormatter.parse(str) != null
                 },
             )
             HorizontalDivider()

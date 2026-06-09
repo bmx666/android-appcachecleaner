@@ -10,14 +10,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.data.PackageRepository
-import com.github.bmx666.appcachecleaner.util.toFormattedString
+import com.github.bmx666.appcachecleaner.util.ByteFormatter
+import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.springframework.util.unit.DataSize
 import javax.inject.Inject
 
 
@@ -94,8 +94,8 @@ class CleanResultViewModel @Inject constructor(
                 // Re-reads checked packages' stats (after a settle delay) and writes
                 // the fresh sizes back into the warm master list, returning bytes cleaned.
                 val cleanedCacheBytes = repo.refreshStatsAfterCacheClean()
-                val sizeStr = DataSize.ofBytes(cleanedCacheBytes)
-                    .toFormattedString(context)
+                val sizeStr = ByteFormatter.format(
+                    cleanedCacheBytes, LocaleHelper.getCurrentLocale(context))
 
                 val resId = when (interrupted) {
                     true -> R.string.text_clean_cache_interrupt_display_size

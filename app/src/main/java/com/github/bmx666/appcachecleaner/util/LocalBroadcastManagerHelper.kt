@@ -16,7 +16,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 
-abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
+abstract class BaseLocalBroadcastManagerHelper(
+    protected val context: Context,
+    private val eventBus: EventBus,
+) {
 
     /** Handle an event delivered on the main thread. */
     protected abstract fun onEvent(event: AppEvent)
@@ -27,7 +30,7 @@ abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
 
     protected fun register() {
         collectJob = scope.launch {
-            AppEventBus.events.collect { onEvent(it) }
+            eventBus.events.collect { onEvent(it) }
         }
     }
 
@@ -38,7 +41,7 @@ abstract class BaseLocalBroadcastManagerHelper(protected val context: Context) {
     }
 
     fun sendBroadcast(event: AppEvent) {
-        AppEventBus.emit(event)
+        eventBus.emit(event)
     }
 }
 
@@ -50,7 +53,8 @@ interface IIntentActivityCallback {
 
 class LocalBroadcastManagerActivityHelper(
     context: Context,
-    private val callback: IIntentActivityCallback): BaseLocalBroadcastManagerHelper(context) {
+    eventBus: EventBus,
+    private val callback: IIntentActivityCallback): BaseLocalBroadcastManagerHelper(context, eventBus) {
 
     override fun onEvent(event: AppEvent) {
         when (event) {
@@ -148,7 +152,8 @@ data class IntentSettings(
 
 class LocalBroadcastManagerServiceHelper(
     context: Context,
-    private val callback: IIntentServiceCallback): BaseLocalBroadcastManagerHelper(context) {
+    eventBus: EventBus,
+    private val callback: IIntentServiceCallback): BaseLocalBroadcastManagerHelper(context, eventBus) {
 
     override fun onEvent(event: AppEvent) {
         when (event) {

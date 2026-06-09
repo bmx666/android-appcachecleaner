@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.storage.StorageManager
 import androidx.annotation.RequiresApi
+import com.github.bmx666.appcachecleaner.log.Logger
 
 
 class PackageManagerHelper {
@@ -82,10 +83,10 @@ class PackageManagerHelper {
                         try {
                             return res.getString(resId)
                         } catch (e: Resources.NotFoundException) {
-                            e.printStackTrace()
+                            Logger.e(e.message ?: e.toString())
                         }
                 } catch (e: PackageManager.NameNotFoundException) {
-                    e.printStackTrace()
+                    Logger.e(e.message ?: e.toString())
                 }
             }
 
@@ -104,11 +105,11 @@ class PackageManagerHelper {
                             try {
                                 localizedLabel = res.getString(resId)
                             } catch (e: Resources.NotFoundException) {
-                                e.printStackTrace()
+                                Logger.e(e.message ?: e.toString())
                             }
                     }
                 } catch (e: PackageManager.NameNotFoundException) {
-                    e.printStackTrace()
+                    Logger.e(e.message ?: e.toString())
                 }
             }
 
@@ -128,7 +129,7 @@ class PackageManagerHelper {
                     android.os.Process.myUserHandle()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Logger.e(e.message ?: e.toString())
             }
 
             return null
@@ -145,7 +146,7 @@ class PackageManagerHelper {
                 return if (newCacheSize >= oldCacheSize) 0
                     else oldCacheSize - newCacheSize
             } catch (e: Exception) {
-                e.printStackTrace()
+                Logger.e(e.message ?: e.toString())
             }
 
             return 0

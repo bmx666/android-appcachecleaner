@@ -5,6 +5,11 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
+    jacoco
+}
+
+jacoco {
+    toolVersion = "0.8.12"
 }
 
 kotlin {
@@ -55,6 +60,8 @@ kotlin {
             debug {
                 isDebuggable = true
                 applicationIdSuffix = ".debug"
+                // Emit JaCoCo exec data from JVM unit tests (report-only; no gate).
+                enableUnitTestCoverage = true
             }
         }
         bundle {
@@ -70,6 +77,14 @@ kotlin {
             buildConfig = true
             compose = true
             viewBinding = true
+        }
+        testOptions {
+            unitTests {
+                // Robolectric needs merged resources/manifest; default-value stubs keep
+                // un-shadowed android.* calls from throwing in plain (non-Robolectric) tests.
+                isIncludeAndroidResources = true
+                isReturnDefaultValues = true
+            }
         }
     }
 
@@ -91,13 +106,37 @@ dependencies {
 
     debugImplementation(libs.timber)
 
+    // --- unit tests (JVM + Robolectric) ---
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.core.ktx)
+    testImplementation(libs.androidx.test.junit)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.dagger.hilt.compiler)
+
+    // --- instrumented + Compose UI tests ---
     androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.arch.core.testing)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.dagger.hilt.compiler)
 
     // Compose UI
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
+    testImplementation(composeBom)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 
     implementation(libs.compose.material3)
 
@@ -122,4 +161,45 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.accompanist.permissions)
+}
+
+// Report-only coverage (no enforced threshold). Run: ./gradlew jacocoTestReport
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    group = "verification"
+    description = "JaCoCo coverage report for debug JVM unit tests (report-only)."
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
+
+    // Exclude generated / framework / UI-only code from the denominator so the number
+    // reflects hand-written logic, which is what the test suite targets.
+    val excludes = listOf(
+        "**/R.class", "**/R\$*.class", "**/BuildConfig.*", "**/Manifest*.*",
+        "**/*Test*.*", "android/**/*.*",
+        "**/*_Factory*.*", "**/*_*Factory.*", "**/*_HiltModules*.*", "**/Hilt_*.*",
+        "**/*_MembersInjector*.*", "**/*_Impl*.*", "**/Dagger*.*",
+        "**/*ComposableSingletons*.*", "**/ComposableSingletons*.*",
+        "org/springframework/**",
+        "**/ui/theme/**", "**/ui/compose/view/**",
+    )
+
+    val kotlinClasses = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
+        exclude(excludes)
+    }
+    val javaClasses = fileTree(layout.buildDirectory.dir("intermediates/javac/debug/classes")) {
+        exclude(excludes)
+    }
+    classDirectories.setFrom(kotlinClasses, javaClasses)
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(
+        fileTree(layout.buildDirectory) {
+            include(
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "jacoco/testDebugUnitTest.exec",
+            )
+        }
+    )
 }

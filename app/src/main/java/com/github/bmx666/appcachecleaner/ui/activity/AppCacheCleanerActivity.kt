@@ -34,12 +34,14 @@ import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsScenarioViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsTimeoutViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsUiViewModel
 import com.github.bmx666.appcachecleaner.util.ActivityHelper
+import com.github.bmx666.appcachecleaner.util.EventBus
 import com.github.bmx666.appcachecleaner.util.IIntentActivityCallback
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerActivityHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
@@ -56,6 +58,8 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     private val permissionViewModel: PermissionViewModel by viewModels()
     private val cleanResultViewModel: CleanResultViewModel by viewModels()
 
+    @Inject lateinit var eventBus: EventBus
+
     private lateinit var localBroadcastManager: LocalBroadcastManagerActivityHelper
 
     private var calculationCleanedCacheJob: Job? = null
@@ -64,7 +68,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        localBroadcastManager = LocalBroadcastManagerActivityHelper(this, this)
+        localBroadcastManager = LocalBroadcastManagerActivityHelper(this, eventBus, this)
 
         observeNightMode()
 

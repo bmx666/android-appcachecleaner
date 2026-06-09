@@ -31,9 +31,9 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.model.PlaceholderPackage
 import com.github.bmx666.appcachecleaner.ui.compose.view.AppIcon
 import com.github.bmx666.appcachecleaner.ui.compose.view.LabelledCheckBox
-import com.github.bmx666.appcachecleaner.util.toFormattedString
+import com.github.bmx666.appcachecleaner.util.ByteFormatter
+import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import kotlinx.coroutines.runBlocking
-import org.springframework.util.unit.DataSize
 
 @Composable
 internal fun PackageListPackageList(
@@ -136,9 +136,9 @@ private fun ListItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 if (showCacheSize && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)) {
-                    val sizeStr = runBlocking {
-                        DataSize.ofBytes(pkg.getCacheSize()).toFormattedString(context)
-                    }
+                    val sizeStr = ByteFormatter.format(
+                        pkg.getCacheSize(),
+                        runBlocking { LocaleHelper.getCurrentLocale(context) })
                     Text(
                         text = stringResource(id = R.string.text_cache_size_fmt, sizeStr),
                         maxLines = 1,
