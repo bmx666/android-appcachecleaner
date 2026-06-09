@@ -13,14 +13,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bmx666.appcachecleaner.data.LocaleManager
 import com.github.bmx666.appcachecleaner.data.PackageRepository
+import com.github.bmx666.appcachecleaner.data.PackageSource
 import com.github.bmx666.appcachecleaner.data.UserPrefCustomPackageListManager
 import com.github.bmx666.appcachecleaner.data.UserPrefFilterManager
 import com.github.bmx666.appcachecleaner.model.PlaceholderPackage
-import com.github.bmx666.appcachecleaner.util.PackageManagerHelper
-import com.github.bmx666.appcachecleaner.util.toFormattedString
+import com.github.bmx666.appcachecleaner.platform.DispatcherProvider
+import com.github.bmx666.appcachecleaner.util.ByteFormatter
+import com.github.bmx666.appcachecleaner.util.LocaleHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -35,7 +36,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import org.springframework.util.unit.DataSize
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -49,6 +49,8 @@ class PackageListViewModel @Inject constructor(
     private val userPrefFilterManager: UserPrefFilterManager,
     private val localeManager: LocaleManager,
     private val repo: PackageRepository,
+    private val packageSource: PackageSource,
+    private val dispatchers: DispatcherProvider,
     @param:ApplicationContext private val context: Context,
 ): ViewModel()
 {
@@ -89,7 +91,7 @@ class PackageListViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     val filterByCacheSizeString: StateFlow<String?> =
         _filterByCacheSize.map { bytes ->
-            DataSize.ofBytes(bytes).toFormattedString(context)
+            ByteFormatter.format(bytes, LocaleHelper.getCurrentLocale(context))
         }.stateIn(
             viewModelScope,
             SharingStarted.Lazily,
@@ -102,7 +104,7 @@ class PackageListViewModel @Inject constructor(
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ->
                     when {
                         bytes > 0 ->
-                            DataSize.ofBytes(bytes).toFormattedString(context)
+                            ByteFormatter.format(bytes, LocaleHelper.getCurrentLocale(context))
                         else -> null
                     }
                 else -> null
@@ -115,7 +117,7 @@ class PackageListViewModel @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun filterByCacheSize(minCacheSizeBytes: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             try {
                 _isProcessing.value = true
                 repo.applyFilterByCacheSize(minCacheSizeBytes)
@@ -130,7 +132,7 @@ class PackageListViewModel @Inject constructor(
 
     fun filterByName(text: String) {
         filterByNameJob?.cancel()
-        filterByNameJob = viewModelScope.launch(Dispatchers.IO) {
+        filterByNameJob = viewModelScope.launch(dispatchers.io) {
             try {
                 _isProcessing.value = true
                 repo.applyFilterByName(text)
@@ -142,13 +144,13 @@ class PackageListViewModel @Inject constructor(
     }
 
     fun checkPackage(packageName: String, checked: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             repo.setChecked(packageName, checked)
         }
     }
 
     fun checkVisible() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             try {
                 _isProcessing.value = true
                 repo.checkVisible()
@@ -161,7 +163,7 @@ class PackageListViewModel @Inject constructor(
     }
 
     fun uncheckVisible() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             try {
                 _isProcessing.value = true
                 repo.uncheckVisible()
@@ -174,7 +176,7 @@ class PackageListViewModel @Inject constructor(
     }
 
     fun saveListOfIgnoredApps() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             try {
                 _isProcessing.value = true
                 val pkgList = repo.getChecked()
@@ -197,20 +199,20 @@ class PackageListViewModel @Inject constructor(
         onSave: (String) -> Unit,
         onEmpty: () -> Unit,
     ) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             try {
                 _isProcessing.value = true
                 val pkgList = repo.getChecked()
                 if (pkgList.isNotEmpty()) {
                     userPrefCustomPackageListManager.setCustomList(name, pkgList)
-                    viewModelScope.launch(Dispatchers.Main) {
+                    viewModelScope.launch(dispatchers.main) {
                         onSave(name)
                     }
                     // use fake delay to reload list
                     delay(250L)
                     repo.applySortByLabel()
                 } else {
-                    viewModelScope.launch(Dispatchers.Main) {
+                    viewModelScope.launch(dispatchers.main) {
                         onEmpty()
                     }
                 }
@@ -223,8 +225,7 @@ class PackageListViewModel @Inject constructor(
     fun loadUserApps() =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = false,
                     systemUpdated = true,
                     userOnly = true,
@@ -239,8 +240,7 @@ class PackageListViewModel @Inject constructor(
     fun loadSystemApps() =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = true,
                     systemUpdated = false,
                     userOnly = false,
@@ -255,8 +255,7 @@ class PackageListViewModel @Inject constructor(
     fun loadAllApps() =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
@@ -271,15 +270,14 @@ class PackageListViewModel @Inject constructor(
     fun loadDisabledApps() =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getDisabledApps(context),
+                pkgList = packageSource.getDisabledApps(),
             )
         }
 
     fun loadIgnoredApps() =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
@@ -293,8 +291,7 @@ class PackageListViewModel @Inject constructor(
     fun loadCustomListAppsAdd() =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
@@ -308,8 +305,7 @@ class PackageListViewModel @Inject constructor(
     fun loadCustomListAppsEdit(name: String) =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
@@ -324,8 +320,7 @@ class PackageListViewModel @Inject constructor(
     fun loadCustomListAppsFilter(name: String) =
         process {
             processPackageList(
-                pkgList = PackageManagerHelper.getInstalledApps(
-                    context = context,
+                pkgList = packageSource.getInstalledApps(
                     systemNotUpdated = true,
                     systemUpdated = true,
                     userOnly = true,
@@ -339,7 +334,7 @@ class PackageListViewModel @Inject constructor(
         }
 
     private suspend fun processPackageList(
-        pkgList: ArrayList<PackageInfo>,
+        pkgList: List<PackageInfo>,
         checkedPkgList: Set<String>? = null,
         minCacheSizeBytes: Long? = null,
         hideUncheckedApps: Boolean? = null,
@@ -385,7 +380,7 @@ class PackageListViewModel @Inject constructor(
                     semaphore.withPermit {
                         val stats =
                             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && requestStats)
-                                PackageManagerHelper.getStorageStats(context, pkgInfo)
+                                packageSource.getStorageStats(pkgInfo)
                             else
                                 null
 
@@ -394,13 +389,13 @@ class PackageListViewModel @Inject constructor(
                         val label: String? =
                             if (!exists) {
                                 if (requestLabel)
-                                    PackageManagerHelper.getApplicationLabel(context, pkgInfo)
+                                    packageSource.getApplicationLabel(pkgInfo)
                                 else
                                     pkgInfo.packageName
                             } else if (requestLabel &&
                                 (repo.isLabelAsPackageName(pkgInfo) ||
                                  !repo.isSameLabelLocale(pkgInfo, currentLocale))) {
-                                PackageManagerHelper.getApplicationLabel(context, pkgInfo)
+                                packageSource.getApplicationLabel(pkgInfo)
                             } else {
                                 null
                             }
@@ -449,7 +444,7 @@ class PackageListViewModel @Inject constructor(
     }
 
     private fun process(process: suspend () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             try {
                 _isLoading.value = true
                 updateProgress(0, 0)

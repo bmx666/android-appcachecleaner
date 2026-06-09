@@ -8,6 +8,7 @@ import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.clearcache.AccessibilityClearManager
 import com.github.bmx666.appcachecleaner.log.Logger
 import com.github.bmx666.appcachecleaner.ui.view.AccessibilityOverlay
+import com.github.bmx666.appcachecleaner.util.EventBus
 import com.github.bmx666.appcachecleaner.util.IIntentServiceCallback
 import com.github.bmx666.appcachecleaner.util.LocalBroadcastManagerServiceHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
@@ -25,6 +27,8 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
     }
 
     private val logger = Logger()
+
+    @Inject lateinit var eventBus: EventBus
 
     private lateinit var accessibilityOverlay: AccessibilityOverlay
     private lateinit var localBroadcastManager: LocalBroadcastManagerServiceHelper
@@ -40,7 +44,7 @@ class AppCacheCleanerService : AccessibilityService(), IIntentServiceCallback {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        localBroadcastManager = LocalBroadcastManagerServiceHelper(this, this)
+        localBroadcastManager = LocalBroadcastManagerServiceHelper(this, eventBus, this)
         accessibilityOverlay = AccessibilityOverlay {
             accessibilityClearManager.interruptByUser()
         }

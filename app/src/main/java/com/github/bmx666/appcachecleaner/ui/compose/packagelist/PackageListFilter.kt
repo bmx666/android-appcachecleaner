@@ -17,7 +17,7 @@ import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.ui.compose.view.FilterTextEditDialog
 import com.github.bmx666.appcachecleaner.ui.viewmodel.PackageListViewModel
 import com.github.bmx666.appcachecleaner.ui.viewmodel.SettingsFilterViewModel
-import org.springframework.util.unit.DataSize
+import com.github.bmx666.appcachecleaner.util.ByteFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -44,17 +44,11 @@ internal fun PackageListFilter(
                 },
                 storedValue = packageListViewModel.filterByCacheSizeString.collectAsState(),
                 onSave = { str ->
-                    val dataSize = DataSize.parse(str)
-                    val minCacheSizeBytes = dataSize.toBytes()
+                    val minCacheSizeBytes = ByteFormatter.parse(str) ?: 0L
                     packageListViewModel.filterByCacheSize(minCacheSizeBytes)
                 },
                 onCheck = { str ->
-                    try {
-                        DataSize.parse(str)
-                        true
-                    } catch (e: Exception) {
-                        false
-                    }
+                    ByteFormatter.parse(str) != null
                 },
             ) {
                 // to dismiss dialog from within

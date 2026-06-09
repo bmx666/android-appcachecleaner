@@ -4,6 +4,8 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Type-safe, in-process replacement for the deprecated androidx LocalBroadcastManager.
@@ -23,16 +25,27 @@ sealed interface AppEvent {
     data object StopAccessibilityServiceFeedback : AppEvent
 }
 
-object AppEventBus {
+/**
+ * Injectable seam over the app-wide event stream. Production binds the @Singleton
+ * [DefaultEventBus]; tests construct a [DefaultEventBus] (or a fake) directly and assert
+ * on [events] / drive [emit] without any global state to reset between cases.
+ */
+interface EventBus {
+    val events: SharedFlow<AppEvent>
+    fun emit(event: AppEvent)
+}
+
+@Singleton
+class DefaultEventBus @Inject constructor() : EventBus {
 
     private val _events = MutableSharedFlow<AppEvent>(
         extraBufferCapacity = 64,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
-    val events: SharedFlow<AppEvent> = _events.asSharedFlow()
+    override val events: SharedFlow<AppEvent> = _events.asSharedFlow()
 
     /** Non-suspending emit; buffer + DROP_OLDEST guarantee it never blocks the caller. */
-    fun emit(event: AppEvent) {
+    override fun emit(event: AppEvent) {
         _events.tryEmit(event)
     }
 }
