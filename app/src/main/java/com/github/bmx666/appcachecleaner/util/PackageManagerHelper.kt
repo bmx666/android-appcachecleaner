@@ -69,7 +69,12 @@ class PackageManagerHelper {
 
         @JvmStatic
         suspend fun getApplicationIcon(context: Context, pkgName: String): Drawable? {
-            return context.packageManager.getApplicationIcon(pkgName)
+            return try {
+                context.packageManager.getApplicationIcon(pkgName)
+            } catch (e: PackageManager.NameNotFoundException) {
+                Logger.e(e.message ?: e.toString())
+                null
+            }
         }
 
         @JvmStatic
