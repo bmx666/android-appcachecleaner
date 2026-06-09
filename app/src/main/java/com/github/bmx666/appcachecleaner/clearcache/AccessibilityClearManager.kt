@@ -3,8 +3,9 @@ package com.github.bmx666.appcachecleaner.clearcache
 import android.content.Context
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
 import com.github.bmx666.appcachecleaner.BuildConfig
+import com.github.bmx666.appcachecleaner.clearcache.node.AndroidNodeView
+import com.github.bmx666.appcachecleaner.clearcache.node.NodeView
 import com.github.bmx666.appcachecleaner.clearcache.scenario.BaseClearScenario
 import com.github.bmx666.appcachecleaner.clearcache.scenario.DefaultClearScenario
 import com.github.bmx666.appcachecleaner.clearcache.scenario.XiaomiMIUIClearScenario
@@ -58,7 +59,7 @@ class AccessibilityClearManager {
     // / a go-back signal into the queue for the active phase; the clear loop consumes it.
     // CONFLATED keeps only the newest item (matches the old "new event preempts the
     // in-flight one"). eventChannel is replaced fresh per package -> zero stale carryover.
-    private var eventChannel: Channel<AccessibilityNodeInfo>? = null
+    private var eventChannel: Channel<NodeView>? = null
     private var goBackChannel: Channel<Unit>? = null
 
     // Routes checkEvent. Package -> feed eventChannel; GoBack -> feed goBackChannel;
@@ -236,7 +237,7 @@ class AccessibilityClearManager {
                     // Fresh per-package queue: no event from the previous package can be
                     // mistaken for this package's first event (matters for system
                     // packages that open nothing -> must time out, not grab a stale node).
-                    val channel = Channel<AccessibilityNodeInfo>(Channel.CONFLATED)
+                    val channel = Channel<NodeView>(Channel.CONFLATED)
                     eventChannel = channel
                     phase = Phase.Package
 
@@ -284,8 +285,8 @@ class AccessibilityClearManager {
     // go-back). Waits maxWaitAccessibilityEventMs for the first event; none -> the package
     // opened nothing (e.g. a system package) -> skip. After the first event, feed each
     // node to the scenario until it reports finish/failed or maxWaitAppTimeoutMs elapses.
-    private suspend fun processPackage(channel: Channel<AccessibilityNodeInfo>): Boolean {
-        val first: AccessibilityNodeInfo =
+    private suspend fun processPackage(channel: Channel<NodeView>): Boolean {
+        val first: NodeView =
             withTimeoutOrNull(clearScenario.maxWaitAccessibilityEventMs.toLong().milliseconds) {
                 channel.receive()
             } ?: run {
@@ -295,7 +296,7 @@ class AccessibilityClearManager {
         // run type captured on the main thread, then used inside the IO scenario hop
         val type = clearState
         withTimeoutOrNull(clearScenario.maxWaitAppTimeoutMs.toLong().milliseconds) {
-            var node: AccessibilityNodeInfo = first
+            var node: NodeView = first
             while (true) {
                 // stable val: a captured var cannot be smart-cast inside the IO closure
                 val current = node
@@ -324,11 +325,11 @@ class AccessibilityClearManager {
             // back-press loop is waiting for the window to change
             Phase.GoBack -> goBackChannel?.trySend(Unit)
             Phase.Package -> {
-                val nodeInfo = event.source ?: return
+                val nodeView = AndroidNodeView(event.source ?: return)
 
                 // Jetpack compose spam Accessibility Service when update some text
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    val currentNodeState = captureNodeState(nodeInfo)
+                    val currentNodeState = captureNodeState(nodeView)
                     if (lastNodeState != null && compareNodeStates(lastNodeState!!, currentNodeState)) {
                         // If the state is identical, ignore this event
                         Logger.w("ignore recomposition event")
@@ -341,12 +342,12 @@ class AccessibilityClearManager {
 
                 if (BuildConfig.DEBUG) {
                     Logger.d("===>>> TREE BEGIN <<<===")
-                    nodeInfo.showTree(event.eventTime, 0)
+                    nodeView.showTree(event.eventTime, 0)
                     Logger.d("===>>> TREE END <<<===")
                 }
 
                 // hand the node to the active package loop (CONFLATED -> newest wins)
-                eventChannel?.trySend(nodeInfo)
+                eventChannel?.trySend(nodeView)
             }
             // between packages / outside a run -> nothing to do
             Phase.Idle -> {}
@@ -396,7 +397,7 @@ class AccessibilityClearManager {
         }
     }
 
-    private fun captureNodeState(nodeInfo: AccessibilityNodeInfo): NodeState {
+    private fun captureNodeState(nodeInfo: NodeView): NodeState {
         val childStates = mutableListOf<NodeState>()
         for (i in 0 until nodeInfo.childCount) {
             val child = nodeInfo.getChild(i)

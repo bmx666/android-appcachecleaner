@@ -1,6 +1,6 @@
 package com.github.bmx666.appcachecleaner.clearcache.scenario
 
-import android.view.accessibility.AccessibilityNodeInfo
+import com.github.bmx666.appcachecleaner.clearcache.node.NodeView
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_FINISH_FAILED
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.PACKAGE_WAIT_NEXT_STEP
@@ -61,7 +61,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         state = State.INIT
     }
 
-    private suspend fun findClearDataButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun findClearDataButton(nodeInfo: NodeView): CancellationException? {
         nodeInfo.findMenuItemText(arrayTextClearDataButton)?.let { clearDataButton ->
             return when (doPerformClick(clearDataButton, "Xiaomi MIUI - clear data button")) {
                 // clear data button was found and it's enabled but perform click was failed
@@ -79,7 +79,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun findClearCacheButton(nodeInfo: NodeView): CancellationException? {
         nodeInfo.findMenuItemText(arrayTextClearCacheButton)?.let { clearCacheButton ->
             return when (doPerformClick(clearCacheButton, "Xiaomi MIUI - clear cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
@@ -97,7 +97,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findClearDataDialogClearCacheButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun findClearDataDialogClearCacheButton(nodeInfo: NodeView): CancellationException? {
         nodeInfo.findDialogText(arrayTextClearCacheButton)?.let { clearCacheDialogButton ->
             return when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear data dialog - clear cache button")) {
                 // clean cache button was found and it's enabled but perform click was failed
@@ -115,7 +115,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         return null
     }
 
-    private suspend fun findClearCacheDialogOkButton(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    private suspend fun findClearCacheDialogOkButton(nodeInfo: NodeView): CancellationException? {
         nodeInfo.findDialogButton(arrayTextOkButton)?.let { clearCacheDialogButton ->
             return when (doPerformClick(clearCacheDialogButton, "Xiaomi MIUI - clear cache dialog - ok button")) {
                 // clean cache button was found and it's enabled but perform click was failed
@@ -133,7 +133,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         return null
     }
 
-    override suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    override suspend fun doClearCache(nodeInfo: NodeView): CancellationException? {
         if (state == State.OPEN_CLEAR_DATA_DIALOG)
             findClearDataDialogClearCacheButton(nodeInfo)?.let { return it }
         else if (state == State.OPEN_CLEAR_CACHE_DIALOG)
@@ -145,7 +145,7 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
         return null
     }
 
-    override suspend fun doClearData(nodeInfo: AccessibilityNodeInfo): CancellationException? {
+    override suspend fun doClearData(nodeInfo: NodeView): CancellationException? {
         // TODO:
         return null
     }
@@ -156,8 +156,8 @@ internal class XiaomiMIUIClearScenario: BaseClearScenario() {
 private val DIALOG_TEXT_ID_REGEX = "android:id/text.*".toRegex()
 private val DIALOG_BUTTON_ID_REGEX = "android:id/button.*".toRegex()
 
-private fun AccessibilityNodeInfo.findMenuItemText(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+private fun NodeView.findMenuItemText(
+    arrayText: ArrayList<CharSequence>): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = true, // on some Xiaomi viewId is null
@@ -167,8 +167,8 @@ private fun AccessibilityNodeInfo.findMenuItemText(
         )?.findClickable()
     }
 
-private fun AccessibilityNodeInfo.findDialogText(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+private fun NodeView.findDialogText(
+    arrayText: ArrayList<CharSequence>): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = false,
@@ -178,8 +178,8 @@ private fun AccessibilityNodeInfo.findDialogText(
         )?.findClickable()
     }
 
-private fun AccessibilityNodeInfo.findDialogButton(
-    arrayText: ArrayList<CharSequence>): AccessibilityNodeInfo? =
+private fun NodeView.findDialogButton(
+    arrayText: ArrayList<CharSequence>): NodeView? =
     findNode { node ->
         node.takeIfMatches(
             findTextView = false,

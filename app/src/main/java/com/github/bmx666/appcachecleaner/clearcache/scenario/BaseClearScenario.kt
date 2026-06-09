@@ -1,7 +1,6 @@
 package com.github.bmx666.appcachecleaner.clearcache.scenario
 
-import android.os.Bundle
-import android.view.accessibility.AccessibilityNodeInfo
+import com.github.bmx666.appcachecleaner.clearcache.node.NodeView
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_DELAY_FOR_NEXT_APP_MS
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_FORCE_STOP_TRIES
 import com.github.bmx666.appcachecleaner.const.Constant.Settings.CacheClean.Companion.DEFAULT_GO_BACK_AFTER_APPS
@@ -97,10 +96,10 @@ internal abstract class BaseClearScenario {
         Boolean = false
 
     abstract fun resetInternalState()
-    abstract suspend fun doClearCache(nodeInfo: AccessibilityNodeInfo): CancellationException?
-    abstract suspend fun doClearData(nodeInfo: AccessibilityNodeInfo): CancellationException?
+    abstract suspend fun doClearCache(nodeInfo: NodeView): CancellationException?
+    abstract suspend fun doClearData(nodeInfo: NodeView): CancellationException?
 
-    protected suspend fun doPerformClick(nodeInfo: AccessibilityNodeInfo,
+    protected suspend fun doPerformClick(nodeInfo: NodeView,
                                        debugText: String): Boolean?
     {
         Logger.d("found $debugText")
@@ -132,17 +131,14 @@ internal abstract class BaseClearScenario {
         return null
     }
 
-    protected fun doPerformScrollForward(nodeInfo: AccessibilityNodeInfo,
+    protected fun doPerformScrollForward(nodeInfo: NodeView,
                                        debugText: String): Boolean?
     {
         Logger.d("found $debugText")
         if (nodeInfo.isEnabled) {
             Logger.d("$debugText is enabled")
 
-            val result = nodeInfo.performAction(
-                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD.id,
-                Bundle()
-            )
+            val result = nodeInfo.scrollForward()
             when (result) {
                 true -> Logger.d("perform action scroll forward on $debugText")
                 false -> Logger.e("no perform action scroll forward on $debugText")
