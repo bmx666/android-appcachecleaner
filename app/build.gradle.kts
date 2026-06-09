@@ -16,6 +16,13 @@ kotlin {
             }
         }
 
+        dependenciesInfo {
+            // Disables dependency metadata when building APKs.
+            includeInApk = false
+            // Disables dependency metadata when building Android App bundles.
+            includeInBundle = false
+        }
+
         signingConfigs {
             create("release") {
                 keyAlias = "AppCacheCleaner"
