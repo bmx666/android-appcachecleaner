@@ -58,7 +58,11 @@ class PermissionViewModelTest {
     @Test
     fun `reports accessibility not granted when the service is not enabled`() =
         runTest(mainRule.dispatcher) {
-            // Settings.Secure left unset -> checkAccessibilityPermission returns false
+            // Real devices always have ACCESSIBILITY_ENABLED present (default 0); set it so
+            // the prod check takes the `!= 1` branch instead of Robolectric's unset-setting
+            // SettingNotFoundException path (which prod catches, but it spams stderr).
+            Settings.Secure.putInt(
+                context.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED, 0)
             val vm = PermissionViewModel(context)
             advanceUntilIdle()
 
