@@ -14,23 +14,24 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Real-device end-to-end: do exactly what a user does - open the app, pick the user apps,
- * select them all, hit Clear cache, then let the live AccessibilityService walk the real
- * system "App info" screens for every package and come back.
+ * Real-device end-to-end: do exactly what a user does - open the app, get past the first-boot
+ * consent, pick the user apps (granting accessibility via the real dialog + system settings if
+ * prompted), select them all, hit Clear cache, then let the live AccessibilityService walk the
+ * real system "App info" screens for every package and come back.
  *
  * The single thing that MUST be true at the end: we land back on the main screen showing the
  * result ("Clean cache was finished ... Cleaned up <size>"). The size may be 0 B (caches were
  * already empty, or some apps - Chrome, this app itself - get skipped); that is a valid result,
  * not a failure. We assert reaching the result, never a specific byte count.
  *
- * Run: ./gradlew :app:connectedDebugAndroidTest  (needs a connected device/emulator).
+ * Run: ./gradlew :app:connectedDebugAndroidTest  (needs a connected device/emulator, API 24+).
  */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class CleanCacheE2ETest {
 
     @Before fun setUp() {
-        AccessibilityE2ESupport.grantPrerequisites()
+        AccessibilityE2ESupport.prepareEnvironment()
         AccessibilityE2ESupport.launchApp()
     }
 
@@ -39,13 +40,19 @@ class CleanCacheE2ETest {
         device.pressHome()
     }
 
-    @Test fun userPicksAppsRunsCleanAndReachesResult() {
-        // 1. Home -> "Clean cache of user apps"
+    private fun tapCleanUserApps(): Boolean {
         val userApps = targetContext.getString(R.string.btn_clean_cache_user_apps)
-        val userAppsBtn = device.wait(
-            Until.findObject(By.text(userApps)), AccessibilityE2ESupport.APP_READY_MS)
-        assertNotNull("main screen / user-apps button not shown", userAppsBtn)
-        userAppsBtn.click()
+        val btn = device.wait(Until.findObject(By.text(userApps)), AccessibilityE2ESupport.APP_READY_MS)
+        btn?.click()
+        return btn != null
+    }
+
+    @Test fun userPicksAppsRunsCleanAndReachesResult() {
+        // 1. Home -> "Clean cache of user apps". The first tap may raise the accessibility dialog;
+        //    grant it like a user (Allow -> system settings toggle) then tap again to navigate.
+        assertNotNull("main screen / user-apps button not shown", tapCleanUserApps())
+        if (AccessibilityE2ESupport.grantAccessibilityViaDialogIfShown())
+            tapCleanUserApps()
 
         // 2. Package list -> "Check all apps", then "Clear cache" (icons -> contentDescription)
         val checkAll = targetContext.getString(R.string.description_apps_all_check)

@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 class CleanCacheInterruptE2ETest {
 
     @Before fun setUp() {
-        AccessibilityE2ESupport.grantPrerequisites()
+        AccessibilityE2ESupport.prepareEnvironment()
         AccessibilityE2ESupport.launchApp()
     }
 
@@ -38,11 +38,17 @@ class CleanCacheInterruptE2ETest {
         device.pressHome()
     }
 
-    @Test fun tappingOverlayStopInterruptsTheRun() {
-        // Start the same run as the happy-path test.
+    private fun tapCleanUserApps() {
         val userApps = targetContext.getString(R.string.btn_clean_cache_user_apps)
         device.wait(Until.findObject(By.text(userApps)), AccessibilityE2ESupport.APP_READY_MS)
             ?.click()
+    }
+
+    @Test fun tappingOverlayStopInterruptsTheRun() {
+        // Start the same run as the happy-path test (grant accessibility via the dialog if asked).
+        tapCleanUserApps()
+        if (AccessibilityE2ESupport.grantAccessibilityViaDialogIfShown())
+            tapCleanUserApps()
 
         val checkAll = targetContext.getString(R.string.description_apps_all_check)
         device.wait(Until.findObject(By.desc(checkAll)), AccessibilityE2ESupport.APP_READY_MS)

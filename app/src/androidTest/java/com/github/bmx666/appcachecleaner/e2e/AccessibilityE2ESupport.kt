@@ -10,7 +10,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Configurator
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiObject2
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.service.AppCacheCleanerService
@@ -20,12 +21,15 @@ import com.github.bmx666.appcachecleaner.service.AppCacheCleanerService
  * NOT Robolectric - they drive the live UI and let the live AccessibilityService walk the real
  * system "App info" screens.
  *
- * The two prerequisites a human normally taps through are granted here via the instrumentation
- * shell (runs as the `shell` uid, no root):
- *  - the Accessibility service must be enabled (secure settings) AND actually BOUND,
- *  - GET_USAGE_STATS must be allowed (AppOps) or the main screen keeps the Clean buttons disabled.
+ * Accessibility is NOT force-enabled from the command line. Instead the test grants it the way a
+ * user does: tap Allow on the in-app dialog, then flip the service ON inside the system
+ * Accessibility settings (driven by UiAutomator). Usage-stats (not an accessibility permission)
+ * is still granted via AppOps so the main-screen Clean buttons can be reached.
  *
- * Plus the one-time first-boot consent screen (4 sequential checkboxes + OK) is dismissed.
+ * One thing IS forced, and must be: UiAutomation suppresses every OTHER accessibility service by
+ * default while a test holds it - which would unbind our service the moment we enable it. We tell
+ * UiAutomator not to do that (API 24+; on API 23 it always suppresses, so these tests can't run
+ * there).
  */
 object AccessibilityE2ESupport {
 
@@ -33,6 +37,7 @@ object AccessibilityE2ESupport {
     const val APP_READY_MS = 15_000L
     const val SERVICE_BIND_MS = 15_000L
     const val FIRST_BOOT_MS = 5_000L
+    const val DIALOG_MS = 4_000L
     const val RESULT_MS = 180_000L
     const val OVERLAY_MS = 60_000L
 
@@ -47,13 +52,13 @@ object AccessibilityE2ESupport {
     private fun serviceComponent(): String =
         targetContext.packageName + "/" + AppCacheCleanerService::class.java.name
 
+    private fun shell(cmd: String) {
+        device.executeShellCommand(cmd)
+    }
+
     /**
-     * CRITICAL: by default UiAutomation suppresses every OTHER accessibility service while the
-     * test holds it - which unbinds our AppCacheCleanerService, so it never binds and a clean
-     * silently no-ops. Tell UiAutomator to keep other services alive. Must be set BEFORE the
-     * first UiDevice access (it fixes the flags the UiAutomation bridge is created with). The
-     * flag only exists / takes effect on API 24+; on API 23 UiAutomation always suppresses, so
-     * these E2E tests cannot run there.
+     * Keep OTHER accessibility services alive while the test runs (see class doc). Must be set
+     * before the first UiDevice access - it fixes the flags the UiAutomation bridge is built with.
      */
     private fun allowOtherAccessibilityServices() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -62,35 +67,119 @@ object AccessibilityE2ESupport {
         }
     }
 
-    // Routed through UiDevice so it uses the (non-suppressing) UiAutomation configured above,
-    // not a second flags-0 automation that would re-suppress our service.
-    private fun shell(cmd: String) {
-        device.executeShellCommand(cmd)
+    /** Environment-only setup: no accessibility forcing here, just usage-stats + the no-suppress flag. */
+    fun prepareEnvironment() {
+        allowOtherAccessibilityServices() // before any UiDevice/shell use
+        shell("appops set ${targetContext.packageName} GET_USAGE_STATS allow")
+    }
+
+    /** Re-runs leave the service enabled (idempotent) - nothing to undo without shell-forcing a11y. */
+    fun revokePrerequisites() {
+        // intentionally a no-op
+    }
+
+    /** Cold-launch the app, wait for it, then clear the one-time first-boot consent screen. */
+    fun launchApp() {
+        device.pressHome()
+        val intent = targetContext.packageManager
+            .getLaunchIntentForPackage(targetContext.packageName)!!
+            .apply { addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK) }
+        targetContext.startActivity(intent)
+        device.wait(Until.hasObject(By.pkg(targetContext.packageName).depth(0)), APP_READY_MS)
+        dismissFirstBootIfPresent()
     }
 
     /**
-     * Enable accessibility + usage-stats so the app behaves as it would for a fully set-up user,
-     * then BLOCK until the service is genuinely bound. Setting the secure flag only makes
-     * PermissionChecker (which reads settings) report "granted" - the system binds the service
-     * asynchronously, and a clean started before the bind silently no-ops (onClearCache never
-     * fires), which is exactly the "press clean, nothing happens, back to home" symptom.
+     * First launch shows a consent screen: 4 checkboxes that enable sequentially (each unlocks the
+     * next) then an OK button enabled only once all are checked. The Compose Checkbox uses
+     * onCheckedChange=null so it exposes NO checkable node - the only interactive node is the
+     * full-width clickable Row, and a disabled Row is not clickable at all. So each pass we click
+     * the BOTTOM-MOST currently-clickable full-width row (the one just unlocked), four times.
      */
-    fun grantPrerequisites() {
-        allowOtherAccessibilityServices() // before any UiDevice/shell use
-        shell("appops set ${targetContext.packageName} GET_USAGE_STATS allow")
-        shell("settings put secure enabled_accessibility_services ${serviceComponent()}")
-        shell("settings put secure accessibility_enabled 1")
+    private fun dismissFirstBootIfPresent() {
+        val title = targetContext.getString(R.string.first_boot_title)
+        if (device.wait(Until.hasObject(By.text(title)), FIRST_BOOT_MS) != true) return
+
+        val minRowWidth = device.displayWidth / 2
+        repeat(4) {
+            val row = device.findObjects(By.clickable(true))
+                .filter { it.visibleBounds.width() > minRowWidth } // rows fill width; buttons don't
+                .maxByOrNull { it.visibleBounds.centerY() } ?: return@repeat // bottom-most unlocked
+            val b = row.visibleBounds
+            device.click(b.centerX(), b.centerY())
+            device.waitForIdle()
+        }
+
+        // OK is enabled only once every box is checked - wait for the enabled node before tapping.
+        val ok = targetContext.getString(android.R.string.ok)
+        device.wait(Until.findObject(By.text(ok).enabled(true)), FIRST_BOOT_MS)?.click()
+        device.waitForIdle()
+    }
+
+    /**
+     * If tapping a Clean button raised the "Enable Accessibility" dialog, grant it like a user:
+     * tap Allow -> in system Accessibility settings open our service ("Cache Cleaner") and turn the
+     * switch ON (confirming the system warning) -> return to the app. Returns true if it performed
+     * the grant (caller should re-tap the Clean button), false if no dialog was shown (already
+     * granted). Blocks until the service is genuinely bound.
+     */
+    fun grantAccessibilityViaDialogIfShown(): Boolean {
+        val title = targetContext.getString(R.string.text_enable_accessibility_title)
+        if (device.wait(Until.hasObject(By.text(title)), DIALOG_MS) != true) return false
+
+        val allow = targetContext.getString(R.string.allow)
+        device.wait(Until.findObject(By.text(allow)), DIALOG_MS)?.click()
+        device.waitForIdle()
+
+        enableServiceInSystemSettings()
+
         check(awaitServiceBound()) {
-            "accessibility service was not bound within ${SERVICE_BIND_MS}ms"
+            "service not bound after enabling it in system Accessibility settings"
+        }
+        return true
+    }
+
+    /** OEM-fragile: open our entry in system Accessibility settings and flip the switch on. */
+    private fun enableServiceInSystemSettings() {
+        // We should have left the app for the Settings app.
+        device.wait(Until.gone(By.pkg(targetContext.packageName).depth(0)), APP_READY_MS)
+
+        val label = targetContext.getString(R.string.service_name) // "Cache Cleaner"
+        var entry = device.wait(Until.findObject(By.text(label)), APP_READY_MS)
+        if (entry == null) {
+            runCatching {
+                UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(label)
+            }
+            entry = device.wait(Until.findObject(By.text(label)), APP_READY_MS)
+        }
+        entry?.click()
+        device.waitForIdle()
+
+        // Flip the on/off switch if it is not already on.
+        val sw = device.wait(Until.findObject(By.clazz("android.widget.Switch")), APP_READY_MS)
+            ?: device.wait(Until.findObject(By.checkable(true)), APP_READY_MS)
+        if (sw != null && !sw.isChecked) {
+            sw.click()
+            device.waitForIdle()
+            // Confirm the system's "allow full control" warning (label varies by OEM/locale).
+            for (t in listOf("Allow", "ALLOW", "OK", "Got it", "Turn on", "Allow full control")) {
+                val btn = device.wait(Until.findObject(By.text(t)), 1_500)
+                if (btn != null) { btn.click(); device.waitForIdle(); break }
+            }
+        }
+
+        // Walk back until the app is foreground again.
+        repeat(4) {
+            if (device.hasObject(By.pkg(targetContext.packageName).depth(0))) return
+            device.pressBack()
+            device.waitForIdle()
         }
     }
 
     /**
      * Poll the live AccessibilityManager until our service shows up as actually enabled/bound.
      * Match on AccessibilityServiceInfo.getId() (the flattened "pkg/cls" component string, stable
-     * since API 14) - resolveInfo/serviceInfo can be null or carry a mismatched packageName across
-     * API levels, which made the old packageName check report "not bound" even when it was (the
-     * API 23..latest grantPrerequisites failure).
+     * since API 14) - resolveInfo/serviceInfo can be null or carry a mismatched packageName.
      */
     private fun awaitServiceBound(): Boolean {
         val am = targetContext.getSystemService(Context.ACCESSIBILITY_SERVICE)
@@ -108,59 +197,7 @@ object AccessibilityE2ESupport {
         return false
     }
 
-    /** Leave the device clean for the next test / the user. */
-    fun revokePrerequisites() {
-        shell("settings put secure accessibility_enabled 0")
-        shell("settings delete secure enabled_accessibility_services")
-    }
-
-    /** Cold-launch the app, wait for it, then clear the one-time first-boot consent screen. */
-    fun launchApp() {
-        device.pressHome()
-        val intent = targetContext.packageManager
-            .getLaunchIntentForPackage(targetContext.packageName)!!
-            .apply { addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK) }
-        targetContext.startActivity(intent)
-        device.wait(Until.hasObject(By.pkg(targetContext.packageName).depth(0)), APP_READY_MS)
-        dismissFirstBootIfPresent()
-    }
-
-    /**
-     * First launch shows a consent screen: 4 checkboxes that enable sequentially (each unlocks
-     * the next) then an OK button that only enables once all are checked. No-op on later runs.
-     */
-    private fun dismissFirstBootIfPresent() {
-        val title = targetContext.getString(R.string.first_boot_title)
-        if (device.wait(Until.hasObject(By.text(title)), FIRST_BOOT_MS) != true) return
-
-        // All 4 boxes must be checked IN ORDER (each enables the next); only then does OK enable.
-        // Click strictly by index 0..3 and tap the row's bounds-centre so the hit lands on the
-        // Row's `clickable` (the inner Checkbox has onCheckedChange=null, so isChecked is not a
-        // reliable click target). Re-query each pass because handles go stale after recomposition.
-        for (i in 0 until 4) {
-            val rows = device.findObjects(By.checkable(true))
-                .sortedBy { it.visibleBounds.centerY() }
-            val row = rows.getOrNull(i) ?: break
-            if (!row.isChecked) {
-                val b = row.visibleBounds
-                device.click(b.centerX(), b.centerY())
-                device.waitForIdle()
-            }
-        }
-
-        // OK is enabled only once every box is checked - wait for the enabled node before tapping.
-        val ok = targetContext.getString(android.R.string.ok)
-        device.wait(Until.findObject(By.text(ok).enabled(true)), FIRST_BOOT_MS)?.click()
-        // Back on the splash->home gate; wait for it to settle.
-        device.waitForIdle()
-    }
-
     /** Stable, locale-independent prefix of a result title (text is translatable="false"). */
     fun titlePrefix(resId: Int): String =
         targetContext.getString(resId, "").substringBefore("\n").trim()
-
-    /** First-boot helper exposed for clarity in case a test needs to re-check state. */
-    @Suppress("unused")
-    fun checkedBoxes(): List<UiObject2> =
-        device.findObjects(By.checkable(true)).filter { it.isChecked }
 }
