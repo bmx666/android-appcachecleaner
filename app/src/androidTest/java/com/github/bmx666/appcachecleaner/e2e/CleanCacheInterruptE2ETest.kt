@@ -59,14 +59,17 @@ class CleanCacheInterruptE2ETest {
         device.wait(Until.findObject(By.desc(clearCache)), AccessibilityE2ESupport.APP_READY_MS)
             ?.click()
 
-        // Mid-run the service shows the overlay stop button. Grab it and tap to interrupt.
-        val overlayBtn = device.wait(
-            Until.findObject(By.res(targetContext.packageName, "overlayButton")),
-            AccessibilityE2ESupport.OVERLAY_MS)
-        assertNotNull("overlay stop button never appeared - did the run start?", overlayBtn)
+        // Mid-run the service shows the overlay stop button. Wait for it to confirm the run started.
+        val overlayRes = By.res(targetContext.packageName, "overlayButton")
+        assertNotNull("overlay stop button never appeared - did the run start?",
+            device.wait(Until.findObject(overlayRes), AccessibilityE2ESupport.OVERLAY_MS))
 
-        // Let the clean run for a few seconds so we interrupt mid-process, not the instant it starts.
+        // Let the clean run a few seconds so we interrupt mid-process, not the instant it starts.
+        // The run advances across packages meanwhile (new App Info screen, overlay redrawn), so the
+        // earlier handle is stale - RE-FIND the overlay button now and tap the fresh node.
         android.os.SystemClock.sleep(AccessibilityE2ESupport.INTERRUPT_DELAY_MS)
+        val overlayBtn = device.wait(Until.findObject(overlayRes), AccessibilityE2ESupport.OVERLAY_MS)
+        assertNotNull("overlay stop button gone before interrupt", overlayBtn)
         overlayBtn.click()
 
         // The interruption must round-trip back to the main screen as the interrupted result.
