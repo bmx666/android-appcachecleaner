@@ -38,17 +38,17 @@ class CleanCacheInterruptE2ETest {
         device.pressHome()
     }
 
-    private fun tapCleanUserApps() {
-        val userApps = targetContext.getString(R.string.btn_clean_cache_user_apps)
-        device.wait(Until.findObject(By.text(userApps)), AccessibilityE2ESupport.APP_READY_MS)
+    private fun tapCleanAllApps() {
+        val allApps = targetContext.getString(R.string.btn_clean_cache_all_apps)
+        device.wait(Until.findObject(By.text(allApps)), AccessibilityE2ESupport.APP_READY_MS)
             ?.click()
     }
 
     @Test fun tappingOverlayStopInterruptsTheRun() {
         // Start the same run as the happy-path test (grant accessibility via the dialog if asked).
-        tapCleanUserApps()
+        tapCleanAllApps()
         if (AccessibilityE2ESupport.grantAccessibilityViaDialogIfShown())
-            tapCleanUserApps()
+            tapCleanAllApps()
 
         val checkAll = targetContext.getString(R.string.description_apps_all_check)
         device.wait(Until.findObject(By.desc(checkAll)), AccessibilityE2ESupport.APP_READY_MS)
