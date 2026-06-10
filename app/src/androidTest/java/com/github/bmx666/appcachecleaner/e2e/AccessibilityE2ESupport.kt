@@ -40,6 +40,8 @@ object AccessibilityE2ESupport {
     const val DIALOG_MS = 4_000L
     const val RESULT_MS = 180_000L
     const val OVERLAY_MS = 60_000L
+    // Let the clean actually run a moment before interrupting, so we abort mid-process not at t=0.
+    const val INTERRUPT_DELAY_MS = 3_000L
 
     private val instrumentation: Instrumentation
         get() = InstrumentationRegistry.getInstrumentation()

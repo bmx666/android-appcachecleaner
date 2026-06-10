@@ -64,6 +64,9 @@ class CleanCacheInterruptE2ETest {
             Until.findObject(By.res(targetContext.packageName, "overlayButton")),
             AccessibilityE2ESupport.OVERLAY_MS)
         assertNotNull("overlay stop button never appeared - did the run start?", overlayBtn)
+
+        // Let the clean run for a few seconds so we interrupt mid-process, not the instant it starts.
+        android.os.SystemClock.sleep(AccessibilityE2ESupport.INTERRUPT_DELAY_MS)
         overlayBtn.click()
 
         // The interruption must round-trip back to the main screen as the interrupted result.
