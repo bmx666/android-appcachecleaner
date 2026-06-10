@@ -163,18 +163,35 @@ object AccessibilityE2ESupport {
         return true
     }
 
+    /**
+     * The service label in system Accessibility settings is the manifest android:label, which the
+     * debug build overrides to debug_service_name ("Cache Cleaner Debug") - so the .debug variant
+     * the connected tests run shows that, NOT service_name ("Cache Cleaner"). Prefer the variant's
+     * label (by .debug applicationId suffix) but try both, since By.text is exact and "Cache
+     * Cleaner" is a prefix of "Cache Cleaner Debug" (no false match).
+     */
+    private fun serviceLabels(): List<String> {
+        val release = targetContext.getString(R.string.service_name)
+        val debug = targetContext.getString(R.string.debug_service_name)
+        return if (targetContext.packageName.endsWith(".debug")) listOf(debug, release)
+        else listOf(release, debug)
+    }
+
     /** OEM-fragile: open our entry in system Accessibility settings and flip the switch on. */
     private fun enableServiceInSystemSettings() {
         // We should have left the app for the Settings app.
         device.wait(Until.gone(By.pkg(targetContext.packageName).depth(0)), APP_READY_MS)
 
-        val label = targetContext.getString(R.string.service_name) // "Cache Cleaner"
-        var entry = device.wait(Until.findObject(By.text(label)), APP_READY_MS)
+        var entry = serviceLabels().firstNotNullOfOrNull { label ->
+            device.wait(Until.findObject(By.text(label)), DIALOG_MS)
+        }
         if (entry == null) {
-            runCatching {
-                UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(label)
+            entry = serviceLabels().firstNotNullOfOrNull { label ->
+                runCatching {
+                    UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(label)
+                }
+                device.wait(Until.findObject(By.text(label)), DIALOG_MS)
             }
-            entry = device.wait(Until.findObject(By.text(label)), APP_READY_MS)
         }
         entry?.click()
         device.waitForIdle()
