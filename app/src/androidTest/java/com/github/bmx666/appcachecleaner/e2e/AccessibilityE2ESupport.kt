@@ -117,12 +117,15 @@ object AccessibilityE2ESupport {
         )
         rowMarkers.forEach { marker -> tickFirstBootRow(marker) }
 
-        // OK is enabled only once every box is checked - scroll it in, wait for enabled, tap.
+        // OK is enabled the instant all 4 are checked. Only scroll if it is off-screen (a needless
+        // scrollIntoView search-pass is what added ~5s here), then tap as soon as it is enabled.
         val ok = targetContext.getString(android.R.string.ok)
-        runCatching {
-            UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().text(ok))
+        if (!device.hasObject(By.text(ok))) {
+            runCatching {
+                UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().text(ok))
+            }
         }
-        device.wait(Until.findObject(By.text(ok).enabled(true)), FIRST_BOOT_MS)?.click()
+        device.wait(Until.findObject(By.text(ok).enabled(true)), DIALOG_MS)?.click()
         device.waitForIdle()
     }
 
