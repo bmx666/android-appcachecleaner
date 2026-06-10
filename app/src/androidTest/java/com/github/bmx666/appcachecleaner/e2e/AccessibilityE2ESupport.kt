@@ -85,12 +85,22 @@ object AccessibilityE2ESupport {
         // intentionally a no-op
     }
 
-    /** Cold-launch the app, wait for it, then clear the one-time first-boot consent screen. */
+    /**
+     * Launch the app exactly like the launcher does, then clear the one-time first-boot consent.
+     *
+     * IMPORTANT: do NOT add FLAG_ACTIVITY_CLEAR_TASK here. The activity keeps the launching intent
+     * as getIntent(), and on interrupt the app returns home via
+     * ActivityHelper.returnBackToMainActivity(this, getIntent()) -> startActivity(getIntent()). If
+     * that intent carried CLEAR_TASK the whole task would be cleared and a FRESH activity (new
+     * ViewModelStore -> empty CleanResultViewModel.titleText) would replace the one that just set
+     * the interrupted result -> Home shows blank. A plain launcher intent (NEW_TASK only) makes the
+     * return reuse the same instance (onNewIntent via the SINGLE_TOP|CLEAR_TOP the helper adds), so
+     * the result survives - matching real-user behaviour.
+     */
     fun launchApp() {
         device.pressHome()
         val intent = targetContext.packageManager
             .getLaunchIntentForPackage(targetContext.packageName)!!
-            .apply { addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK) }
         targetContext.startActivity(intent)
         device.wait(Until.hasObject(By.pkg(targetContext.packageName).depth(0)), APP_READY_MS)
         dismissFirstBootIfPresent()
