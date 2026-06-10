@@ -15,6 +15,7 @@ import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.github.bmx666.appcachecleaner.R
 import com.github.bmx666.appcachecleaner.service.AppCacheCleanerService
+import com.github.bmx666.appcachecleaner.ui.activity.AppCacheCleanerActivity
 
 /**
  * Real-device E2E plumbing. These tests run on an actual phone/emulator (connected*AndroidTest),
@@ -73,6 +74,10 @@ object AccessibilityE2ESupport {
     fun prepareEnvironment() {
         allowOtherAccessibilityServices() // before any UiDevice/shell use
         shell("appops set ${targetContext.packageName} GET_USAGE_STATS allow")
+        // Debug builds open the SAF save-log picker after each clean; it would steal focus from the
+        // result screen and break the assertion. Instrumentation shares the app process, so this
+        // static is visible to the activity. Skip the dump for the duration of the test.
+        AppCacheCleanerActivity.skipSaveLogFile = true
     }
 
     /** Re-runs leave the service enabled (idempotent) - nothing to undo without shell-forcing a11y. */

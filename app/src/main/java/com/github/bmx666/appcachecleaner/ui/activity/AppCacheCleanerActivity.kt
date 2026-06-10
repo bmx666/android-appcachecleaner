@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.UiContext
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
@@ -45,6 +46,16 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
+
+    companion object {
+        // Debug builds dump a log file after each clean by launching the SAF document picker
+        // (saveLogFile). In E2E tests that picker pops over the result screen and steals focus,
+        // breaking the assertion - so the instrumented tests set this true to skip the dump.
+        @JvmStatic
+        @Volatile
+        @VisibleForTesting
+        var skipSaveLogFile: Boolean = false
+    }
 
     private val firstBootViewModel: FirstBootViewModel by viewModels()
     private val settingsCustomPackageListViewModel: SettingsCustomPackageListViewModel by viewModels()
@@ -187,7 +198,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this, this.intent)
 
-        if (BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG && !skipSaveLogFile)
             saveLogFile()
 
         if (message == CANCEL_INTERRUPTED_BY_SYSTEM.message)
@@ -209,7 +220,7 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         // return back to Main Activity, sometimes not possible press Back from Settings
         ActivityHelper.returnBackToMainActivity(this, this.intent)
 
-        if (BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG && !skipSaveLogFile)
             saveLogFile()
     }
 
