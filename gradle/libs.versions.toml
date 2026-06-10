@@ -1,104 +1,120 @@
 [versions]
 annotation = "1.10.0"
-appcompat = "1.7.1"
-
 material = "1.14.0"
 timber = "5.0.1"
 
+# Unit & Instrumented Testing
 junit = "4.13.2"
 androidx-junit = "1.3.0"
-
-# Test stack (unit + Robolectric + Compose UI). coroutines-test tracks the coroutines
-# line pulled transitively by datastore/hilt; bump together if those move.
 mockk = "1.14.11"
 kotlinx-coroutines = "1.11.0"
 turbine = "1.2.1"
 robolectric = "4.16.1"
 androidx-test-core = "1.7.0"
-androidx-arch-core-testing = "2.2.0"
 espresso = "3.7.0"
 uiautomator = "2.3.0"
 
+# Jetpack Compose UI Stack
 compose-bom = "2026.05.01"
 compose-ui = "1.11.2"
 compose-material = "1.7.8"
 compose-material3 = "1.4.0"
-
 activity-compose = "1.13.0"
 lifecycle = "2.10.0"
 navigation = "2.9.8"
 
+# Storage, DI, Images & Permission Extensions
 datastore = "1.2.1"
-
 hilt = "2.59.2"
 hilt-lifecycle-viewmodel-compose = "1.3.0"
-
 coil = "2.7.0"
 accompanist = "0.37.3"
 
+# Build Systems & Compiler Plugins
 agp = "9.2.1"
 kotlin = "2.4.0"
-ksp = "2.3.2"
+ksp = "2.3.9"
 
+# SDK Target Definitions
 android-compileSdk-version = "37"
 android-compileSdk-minorApiLevel = "0"
 android-minSdk = "23"
 
 [libraries]
+# Core Architectural Dependencies
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
-
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
-
-# --- test stack ---
-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidx-test-core" }
-androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidx-test-core" }
-androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidx-arch-core-testing" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
-androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
-hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-
+# Jetpack Compose Ecosystem
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose-material3" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose-ui" }
-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core", version.ref = "compose-material" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "compose-material" }
-
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
+# Data Storage
 datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
-
-# Pin kotlin-metadata-jvm to Kotlin version so Dagger/Hilt KSP processor reads
-# metadata v2.4.0 (emitted by Kotlin 2.3.x). Without it: "Provided Metadata
-# instance has version 2.4.0, while maximum supported version is 2.3.0".
-kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
-
+# Dependency Injection (Dagger Hilt)
 dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "hilt" }
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-lifecycle-viewmodel-compose = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "hilt-lifecycle-viewmodel-compose" }
+hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
 
+# Kotlin Compiler Internals (Required to handle metadata versions smoothly during KSP compilation)
+kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
+
+# Extraneous Functional Utilities
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
-# Hilt Gradle plugin used in buildscript classpath
-hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+# Test Dependencies (Local JVM Engine)
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+
+# Test Dependencies (Device Instrumented Engine)
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidx-test-core" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+[bundles]
+compose-core = [
+    "activity-compose",
+    "compose-material3",
+    "lifecycle-viewmodel-compose",
+    "navigation-compose",
+    "coil-compose"
+]
+datastore = [
+    "datastore-core",
+    "datastore-preferences"
+]
+test-jvm = [
+    "junit",
+    "kotlinx-coroutines-test",
+    "mockk",
+    "robolectric",
+    "turbine",
+    "androidx-test-core"
+]
+test-instrumented = [
+    "androidx-test-junit",
+    "androidx-espresso-core",
+    "androidx-uiautomator",
+    "kotlinx-coroutines-test",
+    "turbine"
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
