@@ -90,29 +90,53 @@ object AccessibilityE2ESupport {
     }
 
     /**
-     * First launch shows a consent screen: 4 checkboxes that enable sequentially (each unlocks the
-     * next) then an OK button enabled only once all are checked. The Compose Checkbox uses
-     * onCheckedChange=null so it exposes NO checkable node - the only interactive node is the
-     * full-width clickable Row, and a disabled Row is not clickable at all. So each pass we click
-     * the BOTTOM-MOST currently-clickable full-width row (the one just unlocked), four times.
+     * First launch shows a consent screen (FirstBootScreen): 4 checkboxes that enable sequentially
+     * (each unlocks the next) then an OK button enabled only once all are checked.
+     *
+     * Each checkbox is a StyledLabelledCheckBox: a clickable Compose Row (clickable=enabled) that
+     * MERGES its children into ONE semantics node whose TEXT is the label string
+     * (first_boot_confirm_1..4). The inner Checkbox(onCheckedChange=null) exposes no toggle of its
+     * own, so we drive the ROW - matched by a distinctive, stable substring of each label, in order
+     * (a still-disabled row won't be clickable, but by the time we reach it the prior tick enabled
+     * it). The Column verticalScroll()s, so later rows / the OK button may be off-screen: we scroll
+     * each target into view first.
+     *
+     * Detection matches the title by PREFIX, not exact text: the title Text is maxLines=1 +
+     * Ellipsis, so on a narrow screen it renders truncated and an exact By.text() would miss.
      */
     private fun dismissFirstBootIfPresent() {
-        val title = targetContext.getString(R.string.first_boot_title)
-        if (device.wait(Until.hasObject(By.text(title)), FIRST_BOOT_MS) != true) return
+        val titlePrefix = targetContext.getString(R.string.first_boot_title).take(11) // "Please read"
+        if (device.wait(Until.hasObject(By.textStartsWith(titlePrefix)), FIRST_BOOT_MS) != true) return
 
-        val minRowWidth = device.displayWidth / 2
-        repeat(4) {
-            val row = device.findObjects(By.clickable(true))
-                .filter { it.visibleBounds.width() > minRowWidth } // rows fill width; buttons don't
-                .maxByOrNull { it.visibleBounds.centerY() } ?: return@repeat // bottom-most unlocked
-            val b = row.visibleBounds
-            device.click(b.centerX(), b.centerY())
-            device.waitForIdle()
-        }
+        // Distinctive, stable substrings of first_boot_confirm_1..4 (translatable=false), in order.
+        val rowMarkers = listOf(
+            "read the chapter",
+            "alternative text for searching",
+            "Xiaomi MIUI",
+            "Submit a bug report",
+        )
+        rowMarkers.forEach { marker -> tickFirstBootRow(marker) }
 
-        // OK is enabled only once every box is checked - wait for the enabled node before tapping.
+        // OK is enabled only once every box is checked - scroll it in, wait for enabled, tap.
         val ok = targetContext.getString(android.R.string.ok)
+        runCatching {
+            UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().text(ok))
+        }
         device.wait(Until.findObject(By.text(ok).enabled(true)), FIRST_BOOT_MS)?.click()
+        device.waitForIdle()
+    }
+
+    /** Scroll the consent row carrying [marker] into view (if needed) and tap it to tick its box. */
+    private fun tickFirstBootRow(marker: String) {
+        var row = device.wait(Until.findObject(By.textContains(marker)), FIRST_BOOT_MS)
+        if (row == null) {
+            runCatching {
+                UiScrollable(UiSelector().scrollable(true))
+                    .scrollIntoView(UiSelector().textContains(marker))
+            }
+            row = device.wait(Until.findObject(By.textContains(marker)), FIRST_BOOT_MS)
+        }
+        row?.click() // clicks the merged clickable Row -> onCheckedChange(!checked)
         device.waitForIdle()
     }
 
