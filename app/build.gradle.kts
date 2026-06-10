@@ -98,75 +98,71 @@ composeCompiler {
     // stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }
 
+@Suppress("DuplicatePlatformDeclaration")
 dependencies {
-    implementation(libs.androidx.annotation)
-    implementation(libs.androidx.appcompat)
-
-    implementation(libs.google.material)
-
-    debugImplementation(libs.timber)
-
-    // --- unit tests (JVM + Robolectric) ---
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.turbine)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.androidx.test.core.ktx)
-    testImplementation(libs.androidx.test.junit)
-    testImplementation(libs.androidx.arch.core.testing)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.dagger.hilt.compiler)
-
-    // --- instrumented + Compose UI tests ---
-    androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.espresso.core)
-    // UiAutomator: drives the SYSTEM App Info / Settings screens the accessibility
-    // service walks (cross-process) - Espresso cannot leave the app under test.
-    androidTestImplementation(libs.androidx.uiautomator)
-    androidTestImplementation(libs.androidx.arch.core.testing)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.turbine)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.dagger.hilt.compiler)
-
-    // Compose UI
+    // =========================================================================
+    // VERSION ALIGNMENT (Bill of Materials)
+    // =========================================================================
+    // Enforces consistent, mutually compatible versions across all Compose modules
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
-    androidTestImplementation(composeBom)
     testImplementation(composeBom)
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    debugImplementation(libs.compose.ui.test.manifest)
-    // Robolectric-driven Compose smoke tests run in the JVM unit-test source set.
-    testImplementation(libs.compose.ui.test.junit4)
-    testImplementation(libs.compose.ui.test.manifest)
+    androidTestImplementation(composeBom)
 
-    implementation(libs.compose.material3)
+    // =========================================================================
+    // CORE APPLICATION FRAMEWORK (Bundles)
+    // =========================================================================
+    // Primary Jetpack Compose runtime UI dependencies, Navigation, and Image Loading
+    implementation(libs.bundles.compose.core)
+    // Local data storage management engine
+    implementation(libs.bundles.datastore)
 
-    debugImplementation(libs.compose.ui.tooling)
-
-    implementation(libs.compose.material.icons.core)
+    // =========================================================================
+    // COMPONENT EXTENSIONS & TRANSITIONAL UI
+    // =========================================================================
+    // Required to prevent resource linking crashes by providing legacy XML MaterialComponents themes
+    implementation(libs.google.material)
+    // Core foundational utilities & annotations
+    implementation(libs.androidx.annotation)
+    // Accompanist extension wrapper for runtime permission workflows in Compose
+    implementation(libs.accompanist.permissions)
+    // Supplemental material icon catalog (Keep only if custom extended icons are explicitly requested)
     implementation(libs.compose.material.icons.extended)
 
-    implementation(libs.activity.compose)
-    implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.navigation.compose)
-
-    implementation(libs.datastore.core)
-    implementation(libs.datastore.preferences)
-
+    // =========================================================================
+    // DEPENDENCY INJECTION (Dagger Hilt)
+    // =========================================================================
     implementation(libs.dagger.hilt.android)
-    ksp(libs.dagger.compiler)
-    ksp(libs.dagger.hilt.compiler)
-    // Upgrade metadata lib on KSP classpath so Dagger reads Kotlin 2.3 metadata (v2.4.0).
-    ksp(libs.kotlin.metadata.jvm)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
 
-    implementation(libs.coil.compose)
-    implementation(libs.accompanist.permissions)
+    // =========================================================================
+    // METADATA & CODE GENERATION PROCESSORS (KSP)
+    // =========================================================================
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
+    ksp(libs.kotlin.metadata.jvm)
+    kspTest(libs.dagger.hilt.compiler)
+    kspAndroidTest(libs.dagger.hilt.compiler)
+
+    // =========================================================================
+    // DEVELOPMENT & DIAGNOSTIC UTILITIES
+    // =========================================================================
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.timber)
+    debugRuntimeOnly(libs.compose.ui.test.manifest)
+
+    // =========================================================================
+    // LOCAL UNIT TESTING (JVM / Robolectric Stack)
+    // =========================================================================
+    testImplementation(libs.bundles.test.jvm)
+    testImplementation(libs.compose.ui.test.junit4)
+
+    // =========================================================================
+    // INSTRUMENTED TESTING (On-Device Stack)
+    // =========================================================================
+    androidTestImplementation(libs.bundles.test.instrumented)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestRuntimeOnly(libs.androidx.test.core)
 }
 
 // Report-only coverage (no enforced threshold). Run: ./gradlew jacocoTestReport
