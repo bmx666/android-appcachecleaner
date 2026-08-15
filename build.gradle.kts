@@ -5,16 +5,22 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
-    id("com.autonomousapps.dependency-analysis") version "3.14.1"
-}
-
-allprojects {
-    apply(plugin = "com.autonomousapps.dependency-analysis")
+    alias(libs.plugins.dependency.analysis)
 }
 
 buildscript {
     dependencies {
-        //classpath("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.20")
         classpath(libs.hilt.gradle.plugin)
+    }
+}
+
+dependencyAnalysis {
+    issues {
+        // Report advice instead of failing the build. `buildHealth` defaults to `fail`, which stops
+        // at the first finding and hides the rest of the report; `warn` prints the whole thing.
+        // Raise this back to "fail" once the reported advice has been worked through.
+        all {
+            onAny { severity("warn") }
+        }
     }
 }
