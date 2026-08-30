@@ -21,7 +21,7 @@ compose-material = "1.7.8"
 compose-material3 = "1.4.0"
 activity-compose = "1.13.0"
 lifecycle = "2.11.0"
-navigation = "2.9.8"
+navigation = "2.10.0"
 
 # Storage, DI, Images & Permission Extensions
 datastore = "1.2.1"
@@ -31,10 +31,10 @@ coil = "2.7.0"
 accompanist = "0.37.3"
 
 # Build Systems & Compiler Plugins
-agp = "9.3.1"
+agp = "9.3.2"
 kotlin = "2.4.10"
 ksp = "2.3.9"
-dependencyAnalysis = "3.18.0"
+dependencyAnalysis = "3.19.1"
 
 # SDK Target Definitions
 android-compileSdk-version = "37"
