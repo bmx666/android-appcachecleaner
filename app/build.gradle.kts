@@ -17,8 +17,11 @@ plugins {
     id("com.autonomousapps.dependency-analysis")
 }
 
+// JaCoCo 0.8.14+ is required to instrument Java 25 class files (major version 69).
+val jacocoToolVersion = "0.8.14"
+
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = jacocoToolVersion
 }
 
 // Release signing mode:
@@ -50,6 +53,11 @@ kotlin {
             includeInApk = false
             // Disables dependency metadata when building Android App bundles.
             includeInBundle = false
+        }
+
+        // AGP injects its own JaCoCo agent into unit tests; keep it in sync with the jacoco plugin.
+        testCoverage {
+            jacocoVersion = jacocoToolVersion
         }
 
         if (!isKeyRotationEnabled) {
