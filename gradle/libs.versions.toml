@@ -31,7 +31,7 @@ coil = "2.7.0"
 accompanist = "0.37.3"
 
 # Build Systems & Compiler Plugins
-agp = "9.3.2"
+agp = "9.4.1"
 kotlin = "2.4.21"
 ksp = "2.3.9"
 dependencyAnalysis = "3.19.2"
