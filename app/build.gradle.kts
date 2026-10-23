@@ -67,8 +67,8 @@ kotlin {
             applicationId = "com.github.bmx666.appcachecleaner"
             minSdk = libs.versions.android.minSdk.get().toInt()
 
-            versionCode = 109
-            versionName = "2.3.0"
+            versionCode = 110
+            versionName = "2.3.1"
 
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
