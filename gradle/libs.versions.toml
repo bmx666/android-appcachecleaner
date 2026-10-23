@@ -38,7 +38,7 @@ dependencyAnalysis = "3.19.2"
 
 # SDK Target Definitions
 android-compileSdk-version = "37"
-android-compileSdk-minorApiLevel = "1"
+android-compileSdk-minorApiLevel = "2"
 android-minSdk = "24"
 
 [libraries]
