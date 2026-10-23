@@ -1,5 +1,5 @@
 [versions]
-annotation = "1.10.0"
+annotation = "1.11.0"
 material = "1.14.0"
 timber = "5.0.1"
 
@@ -9,22 +9,22 @@ androidx-junit = "1.3.0"
 mockk = "1.14.11"
 kotlinx-coroutines = "1.11.0"
 turbine = "1.2.1"
-robolectric = "4.16.1"
+robolectric = "4.17"
 androidx-test-core = "1.7.0"
 espresso = "3.7.0"
 uiautomator = "2.4.0"
 
 # Jetpack Compose UI Stack
-compose-bom = "2026.08.00"
-compose-ui = "1.12.0"
+compose-bom = "2026.09.00"
+compose-ui = "1.12.1"
 compose-material = "1.7.8"
 compose-material3 = "1.4.0"
 activity-compose = "1.13.0"
 lifecycle = "2.11.0"
-navigation = "2.10.0"
+navigation = "2.10.2"
 
 # Storage, DI, Images & Permission Extensions
-datastore = "1.2.1"
+datastore = "1.3.0"
 hilt = "2.60.1"
 hilt-lifecycle-viewmodel-compose = "1.4.0"
 coil = "2.7.0"
@@ -32,9 +32,9 @@ accompanist = "0.37.3"
 
 # Build Systems & Compiler Plugins
 agp = "9.3.2"
-kotlin = "2.4.10"
+kotlin = "2.4.21"
 ksp = "2.3.9"
-dependencyAnalysis = "3.19.1"
+dependencyAnalysis = "3.19.2"
 
 # SDK Target Definitions
 android-compileSdk-version = "37"
