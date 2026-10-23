@@ -1,5 +1,14 @@
 # Cache Cleaner
 
+> [!IMPORTANT]
+> ## Project Status: Maintenance Only
+>
+> **Cache Cleaner is no longer in active development.**
+>
+> The project is in maintenance mode only: it will keep receiving updates to stay compatible with new Android versions for as long as Google keeps the Accessibility Service usable for this purpose. Once a future Android version breaks the Accessibility Service functionality this app depends on, the project will no longer be updated or supported.
+>
+> **Why:** this app is free and open-source software, yet it has repeatedly been repackaged, sold and published by others as their own work, without even crediting the original author. Because of this disrespect of FOSS principles, the author has decided to stop development of this project.
+
 ## Description
 
 Since the release of Android 6 (Marshmallow), the option to clear the cache of all apps at once has been restricted by Google to system apps only. This means that users no longer have the convenience of clearing the cache of all their apps simultaneously. To clear the cache of individual apps, one must manually navigate to each app's "App Info" screen, locate the "Storage" menu, and then select the "Clean cache" button.
