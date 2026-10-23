@@ -1,0 +1,3 @@
+* raised minimum supproted Android to 7.0
+* support Android 17.2
+* re-signed with new Google-verified developer key
