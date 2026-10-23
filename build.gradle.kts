@@ -11,6 +11,7 @@ plugins {
 buildscript {
     dependencies {
         classpath(libs.hilt.gradle.plugin)
+        classpath(libs.apksig)
     }
 }
 

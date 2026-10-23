@@ -66,6 +66,9 @@ dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", ve
 hilt-lifecycle-viewmodel-compose = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "hilt-lifecycle-viewmodel-compose" }
 hilt-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
 
+# APK signing with key rotation lineage (versioned in lockstep with AGP)
+apksig = { group = "com.android.tools.build", name = "apksig", version.ref = "agp" }
+
 # Kotlin Compiler Internals (Required to handle metadata versions smoothly during KSP compilation)
 kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
 
