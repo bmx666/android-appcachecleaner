@@ -15,11 +15,14 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigationevent.setViewTreeNavigationEventDispatcherOwner
 import com.github.bmx666.appcachecleaner.BuildConfig
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_SYSTEM
 import com.github.bmx666.appcachecleaner.const.Constant.CancellationJobMessage.Companion.CANCEL_INTERRUPTED_BY_USER
@@ -105,6 +108,10 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
                 override fun onPreDraw(): Boolean {
                     return if (isReady()) {
                         content.viewTreeObserver.removeOnPreDrawListener(this)
+                        // AppCompatActivity.setContentView does not register the
+                        // NavigationEventDispatcherOwner; NavHost requires it.
+                        window.decorView.setViewTreeNavigationEventDispatcherOwner(
+                            this@AppCacheCleanerActivity)
                         setContent {
                             CheckActions()
                             AppScreen(
@@ -234,10 +241,14 @@ class AppCacheCleanerActivity : AppCompatActivity(), IIntentActivityCallback {
         val actionStopService by settingsExtraViewModel.actionStopService.collectAsState()
         val actionCloseApp by settingsExtraViewModel.actionCloseApp.collectAsState()
 
-        if (actions) {
-            if (actionStopService == true)
+        val stopService by rememberUpdatedState(actionStopService)
+        val closeApp by rememberUpdatedState(actionCloseApp)
+
+        LaunchedEffect(actions) {
+            if (!actions) return@LaunchedEffect
+            if (stopService == true)
                 localBroadcastManager.disableAccessibilityService()
-            if (actionCloseApp == true)
+            if (closeApp == true)
                 finish()
             cleanResultViewModel.resetActions()
         }
